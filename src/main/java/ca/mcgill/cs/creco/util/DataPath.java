@@ -11,7 +11,7 @@ import java.io.IOException;
  */
 public final class DataPath
 {
-	private static final String PATH_POINTER = ".localdatapath";
+	private static String POINTER = ".localdatapath";
 	
 	private DataPath(){}
 	
@@ -25,7 +25,7 @@ public final class DataPath
 		BufferedReader in = null;
 		try
 		{
-			in = new BufferedReader(new FileReader(PATH_POINTER));
+			in = new BufferedReader(new FileReader(POINTER));
 			String path = in.readLine();
 			if( !path.endsWith(File.separator))
 			{
