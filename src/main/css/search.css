@@ -1,0 +1,38 @@
+
+#search_btn{
+	margin: 0 5px;
+}
+
+#advance_btn {
+	text-decoration: underline;
+	background: transparent;	
+}
+
+#advanced_searchbar {
+	display: inline;
+}
+
+.advanced-option {
+	float: right;
+	width: 50%;
+	padding: 5px 5px 0 0;
+}
+
+#result{
+	/*display: none;*/
+}
+
+.result-entry {
+	width: 300px;
+	border: 1px solid #CFCFCF;
+	line-height: 30px;
+	padding: 0 15px;
+	margin: 3px 0;
+}
+
+.result-entry-count {
+	margin-left: 15px;
+}
+.badge {
+	cursor: pointer;
+}
