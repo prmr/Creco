@@ -21,6 +21,8 @@ import java.lang.reflect.Field;
 
 import org.junit.Test;
 
+import ca.mcgill.cs.creco.data.DataPath;
+
 public class TestDataPath
 {
 	@Test
