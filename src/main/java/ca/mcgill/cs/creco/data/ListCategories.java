@@ -19,7 +19,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 
-import ca.mcgill.cs.creco.data.JCategory.JDownLevel;
+import ca.mcgill.cs.creco.data.stubs.JCategory;
 
 import com.google.gson.Gson;
 
@@ -33,44 +33,19 @@ public final class ListCategories
 	private ListCategories(){}
 	
 	/**
-	 * See class description.
+	 * See class description. Rename to 'main' to run. Having two main
+	 * methods breaks the SpringBoot build.
 	 * @param pArgs Takes no argument.
 	 * @throws Exception Throws anything. This is a demonstration method.
 	 */
-	public static void main(String[] pArgs) throws Exception
+	public static void main1(String[] pArgs) throws Exception
 	{
 		JCategory[] categories = getGson(DataPath.get() + PATH_CATEGORIES, JCategory[].class);
 		
 		for( JCategory category : categories )
 		{
-			printCategory("", category);
+			category.print();
 		}
-	}
-	
-	private static void printCategory(String pPrefix, JCategory pCategory)
-	{
-		System.out.println(pPrefix + pCategory.name);
-		JDownLevel dl = pCategory.downLevel;
-		if( dl != null )
-		{
-			JCategory[] sf = dl.subfranchise;
-			if( sf!= null )
-			{
-				for( JCategory c : sf )
-				{
-					printCategory(pPrefix + "  ", c);
-				}
-			}
-			JCategory[] sc = dl.supercategory;
-			if( sc!= null )
-			{
-				for( JCategory c : sc )
-				{
-					printCategory(pPrefix + "  ", c);
-				}
-			}
-		}
-		
 	}
 	
 	private static <T> T getGson(String pJsonUri, Class<T> pType) throws FileNotFoundException
