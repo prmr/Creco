@@ -1,150 +1,104 @@
 package ca.mcgill.cs.creco.persistence;
 
 
-import org.json.*;
+import com.google.gson.Gson;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.*;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class CategoryReader {
-/* This is a factory for building a CategoryList from a json file representing 
- * the category tree, in the format returned from the CR API
- */
 	
-	private static final String filename = "categories.json";
-	
-	private static final String[] getExpectedStringFields() {
-		String[] expectedStringFields = {"pluralName", "parent", "productGroupId", 
-			"url", "name", "id", "imageCanonical", "singularName", 
-			"franchise", "type", "children"};
-		return expectedStringFields;
+	public static final String getCategoryFileName() {
+		return "categories.json";
 	}
-	
-	private static final String[] getExpectedIntFields() {
-		String[] expectedInts = {"materialsCount", "depth", "productsCount", 
-			"testedProductsCount", "servicesCount", "ratedProductsCount"};
-		return expectedInts;
-	}
-	
-	public static CategoryList read(String fname) throws IOException 
-	{
-		// Read the categories Tree, as returned from CR API, into a Java object
-		FileReader reader;
-		reader = new FileReader(fname + CategoryReader.filename);
-		JSONTokener tokener = new JSONTokener(reader);
-		JSONArray a = new JSONArray(tokener);
 		
-		// Make an empty CategoryList
+	public static final String[] getExcludedCategories() {
+		return new String[] {"28985", "33546", "34458"};
+		//			babies and kids,  food,     money
+	}
+	
+	public static final boolean isExcluded(String catId) {
+		for(String excludedId : CategoryReader.getExcludedCategories())
+		{
+			if(catId.equals(excludedId)) 
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
+	public static CategoryList read(String path) throws IOException 
+	{
+		// Make an empty category
 		CategoryList catList = new CategoryList();
 		
-		// For each category in the Json, make a Category, and put it in the 
-		// CategoryList
-		int i;
-		for(i=0; i<a.length(); i++) {
-			CategoryReader.recursePutCategory(a.getJSONObject(i), catList, 0);
+		// Make some tools to help CategoryReader
+		Gson gson = new Gson();
+		FileReader fr = new FileReader(path + CategoryReader.getCategoryFileName());
+		
+		// Read the json onto an array of categories
+		Category[] catArray = gson.fromJson(fr, Category[].class);
+		
+		// The catArray is deep.  
+		// Recursively flatten it, putting Category's in catList.
+		for(Category cat : catArray)
+		{
+			CategoryReader.recursePutCategory(cat, catList, 0, null);
 		}
 		
+		catList.refresh();
+
 		return catList;
 	}
 	
+	
 	/**
-	 * Given a JSONObject representing a category at any level, turn it into a 
-	 * Category, put it in the Categorylist, and recurse on the JSONObject 
-	 * category's children.
+	 * Given a deep category, as is returned when parsing the CR categories.json file,
+	 * Traverse it and put it and all subcategories into a flat CategoryList
+	 *  
+	 * @param cat
+	 * 		a deep category
 	 * 
-	 * @param subtree
-	 * 		A JSONObject built from the CR API's nested JSON representation of 
-	 * 		catogories
+	 * @param catList
+	 * 		A flat list of categories, onto which the found Category's will be added
+	 * 
+	 * @depth
+	 * 		The depth of the passed Category.  Franchises should be passed with depth 0
+	 * 
 	 */
-	private static void recursePutCategory(JSONObject subtree, CategoryList catList, int depth) {
+	private static void recursePutCategory(Category cat, CategoryList catList, int depth, String parentId) {
 
-		// Build the category for the root of the given subtree
-		Category cat = CategoryReader.buildCat(subtree);
-		String id = cat.get_id();
-		JSONArray jsonChildren = CategoryReader.getChildren(subtree);
+		// Check whether this category should be included
+		if(CategoryReader.isExcluded(cat.getId()))
+		{
+			return;
+		}
+		
+		// Work on this level.  Set depth, parent, and put the category in the catList
+		cat.setInt("depth", depth);
+		cat.setParent(parentId);
+		cat.setCatList(catList);
+		cat.setRatings(new ArrayList<Rating>());
+		cat.setSpecs(new ArrayList<Spec>());
+		
+		String id = cat.getString("id");
 		catList.put(id, cat);
 		
-		// Print a message to show build progress
-		String msg = cat.getSingularName();
-		int i;
-		for(i=0; i<depth; i++) {
-			msg = "\t" + msg;
+		// Call recursively on children
+		Category[] catArray = cat.getDownLevel();
+		if(catArray != null)
+		{
+			for(Category childCat : cat.getDownLevel()) 
+			{
+				cat.addChild(childCat);
+				CategoryReader.recursePutCategory(childCat, catList, depth + 1, id);
+			}
 		}
-		System.out.println(msg);
-				
-		// Recurse on the children, if any
-		for(i=0; i<jsonChildren.length(); i++) {
-			JSONObject childSubtree = jsonChildren.getJSONObject(i);
-			CategoryReader.recursePutCategory(childSubtree, catList, depth+1);
-		}
-		
 	}
 	
-	private static Category buildCat(JSONObject jsonCat) {
-		// Make an empty category
-		Category cat = new Category();
-		
-		// Copy all of the string fields the jsonCat to the Category
-		String[] strFields = CategoryReader.getExpectedStringFields();
-		int i = 0;
-		for(i=0; i<strFields.length; i=i+1) {
-			String key = strFields[i];
-			if(jsonCat.has(key)) {
-				cat.setString(key, jsonCat.getString(key));
-			} else {
-				cat.setString(key,  null);
-			}
-		}
-		
-		// Copy all of the Integer fields from the jsonCat to the Category
-		String[] intFields = CategoryReader.getExpectedIntFields();
-		for(i=0; i<intFields.length; i=i+1) {
-			String key = intFields[i];
-			if(jsonCat.has(key)) {
-				cat.setInt(key, jsonCat.getInt(key));
-			} else {
-				cat.setInt(key,  null);
-			}
-		}
-		
-		// Copy the children from the jsonCat to the Category
-		JSONArray jsonChildren = CategoryReader.getChildren(jsonCat);
-		String[] children;
-		if(jsonChildren != null) {
-			children = new String[jsonChildren.length()];
-			for(i=0; i<jsonChildren.length(); i++) {
-				JSONObject jsonChildCat = jsonChildren.getJSONObject(i);
-				children[i] = jsonChildCat.getString("id");
-			}
-		} else {
-			children = new String[0];
-		}
-		cat.setChildren(children);
-		
-		return cat;
-	}
-		
-	private static JSONArray getChildren(JSONObject jsonCat) {
-		// if the jsonCat has no children, return an empty JSONArray
-		if(!jsonCat.has("downLevel")) {
-			return new JSONArray();
-		}
-		
-		JSONObject downLevel = jsonCat.getJSONObject("downLevel");
-		String[] downLevelFields = JSONObject.getNames(downLevel);
-		
-		// It is still possible there are no children!
-		if(downLevelFields == null) {
-			return new JSONArray();
-		}
-		
-		return downLevel.getJSONArray(downLevelFields[0]);
-
-	}
-		
-		
-		
 	
+		
 }

@@ -1,6 +1,7 @@
 package ca.mcgill.cs.creco.persistence;
 
 import org.json.JSONObject;
+import org.json.simple.*;
 
 public class Attribute {
 	private String displayName;
@@ -33,6 +34,14 @@ public class Attribute {
 		"isForDisplayOnCro", "isCategoryCommonAttribute"
 	};
 	
+	public String getAttributeName()
+	{
+		return this.displayName;
+	}
+	
+	public String getId() {
+		return this.attributeId;
+	}
 	
 	public Attribute(JSONObject jsonAttribute) {
 		

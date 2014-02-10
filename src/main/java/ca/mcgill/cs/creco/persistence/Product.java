@@ -1,10 +1,11 @@
 package ca.mcgill.cs.creco.persistence;
 
+import java.util.ArrayList;
 import org.json.JSONObject;
+import com.google.gson.*;
 
 public class Product {
 	
-	private String supercategory;
 	private String summary;
 	private String mpn;
 	private String id;
@@ -17,7 +18,26 @@ public class Product {
 	private String name;
 	private String upc;
 	private String overallScoreDisplayName;
-	private String modelOverviewpageUrl;
+	private String modelOverviewPageUrl;
+	private String genericColor;
+	
+	// fields from json don't map directly onto these variables;
+	// they are extracted using Product.refresh()
+	private String brandId;
+	private String brandName;
+	private String categoryId;
+	
+	//private String vendorApiChannels;
+	//groups
+	
+	private String review;
+	private String highs;
+	private String lows;
+	private String bottomLine;
+	private String description;
+	private String dontBuyType;
+	private String supercategory;
+	private String subcategory;
 	
 	private Double overallScoreMax;
 	private Double overallScoreMin; 
@@ -30,131 +50,155 @@ public class Product {
 	
 	private Rating[] ratings;
 	private Spec[] specs;
+	private Category category;
+	private Category catRef;
+	private Brand brand;
 	
-	private static String[] stringFields = 
+	private Price price;
+	
+	public static String[] stringFields = 
 	{
-		"supercategory", "summary", "mpn", 
-		"id", "subfranchise", "theCategory", "franchise", "imageLarge", 
-		"imageThumbnail", "displayName", "name", "upc", 
-		"overallScoreDisplayName", "modelOverviewPageUrl",
+		"supercategory", "subcategory", "summary", "mpn", "highs", "description",
+		"id", "subfranchise", "theCategory", "franchise", "imageLarge", "dontBuyType",
+		"imageThumbnail", "displayName", "name", "upc", "rewiew", "bottomLine", "lows",
+		"overallScoreDisplayName", "modelOverviewPageUrl", "categoryId", "genericColor",
+		"brandId", "brandName"
 	};
 	
-	private static String[] doubleFields = 
+	public static String[] doubleFields = 
 	{
 		"overallScoreMax", "overallScoreMin", "overallScore"
 	};
 				
-	private static String[] boolFields = 
+	public static String[] boolFields = 
 	{
 			"isRecommended", "isBestSeller", "isTested",
 			"isBestBuy"
 	};
 	
-	public Product(JSONObject jsonProd) 
+	public Rating[] getRatings()
 	{
-		int i;
-		
-		// Copy all the string fields from the jsonProd to
-		// the Product.
-		for(i=0; i< Product.stringFields.length; i++)
-		{
-			String key = Product.stringFields[i];
-			if(jsonProd.has(key)) {
-				this.setString(key, jsonProd.getString(key));
-			} else {
-				this.setString(key, null);
-			}
-		}
-		
-		// Copy all the Double fields from the jsonProd to the
-		// Product
-		for(i=0; i< Product.doubleFields.length; i++)
-		{
-			String key = Product.doubleFields[i];
-			if(jsonProd.has(key)) {
-				this.setDouble(key, jsonProd.getDouble(key));
-			} else {
-				this.setDouble(key, null);
-			}
-		}
-		
-		// Copy all the Double fields from the jsonProd to the
-		// Product
-		for(i=0; i< Product.boolFields.length; i++)
-		{
-			String key = Product.boolFields[i];
-			if(jsonProd.has(key)) {
-				this.setBool(key, jsonProd.getBoolean(key));
-			} else {
-				this.setBool(key, null);
-			}
-		}
-		
+		return this.ratings;
+	}
+	
+	public Spec[] getSpecs()
+	{
+		return this.specs;
+	}
+	
+	public Category getCatogory() 
+	{
+		return this.catRef;
+	}
+	
+	public void setCategory(Category cat)
+	{
+		this.catRef = cat;
+	}
+	
+	public String dump() 
+	{
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		return gson.toJson(this);
 	}
 
-	private void setString(String key, String val) 
+	public Double getPrice() {
+		return this.price.getPrice();
+	}
+	
+	public String getCategoryId() {
+		return this.categoryId;
+	}
+	
+	public String getId() 
 	{
-		if(key.equals("supercategory")) {
-			this.supercategory = val;
-		} else if(key.equals("summary")) {
-			this.summary = val;
-		} else if(key.equals("mpn")) {
-			this.mpn = val;
-		} else if(key.equals("id")) {
-			this.id = val;
-		} else if(key.equals("subfranchise")) {
-			this.subfranchise = val;
-		} else if(key.equals("theCategory")) {
-			this.theCategory = val;
-		} else if(key.equals("franchise")) {
-			this.franchise = val;
-		} else if(key.equals("imageLarge")) {
-			this.imageLarge = val;
-		} else if(key.equals("imageThumbnail")) {
-			this.imageThumbnail = val;
-		} else if(key.equals("displayName")) {
-			this.displayName = val;
-		} else if(key.equals("name")) {
-			this.name = val;
-		} else if(key.equals("upc")) {
-			this.upc = val;
-		} else if(key.equals("overallScoreDisplayName")) {
-			this.overallScoreDisplayName = val;
-		} else if(key.equals("modelOverviewpageUrl")) {
-			this.modelOverviewpageUrl = val;
+		return this.id;
+	}
+	
+	public void refresh()
+	{
+		this.categoryId = this.category.getString("id");
+		this.category = null;
+		
+		if(this.ratings == null)
+		{
+			this.ratings = new Rating[0];
+		}
+		
+		if(this.specs == null)
+		{
+			this.specs = new Spec[0];
+		}
+		
+		if(this.brand != null)
+		{
+			this.brandId = this.brand.getString("id");
+			this.brandName = this.brand.getString("name");
+		}
+		else
+		{
+			this.brandId = null;
+			this.brandName = null;			
 		}
 	}
 	
 	public String getString(String key)
 	{
-		if(key.equals("supercategory")) {
+		if(key.equals("supercategory")) 
+		{
 			return this.supercategory;
-		} else if(key.equals("summary")) {
+		} 
+		else if(key.equals("summary")) 
+		{
 			return this.summary;
-		} else if(key.equals("mpn")) {
+		} 
+		else if(key.equals("mpn")) 
+		{
 			return this.mpn;
-		} else if(key.equals("id")) {
+		} 
+		else if(key.equals("id")) 
+		{
 			return this.id;
-		} else if(key.equals("subfranchise")) {
+		} 
+		else if(key.equals("subfranchise")) 
+		{
 			return this.subfranchise;
-		} else if(key.equals("theCategory")) {
+		} 
+		else if(key.equals("theCategory")) 
+		{
 			return this.theCategory;
-		} else if(key.equals("franchise")) {
+		} 
+		else if(key.equals("franchise")) 
+		{
 			return this.franchise;
-		} else if(key.equals("imageLarge")) {
+		} 
+		else if(key.equals("imageLarge")) 
+		{
 			return this.imageLarge;
-		} else if(key.equals("imageThumbnail")) {
+		} 
+		else if(key.equals("imageThumbnail")) 
+		{
 			return this.imageThumbnail;
-		} else if(key.equals("displayName")) {
+		} 
+		else if(key.equals("displayName")) 
+		{
 			return this.displayName;
-		} else if(key.equals("name")) {
+		} 
+		else if(key.equals("name")) 
+		{
 			return this.name;
-		} else if(key.equals("upc")) {
+		} 
+		else if(key.equals("upc")) 
+		{
 			return this.upc;
-		} else if(key.equals("overallScoreDisplayName")) {
+		} 
+		else if(key.equals("overallScoreDisplayName")) 
+		{
 			return this.overallScoreDisplayName;
-		} else if(key.equals("modelOverviewpageUrl")) {
-			return this.modelOverviewpageUrl;
+		}
+		else if(key.equals("modelOverviewPageUrl")) 
+		{
+			return this.modelOverviewPageUrl;
 		} 
 		else
 		{
@@ -162,30 +206,47 @@ public class Product {
 		}
 		
 	}
-	
-	private void setBool(String key, Boolean val)
+		
+	public Boolean getBool(String key)
 	{
-		if(key.equals("isRecommended")) {
-			this.isRecommended = val;
-		} else if(key.equals("isBestSeller")) {
-			this.isBestSeller = val;
-		} else if(key.equals("isTested")) {
-			this.isTested = val;
-		} else if(key.equals("isBestBuy")) {
-			this.isBestBuy = val;
+		if(key.equals("isRecommended")) 
+		{
+			return this.isRecommended;
+		} 
+		else if(key.equals("isBestSeller")) 
+		{
+			return this.isBestSeller;
+		} 
+		else if(key.equals("isTested")) 
+		{
+			return this.isTested;
+		} 
+		else if(key.equals("isBestBuy")) 
+		{
+			return this.isBestBuy;
+		}
+		else 
+		{
+			return null;
 		}
 	}
-	
-	private void setDouble(String key, Double val) {
+		
+	public Double getDouble(String key) {
 		if(key.equals("overallScoreMax")) 
 		{
-			this.overallScoreMax = val;
-		} else if(key.equals("overallScoreMin")) 
+			return this.overallScoreMax;
+		} 
+		else if(key.equals("overallScoreMin")) 
 		{
-			this.overallScoreMin = val;
-		} else if(key.equals("overallScore")) 
+			return this.overallScoreMin;
+		} 
+		else if(key.equals("overallScore")) 
 		{
-			this.overallScore = val;
+			return this.overallScore;
+		}
+		else
+		{
+			return null;
 		}
 	}
 		
