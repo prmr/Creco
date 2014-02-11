@@ -9,25 +9,20 @@ import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 
 public class ProductReader {
-	private static String[] productFiles = 
-	{
-		"product_appliances.json", "product_electronicsComputers.json",
-		"product_cars.json", "product_health.json", "product_homeGarden.json", 
-		//"product_food.json", "product_babiesKids.json", "product_money.json"
-	};
 	
-	public static ProductList read(String dataPath) throws IOException {
+	public static ProductList read(String dataPath, String[] productFiles) throws IOException {
 
 		// Make an empty ProducList
 		ProductList prodList = new ProductList();
 		
-		for(String fname : ProductReader.productFiles)
+		System.out.println("Reading product files...");
+		for(String fname : productFiles)
 		{
 			String filePath = dataPath + fname; 
 			System.out.println(filePath);
 			ProductReader.readFile(filePath, prodList);
 		}
-		System.out.println("Found " + prodList.size() + " products.");
+		System.out.println("Found " + prodList.size() + " products.\n");
 		return prodList;
 	}
 	

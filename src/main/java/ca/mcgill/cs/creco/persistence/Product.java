@@ -48,8 +48,8 @@ public class Product {
 	private Boolean isTested;
 	private Boolean isBestBuy;
 	
-	private Rating[] ratings;
-	private Spec[] specs;
+	private Rating[] ratings = new Rating[0];
+	private Spec[] specs = new Spec[0];
 	private Category category;
 	private Category catRef;
 	private Brand brand;
@@ -75,6 +75,11 @@ public class Product {
 			"isRecommended", "isBestSeller", "isTested",
 			"isBestBuy"
 	};
+	
+	public String getDisplayName()
+	{
+		return this.displayName;
+	}
 	
 	public Rating[] getRatings()
 	{

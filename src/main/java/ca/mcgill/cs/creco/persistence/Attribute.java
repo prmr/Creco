@@ -34,6 +34,70 @@ public class Attribute {
 		"isForDisplayOnCro", "isCategoryCommonAttribute"
 	};
 	
+	public String getString(String key)
+	{
+		if(key.equals("displayName"))
+		{
+			return this.displayName;
+		}
+		else if(key.equals("description"))
+		{
+			return this.description;
+		} 
+		else if(key.equals("attributeId"))
+		{
+			return this.attributeId;
+		}
+		else if(key.equals("filterWidget"))
+		{
+			return this.filterWidget;
+		}
+		else if(key.equals("dataPresentationFormat"))
+		{
+			return this.dataPresentationFormat;
+		}
+		else if(key.equals("attributeGroup"))
+		{
+			return this.attributeGroup;
+		}
+		else if(key.equals("unitName"))
+		{
+			return this.unitName;
+		}
+		else
+		{
+			return null;
+		}							
+	}
+	
+	public Boolean getBool(String key)
+	{
+		if(key.equals("isForDisplayOnCRO"))
+		{
+			return this.isForDisplayOnCro;
+		}
+		else if(key.equals("isCategoryCommonAttribute"))
+		{
+			return this.isCategoryCommonAttribute;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	public Integer getInt(String key)
+	{
+		if(key.equals("sortOrder"))
+		{
+			return this.sortOrder;
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
 	public String getAttributeName()
 	{
 		return this.displayName;
@@ -43,63 +107,13 @@ public class Attribute {
 		return this.attributeId;
 	}
 	
-	public Attribute(JSONObject jsonAttribute) {
-		
-		int i;
-		
-		// Set all the string fields
-		for(i=0; i<Attribute.stringFields.length; i++)
-		{
-			String key = Attribute.stringFields[i];
-			if(jsonAttribute.has(key))
-			{
-				this.setString(key, jsonAttribute.getString(key));
-			}
-			else
-			{
-				this.setString(key, null);
-			}
-		}
-		
-		// Set all the boolean fields
-		for(i=0; i<Attribute.boolFields.length; i++)
-		{
-			String key = Attribute.boolFields[i];
-			if(jsonAttribute.has(key))
-			{
-				this.setBool(key, jsonAttribute.getBoolean(key));
-			}
-			else 
-			{
-				this.setBool(key, null);
-			}
-		}
-		
-		if(jsonAttribute.has("value")) 
-		{
-			this.setValue(jsonAttribute.get("value"));
-		}
-		else
-		{
-			this.setValue(null);
-		}
-		
-		if(jsonAttribute.has("sortOrder")) 
-		{
-			this.setInteger("sortOrder", jsonAttribute.getInt("sortOrder"));
-		}
-		else 
-		{
-			this.setInteger("sortOrder", null);
-		}
-	}
-	
+
 	private void setValue(Object val)
 	{
 		this.value = val;
 	}
 	
-	private void setInteger(String key, Integer val)
+	private void setInt(String key, Integer val)
 	{
 		if(key.equals("sortOrder"))
 		{

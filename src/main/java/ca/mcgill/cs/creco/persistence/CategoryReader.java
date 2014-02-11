@@ -9,16 +9,21 @@ import java.util.ArrayList;
 
 public class CategoryReader {
 	
-	public static final String getCategoryFileName() {
+	public static final String getCategoryFileName() 
+	{
 		return "categories.json";
 	}
-		
-	public static final String[] getExcludedCategories() {
+	
+	
+	public static final String[] getExcludedCategories() 
+	{
 		return new String[] {"28985", "33546", "34458"};
 		//			babies and kids,  food,     money
 	}
 	
-	public static final boolean isExcluded(String catId) {
+	
+	public static final boolean isExcluded(String catId) 
+	{
 		for(String excludedId : CategoryReader.getExcludedCategories())
 		{
 			if(catId.equals(excludedId)) 
@@ -30,10 +35,10 @@ public class CategoryReader {
 	}
 	
 	
-	public static CategoryList read(String path) throws IOException 
+	public static CategoryList read(String path, double jaccardThreshhold) throws IOException 
 	{
 		// Make an empty category
-		CategoryList catList = new CategoryList();
+		CategoryList catList = new CategoryList(jaccardThreshhold);
 		
 		// Make some tools to help CategoryReader
 		Gson gson = new Gson();
@@ -69,7 +74,7 @@ public class CategoryReader {
 	 * 		The depth of the passed Category.  Franchises should be passed with depth 0
 	 * 
 	 */
-	private static void recursePutCategory(Category cat, CategoryList catList, int depth, String parentId) {
+	private static void recursePutCategory(Category cat, CategoryList catList, int depth, Category parent) {
 
 		// Check whether this category should be included
 		if(CategoryReader.isExcluded(cat.getId()))
@@ -79,10 +84,10 @@ public class CategoryReader {
 		
 		// Work on this level.  Set depth, parent, and put the category in the catList
 		cat.setInt("depth", depth);
-		cat.setParent(parentId);
+		cat.setParent(parent);
 		cat.setCatList(catList);
-		cat.setRatings(new ArrayList<Rating>());
-		cat.setSpecs(new ArrayList<Spec>());
+		cat.setRatings(new ArrayList<RatingStat>());
+		cat.setSpecs(new ArrayList<SpecStat>());
 		
 		String id = cat.getString("id");
 		catList.put(id, cat);
@@ -94,7 +99,7 @@ public class CategoryReader {
 			for(Category childCat : cat.getDownLevel()) 
 			{
 				cat.addChild(childCat);
-				CategoryReader.recursePutCategory(childCat, catList, depth + 1, id);
+				CategoryReader.recursePutCategory(childCat, catList, depth + 1, cat);
 			}
 		}
 	}

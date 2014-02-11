@@ -4,8 +4,8 @@ import org.json.JSONObject;
 
 public class Rating extends Attribute{
 	
-	public Rating(JSONObject jsonRating) {
-		super(jsonRating);
+	public Rating() {
+		super();
 	}
 
 }
