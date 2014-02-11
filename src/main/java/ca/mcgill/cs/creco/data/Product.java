@@ -1,7 +1,7 @@
 package ca.mcgill.cs.creco.data;
 
-import java.util.ArrayList;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class Product {
 	

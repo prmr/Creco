@@ -1,10 +1,6 @@
 package ca.mcgill.cs.creco.data;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map.Entry;
-
-import ca.mcgill.cs.creco.util.*;
 
 public class CRDataExample {
 	public static void main(String[] args) throws IOException
