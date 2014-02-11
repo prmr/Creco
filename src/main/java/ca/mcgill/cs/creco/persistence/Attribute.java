@@ -1,8 +1,5 @@
 package ca.mcgill.cs.creco.persistence;
 
-import org.json.JSONObject;
-import org.json.simple.*;
-
 public class Attribute {
 	private String displayName;
 	private String description;
@@ -14,8 +11,8 @@ public class Attribute {
 	private String unitName;
 	
 	// Note the json attribute 'value' varies in data type
-	// from one jsonAttribute to the next.  Users of the class
-	// have to check
+	// from one jsonAttribute to the next.  
+	// Users of the class have to check
 	private Object value;
 	
 	private Integer sortOrder;
@@ -34,6 +31,15 @@ public class Attribute {
 		"isForDisplayOnCro", "isCategoryCommonAttribute"
 	};
 	
+	public Object getValue()
+	{
+		return this.value;
+	}
+	
+	public Integer getSortOrder()
+	{
+		return this.sortOrder;
+	}
 	public String getString(String key)
 	{
 		if(key.equals("displayName"))
@@ -108,12 +114,12 @@ public class Attribute {
 	}
 	
 
-	private void setValue(Object val)
+	public void setValue(Object val)
 	{
 		this.value = val;
 	}
 	
-	private void setInt(String key, Integer val)
+	public void setInt(String key, Integer val)
 	{
 		if(key.equals("sortOrder"))
 		{
@@ -121,14 +127,14 @@ public class Attribute {
 		}
 	}
 	
-	private void setDouble(String key, Double val) {
+	public void setDouble(String key, Double val) {
 		if(key.equals("value"))
 		{
 			this.value = val;
 		}
 	}
 	
-	private void setBool(String key, Boolean val)
+	public void setBool(String key, Boolean val)
 	{
 		if(key.equals("isForDisplayOnCro"))
 		{
@@ -140,7 +146,7 @@ public class Attribute {
 		}
 	}
 	
-	private void setString(String key, String val)
+	public void setString(String key, String val)
 	{
 		if(key.equals("displayName"))
 		{
