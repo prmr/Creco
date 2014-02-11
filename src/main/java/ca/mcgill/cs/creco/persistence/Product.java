@@ -91,7 +91,7 @@ public class Product {
 		return this.specs;
 	}
 	
-	public Category getCatogory() 
+	public Category getCategory() 
 	{
 		return this.catRef;
 	}

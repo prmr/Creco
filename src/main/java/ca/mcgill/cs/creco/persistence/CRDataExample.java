@@ -4,12 +4,11 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import org.json.simple.parser.ParseException;
-
 import ca.mcgill.cs.creco.util.*;
 
 public class CRDataExample {
-	public static void main(String[] args) throws IOException, ParseException {
+	public static void main(String[] args) throws IOException
+	{
 		
 		// Get the path to the data
 		String dataPath = DataPath.get();
@@ -47,7 +46,7 @@ public class CRDataExample {
 		Product aHumidifier = humidifiers.getProducts()[0];
 		System.out.println(humidifiers.getSingularName() + " has " + humidifiers.getProducts().length + " products in it.");
 		System.out.println(humidifiers.getSingularName() + " contains " + aHumidifier.getDisplayName());
-		System.out.println(aHumidifier.getDisplayName() + " is contained by " + aHumidifier.getCatogory().getSingularName());
+		System.out.println(aHumidifier.getDisplayName() + " is contained by " + aHumidifier.getCategory().getSingularName());
 		
 		// Get the immediate child categories
 		System.out.println("\nYou can access the children of a category using getChildren.");

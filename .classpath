@@ -5,7 +5,5 @@
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
-	<classpathentry kind="lib" path="lib/json-simple-1.1.1.jar"/>
-	<classpathentry kind="lib" path="/Users/enewe101/git/Creco/lib/gson-2.2.4.jar" sourcepath="/Users/enewe101/git/Creco/lib/google-gson-2.2.4/gson-2.2.4-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

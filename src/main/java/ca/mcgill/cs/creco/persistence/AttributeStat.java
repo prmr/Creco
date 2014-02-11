@@ -1,7 +1,6 @@
 package ca.mcgill.cs.creco.persistence;
 
 import org.json.JSONObject;
-import org.json.simple.*;
 
 public class AttributeStat {
 	private String displayName;
