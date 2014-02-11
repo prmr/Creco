@@ -1,7 +1,6 @@
 package ca.mcgill.cs.creco.persistence;
 
 import java.util.ArrayList;
-import org.json.JSONObject;
 import com.google.gson.*;
 
 public class Product {
