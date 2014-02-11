@@ -17,6 +17,7 @@ package ca.mcgill.cs.creco.util;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.lang.reflect.Field;
 
 import org.junit.Test;
@@ -32,7 +33,7 @@ public class TestDataPath
 		pointer.setAccessible(true);
 		pointer.set(null, "src/test/java/ca/mcgill/cs/creco/util/.localdatapath1");
 		String path = DataPath.get();
-		assertEquals("C:\\temp\\data\\",DataPath.get());
+		assertEquals("C:\\temp\\data" + File.separator,DataPath.get());
 
 	}
 }
