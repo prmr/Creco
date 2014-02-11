@@ -1,4 +1,4 @@
-package ca.mcgill.cs.creco.persistence;
+package ca.mcgill.cs.creco.data;
 
 import java.io.IOException;
 

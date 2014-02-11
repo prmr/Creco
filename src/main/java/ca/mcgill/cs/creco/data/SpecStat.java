@@ -1,4 +1,4 @@
-package ca.mcgill.cs.creco.persistence;
+package ca.mcgill.cs.creco.data;
 
 public class SpecStat extends AttributeStat{
 	public SpecStat(Attribute attribute)
