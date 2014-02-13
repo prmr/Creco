@@ -23,7 +23,6 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.IntField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
@@ -45,25 +44,25 @@ import ca.mcgill.cs.creco.web.model.ProductVO;
 /**
  * Searches a list of products with Lucene indexes.
  */
-public class Search 
+public class ProductSearch 
 {
 	public static final String NAME = "name";
 	public static final String ID = "id";
 	
 	private static final Version VERSION = Version.LUCENE_46;
 	private static final int MAX_NUM_RESULTS = 10;
-	private static final Logger LOG = LoggerFactory.getLogger(Search.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ProductSearch.class);
 	
-	private final Directory directory;
-	private final Analyzer analyzer;
+	private final Directory aDirectory;
+	private final Analyzer aAnalyzer;
 
 	/**
 	 * Constructor.
 	 */
-	public Search() 
+	public ProductSearch() 
 	{
-		directory = new RAMDirectory();
-		analyzer = new EnglishAnalyzer(VERSION);
+		aDirectory = new RAMDirectory();
+		aAnalyzer = new EnglishAnalyzer(VERSION);
 	}
 	
 	/**
@@ -75,7 +74,7 @@ public class Search
 		try 
 		{
 			Analyzer analyzer = new EnglishAnalyzer(VERSION);
-			IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(VERSION, analyzer));
+			IndexWriter writer = new IndexWriter(aDirectory, new IndexWriterConfig(VERSION, analyzer));
 		for (ProductVO product : products) 
 		{
 			Document doc = new Document();
@@ -93,15 +92,15 @@ public class Search
 	
 	/**
 	 * Query the Lucene directory for matches to the query string.
-	 * @param queryString the search string
+	 * @param pQueryString the search string
 	 */
-	public SearchResult query(String queryString) 
+	public SearchResult queryProducts(String pQueryString) 
 	{
 		List<ProductVO> scoredResults = new ArrayList<ProductVO>();
 		try 
 		{
-			Query query = new QueryParser(VERSION, NAME, analyzer).parse(queryString);
-			DirectoryReader reader = DirectoryReader.open(directory);
+			Query query = new QueryParser(VERSION, NAME, aAnalyzer).parse(pQueryString);
+			DirectoryReader reader = DirectoryReader.open(aDirectory);
 			IndexSearcher searcher = new IndexSearcher(reader);
 			TopScoreDocCollector results = TopScoreDocCollector.create(MAX_NUM_RESULTS, true);
 			

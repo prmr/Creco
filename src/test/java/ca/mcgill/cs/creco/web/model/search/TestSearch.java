@@ -17,7 +17,7 @@ public class TestSearch
 		String testName = "testName";
 		String testId = "1";
 		
-		Search search = new Search();
+		ProductSearch search = new ProductSearch();
 		
 		List<ProductVO> products = new ArrayList<ProductVO>();
 		ProductVO product = new ProductVO();
@@ -26,7 +26,7 @@ public class TestSearch
 		products.add(product);
 		search.addProducts(products);
 		
-		SearchResult result = search.query(testName);
+		SearchResult result = search.queryProducts(testName);
 		ProductVO resultProduct = result.getProducts().get(0);
 		assertEquals(resultProduct.getName(), testName);
 	}
