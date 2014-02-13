@@ -22,7 +22,7 @@ import ca.mcgill.cs.creco.util.DataPath;
 
 public class start {
 
-    public static void main(String[] args) throws IOException {
+    public static void main1(String[] args) throws IOException {
      //  System.out.println("Hey there");
        URL url;
        String path = DataPath.get();
