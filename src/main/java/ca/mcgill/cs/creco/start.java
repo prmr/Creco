@@ -19,16 +19,17 @@ import java.net.URLConnection;
 import org.springframework.boot.SpringApplication;
 
 import ca.mcgill.cs.creco.util.DataPath;
+import ca.mcgill.cs.creco.util.Franchisereturn;
 
 public class start {
 
-    public static void main1(String[] args) throws IOException {
-       System.out.println("Hey there");
+    public static void main(String[] args) throws IOException, InterruptedException {
+       int change_flag=0;
+    	//System.out.println("Hey there");
        URL url;
        String path = DataPath.get();
-       System.out.println(path);
-       String[] dataset = new String[]{"food","health","money","babiesKids","homeGarden","appliances","cars","electronicsComputers"};
-
+     //  System.out.println(path);
+       String[] dataset = Franchisereturn.getstring();
        try {
     	   for(int i=0;i<dataset.length;i++)
     	   {
@@ -45,12 +46,12 @@ File file = new File(fileName);
 
 if (!file.exists()) {
 	file.createNewFile();
-System.out.println("Created a file");
+//System.out.println("Created a file");
 }
 
 {
 	Date date1 = new Date();
-	System.out.println(date1);
+	//System.out.println(date1);
 	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 	String temporary = sdf.format(file.lastModified());
 	Date date2 =null;
@@ -61,12 +62,13 @@ System.out.println("Created a file");
 	long diffHours = diff / (60 * 60 * 1000) % 24;
 	long diffDays = diff / (24 * 60 * 60 * 1000);
 
-	System.out.print(diffDays + " days, ");
-	System.out.print(diffHours + " hours, ");
-	System.out.print(diffMinutes + " minutes, ");
-	System.out.print(diffSeconds + " seconds.");
+	//System.out.print(diffDays + " days, ");
+	//System.out.print(diffHours + " hours, ");
+	//System.out.print(diffMinutes + " minutes, ");
+	//System.out.print(diffSeconds + " seconds.");
 	if(diffDays>0)
 	{
+		change_flag=1;
 		   Thread.sleep(2000);
 		   StringBuilder abc = new StringBuilder();
 		   abc.append("http://api.consumerreports.org/v0.1/products.(category.name=");
@@ -93,7 +95,12 @@ System.out.println("Created a file");
 }
 
     	   }
-System.out.println("Done");
+    	   
+    	   if(change_flag==1)
+    	   {
+    		 buildobjects create =  new buildobjects();
+    	   }
+//System.out.println("Done");
     }
        catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -107,7 +114,9 @@ System.out.println("Done");
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
     }
+
     
 
     
