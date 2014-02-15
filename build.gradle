@@ -27,6 +27,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web:1.0.0.RC1")
     compile("com.google.code.gson:gson:2.2.4")
     compile("org.thymeleaf:thymeleaf-spring4:2.1.2.RELEASE")
+    compile("com.google.code.gson:gson:2.2.4")
     testCompile("junit:junit:4.11")
 }
 
