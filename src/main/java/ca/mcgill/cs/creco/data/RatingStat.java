@@ -11,4 +11,9 @@ public class RatingStat extends AttributeStat{
 	{
 		super(attribute);
 	}
+	
+	public Rating getRating()
+	{
+		return (Rating)super.getAttribute();
+	}
 }

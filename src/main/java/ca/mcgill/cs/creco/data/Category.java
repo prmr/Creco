@@ -1,64 +1,127 @@
 package ca.mcgill.cs.creco.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.Iterator;
+
+import org.thymeleaf.util.StringUtils;
+
+import ca.mcgill.cs.creco.data.stubs.CategoryStub;
 
 public class Category {
-	public int materialsCount;
-	public String pluralName;
-	public String productGroupId; 
-	public String url;
-	public String name;
-	public String id;
-	public String imageCanonical;
-	public String singularName;
-	public String franchise;
-	public String type = null;
 	
-	public String classType;
+	// Fields copied directly from CR database
+	private int materialsCount;
+	private String pluralName;
+	private String productGroupId; 
+	private String url;
+	private String name;
+	private String id;
+	private String imageCanonical;
+	private String singularName;
+	private String franchise;
+	private String type;
+	private Integer productsCount;
+	private Integer testedProductsCount;
+	private Integer servicesCount;
+	private Integer ratedProductsCount;
 	
-	public Category parent; 
-	public ArrayList<Category> children = new ArrayList<Category>();
-	private ArrayList<RatingStat> ratings;
-	private ArrayList<SpecStat> specs;
-	private ArrayList<Product> productsList = new ArrayList<Product>();
-	
-	private ArrayList<String> ratingIntersection;
-	private ArrayList<String> specIntersection;
-	
-	public Integer depth;
-	public Integer productsCount;
-	public Integer testedProductsCount;
-	public Integer servicesCount;
-	public Integer ratedProductsCount;
-	
-	public Double jaccard;
-	
+	// Derived fields set in constructor
 	private int count;
 	private int ratedCount;
 	private int testedCount;
-	
-	private DownLevel downLevel;
+	private int depth;	
+	private String classType;
+	private Category parent; 
+	private Double jaccard;
+	private ArrayList<Category> children;
 	private CategoryList catList;
+	
+	// Derived fields set by associateProducts()
+	private ArrayList<Product> productsList;	
+	private ArrayList<String> ratingIntersection;
+	private ArrayList<String> specIntersection;
+	private Hashtable<String, SpecStat> specs;
+	private Hashtable<String, RatingStat> ratings;
+	
+	Category(CategoryList catList, CategoryStub catStub, Category parent, int depth) 
+	{
+		// copy over the CR data fields
+		this.materialsCount = catStub.materialsCount;
+		this.pluralName = catStub.pluralName;
+		this.productGroupId = catStub.productGroupId;
+		this.url = catStub.url;
+		this.name = catStub.name;
+		this.id = catStub.id;
+		this.imageCanonical = catStub.imageCanonical;
+		this.singularName = catStub.singularName;
+		this.franchise = catStub.franchise;
+		this.type = catStub.type;
+		this.productsCount = catStub.productsCount;
+		this.testedProductsCount = catStub.testedProductsCount;
+		this.servicesCount = catStub.servicesCount;
+		this.ratedProductsCount = catStub.ratedProductsCount;
+		
+		// Now write the derived fields
+		this.catList = catList;
+		this.depth = depth;
+		this.ratings = new Hashtable<String, RatingStat>();
+		this.specs = new Hashtable<String, SpecStat>();
+		this.parent = parent;
+		this.productsList = new ArrayList<Product>();
+		this.ratingIntersection = new ArrayList<String>();
+		this.specIntersection = new ArrayList<String>();
+		this.specs = new Hashtable<String, SpecStat>();
+		this.ratings = new Hashtable<String, RatingStat>();
+		
+		// set the children, if any
+		this.children = new ArrayList<Category>();
+		if(catStub.downLevel != null)
+		{
+			// figure out where the children are, if any
+			CategoryStub[] childCatStubs;
+			if(catStub.downLevel.supercategory != null)
+			{
+				childCatStubs = catStub.downLevel.supercategory;
+			}
+			else if(catStub.downLevel.category != null)
+			{
+				childCatStubs = catStub.downLevel.category;
+			}
+			else if(catStub.downLevel.subfranchise != null)
+			{
+				childCatStubs = catStub.downLevel.subfranchise;
+			}
+			else if(catStub.downLevel.subcategory != null)
+			{
+				childCatStubs = catStub.downLevel.subcategory;
+			}
+			else
+			{
+				childCatStubs = new CategoryStub[0];
+			}
+			
+			// add them to the child list, building each child into a full Category itself
+			childCatStubs = (childCatStubs != null)? childCatStubs : new CategoryStub[0];
+			for(CategoryStub childCatStub : childCatStubs)
+			{
+				this.children.add(new Category(this.catList, childCatStub, this, this.depth + 1));
+			}
+		}
+	}
 
-	public static final String[] getExpectedStringFields() {
-		return new String[] 
-		{
-			"pluralName", "parent", "productGroupId", 
-			"url", "name", "id", "imageCanonical", "singularName", 
-			"franchise", "type", "children"
-		};
+	void clearRatings()
+	{
+		this.ratings = new Hashtable<String, RatingStat>();
 	}
 	
-	public static final String[] getExpectedIntFields() {
-		return new String[] 
-		{
-			"materialsCount", "depth", "productsCount", 
-			"testedProductsCount", "servicesCount", "ratedProductsCount",
-			"count", "ratedCount", "testedCount"
-		};
+	void clearSpecs()
+	{
+		this.specs = new Hashtable<String, SpecStat>();
 	}
 	
-	public void calculateJaccard()
+	void calculateJaccard()
 	{
 		double numerator  = ((double) (this.ratingIntersection.size() + this.specIntersection.size()));
 		double denominator = ((double) (this.ratings.size() + this.specs.size()));
@@ -70,6 +133,21 @@ public class Category {
 		{
 			this.jaccard = null;
 		}
+	}
+	
+	void setDepth(int depth)
+	{
+		this.depth = depth;
+	}
+	
+	public int getNumProducts()
+	{
+		return this.productsList.size();
+	}
+	
+	public int getNumChildren()
+	{
+		return this.children.size();
 	}
 	
 	public Double getJaccard()
@@ -111,7 +189,7 @@ public class Category {
 		}
 	}
 	
-	public void putProducts(Product[] products)
+	public void putProducts(Iterable<Product> products)
 	{
 		for(Product prod : products)
 		{
@@ -130,20 +208,30 @@ public class Category {
 		desc += " - number of specs: " + this.specs.size() + "\n";
 		desc += " - Jaccard: " + this.jaccard + "\n";
 		desc += "\n - Ratings:\n";
-		for(RatingStat rating : this.ratings)
+		for(RatingStat rating : this.ratings.values())
 		{
-			desc += "\t- " + rating.getAttributeName() + ": " + rating.getCount() + " (" + (float)(rating.getCount())/this.getCount()*100 + "%)\n";
+			desc += "\t- " + rating.getName() + ": " + rating.getCount() + " (" + (float)(rating.getCount())/this.getCount()*100 + "%)";
+			if(rating.getValueMax() != null)
+			{
+				desc += " min/max: [" + rating.getValueMin() + ", " + rating.getValueMax() + "]";
+			}
+			desc += " values: [" + StringUtils.join(rating.getValueEnum(), ", ") + "]\n";
 		}
 		desc += "\n - Specs:\n";
-		for(SpecStat spec : this.specs)
+		for(SpecStat spec : this.specs.values())
 		{
-			desc += "\t- " + spec.getAttributeName() + " : " + spec.getCount() + " (" + (float)(spec.getCount())/this.getCount()*100 + "%)\n";
+			desc += "\t- " + spec.getName() + " : " + spec.getCount() + " (" + (float)(spec.getCount())/this.getCount()*100 + "%)";
+			if(spec.getValueMax() != null)
+			{
+				desc += " min/max: [" + spec.getValueMin() + ", " + spec.getValueMax() + "]";
+			}
+			desc += " values: [" + StringUtils.join(spec.getValueEnum(), ", ") + "]\n";
 		}
 		
 		return desc;
 	}
 	
-	public void intersectRatings(RatingStat[] ratings)
+	public void intersectRatings(Iterable<RatingStat> ratings)
 	{
 		// if the ratingsIntersection is empty (null), then just copy in the current set of ratings
 		if(this.ratingIntersection == null)
@@ -187,7 +275,7 @@ public class Category {
 		this.setRatingIntersection(newRatingIntersection);
 	}
 	
-	public void intersectSpecs(SpecStat[] specs)
+	public void intersectSpecs(Iterable<SpecStat> specs)
 	{
 		// if the specsIntersection is empty (null), then just copy in the current set of specs
 		if(this.specIntersection == null)
@@ -255,20 +343,22 @@ public class Category {
 	public void putRating(Rating rating)
 	{
 		String ratingId = rating.getId();
-		for(RatingStat existingRatingStat : this.ratings)
+		for(RatingStat existingRatingStat : this.ratings.values())
 		{
 			if(existingRatingStat.getId().equals(ratingId))
 			{
 				existingRatingStat.increment(1);
+				existingRatingStat.updateRange(rating.getValue());
 				return;
 			}
 		}
 		RatingStat ratingStat = new RatingStat(rating);
 		ratingStat.increment(1);
-		this.ratings.add(ratingStat);
+		ratingStat.updateRange(rating.getValue());
+		this.ratings.put(rating.getId(), ratingStat);
 	}
 	
-	public void mergeRatings(RatingStat[] ratings)
+	public void mergeRatings(Iterable<RatingStat> ratings)
 	{
 		for(RatingStat rating : ratings)
 		{
@@ -278,7 +368,7 @@ public class Category {
 	
 	public void mergeRating(RatingStat rating)
 	{
-		for(RatingStat existingRating : this.ratings)
+		for(RatingStat existingRating : this.ratings.values())
 		{
 			if(existingRating.getId().equals(rating.getId()))
 			{
@@ -287,15 +377,15 @@ public class Category {
 			}
 		}
 		RatingStat newRating = new RatingStat(rating);
-		this.ratings.add(newRating);
+		this.ratings.put(rating.getId(), newRating);
 	}
 	
-	public RatingStat[] getRatings()
+	public Iterable<RatingStat> getRatings()
 	{
-		return this.ratings.toArray(new RatingStat[0]);
+		return Collections.unmodifiableCollection(this.ratings.values());
 	}
 	
-	public void mergeSpecs(SpecStat[] specs)
+	public void mergeSpecs(Iterable<SpecStat> specs)
 	{
 		for(SpecStat spec : specs)
 		{
@@ -305,7 +395,7 @@ public class Category {
 	
 	public void mergeSpec(SpecStat spec)
 	{
-		for(SpecStat existingSpec: this.specs)
+		for(SpecStat existingSpec: this.specs.values())
 		{
 			if(existingSpec.getId().equals(spec.getId()))
 			{
@@ -314,20 +404,18 @@ public class Category {
 			}
 		}
 		SpecStat newSpec = new SpecStat(spec);
-		this.specs.add(newSpec);
+		this.specs.put(spec.getId(), newSpec);
 	}
 	
-	public SpecStat[] getSpecs()
+	public Iterable<SpecStat> getSpecs()
 	{
-		return this.specs.toArray(new SpecStat[0]);
+		return Collections.unmodifiableCollection(this.specs.values());
 	}
-	
-	public void setRatings(ArrayList<RatingStat> ratings)
-	{
-		this.ratings = ratings;
-	}
-	
-	public void putRatings(Rating[] ratings)
+		
+	// TODO
+	// - I think that stat ratings should be managed from here for leafs
+	// 		that is, need to include updateRange etc.
+	public void putRatings(Iterable<Rating> ratings)
 	{
 		for(Rating rating : ratings)
 		{
@@ -335,26 +423,22 @@ public class Category {
 		}
 	}
 	
-	public void setSpecs(ArrayList<SpecStat> specs)
-	{
-		this.specs = specs;
-	}
-	
-	
 	public void putSpec(Spec spec)
 	{
 		String specId = spec.getId();
-		for(SpecStat existingSpecStat: this.specs)
+		for(SpecStat existingSpecStat: this.specs.values())
 		{
 			if(existingSpecStat.getId().equals(specId))
 			{
 				existingSpecStat.increment(1);
+				existingSpecStat.updateRange(spec.getValue());
 				return;
 			}
 		}
 		SpecStat specStat = new SpecStat(spec);
 		specStat.increment(1);
-		this.specs.add(specStat);
+		specStat.updateRange(spec.getValue());
+		this.specs.put(spec.getId(), specStat);
 	}
 	
 	public int getRatedCount()
@@ -367,9 +451,15 @@ public class Category {
 		return this.testedCount;
 	}
 	
-	public Product[] getProducts()
+	public Iterable<Product> getProducts()
 	{
-		return this.productsList.toArray(new Product[0]);
+		return new Iterable<Product>()
+		{
+			public Iterator<Product> iterator()
+			{
+				return Collections.unmodifiableCollection(Category.this.productsList).iterator();
+			}
+		};
 	}
 	
 	public int getCount()
@@ -384,12 +474,12 @@ public class Category {
 	
 	public void incrementRatedCount(int add)
 	{
-		this.ratedCount += 1;
+		this.ratedCount += add;
 	}
 	
 	public void incrementTestedCount(int add)
 	{
-		this.testedCount += 1;
+		this.testedCount += add;
 	}
 	
 	public void setCount(int count)
@@ -407,7 +497,7 @@ public class Category {
 		this.testedCount = count;
 	}
 	
-	public void putSpecs(Spec[] specs)
+	public void putSpecs(Iterable<Spec> specs)
 	{
 		for(Spec spec : specs)
 		{
@@ -418,114 +508,24 @@ public class Category {
 	public void setParent(Category parent)
 	{
 		this.parent = parent;
-	}
-	
-	public void setString(String key, String val) {
-		if(key.equals("singularName")) {
-			this.singularName = val;
-		} else if (key.equals("pluralName")) {
-			this.pluralName = val;
-		} else if(key.equals("productGroupId")) {
-			this.productGroupId = val;
-		} else if(key.equals("url")) {
-			this.url = val;
-		} else if(key.equals("name")) {
-			this.name = val;
-		} else if(key.equals("id")) {
-			this.id = val;
-		} else if(key.equals("imageCanonical")) {
-			this.imageCanonical = val;
-		} else if (key.equals("franchise")) {
-			this.franchise = val;
-		} else if (key.equals("type")) {
-			this.type = val;
-		}
-	}
-	
-	public String getString(String key) {
-		if(key.equals("singularName")) {
-			return this.singularName;
-		} else if (key.equals("pluralName")) {
-			return this.pluralName;
-		} else if(key.equals("productGroupId")) {
-			return this.productGroupId;
-		} else if(key.equals("url")) {
-			return this.url;
-		} else if(key.equals("name")) {
-			return this.name;
-		} else if(key.equals("id")) {
-			return this.id;
-		} else if(key.equals("imageCanonical")) {
-			return this.imageCanonical;
-		} else if (key.equals("franchise")) {
-			return this.franchise;
-		} else if (key.equals("type")) {
-			return this.type;
-		} 
-		else 
-		{
-			return null;
-		}
-	}
-	
-	public void setInt(String key, Integer val) {
-		if(key.equals("materialsCount")) {
-			this.materialsCount = val;
-		} else if(key.equals("depth")) {
-			this.depth = val;
-		} else if(key.equals("productsCount")) {
-			this.productsCount = val;
-		} else if(key.equals("testedProductsCount")) {
-			this.testedProductsCount = val;
-		} else if(key.equals("servicesCount")) {
-			this.servicesCount = val;
-		} else if(key.equals("ratedProductsCount")) {
-			this.ratedProductsCount = val;
-		}
-	}
-	
-	public Integer getInt(String key) {
-		if(key.equals("materialsCount")) {
-			return this.materialsCount;
-		} else if(key.equals("depth")) {
-			return this.depth;
-		} else if(key.equals("productsCount")) {
-			return this.productsCount;
-		} else if(key.equals("testedProductsCount")) {
-			return this.testedProductsCount;
-		} else if(key.equals("servicesCount")) {
-			return this.servicesCount;
-		} else if(key.equals("ratedProductsCount")) {
-			return this.ratedProductsCount;
-		} else
-		{
-			return null;
-		}
 	}	
-	
-	public Category[] getDownLevel() 
-	{
-		if(this.downLevel != null)
-		{
-			return this.downLevel.getChildren();
-		}
-		else
-		{
-			return null;
-		}
-	}
 
 	public Category getParent() {
 		return this.parent;
 	}
 	
-	public String getSingularName() {
+	public String getName() {
 		return this.singularName;
 	}
 	
-	public Category[] getChildren() 
+	public Iterable<Category> getChildren() 
 	{
-		return this.children.toArray(new Category[0]);
+		return new Iterable<Category>()
+		{
+			public Iterator<Category> iterator() {
+				return Collections.unmodifiableCollection(Category.this.children).iterator();
+			}
+		};
 	}
 	
 	public int size()

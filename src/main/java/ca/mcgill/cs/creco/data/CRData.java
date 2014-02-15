@@ -13,7 +13,7 @@ public class CRData
 	{
 		"product_appliances.json", "product_electronicsComputers.json",
 		"product_cars.json", "product_health.json", "product_homeGarden.json", 
-		//"product_food.json", "product_babiesKids.json", "product_money.json"
+		"product_food.json", "product_babiesKids.json", "product_money.json"
 	};
 
 	public CRData(String dataPath) throws IOException

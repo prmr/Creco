@@ -1,21 +1,38 @@
 package ca.mcgill.cs.creco.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-public class CategoryList {
-	private Hashtable<String, Category> hash = new Hashtable<String, Category>();
-	private ArrayList<Category> franchises = new ArrayList<Category>();
-	private ArrayList<Category> equivalenceClasses = new ArrayList<Category>();
-	private ArrayList<Category> subEquivalenceClasses = new ArrayList<Category>();
-	private ArrayList<Category> leaves = new ArrayList<Category>();
+public class CategoryList implements Iterable<Category> {
+	private Hashtable<String, Category> hash;
+	private ArrayList<Category> franchises;
+	private ArrayList<Category> equivalenceClasses;
+	private ArrayList<Category> subEquivalenceClasses;
+	private ArrayList<Category> leaves;
 	private double jaccardThreshhold;
 	
 	public CategoryList(double jaccardThreshhold) 
 	{
 		this.jaccardThreshhold = jaccardThreshhold;
+		
+		this.hash = new Hashtable<String, Category>();
+		this.franchises = new ArrayList<Category>();
+		this.equivalenceClasses = new ArrayList<Category>();
+		this.subEquivalenceClasses = new ArrayList<Category>();
+		this.leaves = new ArrayList<Category>();
+	}
+	
+	void addFranchise(Category franchise)
+	{
+		this.franchises.add(franchise);
+	}
+	
+	void addLeaf(Category leaf)
+	{
+		this.leaves.add(leaf);
 	}
 	
 	public Category get(String key) 
@@ -32,7 +49,8 @@ public class CategoryList {
 	
 	public void recurseFindEquivalenceClasses(Category cat, int mode)
 	{
-		Category[] children = cat.getChildren();
+		Iterable<Category> children = cat.getChildren();
+		int numChildren = cat.getNumChildren();
 		
 		if(mode == 1)
 		{
@@ -45,7 +63,7 @@ public class CategoryList {
 		}
 		else
 		{
-			if(children.length == 0)
+			if(numChildren == 0)
 			{
 				cat.setClassType("equivalence");
 				return;
@@ -53,7 +71,16 @@ public class CategoryList {
 			else
 			{
 				Double jaccard = cat.getJaccard();
-				if(jaccard > this.jaccardThreshhold)
+				if(jaccard == null || jaccard < this.jaccardThreshhold)
+				{
+					cat.setClassType("category");
+					for(Category child : children)
+					{
+						this.recurseFindEquivalenceClasses(child, 0);
+					}
+					return;
+				}
+				else
 				{
 					cat.setClassType("equivalence");
 					for(Category child : children)
@@ -62,49 +89,38 @@ public class CategoryList {
 					}
 					return;
 				}
-				else
-				{
-					cat.setClassType("category");
-					for(Category child : children)
-					{
-						this.recurseFindEquivalenceClasses(child, 0);
-					}
-					return;
-				}	
 			}
 		}
 	}
 	
-	public void refresh() 
+	public Iterator<Category> iterator()
 	{
-		// TODO 
-		//  - calculate depths
-		//  - tally product counts
-		//  - accumulate equivalence classes
-		//  - accumulate leaves
-		//  - tally attributes
-		//		- calculate the penetration of attributes
-		// 		- calculate jaccard
-		
-		// First, make a list of all the franchises, and all the leaves.
-		// These are good starting points for recursive functions
-		this.franchises = new ArrayList<Category>();
-		this.leaves = new ArrayList<Category>();
-		
-		Iterator<Entry<String, Category>> it = this.getIterator();
-		while(it.hasNext()) 
+		return Collections.unmodifiableCollection(this.hash.values()).iterator();
+	}
+	
+	public void index()
+	{
+		for(Category franchise : this.franchises)
 		{
-			Category cat = it.next().getValue();
-			if(cat.getInt("depth") == 0) 
-			{
-				this.franchises.add(cat);
-			}
-			if(cat.getChildren().length == 0)
-			{
-				this.leaves.add(cat);
-			}
+			this.recursiveIndex(franchise);
 		}
-		
+	}
+	
+	private void recursiveIndex(Category cat)
+	{
+		this.put(cat.getId(), cat);
+		for(Category child : cat.getChildren())
+		{
+			recursiveIndex(child);
+		}
+		if(cat.getNumChildren() == 0)
+		{
+			this.leaves.add(cat);
+		}
+	}
+	
+	public void refresh() 
+	{			
 		// Now recursively refresh the category list
 		for(Category franchise : this.franchises)
 		{
@@ -114,44 +130,41 @@ public class CategoryList {
 	
 	public void recursiveRefresh(Category cat, int depth)
 	{
-		cat.setInt("depth", depth);
+		cat.setDepth(depth);
 		
-		Category[] children = cat.getChildren();
-		
-		for(Category child : children) {
+		for(Category child : cat.getChildren()) {
 			recursiveRefresh(child, depth + 1);
 		}
 		
-		if(children.length > 0)
+		// We will be "rolling up" counts and various collections from the leaves up to the
+		// roots (franchises).  Make sure, for all non-leaves, that these are cleared out to start
+		if(cat.getNumChildren() > 0)
 		{
 			cat.setRatedCount(0);
 			cat.setTestedCount(0);
 			cat.setCount(0);
-			cat.setRatings(new ArrayList<RatingStat>());
-			cat.setSpecs(new ArrayList<SpecStat>());
+			cat.clearRatings();
+			cat.clearSpecs();
 			cat.setRatingIntersection(null);
 			cat.setSpecIntersection(null);
 		}
 	
+		// Roll up counts and collections
 		for(Category child : cat.getChildren())
 		{
+			// aggregate children's collections
 			cat.mergeRatings(child.getRatings());
 			cat.mergeSpecs(child.getSpecs());
 			cat.intersectRatings(child.getRatings());
 			cat.intersectSpecs(child.getSpecs());
 			
-			cat.calculateJaccard();
-			
+			// aggregate children's counts
 			cat.putProducts(child.getProducts());
 			cat.incrementRatedCount(child.getRatedCount());
 			cat.incrementTestedCount(child.getTestedCount());
 			cat.incrementCount(child.getCount());
 		}
-	}
-	
-	public Iterator<Entry<String, Category>> getIterator() {
-		Iterator<Entry<String, Category>> it = hash.entrySet().iterator();
-		return it;
+		cat.calculateJaccard();
 	}
 	
 	public void put(String key, Category val) {
@@ -160,16 +173,13 @@ public class CategoryList {
 
 	public void associateProducts(ProductList prodList) 
 	{
-		Iterator<Entry<String, Product>> it = prodList.getIterator();
-		while(it.hasNext())
+		for(Product prod : prodList)
 		{
-			Product prod = it.next().getValue();
-			String catId = prod.getCategoryId();
-			Category cat = this.get(catId);
+			Category cat = this.get(prod.getCategoryId());
 			
-			// Create two-way link between product and category
-			prod.setCategory(cat);
+			// Create two way link between category and product
 			cat.putProduct(prod);
+			prod.setCategory(cat);
 			
 			// Aggregate some product info in the category
 			cat.putRatings(prod.getRatings());
@@ -177,15 +187,14 @@ public class CategoryList {
 			
 			// Increment the counts in this category
 			cat.incrementCount(1);
-			if(prod.getBool("isTested"))
+			if(prod.getIsTested())
 			{
 				cat.incrementTestedCount(1);
 			}
-			if(prod.getRatings().length > 0)
+			if(prod.getNumRatings() > 0)
 			{
 				cat.incrementRatedCount(1);
 			}
-			
 		}
 	}
 	
@@ -200,17 +209,12 @@ public class CategoryList {
 	public void recurseEliminateSingletons(Category cat)
 	{
 		String catId = cat.getId();
-		Category[] children = cat.getChildren();
 		
 		// detect if this is a singleton, if so, splice it out of the hierarchy
-		if(children.length == 1)
+		if(cat.getNumChildren() == 1)
 		{
-			Category child = children[0];
-			String childId = child.getId();
-			
+			Category child = cat.getChildren().iterator().next();
 			Category parent = cat.getParent();
-			String parentId = parent.getId();
-			
 			child.setParent(parent);
 			parent.removeChild(cat);
 			parent.addChild(child);
@@ -219,12 +223,11 @@ public class CategoryList {
 		}
 		else
 		{
-			for(Category child : children)
+			for(Category child : cat.getChildren())
 			{
 				this.recurseEliminateSingletons(child);
 			}
 		}
-		
 	}
 	
 	public String dumpTree()
@@ -242,7 +245,7 @@ public class CategoryList {
 	{
 		// Process this level
 		int depth = cat.getDepth();
-		String dumpString = cat.getSingularName() + " (" + cat.getId() + ")\n";
+		String dumpString = cat.getName() + " (" + cat.getId() + ")\n";
 		if(cat.isSubEquivalence())
 		{
 			if(cat.isEquivalence())

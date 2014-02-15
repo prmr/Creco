@@ -10,4 +10,9 @@ public class SpecStat extends AttributeStat{
 	{
 		super(attribute);
 	}
+	
+	public Spec getSpec()
+	{
+		return (Spec)super.getAttribute();
+	}
 }

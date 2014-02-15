@@ -35,33 +35,35 @@ public class CRDataExample {
 		System.out.println("Hopefully, this is a leg up for feature selection.  Obviously more clever tricks will be needed though!");
 		
 		System.out.println(catList.get("32968").describe());
+		System.out.println(catList.get("34382").describe());
+		System.out.println(catList.get("34381").describe());
 		
 		// Accessing the products of a category; accessing the category of a product
 		System.out.println("You can access products from the category, or category from the products");
 		Category humidifiers = catList.get("32968");
-		Product aHumidifier = humidifiers.getProducts()[0];
-		System.out.println(humidifiers.getSingularName() + " has " + humidifiers.getProducts().length + " products in it.");
-		System.out.println(humidifiers.getSingularName() + " contains " + aHumidifier.getDisplayName());
-		System.out.println(aHumidifier.getDisplayName() + " is contained by " + aHumidifier.getCategory().getSingularName());
+		Product aHumidifier = humidifiers.getProducts().iterator().next();
+		System.out.println(humidifiers.getName() + " has " + humidifiers.getNumProducts() + " products in it.");
+		System.out.println(humidifiers.getName() + " contains " + aHumidifier.getName());
+		System.out.println(aHumidifier.getName() + " is contained by " + aHumidifier.getCategory().getName());
 		
 		// Get the immediate child categories
 		System.out.println("\nYou can access the children of a category using getChildren.");
 		Category ranges = catList.get("28974");
-		System.out.println("For example, " + ranges.getSingularName() + " contains:");
+		System.out.println("For example, " + ranges.getName() + " contains:");
 		for(Category child : ranges.getChildren())
 		{
-			System.out.println(" - " + child.getSingularName());
+			System.out.println(" - " + child.getName());
 		}
 		
 		// Traverse upwards too
-		Category rangeChild = ranges.getChildren()[0];
+		Category rangeChild = ranges.getChildren().iterator().next();
 		System.out.println("\nTraverse upwards too:");
-		System.out.println("The parent of " + rangeChild.getSingularName() + " is " + rangeChild.getParent().getSingularName());
+		System.out.println("The parent of " + rangeChild.getName() + " is " + rangeChild.getParent().getName());
 		
 		// Generalized getters provide access to all CR data fields
 		System.out.println("\nThe original CR data has many fields!  I didn't write getters for them all.");
 		System.out.println("You can still access them using generic accessors, e.g. product.getString(\"modelOverviewPageUrl\")");
-		System.out.println("The page for " + aHumidifier.getDisplayName() + " is " + aHumidifier.getString("modelOverviewPageUrl"));
+		System.out.println("The page for " + aHumidifier.getName() + " is " + aHumidifier.getModelOverviewPageUrl());
 		System.out.println("If that annoys you, feel free to write a getter!");
 		
 		// Work on a smaller data set for faster debugging

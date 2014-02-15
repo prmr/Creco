@@ -1,40 +1,63 @@
 package ca.mcgill.cs.creco.data;
 
-public class AttributeStat {
-	private String displayName;
-	private String description;
-	private String attributeId;
-	private String filterWidget;
-	private String dataPresentationFormat;
-	
-	private String attributeGroup;
-	private String unitName;
-		
-	private Integer sortOrder;
-	
-	private Boolean isForDisplayOnCro;
-	private Boolean isCategoryCommonAttribute;
-	
-	private int count;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
-	private static String[] stringFields = 
+public class AttributeStat {
+	private int count;
+	private Object valueMin;
+	private Object valueMax;
+	private HashSet<String> valueEnum;
+	private Attribute attribute;
+
+	public String getName()
 	{
-		"displayName","description","attributeId","filterWidget",
-		"dataPresentationFormat", "attributeGroup", "unitName"
-	};
+		return this.attribute.getName();
+	}
 	
-	private static String[] boolFields = 
+	public String getDescription()
 	{
-		"isForDisplayOnCro", "isCategoryCommonAttribute"
-	};
+		return this.attribute.getDescription();               
+	}
 	
-	public String getAttributeName()
+	public String getFilterWidget()
 	{
-		return this.displayName;
+		return this.attribute.getFilterWidget();              
+	}
+	
+	public String getDataPresentationFormat()
+	{
+		return this.attribute.getDataPresentationFormat();    
+	}
+	
+	public String getAttributeGroup()
+	{
+		return this.attribute.getAttributeGroup();            
+	}
+	
+	public String getUnitName()
+	{
+		return this.attribute.getUnitName();
+	}
+	
+	public int getSortOrder()
+	{
+		return this.attribute.getSortOrder();
+	}
+	
+	public boolean getIsForDisplayOnCRO()
+	{
+		return this.attribute.getIsForDisplayOnCRO();
+	}
+	
+	public boolean getIsCategoryCommonAttribute()
+	{
+		return this.attribute.getIsCategoryCommonAttribute();
 	}
 	
 	public String getId() {
-		return this.attributeId;
+		return this.attribute.getId();
 	}
 	
 	public void increment(int add)
@@ -47,146 +70,60 @@ public class AttributeStat {
 		return this.count;
 	}
 	
-	public AttributeStat(Attribute attribute) {
-		
-		// Set all the string fields
-		for(String key : AttributeStat.stringFields)
-		{
-			this.setString(key, attribute.getString(key));
-		}
-		for(String key : AttributeStat.boolFields)
-		{
-			this.setBool(key, attribute.getBool(key));
-		}
-		this.setInt("sortOrder", attribute.getInt("sortOrder"));
+	public AttributeStat(Attribute attribute) 
+	{
+		this.attribute = attribute;
+		this.valueEnum = new HashSet<String>();
 		this.count = 0;
 	}
-	
+
 	public AttributeStat(AttributeStat attribute) 
 	{
-		// Set all the string fields
-		for(String key : AttributeStat.stringFields)
-		{
-			this.setString(key, attribute.getString(key));
-		}
-		for(String key : AttributeStat.boolFields)
-		{
-			this.setBool(key, attribute.getBool(key));
-		}
-		this.setInt("sortOrder", attribute.getInt("sortOrder"));
+		this.attribute = attribute.getAttribute();
+		this.valueEnum = new HashSet<String>();
 		this.count = attribute.getCount();
 	}
-	
-	public Boolean getBool(String key)
-	{
-		if(key.equals("isForDisplayOnCRO"))
-		{
-			return this.isForDisplayOnCro;
-		}
-		else if(key.equals("isCategoryCommonAttribute"))
-		{
-			return this.isCategoryCommonAttribute;
-		}
-		else
-		{
-			return null;
-		}
-	}
 
-	public Integer getInt(String key)
+	public Object getValueMax()
 	{
-		if(key.equals("sortOrder"))
-		{
-			return this.sortOrder;
-		}
-		else
-		{
-			return null;
-		}
-	}
-
-	public String getString(String key)
-	{
-		if(key.equals("displayName"))
-		{
-			return this.displayName;
-		}
-		else if(key.equals("description"))
-		{
-			return this.description;
-		} 
-		else if(key.equals("attributeId"))
-		{
-			return this.attributeId;
-		}
-		else if(key.equals("filterWidget"))
-		{
-			return this.filterWidget;
-		}
-		else if(key.equals("dataPresentationFormat"))
-		{
-			return this.dataPresentationFormat;
-		}
-		else if(key.equals("attributeGroup"))
-		{
-			return this.attributeGroup;
-		}
-		else if(key.equals("unitName"))
-		{
-			return this.unitName;
-		}
-		else
-		{
-			return null;
-		}							
-	}
-		
-	private void setInt(String key, Integer val)
-	{
-		if(key.equals("sortOrder"))
-		{
-			this.sortOrder = val;
-		}
+		return this.valueMax;
 	}
 	
-	public void setSortOrder(int sortOrder)
+	public Object getValueMin()
 	{
-		this.sortOrder = sortOrder;
-	}
-		
-	private void setBool(String key, Boolean val)
-	{
-		if(key.equals("isForDisplayOnCro"))
-		{
-			this.isForDisplayOnCro = val;
-		}
-		else if(key.equals("isCategoryCommonAttribute"))
-		{
-			this.isCategoryCommonAttribute = val;
-		}
+		return this.valueMin;
 	}
 	
-	private void setString(String key, String val)
+	public Set<String> getValueEnum()
 	{
-		if(key.equals("displayName"))
+		if(this.valueEnum != null)
 		{
-			this.displayName = val;
+			return Collections.unmodifiableSet(this.valueEnum);
 		}
-		else if(key.equals("description"))
-		{
-			this.description = val;
+		return null;
+	}
+	
+	public Attribute getAttribute()
+	{
+		return this.attribute;
+	}
+	
+	void updateRange(Object value)
+	{
+	
+		if(value instanceof Integer || value instanceof Float || value instanceof Double) {
+			if(this.valueMin == null || (Double) value < (Double) this.valueMin)
+			{
+				this.valueMin = value;
+			}
+			if(this.valueMax == null || (Double) value > (Double) this.valueMax)
+			{
+				this.valueMax = value;
+			}
 		}
-		else if(key.equals("attributeId"))
+		else if(value instanceof String)
 		{
-			this.attributeId = val;
-		}
-		else if(key.equals("filterWidget"))
-		{
-			this.filterWidget = val;
-		}
-		else if(key.equals("dataPresentationFormat"))
-		{
-			this.dataPresentationFormat = val;	
+			this.valueEnum.add((String) value);
 		}
 	}
 	
