@@ -53,16 +53,16 @@ public class ProductSearch
 	private static final int MAX_NUM_RESULTS = 10;
 	private static final Logger LOG = LoggerFactory.getLogger(ProductSearch.class);
 	
-	private final Directory aDirectory;
-	private final Analyzer aAnalyzer;
+	private final Directory directory;
+	private final Analyzer analyzer;
 
 	/**
 	 * Constructor.
 	 */
 	public ProductSearch() 
 	{
-		aDirectory = new RAMDirectory();
-		aAnalyzer = new EnglishAnalyzer(VERSION);
+		directory = new RAMDirectory();
+		analyzer = new EnglishAnalyzer(VERSION);
 	}
 	
 	/**
@@ -74,7 +74,7 @@ public class ProductSearch
 		try 
 		{
 			Analyzer analyzer = new EnglishAnalyzer(VERSION);
-			IndexWriter writer = new IndexWriter(aDirectory, new IndexWriterConfig(VERSION, analyzer));
+			IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(VERSION, analyzer));
 		for (ProductVO product : products) 
 		{
 			Document doc = new Document();
@@ -92,15 +92,15 @@ public class ProductSearch
 	
 	/**
 	 * Query the Lucene directory for matches to the query string.
-	 * @param pQueryString the search string
+	 * @param queryString the search string
 	 */
-	public SearchResult queryProducts(String pQueryString) 
+	public SearchResult queryProducts(String queryString) 
 	{
 		List<ProductVO> scoredResults = new ArrayList<ProductVO>();
 		try 
 		{
-			Query query = new QueryParser(VERSION, NAME, aAnalyzer).parse(pQueryString);
-			DirectoryReader reader = DirectoryReader.open(aDirectory);
+			Query query = new QueryParser(VERSION, NAME, analyzer).parse(queryString);
+			DirectoryReader reader = DirectoryReader.open(directory);
 			IndexSearcher searcher = new IndexSearcher(reader);
 			TopScoreDocCollector results = TopScoreDocCollector.create(MAX_NUM_RESULTS, true);
 			
