@@ -6,10 +6,41 @@ import java.util.Set;
 
 public class AttributeStat {
 	private int count;
-	private Object valueMin;
-	private Object valueMax;
+	private Number valueMin;
+	private Number valueMax;
 	private HashSet<String> valueEnum;
 	private Attribute attribute;
+
+	public AttributeStat(Attribute attribute) 
+	{
+		this.attribute = attribute;
+		this.valueEnum = new HashSet<String>();
+		this.count = 0;
+	}
+
+	public AttributeStat(AttributeStat attribute) 
+	{
+		this.attribute = attribute.getAttribute();
+		this.valueEnum = new HashSet<String>();
+		this.valueEnum.addAll(attribute.getValueEnum());
+		this.valueMax = attribute.valueMax;
+		this.valueMin = attribute.valueMin;
+		this.count = attribute.getCount();
+	}
+	
+	public void update(AttributeStat attribute)
+	{
+		this.increment(attribute.getCount());
+		this.valueEnum.addAll(attribute.getValueEnum());
+		this.updateRange(attribute.getValueMax());
+		this.updateRange(attribute.getValueMin());
+	}
+
+	public void update(Attribute attribute)
+	{
+		this.increment(1);
+		this.updateRange(attribute.getTypedValue());
+	}
 
 	public String getName()
 	{
@@ -69,20 +100,6 @@ public class AttributeStat {
 	{
 		return this.count;
 	}
-	
-	public AttributeStat(Attribute attribute) 
-	{
-		this.attribute = attribute;
-		this.valueEnum = new HashSet<String>();
-		this.count = 0;
-	}
-
-	public AttributeStat(AttributeStat attribute) 
-	{
-		this.attribute = attribute.getAttribute();
-		this.valueEnum = new HashSet<String>();
-		this.count = attribute.getCount();
-	}
 
 	public Object getValueMax()
 	{
@@ -108,23 +125,31 @@ public class AttributeStat {
 		return this.attribute;
 	}
 	
+	void updateRange(TypedVal typedValue)
+	{
+		String type = typedValue.getType();
+		Object value = typedValue.getValue();
+		if(type.equals("int") || type.equals("float") || type.equals("double")) {
+			Number number = (Number) value;
+			if(this.valueMin == null || number.doubleValue() < this.valueMin.doubleValue())
+			{
+				this.valueMin = number;
+			}
+			if(this.valueMax == null || number.doubleValue() > this.valueMax.doubleValue())
+			{
+				this.valueMax = number;
+			}
+		}
+		else if(type.equals("String") || type.equals("boolean"))
+		{
+			this.valueEnum.add((String) ""+value);
+		}		
+	}
+	
 	void updateRange(Object value)
 	{
-	
-		if(value instanceof Integer || value instanceof Float || value instanceof Double) {
-			if(this.valueMin == null || (Double) value < (Double) this.valueMin)
-			{
-				this.valueMin = value;
-			}
-			if(this.valueMax == null || (Double) value > (Double) this.valueMax)
-			{
-				this.valueMax = value;
-			}
-		}
-		else if(value instanceof String)
-		{
-			this.valueEnum.add((String) value);
-		}
+		TypedVal typedValue = new TypedVal(value);
+		this.updateRange(typedValue);
 	}
 	
 }

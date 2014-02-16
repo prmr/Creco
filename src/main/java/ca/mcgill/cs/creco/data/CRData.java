@@ -16,8 +16,10 @@ public class CRData
 		"product_food.json", "product_babiesKids.json", "product_money.json"
 	};
 
-	public CRData(String dataPath) throws IOException
+	public CRData() throws IOException
 	{
+		String dataPath = DataPath.get();
+		
 		// Build the CategoryList
 		this.catList = CategoryReader.read(dataPath, JACCARD_THRESHHOLD);
 		catList.eliminateSingletons();
@@ -33,8 +35,10 @@ public class CRData
 		catList.findEquivalenceClasses();		
 	}
 	
-	public CRData(String dataPath, String[] productFileNames) throws IOException 
+	public CRData(String[] productFileNames) throws IOException 
 	{
+		String dataPath = DataPath.get();
+		
 		// Build the CategoryList
 		this.catList = CategoryReader.read(dataPath, JACCARD_THRESHHOLD);
 		catList.eliminateSingletons();

@@ -1,5 +1,7 @@
 package ca.mcgill.cs.creco.data;
 
+import org.springframework.expression.TypedValue;
+
 import ca.mcgill.cs.creco.data.stubs.AttributeStub;
 
 public class Attribute {
@@ -9,8 +11,8 @@ public class Attribute {
 	private String filterWidget;
 	private String dataPresentationFormat;
 	private String attributeGroup;
-	private String unitName;	
-	private Object value;
+	private String unitName;
+	private TypedVal typedValue;
 	private Integer sortOrder;
 	private Boolean isForDisplayOnCRO;
 	private Boolean isCategoryCommonAttribute;
@@ -24,10 +26,11 @@ public class Attribute {
 		this.dataPresentationFormat = attStub.dataPresentationFormat;
 		this.attributeGroup = attStub.attributeGroup; 
 		this.unitName = attStub.unitName; 
-		this.value = attStub.value;      
 		this.sortOrder = attStub.sortOrder;  
 		this.isForDisplayOnCRO = attStub.isForDisplayOnCRO; 
 		this.isCategoryCommonAttribute = attStub.isCategoryCommonAttribute;
+
+		this.typedValue = new TypedVal(attStub.value);
 	}
 
 	public String getName() {
@@ -63,7 +66,22 @@ public class Attribute {
 	}
 
 	public Object getValue() {
-		return value;
+		return this.typedValue.getValue();
+	}
+	
+	public TypedVal getTypedValue() 
+	{
+		return this.typedValue;
+	}
+
+	public Object getOriginalValue()
+	{
+		return this.typedValue.getOriginalValue();
+	}
+	
+	public String getType()
+	{
+		return this.typedValue.getType();
 	}
 
 	public Integer getSortOrder() {

@@ -3,6 +3,7 @@ package ca.mcgill.cs.creco.data;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import com.google.gson.Gson;
@@ -49,8 +50,8 @@ public class Product {
 	// Derived fields
 	private int numRatings;
 	private int numSpecs;
-	private ArrayList<Rating> ratings;
-	private ArrayList<Spec> specs;
+	private HashMap<String, Rating> ratings;
+	private HashMap<String, Spec> specs;
 	private String brandId;
 	private String brandName;
 	private Double price;
@@ -89,6 +90,10 @@ public class Product {
 		this.overallScoreMax = prodStub.overallScoreMax;
 		this.overallScoreMin = prodStub.overallScoreMin;
 		this.overallScore = prodStub.overallScore;   
+		if(prodStub.price != null)
+		{
+			this.price = prodStub.price.value;
+		}
 		this.isRecommended = prodStub.isRecommended; 
 		this.isBestSeller = prodStub.isBestSeller;  
 		this.isTested = prodStub.isTested;      
@@ -100,23 +105,23 @@ public class Product {
 		this.brandName = (prodStub.brand != null)? prodStub.brand.displayName : null;
 		
 		this.numSpecs = 0;
-		this.specs = new ArrayList<Spec>();
+		this.specs = new HashMap<String, Spec>();
 		if(prodStub.specs != null)
 		{
 			for(SpecStub spec : prodStub.specs)
 			{
-				this.specs.add(new Spec(spec));
+				this.specs.put(spec.attributeId, new Spec(spec));
 				this.numSpecs++;
 			}
 		}
 		
 		this.numRatings = 0;
-		this.ratings = new ArrayList<Rating>();
+		this.ratings = new HashMap<String, Rating>();
 		if(prodStub.ratings != null)
 		{
 			for(RatingStub rating : prodStub.ratings)
 			{
-				this.ratings.add(new Rating(rating));
+				this.ratings.put(rating.attributeId, new Rating(rating));
 				this.numRatings++;
 			}
 		}
@@ -249,23 +254,23 @@ public class Product {
 	}
 
 	public Iterable<Rating> getRatings() {
-		return new Iterable<Rating>() {
-			public Iterator<Rating> iterator()
-			{
-				return Collections.unmodifiableCollection(Product.this.ratings).iterator();
-			}
-		};
+		return Collections.unmodifiableCollection(Product.this.ratings.values());
 	}
-
-	public Iterable<Spec> getSpecs() {
-		return new Iterable<Spec>() {
-			public Iterator<Spec> iterator() 
-			{
-				return Collections.unmodifiableCollection(Product.this.specs).iterator();
-			}
-		};
+	
+	public Rating getRating(String id)
+	{
+		return this.ratings.get(id);
 	}
-		
+	
+	public Iterable<Spec> getSpecs() {	
+		return Collections.unmodifiableCollection(Product.this.specs.values());
+	}
+	
+	public Spec getSpec(String id)
+	{
+		return this.specs.get(id);
+	}
+	
 	public String dump() 
 	{
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
