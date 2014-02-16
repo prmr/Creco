@@ -17,8 +17,7 @@ package ca.mcgill.cs.creco.web.model.search;
 
 import java.util.List;
 
-import ca.mcgill.cs.creco.data.ProductList;
-import ca.mcgill.cs.creco.web.model.ProductVO;
+import ca.mcgill.cs.creco.data.Product;
 
 /**
  * NOTE: TEMPORARY CLASS! The contents of this class will change when the
@@ -28,14 +27,14 @@ import ca.mcgill.cs.creco.web.model.ProductVO;
  */
 public class SearchResult
 {
-	private final List<ProductList> products;
+	private final List<Product> products;
 	
-	public SearchResult(List<ProductList> products)
-	{
+	public SearchResult(List<Product> products){
+
 		this.products = products;
 	}
 	
-	public List<ProductList> getProducts()
+	public List<Product> getProducts()
 	{
 		return products;
 	}
