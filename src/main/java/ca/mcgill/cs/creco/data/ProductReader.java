@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import ca.mcgill.cs.creco.data.stubs.ProductStub;
+
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 
@@ -35,9 +37,8 @@ public class ProductReader {
 		reader.beginArray();
 		while(reader.hasNext()) 
 		{
-			Product prod = gson.fromJson(reader, Product.class);
-			prod.refresh();
-			prodList.put(prod.getId(), prod);
+			ProductStub prodStub = gson.fromJson(reader, ProductStub.class);
+			prodList.put(prodStub.id, new Product(prodStub));
 			//System.out.println('\t' + prod.getString("displayName"));
 		}
 		reader.endArray();

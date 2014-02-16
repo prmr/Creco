@@ -1,10 +1,12 @@
 package ca.mcgill.cs.creco.data;
 
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-public class ProductList {
+public class ProductList implements Iterable<Product> 
+{
 	private Hashtable<String, Product> hash = new Hashtable<String, Product>();
 	
 	public ProductList() {}
@@ -24,8 +26,8 @@ public class ProductList {
 		return this.hash.size();
 	}
 	
-	public Iterator<Entry<String, Product>> getIterator() {
-		Iterator<Entry<String, Product>> it = hash.entrySet().iterator();
-		return it;
+	public Iterator<Product> iterator() 
+	{
+		return Collections.unmodifiableCollection(hash.values()).iterator();
 	}
 }
