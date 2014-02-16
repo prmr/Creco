@@ -1,0 +1,274 @@
+package ca.mcgill.cs.creco.data;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import ca.mcgill.cs.creco.data.stubs.ProductStub;
+import ca.mcgill.cs.creco.data.stubs.RatingStub;
+import ca.mcgill.cs.creco.data.stubs.SpecStub;
+import ca.mcgill.cs.creco.data.stubs.PriceStub;
+
+public class Product {
+	
+	// Fields directly copied from CR Data fields
+	private String summary;
+	private String mpn;
+	private String id;
+	private String subfranchise;
+	private String theCategory;
+	private String franchise;
+	private String imageLarge;
+	private String imageThumbnail;
+	private String displayName;
+	private String name;
+	private String upc;
+	private String overallScoreDisplayName;
+	private String modelOverviewPageUrl;
+	private String genericColor;
+	private String review;
+	private String highs;
+	private String lows;
+	private String bottomLine;
+	private String description;
+	private String dontBuyType;
+	private String supercategory;
+	private String subcategory;
+	private Double overallScoreMax;
+	private Double overallScoreMin; 
+	private Double overallScore;
+	private Boolean isRecommended;
+	private Boolean isBestSeller;
+	private Boolean isTested;
+	private Boolean isBestBuy;
+		
+	// Derived fields
+	private int numRatings;
+	private int numSpecs;
+	private ArrayList<Rating> ratings;
+	private ArrayList<Spec> specs;
+	private String brandId;
+	private String brandName;
+	private Double price;
+	private String categoryId;
+	private Category category;
+	
+	// Unused fields
+	//private String vendorApiChannels;
+	//groups
+	
+	Product(ProductStub prodStub) 
+	{
+		// Copy fields from the stub
+		this.summary = prodStub.summary;                
+		this.mpn = prodStub.mpn;                    
+		this.id = prodStub.id;                     
+		this.subfranchise = prodStub.subfranchise;           
+		this.theCategory = prodStub.theCategory;            
+		this.franchise = prodStub.franchise;              
+		this.imageLarge = prodStub.imageLarge;             
+		this.imageThumbnail = prodStub.imageThumbnail;         
+		this.displayName = prodStub.displayName;            
+		this.name = prodStub.name;                   
+		this.upc = prodStub.upc;                    
+		this.overallScoreDisplayName = prodStub.overallScoreDisplayName;
+		this.modelOverviewPageUrl = prodStub.modelOverviewPageUrl;   
+		this.genericColor = prodStub.genericColor;           
+		this.review = prodStub.review;                 
+		this.highs = prodStub.highs;                  
+		this.lows = prodStub.lows;                   
+		this.bottomLine = prodStub.bottomLine;             
+		this.description = prodStub.description;            
+		this.dontBuyType = prodStub.dontBuyType;            
+		this.supercategory = prodStub.supercategory;          
+		this.subcategory = prodStub.subcategory;   
+		this.overallScoreMax = prodStub.overallScoreMax;
+		this.overallScoreMin = prodStub.overallScoreMin;
+		this.overallScore = prodStub.overallScore;   
+		this.isRecommended = prodStub.isRecommended; 
+		this.isBestSeller = prodStub.isBestSeller;  
+		this.isTested = prodStub.isTested;      
+		this.isBestBuy = prodStub.isBestBuy;
+		
+		// Calculate derived fields
+		this.categoryId = prodStub.category.id;
+		this.brandId = (prodStub.brand != null)? prodStub.brand.id : null;
+		this.brandName = (prodStub.brand != null)? prodStub.brand.displayName : null;
+		
+		this.numSpecs = 0;
+		this.specs = new ArrayList<Spec>();
+		if(prodStub.specs != null)
+		{
+			for(SpecStub spec : prodStub.specs)
+			{
+				this.specs.add(new Spec(spec));
+				this.numSpecs++;
+			}
+		}
+		
+		this.numRatings = 0;
+		this.ratings = new ArrayList<Rating>();
+		if(prodStub.ratings != null)
+		{
+			for(RatingStub rating : prodStub.ratings)
+			{
+				this.ratings.add(new Rating(rating));
+				this.numRatings++;
+			}
+		}
+	}
+	
+	void setCategory(Category cat)
+	{
+		this.category = cat;
+	}
+	
+	public String getCategoryId() 
+	{
+		return this.categoryId;
+	}
+	
+	public int getNumSpecs() {
+		return this.numSpecs;
+	}
+	
+	public int getNumRatings() {
+		return this.numRatings;
+	}
+	
+	public String getSummary() {
+		return summary;
+	}
+
+	public String getMpn() {
+		return mpn;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public String getImageLarge() {
+		return imageLarge;
+	}
+
+	public String getImageThumbnail() {
+		return imageThumbnail;
+	}
+
+	public String getName() {
+		return displayName;
+	}
+
+	public String getUpc() {
+		return upc;
+	}
+
+	public String getOverallScoreDisplayName() {
+		return overallScoreDisplayName;
+	}
+
+	public String getModelOverviewPageUrl() {
+		return modelOverviewPageUrl;
+	}
+
+	public String getGenericColor() {
+		return genericColor;
+	}
+
+	public String getReview() {
+		return review;
+	}
+
+	public String getHighs() {
+		return highs;
+	}
+
+	public String getLows() {
+		return lows;
+	}
+
+	public String getBottomLine() {
+		return bottomLine;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public String getDontBuyType() {
+		return dontBuyType;
+	}
+
+	public Double getOverallScoreMax() {
+		return overallScoreMax;
+	}
+
+	public Double getOverallScoreMin() {
+		return overallScoreMin;
+	}
+
+	public Double getOverallScore() {
+		return overallScore;
+	}
+
+	public Boolean getIsRecommended() {
+		return isRecommended;
+	}
+
+	public Boolean getIsBestSeller() {
+		return isBestSeller;
+	}
+
+	public Boolean getIsTested() {
+		return isTested;
+	}
+
+	public Boolean getIsBestBuy() {
+		return isBestBuy;
+	}
+
+	public String getBrandId() {
+		return brandId;
+	}
+
+	public String getBrandName() {
+		return brandName;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public Iterable<Rating> getRatings() {
+		return new Iterable<Rating>() {
+			public Iterator<Rating> iterator()
+			{
+				return Collections.unmodifiableCollection(Product.this.ratings).iterator();
+			}
+		};
+	}
+
+	public Iterable<Spec> getSpecs() {
+		return new Iterable<Spec>() {
+			public Iterator<Spec> iterator() 
+			{
+				return Collections.unmodifiableCollection(Product.this.specs).iterator();
+			}
+		};
+	}
+		
+	public String dump() 
+	{
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		return gson.toJson(this);
+	}	
+}
