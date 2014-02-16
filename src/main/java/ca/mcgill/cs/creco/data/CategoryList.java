@@ -17,7 +17,6 @@ public class CategoryList implements Iterable<Category> {
 	public CategoryList(double jaccardThreshhold) 
 	{
 		this.jaccardThreshhold = jaccardThreshhold;
-		
 		this.hash = new Hashtable<String, Category>();
 		this.franchises = new ArrayList<Category>();
 		this.equivalenceClasses = new ArrayList<Category>();
@@ -40,6 +39,26 @@ public class CategoryList implements Iterable<Category> {
 		return this.hash.get(key);
 	}
 	
+	public Iterable<Category> getEqClasses()
+	{
+		return Collections.unmodifiableCollection(this.equivalenceClasses);
+	}
+	
+	public int getNumEqClasses()
+	{
+		return this.equivalenceClasses.size();
+	}
+	
+	public int getNumSubEqClasses()
+	{
+		return this.subEquivalenceClasses.size();
+	}
+	
+	public Iterable<Category> getSubEqClasses()
+	{
+		return Collections.unmodifiableCollection(this.subEquivalenceClasses);
+	}
+	
 	public void findEquivalenceClasses() {
 		for(Category franchise : this.franchises)
 		{
@@ -54,7 +73,8 @@ public class CategoryList implements Iterable<Category> {
 		
 		if(mode == 1)
 		{
-			cat.setClassType("subEquivalence");
+			cat.setClassType("subequivalence");
+			this.subEquivalenceClasses.add(cat);
 			for(Category child : children)
 			{
 				this.recurseFindEquivalenceClasses(child, 1);
@@ -66,6 +86,8 @@ public class CategoryList implements Iterable<Category> {
 			if(numChildren == 0)
 			{
 				cat.setClassType("equivalence");
+				this.equivalenceClasses.add(cat);
+				this.subEquivalenceClasses.add(cat);
 				return;
 			}
 			else
@@ -145,8 +167,8 @@ public class CategoryList implements Iterable<Category> {
 			cat.setCount(0);
 			cat.clearRatings();
 			cat.clearSpecs();
-			cat.setRatingIntersection(null);
-			cat.setSpecIntersection(null);
+			cat.restartRatingIntersection();
+			cat.restartSpecIntersection();
 		}
 	
 		// Roll up counts and collections
@@ -155,8 +177,8 @@ public class CategoryList implements Iterable<Category> {
 			// aggregate children's collections
 			cat.mergeRatings(child.getRatings());
 			cat.mergeSpecs(child.getSpecs());
-			cat.intersectRatings(child.getRatings());
-			cat.intersectSpecs(child.getSpecs());
+			cat.intersectRatings(child);
+			cat.intersectSpecs(child);
 			
 			// aggregate children's counts
 			cat.putProducts(child.getProducts());
