@@ -96,10 +96,10 @@ public class Search
 			Analyzer analyzer = new EnglishAnalyzer(VERSION);
 			IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(VERSION, analyzer));
 			
-			Iterator itr = products.iterator();
-			while(itr.hasNext()) {
+		
+			for(Product product : products){
 				
-				Product product =(Product) itr.next();
+				//Product product =(Product) itr.next();
 				Document doc = new Document();
 				doc.add(new TextField(ID, product.getId(), Field.Store.YES));	
 				doc.add(new TextField(NAME, product.getName(), Field.Store.YES));
@@ -120,7 +120,7 @@ public class Search
 	 */
 	public SearchResult query(String queryString) 
 	{
-		List<Product> scoredResults = new ArrayList<Product>();
+		ProductList scoredResults = new ProductList();
 		try 
 		{
 			Query query = new QueryParser(VERSION, NAME, analyzer).parse(queryString);
@@ -141,7 +141,7 @@ public class Search
 			    Product scoredProduct = new Product();
 			    scoredProduct.setId(doc.get(ID));
 			    scoredProduct.setName(doc.get(NAME));
-			    scoredResults.add(scoredProduct);
+			    scoredResults.put(doc.get(ID),scoredProduct);
 			}
 		}
 		catch (ParseException e)
