@@ -29,6 +29,7 @@ dependencies {
     compile("org.thymeleaf:thymeleaf-spring4:2.1.2.RELEASE")
     compile("com.google.code.gson:gson:2.2.4")
     compile('nz.ac.waikato.cms.weka:weka-stable:3.6.6')
+    compile group: 'com.google.guava', name: 'guava', version: '12.0'
     testCompile("junit:junit:4.11")
 }
 

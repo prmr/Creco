@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import com.google.common.collect.Lists;
+
 import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 import weka.core.Attribute;
@@ -34,13 +36,13 @@ public class AttributeExtractionController
 
 	private ProductList aProductList;
 	private Category aEquivalenceClass;
-	private ArrayList<SpecStat> aSpecList;
+	private Iterable<SpecStat> aSpecList;
 	
 	public AttributeExtractionController(ProductList pProductList, Category pEquivalenceClass)
 	{
 		aProductList = pProductList;
 		aEquivalenceClass = pEquivalenceClass;
-		aSpecList = new ArrayList<SpecStat>(Arrays.asList(aEquivalenceClass.getSpecs()));
+		aSpecList = aEquivalenceClass.getSpecs();
 	}
 		
 	private void generateAttributeList()
@@ -55,12 +57,16 @@ public class AttributeExtractionController
 //		this is where the magic happens
 //		make instances object
 //				
-		FastVector fvAttributeList = new FastVector(aSpecList.size());
+		FastVector fvAttributeList = new FastVector();
 		for(SpecStat a : aSpecList)
 		{
 //			numerical attribute
-			Attribute newAttribute = new Attribute(a.getAttributeName());
-			fvAttributeList.addElement(newAttribute);		
+			if(a.getValueMax())
+			
+			Attribute newAttribute = new Attribute(a.getName());
+			fvAttributeList.addElement(newAttribute);	
+			
+//			nominal attribute
 		}
 		Instances dataset = new Instances("attributes", fvAttributeList, aProductList.size());
 //		
