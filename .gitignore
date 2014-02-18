@@ -1,7 +1,6 @@
 /.localdatapath
-
 /bin
-
 /build
-
 .gradle
+/.gradle
+/.gradle/*
