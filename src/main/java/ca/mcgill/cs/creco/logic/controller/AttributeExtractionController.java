@@ -4,6 +4,7 @@
 package ca.mcgill.cs.creco.logic.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Arrays;
@@ -14,6 +15,9 @@ import java.util.Random;
 
 import com.google.common.collect.Lists;
 //import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
+
+
+
 
 
 
@@ -40,9 +44,11 @@ import ca.mcgill.cs.creco.data.CRData;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.CategoryList;
 import ca.mcgill.cs.creco.data.ProductList;
+import ca.mcgill.cs.creco.data.Spec;
 import ca.mcgill.cs.creco.data.SpecStat;
 import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.data.TypedVal;
+import ca.mcgill.cs.creco.logic.model.AttributeValue;
 import ca.mcgill.cs.creco.logic.model.ScoredAttribute;
 
 
@@ -80,6 +86,68 @@ public class AttributeExtractionController
 		System.out.println(sal);
 		
 		
+	}
+	
+	public static AttributeValue extractMean(List<Product> pProductList, String attributeID)
+	{
+		double numericCount = 0;
+		double numericSum = 0;
+		int trueCount = 0;
+		int falseCount = 0;
+		HashMap<String, Integer> nominalCounts = new HashMap<String, Integer>();
+		for( Product p : pProductList)
+		{
+			Spec s = p.getSpec(attributeID);
+			if( s != null)
+			{
+				String specString = s.getValue().toString();
+				String type = s.getType();
+				if(type.equals("int") || type.equals("double") || type.equals("float"))
+				{
+					numericCount ++;
+					numericSum += Double.parseDouble(specString);					
+				}
+				else if (type.equals("boolean"))
+				{
+					if(specString.equals("true"))
+					{
+						trueCount ++;
+					}
+					else{
+						falseCount ++;
+					}
+				}
+				else
+				{
+					int count = nominalCounts.containsKey(specString) ? nominalCounts.get(specString) : 0;
+					nominalCounts.put(specString, count + 1);
+				}
+			}
+			
+		}
+		if(numericCount > 0)
+		{
+			return new AttributeValue(numericSum/numericCount);
+		}
+		else if (trueCount > 0 || falseCount > 0)
+		{
+			if(trueCount > falseCount) return new AttributeValue(true);
+			return new AttributeValue(false);
+			
+		}
+		//to change
+		String maxAtt = "N/A";
+		int max = 0;
+		for(String key : nominalCounts.keySet())
+		{
+			int count = nominalCounts.get(key);
+			if(count > max)
+			{
+				maxAtt = key;
+				max = count;			
+			}
+		}
+		return new AttributeValue(maxAtt);
 	}
 	
 	public AttributeExtractionController(List<Product> pProductList, Category pEquivalenceClass)
@@ -139,6 +207,7 @@ public class AttributeExtractionController
 //		make all instances and add them to the instances object
 //		
 		
+		
 		for (Iterator<Product> it = aProductList.iterator(); it.hasNext(); )
 		{		
 		
@@ -154,6 +223,7 @@ public class AttributeExtractionController
 				{
 					type = p.getSpec(att.getAttributeID()).getType();
 					value = p.getSpec(att.getAttributeID()).getValue().toString();
+					//System.out.println("VAL: " + value);
 				}
 				catch(NullPointerException npe)
 				{
@@ -172,7 +242,7 @@ public class AttributeExtractionController
 				}
 				
 				
-				if(type == "int" || type == "double" || type == "float")
+				if(type.equals("int") || type.equals("double") || type.equals("float"))
 				{
 					inst.setValue(wekaAtt, Double.parseDouble(value));
 				}
@@ -202,6 +272,10 @@ public class AttributeExtractionController
 			for(double[] score :meritScores)
 			{
 				scoredAttributes.get((int)score[0]).setAttributeScore(score[1]);
+			}
+			for(ScoredAttribute sa: scoredAttributes)
+			{
+				sa.setAttributeMean(AttributeExtractionController.extractMean(aProductList, sa.getAttributeID()));
 			}
 			
 //			InfoGainAttributeEval eval = new InfoGainAttributeEval();

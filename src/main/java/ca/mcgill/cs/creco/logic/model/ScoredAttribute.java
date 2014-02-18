@@ -27,6 +27,7 @@ public class ScoredAttribute
 	private String aAttributeID;
 	private String aAttributeName;
 	private double aAttributeScore;
+	private AttributeValue aAttributeMean;
 	
 	
 	public static final Comparator<ScoredAttribute> sortByScore = 
@@ -90,7 +91,15 @@ public class ScoredAttribute
 	@Override
 	public String toString()
 	{
-		return aAttributeName + ", " + aAttributeID + ": " + aAttributeScore;
+		return aAttributeName + ", " + aAttributeID + ": " + aAttributeScore + ", " + aAttributeMean + "||";
+	}
+
+	public AttributeValue getAttributeMean() {
+		return aAttributeMean;
+	}
+
+	public void setAttributeMean(AttributeValue pAttributeMean) {
+		this.aAttributeMean = pAttributeMean;
 	}
 	
 	
