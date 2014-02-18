@@ -25,15 +25,16 @@ public class start {
 
     public static void main(String[] args) throws IOException, InterruptedException {
        int change_flag=0;
-    	//System.out.println("Hey there");
+       int created_now=0;
+    //	System.out.println("Hey there");
        URL url;
        String path = DataPath.get();
-     //  System.out.println(path);
-       String[] dataset = Franchisereturn.getstring();
+   //    System.out.println(path);
+       String[] dataset = Franchisereturn.getProductString();
        try {
     	   for(int i=0;i<dataset.length;i++)
     	   {
-
+created_now=0;
 
 String inputLine;
 
@@ -46,6 +47,7 @@ File file = new File(fileName);
 
 if (!file.exists()) {
 	file.createNewFile();
+	created_now=1;
 //System.out.println("Created a file");
 }
 
@@ -66,15 +68,23 @@ if (!file.exists()) {
 	//System.out.print(diffHours + " hours, ");
 	//System.out.print(diffMinutes + " minutes, ");
 	//System.out.print(diffSeconds + " seconds.");
-	if(diffDays>0)
+	if(diffDays>0||created_now==1)
 	{
 		change_flag=1;
 		   Thread.sleep(2000);
 		   StringBuilder abc = new StringBuilder();
+		   if(i!=dataset.length-1)
+		   {
 		   abc.append("http://api.consumerreports.org/v0.1/products.(category.name=");
 		   abc.append(dataset[i]);
 		   abc.append(").json?api_key=nafbaswcjqtpzfsqmka3hann");
-		   String use_this = abc.toString();
+		   }
+		   else
+		   {
+			   abc.append("http://api.consumerreports.org/v0.1/categories.json?api_key=nafbaswcjqtpzfsqmka3hann");
+		   }
+			   String use_this = abc.toString();
+			   System.out.println("Changed "+use_this);
 		url = new URL (use_this);   
 //url = new URL("http://api.consumerreports.org/v0.1/categories.json?api_key=nafbaswcjqtpzfsqmka3hann");
 	URLConnection conn = url.openConnection();
@@ -96,11 +106,14 @@ if (!file.exists()) {
 
     	   }
     	   
+    	   String category_name = Franchisereturn.getCategoryString();
+    	   
     	   if(change_flag==1)
     	   {
-    		 buildobjects create =  new buildobjects();
+    		 CRData crData =  new CRData(Franchiseretrun.getProducts(),category_name);
     	   }
 //System.out.println("Done");
+    	   
     }
        catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -115,6 +128,11 @@ if (!file.exists()) {
 			e.printStackTrace();
 		}
 
+       
+       
+
+
+       }
     }
 
     
@@ -122,5 +140,5 @@ if (!file.exists()) {
     
     
     
- }
+
 
