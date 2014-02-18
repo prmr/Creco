@@ -61,7 +61,7 @@ import ca.mcgill.cs.creco.logic.model.ScoredAttribute;
  * @see Attribute
  */
 
-public class AttributeExtractionController
+public class AttributeExtractor
 {
 
 	private List<Product> aProductList;
@@ -69,6 +69,11 @@ public class AttributeExtractionController
 	private Iterable<SpecStat> aSpecList;
 	private ArrayList<ScoredAttribute> aScoredAttributeList;
 	
+	/**
+	 * Main class to test Attribute Extraction
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception
 	{
 		
@@ -80,7 +85,7 @@ public class AttributeExtractionController
 		
 		List<Product> productList = Lists.newArrayList(products);
 		
-		AttributeExtractionController aec = new AttributeExtractionController(productList,humidifiers);
+		AttributeExtractor aec = new AttributeExtractor(productList,humidifiers);
 		ArrayList<ScoredAttribute> sal = aec.getScoredAttributeList();
 		
 		System.out.println(sal);
@@ -150,7 +155,7 @@ public class AttributeExtractionController
 		return new AttributeValue(maxAtt);
 	}
 	
-	public AttributeExtractionController(List<Product> pProductList, Category pEquivalenceClass)
+	public AttributeExtractor(List<Product> pProductList, Category pEquivalenceClass)
 	{
 		aProductList = pProductList;
 		aEquivalenceClass = pEquivalenceClass;
@@ -275,7 +280,7 @@ public class AttributeExtractionController
 			}
 			for(ScoredAttribute sa: scoredAttributes)
 			{
-				sa.setAttributeMean(AttributeExtractionController.extractMean(aProductList, sa.getAttributeID()));
+				sa.setAttributeMean(AttributeExtractor.extractMean(aProductList, sa.getAttributeID()));
 			}
 			
 //			InfoGainAttributeEval eval = new InfoGainAttributeEval();

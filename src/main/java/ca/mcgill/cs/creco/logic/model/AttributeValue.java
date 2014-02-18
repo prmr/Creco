@@ -1,5 +1,12 @@
 package ca.mcgill.cs.creco.logic.model;
 
+/**
+ *AttributeValue class can either be boolean, nominal or numeric
+ *Use boolean checks to know what type of attribute before getting
+ *value. If you try to get a value different from the one of the 
+ *attribute it will return null.
+ *
+ */
 public class AttributeValue {
 	
 	private boolean aBool;
