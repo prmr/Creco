@@ -165,7 +165,7 @@ public class Product {
 	}
 
 	public String getName() {
-		return displayName;
+		return name;
 	}
 
 	public String getUpc() {

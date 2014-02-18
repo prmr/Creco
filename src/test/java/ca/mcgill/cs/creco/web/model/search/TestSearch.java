@@ -29,10 +29,10 @@ public class TestSearch
 		
 		Product temp =products.get(testId);
 		assertEquals(product,temp);
-	//	search.addProducts(products);
-		
-//		SearchResult result = search.query(testName);
-//		Product resultProduct = result.getProducts().get(0);
-//		assertEquals(resultProduct.getName(), testName);
+
+		search.addProducts(products);
+		SearchResult result = search.query(testName);
+		Product resultProduct = result.getProducts().get(testId);
+		assertEquals(resultProduct.getName(), testName);
 	}
 }

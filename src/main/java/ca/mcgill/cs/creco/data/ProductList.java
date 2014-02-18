@@ -13,7 +13,7 @@ public class ProductList implements Iterable<Product>
 	
 	public Product get(String key) 
 	{
-		return this.hash.get(key);
+		return this.hash.get(key); 
 	}
 	
 	public void put(String key, Product val) 
