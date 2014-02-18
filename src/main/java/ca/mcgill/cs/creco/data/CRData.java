@@ -4,6 +4,7 @@ import java.io.IOException;
 
 public class CRData 
 {
+	private static CRData instance = null;
 	
 	private CategoryList catList;
 	private ProductList prodList;
@@ -16,12 +17,12 @@ public class CRData
 		"product_food.json", "product_babiesKids.json", "product_money.json"
 	};
 
-	public CRData() throws IOException
+	private CRData() throws IOException
 	{
 		String dataPath = DataPath.get();
-		
+			
 		// Build the CategoryList
-		this.catList = CategoryReader.read(dataPath, JACCARD_THRESHHOLD);
+		catList = CategoryReader.read(dataPath, JACCARD_THRESHHOLD);
 		catList.eliminateSingletons();
 		
 		// Build the products list
@@ -32,15 +33,15 @@ public class CRData
 		
 		// Roll up useful pre-processed statistics and find equivalence classes
 		catList.refresh();
-		catList.findEquivalenceClasses();		
+		catList.findEquivalenceClasses();
 	}
 	
-	public CRData(String[] productFileNames) throws IOException 
+	private CRData(String[] productFileNames, String[] categoryFileName) throws IOException
 	{
 		String dataPath = DataPath.get();
 		
 		// Build the CategoryList
-		this.catList = CategoryReader.read(dataPath, JACCARD_THRESHHOLD);
+		catList = CategoryReader.read(dataPath, JACCARD_THRESHHOLD);
 		catList.eliminateSingletons();
 		
 		// Build the products list
@@ -53,6 +54,29 @@ public class CRData
 		catList.refresh();
 		catList.findEquivalenceClasses();		
 	}
+	
+	public static CRData getData() throws IOException
+	{
+		if (instance == null)
+		{
+			instance = new CRData();
+		}
+		return instance;
+	}
+	
+	public static CRData setupWithFileNames(String[] productFileNames, String[] categoryFileName) throws IOException 
+	{
+		if (instance == null)
+		{
+			instance = new CRData(productFileNames, categoryFileName);
+		} else
+		{
+			throw new IOException("CR Database was already initialized. Use CRData.getData() instead.");
+		}
+		return instance;
+		
+	}
+	
 	
 	public String[] getProductFileNames()
 	{

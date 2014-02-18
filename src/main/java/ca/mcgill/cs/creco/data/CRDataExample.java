@@ -10,7 +10,7 @@ public class CRDataExample {
 		String dataPath = DataPath.get();
 
 		// Build the CRData as a Java Object
-		CRData crData = new CRData();
+		CRData crData = CRData.getData();
 		
 		
 		
