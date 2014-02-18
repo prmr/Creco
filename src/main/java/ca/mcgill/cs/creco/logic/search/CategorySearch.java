@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ca.mcgill.cs.creco.web.model.search;
+package ca.mcgill.cs.creco.logic.search;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -88,7 +88,7 @@ public class CategorySearch
 			IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(VERSION, analyzer));
 		
 			for (Category category : categoryList.getEqClasses()) {
-				String flattenedText = "";
+				String flattenedText = category.getName();
 				LOG.debug("Adding " + category.getName());
 				for (Product product : category.getProducts())
 				{
@@ -123,8 +123,8 @@ public class CategorySearch
 		List<Category> equivalenceClassResults = new ArrayList<Category>();
 		try 
 		{
-			//Query query = new QueryParser(VERSION, CATEGORY_NAME, analyzer).parse(queryString);
-			Query query = new FuzzyQuery(new Term(CATEGORY_NAME, queryString), 1);
+			Query query = new QueryParser(VERSION, CATEGORY_NAME, analyzer).parse(queryString);
+			//Query query = new FuzzyQuery(new Term(FLATTENED_TEXT, queryString), 1);
 			DirectoryReader reader = DirectoryReader.open(directory);
 			IndexSearcher searcher = new IndexSearcher(reader);
 			TopScoreDocCollector results = TopScoreDocCollector.create(MAX_NUM_RESULTS, true);
@@ -146,7 +146,7 @@ public class CategorySearch
 		}
 		catch (Exception e)
 		{
-			
+		
 		}
 		return equivalenceClassResults;
 	}

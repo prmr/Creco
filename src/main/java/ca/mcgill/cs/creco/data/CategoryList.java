@@ -105,6 +105,7 @@ public class CategoryList implements Iterable<Category> {
 				else
 				{
 					cat.setClassType("equivalence");
+					this.equivalenceClasses.add(cat);
 					for(Category child : children)
 					{
 						this.recurseFindEquivalenceClasses(child, 1);

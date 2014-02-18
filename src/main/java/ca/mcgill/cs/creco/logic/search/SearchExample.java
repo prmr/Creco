@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ca.mcgill.cs.creco.web.model.search;
+package ca.mcgill.cs.creco.logic.search;
 
 import java.util.Scanner;
 
 
 import ca.mcgill.cs.creco.data.CRData;
 import ca.mcgill.cs.creco.data.CategoryList;
-import ca.mcgill.cs.creco.web.model.search.CategorySearch;
+import ca.mcgill.cs.creco.logic.search.CategorySearch;
 
 public class SearchExample {
 	public static void main(String[] args) throws Exception
@@ -46,6 +46,10 @@ public class SearchExample {
 		{
 			System.out.print("Enter your search query (or 'exit'): ");  
 			userinput = scanner.nextLine();
+
+			if (userinput.equals("refresh")){
+				catSearch = new CategorySearch(catList);
+			}
 
 			catSearch.queryCategories(userinput);
 		}

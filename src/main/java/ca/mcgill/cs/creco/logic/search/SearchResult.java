@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ca.mcgill.cs.creco.web.model.search;
+package ca.mcgill.cs.creco.logic.search;
 
 import java.util.List;
 
