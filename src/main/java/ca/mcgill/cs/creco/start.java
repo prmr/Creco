@@ -18,12 +18,13 @@ import java.net.URLConnection;
 
 import org.springframework.boot.SpringApplication;
 
-import ca.mcgill.cs.creco.util.DataPath;
+import ca.mcgill.cs.creco.data.CRData;
+import ca.mcgill.cs.creco.data.DataPath;
 import ca.mcgill.cs.creco.util.Franchisereturn;
 
 public class start {
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void start_update() throws IOException, InterruptedException {
        int change_flag=0;
        int created_now=0;
     //	System.out.println("Hey there");
@@ -110,7 +111,7 @@ if (!file.exists()) {
     	   
     	   if(change_flag==1)
     	   {
-    		 CRData crData =  new CRData(Franchiseretrun.getProducts(),category_name);
+    		 CRData crData =  CRData.setupWithFileNames(Franchisereturn.getProducts(),category_name);
     	   }
 //System.out.println("Done");
     	   

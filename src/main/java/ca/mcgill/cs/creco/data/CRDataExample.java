@@ -3,7 +3,7 @@ package ca.mcgill.cs.creco.data;
 import java.io.IOException;
 
 public class CRDataExample {
-	public static void main(String[] args) throws IOException
+	public static void main1(String[] args) throws IOException
 	{
 		
 		// Get the path to the data

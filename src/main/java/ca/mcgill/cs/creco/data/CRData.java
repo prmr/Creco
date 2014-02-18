@@ -16,13 +16,14 @@ public class CRData
 		"product_cars.json", "product_health.json", "product_homeGarden.json", 
 		"product_food.json", "product_babiesKids.json", "product_money.json"
 	};
+	private static String categoryFileName = "category";
 
 	private CRData() throws IOException
 	{
 		String dataPath = DataPath.get();
 			
 		// Build the CategoryList
-		catList = CategoryReader.read(dataPath, JACCARD_THRESHHOLD);
+		catList = CategoryReader.read(dataPath, CRData.categoryFileName, JACCARD_THRESHHOLD);
 		catList.eliminateSingletons();
 		
 		// Build the products list
@@ -36,12 +37,12 @@ public class CRData
 		catList.findEquivalenceClasses();
 	}
 	
-	private CRData(String[] productFileNames, String[] categoryFileName) throws IOException
+	private CRData(String[] productFileNames, String categoryFileName) throws IOException
 	{
 		String dataPath = DataPath.get();
 		
 		// Build the CategoryList
-		catList = CategoryReader.read(dataPath, JACCARD_THRESHHOLD);
+		catList = CategoryReader.read(dataPath, categoryFileName, JACCARD_THRESHHOLD);
 		catList.eliminateSingletons();
 		
 		// Build the products list
@@ -64,7 +65,7 @@ public class CRData
 		return instance;
 	}
 	
-	public static CRData setupWithFileNames(String[] productFileNames, String[] categoryFileName) throws IOException 
+	public static CRData setupWithFileNames(String[] productFileNames, String categoryFileName) throws IOException 
 	{
 		if (instance == null)
 		{

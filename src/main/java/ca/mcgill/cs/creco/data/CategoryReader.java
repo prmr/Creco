@@ -37,14 +37,14 @@ public class CategoryReader {
 	}
 	
 	
-	public static CategoryList read(String path, double jaccardThreshhold) throws IOException 
+	public static CategoryList read(String path, String categoryFileName, double jaccardThreshhold) throws IOException 
 	{
 		// Make an empty CategoryList
 		CategoryList catList = new CategoryList(jaccardThreshhold);
 		
 		// Make some tools to help CategoryReader
 		Gson gson = new Gson();
-		FileReader fr = new FileReader(path + CategoryReader.getCategoryFileName());
+		FileReader fr = new FileReader(path + categoryFileName);
 		
 		// Read the json onto an array of categories
 		CategoryStub[] catArray = gson.fromJson(fr, CategoryStub[].class);

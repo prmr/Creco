@@ -15,9 +15,12 @@
  */
 package ca.mcgill.cs.creco;
 
+import java.io.IOException;
+
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.ComponentScan;
+
 
 @ComponentScan
 @EnableAutoConfiguration
@@ -25,10 +28,13 @@ public class Application {
 
     /**
      * @param args
+     * @throws InterruptedException 
+     * @throws IOException 
      */
-    public static void main(String[] args)
+    public static void main(String[] args) throws IOException, InterruptedException
     {
         SpringApplication.run(Application.class, args);
+        start.start_update();
     }
 
 }
