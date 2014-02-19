@@ -17,28 +17,10 @@ package ca.mcgill.cs.creco.logic.search;
 
 import java.util.Scanner;
 
-
-import ca.mcgill.cs.creco.data.CRData;
-import ca.mcgill.cs.creco.data.CategoryList;
-import ca.mcgill.cs.creco.logic.search.CategorySearch;
-
 public class SearchExample {
 	public static void main(String[] args) throws Exception
 	{
-
-		// Build the CRData as a Java Object
-		CRData crData = new CRData();
-
-
-
-		// ====================================
-		// That's it.  Now you can use the data
-		// let's look at some basic examples:
-		// ====================================
-
-		CategoryList catList = crData.getCategoryList();
-		catList.dumpTree();
-		CategorySearch catSearch = new CategorySearch(catList);
+		SearchService search = new SearchService();
 
 		Scanner scanner = new Scanner (System.in);
 		String userinput= "";
@@ -47,11 +29,12 @@ public class SearchExample {
 			System.out.print("Enter your search query (or 'exit'): ");  
 			userinput = scanner.nextLine();
 
+			// Just used to debug, this re-initializes the index
 			if (userinput.equals("refresh")){
-				catSearch = new CategorySearch(catList);
+				search = new SearchService();
 			}
 
-			catSearch.queryCategories(userinput);
+			search.searchCategories(userinput);
 		}
 		scanner.close();
 	}

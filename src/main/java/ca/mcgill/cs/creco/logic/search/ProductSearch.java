@@ -94,6 +94,7 @@ public class ProductSearch
 	 * Query the Lucene directory for matches to the query string.
 	 * @param queryString the search string
 	 */
+	/*
 	public SearchResult queryProducts(String queryString) 
 	{
 		List<ProductVO> scoredResults = new ArrayList<ProductVO>();
@@ -130,4 +131,5 @@ public class ProductSearch
 		SearchResult searchResult = new SearchResult(scoredResults);
 		return searchResult;
 	}
+	*/
 }

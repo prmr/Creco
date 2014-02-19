@@ -27,10 +27,8 @@ import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.FuzzyQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -41,6 +39,7 @@ import org.apache.lucene.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ca.mcgill.cs.creco.data.CRData;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.CategoryList;
 import ca.mcgill.cs.creco.data.Product;
@@ -62,18 +61,18 @@ public class CategorySearch
 	private final Directory directory;
 	private final Analyzer analyzer;
 	
-	// TEMPORARY
 	private CategoryList categoryList;
 
 	/**
 	 * Constructor.
 	 */
-	public CategorySearch(CategoryList categoryList) 
+	public CategorySearch() throws IOException
 	{
 		directory = new RAMDirectory();
 		analyzer = new EnglishAnalyzer(VERSION);
 		
-		this.categoryList = categoryList;
+		CRData crData = CRData.getData();
+		categoryList = crData.getCategoryList();
 		buildCategoryIndex(categoryList);
 	}
 	
@@ -92,7 +91,7 @@ public class CategorySearch
 				LOG.debug("Adding " + category.getName());
 				for (Product product : category.getProducts())
 				{
-					// flattenedText += product.getName() + " ";
+					flattenedText += product.getName() + " ";
 					//flattenedText += product.getBrandName() + " ";
 					//flattenedText += product.getHighs() + " ";
 					//flattenedText += product.getLows() + " ";
@@ -131,6 +130,15 @@ public class CategorySearch
 			
 			searcher.search(query, results);
 			ScoreDoc[] hits = results.topDocs().scoreDocs;
+			
+			// If no category name matches are found, search in product names
+			if (hits.length == 0)
+			{
+				Query broaderQuery = new QueryParser(VERSION, FLATTENED_TEXT, analyzer).parse(queryString);
+				searcher.search(broaderQuery, results);
+				hits = results.topDocs().scoreDocs;
+			}
+			
 			LOG.info("Found " + hits.length + " results for \"" + queryString + "\"");	
 
 			for(int i = 0; i<hits.length; i++) 
@@ -144,9 +152,9 @@ public class CategorySearch
 		{
 			LOG.error(e.getMessage());
 		}
-		catch (Exception e)
+		catch (ParseException e)
 		{
-		
+			LOG.error(e.getMessage());
 		}
 		return equivalenceClassResults;
 	}
