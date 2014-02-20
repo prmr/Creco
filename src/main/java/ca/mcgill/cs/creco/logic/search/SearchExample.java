@@ -18,7 +18,7 @@ package ca.mcgill.cs.creco.logic.search;
 import java.util.Scanner;
 
 public class SearchExample {
-	public static void main(String[] args) throws Exception
+	public static void main1(String[] args) throws Exception
 	{
 		SearchService search = new SearchService();
 
