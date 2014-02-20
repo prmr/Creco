@@ -64,7 +64,7 @@ if (!file.exists()) {
 	long diffMinutes = diff / (60 * 1000) % 60;
 	long diffHours = diff / (60 * 60 * 1000) % 24;
 	long diffDays = diff / (24 * 60 * 60 * 1000);
-
+	
 	//System.out.print(diffDays + " days, ");
 	//System.out.print(diffHours + " hours, ");
 	//System.out.print(diffMinutes + " minutes, ");
@@ -128,11 +128,6 @@ if (!file.exists()) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-       
-       
-
-
        }
     }
 

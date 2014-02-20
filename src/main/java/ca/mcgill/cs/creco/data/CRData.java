@@ -12,11 +12,11 @@ public class CRData
 	private double JACCARD_THRESHHOLD = 0.8;
 	private static String[] productFileNames = 
 	{
-		"product_appliances.json", "product_electronicsComputers.json",
-		"product_cars.json", "product_health.json", "product_homeGarden.json", 
-		"product_food.json", "product_babiesKids.json", "product_money.json"
+		"appliances.json", "electronicsComputers.json",
+		"cars.json", "health.json", "homeGarden.json", 
+		"food.json", "babiesKids.json", "money.json"
 	};
-	private static String categoryFileName = "category";
+	private static String categoryFileName = "category.json";
 
 	private CRData() throws IOException
 	{
@@ -31,7 +31,7 @@ public class CRData
 		
 		// Put links from products to categories and vice-versa
 		catList.associateProducts(prodList);
-		
+
 		// Roll up useful pre-processed statistics and find equivalence classes
 		catList.refresh();
 		catList.findEquivalenceClasses();
@@ -60,7 +60,7 @@ public class CRData
 	{
 		if (instance == null)
 		{
-			instance = new CRData();
+			instance = new CRData(CRData.productFileNames, CRData.categoryFileName);
 		}
 		return instance;
 	}
