@@ -28,6 +28,7 @@ public class ScoredAttribute
 	private String aAttributeName;
 	private double aAttributeScore;
 	private AttributeValue aAttributeMean;
+	private boolean aIsCat;
 	
 	
 	public static final Comparator<ScoredAttribute> sortByScore = 
@@ -58,9 +59,17 @@ public class ScoredAttribute
 	
 	public ScoredAttribute(Attribute pAttribute)
 	{
+		aIsCat = false;
 		aAttributeID = pAttribute.getId();
 		aAttributeScore = 0.0;
 		aAttributeName = pAttribute.getName();
+	}
+	public ScoredAttribute(Category pCat)
+	{
+		aIsCat = true;
+		aAttributeID = pCat.getId();
+		aAttributeScore = 0.0;
+		aAttributeName = pCat.getName();
 	}
 	
 	public String getAttributeID() 
@@ -94,12 +103,18 @@ public class ScoredAttribute
 		return aAttributeName + ", " + aAttributeID + ": " + aAttributeScore + ", " + aAttributeMean + "||";
 	}
 
-	public AttributeValue getAttributeMean() {
+	public AttributeValue getAttributeMean() 
+	{
 		return aAttributeMean;
 	}
 
-	public void setAttributeMean(AttributeValue pAttributeMean) {
+	public void setAttributeMean(AttributeValue pAttributeMean) 
+	{
 		this.aAttributeMean = pAttributeMean;
+	}
+	public boolean isCat()
+	{
+		return aIsCat;
 	}
 	
 	

@@ -1,53 +1,41 @@
 /**
- * 
+ * TODO: Fix to work with product IDs merge with Gowri's code
+ * Write  a few tests
+ * Write comments!!!!!!!!
+ * Add getCategory
  */
-package ca.mcgill.cs.creco.logic.controller;
+package ca.mcgill.cs.creco.logic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.Map.Entry;
-import java.util.Random;
+
+import ch.qos.logback.core.db.dialect.HSQLDBDialect;
 
 import com.google.common.collect.Lists;
 //import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 
-
-
-
-
-
-
-
-
-
-
 import weka.attributeSelection.AttributeSelection;
-import weka.attributeSelection.CfsSubsetEval;
-import weka.attributeSelection.GreedyStepwise;
-import weka.attributeSelection.InfoGainAttributeEval;
+//import weka.attributeSelection.CfsSubsetEval;
+//import weka.attributeSelection.GreedyStepwise;
+//import weka.attributeSelection.InfoGainAttributeEval;
 import weka.attributeSelection.PrincipalComponents;
 import weka.attributeSelection.Ranker;
-import weka.attributeSelection.UnsupervisedAttributeEvaluator;
-import weka.classifiers.Evaluation;
+//import weka.attributeSelection.UnsupervisedAttributeEvaluator;
+//import weka.classifiers.Evaluation;
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.Utils;
 import ca.mcgill.cs.creco.data.CRData;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.CategoryList;
-import ca.mcgill.cs.creco.data.ProductList;
 import ca.mcgill.cs.creco.data.Spec;
 import ca.mcgill.cs.creco.data.SpecStat;
 import ca.mcgill.cs.creco.data.Product;
-import ca.mcgill.cs.creco.data.TypedVal;
 import ca.mcgill.cs.creco.logic.model.AttributeValue;
 import ca.mcgill.cs.creco.logic.model.ScoredAttribute;
 
@@ -69,31 +57,7 @@ public class AttributeExtractor
 	private Iterable<SpecStat> aSpecList;
 	private ArrayList<ScoredAttribute> aScoredAttributeList;
 	
-	/**
-	 * Main class to test Attribute Extraction
-	 * @param args
-	 * @throws Exception
-	 */
-	public static void main(String[] args) throws Exception
-	{
-		
-		CRData data = new CRData();
-		CategoryList catList = data.getCategoryList();
-		
-		Category humidifiers = catList.get("32968");
-		Iterable<Product> products = humidifiers.getProducts();
-		
-		List<Product> productList = Lists.newArrayList(products);
-		
-		AttributeExtractor aec = new AttributeExtractor(productList,humidifiers);
-		ArrayList<ScoredAttribute> sal = aec.getScoredAttributeList();
-		
-		System.out.println(sal);
-		
-		
-	}
-	
-	public static AttributeValue extractMean(List<Product> pProductList, String attributeID)
+	public static AttributeValue extractMean(List<Product> pProductList, String pAttributeID)
 	{
 		double numericCount = 0;
 		double numericSum = 0;
@@ -102,7 +66,7 @@ public class AttributeExtractor
 		HashMap<String, Integer> nominalCounts = new HashMap<String, Integer>();
 		for( Product p : pProductList)
 		{
-			Spec s = p.getSpec(attributeID);
+			Spec s = p.getSpec(pAttributeID);
 			if( s != null)
 			{
 				String specString = s.getValue().toString();
@@ -118,13 +82,22 @@ public class AttributeExtractor
 					{
 						trueCount ++;
 					}
-					else{
+					else
+					{
 						falseCount ++;
 					}
 				}
 				else
 				{
-					int count = nominalCounts.containsKey(specString) ? nominalCounts.get(specString) : 0;
+					int count;
+					if (nominalCounts.containsKey(specString))
+					{
+						count = nominalCounts.get(specString);
+					}
+					else
+					{
+						count = 0;
+					}
 					nominalCounts.put(specString, count + 1);
 				}
 			}
@@ -171,14 +144,23 @@ public class AttributeExtractor
 	private void updateRelativeAttributeScores()
 	{
 //		this is where the magic happens
-//		make instances object
-//		to keep track of which attributes are being taken into account		
+//		to keep track of which attributes are being taken into account	
+//		uses hash map to avoid attributes with same or similar names which
+//		cause conflicts in weka <Name,index>
+		HashMap<String,String> attributeNames = new HashMap<String, String>();
 		ArrayList<ScoredAttribute> scoredAttributes = new ArrayList<ScoredAttribute>();
 		FastVector attributeVector = new FastVector();
+		ArrayList<SpecStat> ssa = Lists.newArrayList(aSpecList);
+	    if(ssa.size() <= 0)
+		{
+			aScoredAttributeList = scoredAttributes;
+			return;
+		}
+	    int index = 0;
 		for(SpecStat a : aSpecList)
 		{
 			
-//			check value type
+//			check value type skip attribtues with mixed type
 			if(a.getValueMin() != null && a.getValueEnum().size() > 0)
 			{
 				continue;
@@ -186,7 +168,8 @@ public class AttributeExtractor
 //			numerical attribute
 			else if(a.getValueMin() != null)
 			{
-				Attribute newAttribute = new Attribute(a.getName());
+				attributeNames.put(a.getName(), "I"+index);
+				Attribute newAttribute = new Attribute("I"+index);
 				scoredAttributes.add(new ScoredAttribute(a.getAttribute()));
 				attributeVector.addElement(newAttribute);
 			}
@@ -195,19 +178,26 @@ public class AttributeExtractor
 			{
 
 				FastVector nominalValues = new FastVector();
-//				add the N/A String in case the object doesn't have the attribute
-				nominalValues.addElement("N/A");
+
 				for (String value : a.getValueEnum())
 				{
 					nominalValues.addElement(value);
 				}
-				Attribute newAttribute = new Attribute(a.getName(),nominalValues);
+//				add the N/A String in case the object doesn't have the attribute
+				if(! nominalValues.contains("N/A"))
+				{
+					nominalValues.addElement("N/A");
+				}
+				attributeNames.put(a.getName(), "I"+index);
+				Attribute newAttribute = new Attribute("I"+index,nominalValues);
 				scoredAttributes.add(new ScoredAttribute(a.getAttribute()));
 				attributeVector.addElement(newAttribute);
 			}
+			index +=1;
 
 		}
 		Instances dataset = new Instances("attributes", attributeVector, aProductList.size());
+		
 //		
 //		make all instances and add them to the instances object
 //		
@@ -218,16 +208,27 @@ public class AttributeExtractor
 		
 			Product p = it.next();
 			Instance inst = new Instance(attributeVector.size()); 
-			for(ScoredAttribute att : scoredAttributes)
+
+			for(int i = 0 ; i < scoredAttributes.size(); i ++)
 			{
-				Attribute wekaAtt = dataset.attribute(att.getAttributeName());
+				String indexName = attributeNames.get(scoredAttributes.get(i).getAttributeName());
+				Attribute wekaAtt = dataset.attribute(indexName);
 				
 				String type = "";
 				String value = "";
 				try
 				{
-					type = p.getSpec(att.getAttributeID()).getType();
-					value = p.getSpec(att.getAttributeID()).getValue().toString();
+					if(! scoredAttributes.get(i).isCat())
+					{
+						type = p.getSpec(scoredAttributes.get(i).getAttributeID()).getType();
+						value = p.getSpec(scoredAttributes.get(i).getAttributeID()).getValue().toString();
+					}
+					else
+					{
+						type = "String";
+						value = p.getCategory().getName();
+					}
+					
 					//System.out.println("VAL: " + value);
 				}
 				catch(NullPointerException npe)
@@ -259,10 +260,16 @@ public class AttributeExtractor
 			inst.setDataset(dataset); 
 			dataset.add(inst);
 		}
+//		compute means
+		for(ScoredAttribute sa: scoredAttributes)
+		{
+			sa.setAttributeMean(AttributeExtractor.extractMean(aProductList, sa.getAttributeID()));
+		}
 		
 //		use tree to extract feature importance
 		try
 		{
+			
 			AttributeSelection attsel = new AttributeSelection();  // package weka.attributeSelection!
 			//CfsSubsetEval eval = new CfsSubsetEval();
 			PrincipalComponents eval = new PrincipalComponents();
@@ -274,15 +281,17 @@ public class AttributeExtractor
 			attsel.SelectAttributes(dataset);
 			double[][] meritScores = attsel.rankedAttributes();
 			//System.out.println(Utils.arrayToString(meritScores));
+			
 			for(double[] score :meritScores)
 			{
-				scoredAttributes.get((int)score[0]).setAttributeScore(score[1]);
-			}
-			for(ScoredAttribute sa: scoredAttributes)
-			{
-				sa.setAttributeMean(AttributeExtractor.extractMean(aProductList, sa.getAttributeID()));
+				if((int)score[0]< scoredAttributes.size())
+				{
+					scoredAttributes.get((int)score[0]).setAttributeScore(score[1]);
+				}
+				
 			}
 			
+
 //			InfoGainAttributeEval eval = new InfoGainAttributeEval();
 //			AttributeSelection trainSelector = new	AttributeSelection();
 //			Ranker searchMethod=new Ranker();
