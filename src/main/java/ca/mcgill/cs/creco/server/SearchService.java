@@ -45,4 +45,5 @@ public class SearchService {
 		return categorySearch.queryCategories(query);
 	}
 	*/
+	
 }

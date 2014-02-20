@@ -127,6 +127,10 @@ public class Product {
 		}
 	}
 	
+	public Product() {
+		// TODO Auto-generated constructor stub
+	}
+
 	void setCategory(Category cat)
 	{
 		this.category = cat;
@@ -166,11 +170,6 @@ public class Product {
 	}
 
 	public String getName() {
-		return displayName;
-	}
-	
-	public String getName_()
-	{
 		return name;
 	}
 
@@ -280,5 +279,15 @@ public class Product {
 	{
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return gson.toJson(this);
-	}	
+	}
+
+	public void setId(String id)
+	{
+		this.id = id;
+	}
+	
+	public void setName(String name)
+	{
+		this.name = name;
+	}
 }

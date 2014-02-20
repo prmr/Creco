@@ -1,28 +1,28 @@
-package ca.mcgill.cs.creco.data;
-
-import java.io.IOException;
-
-public class CRDataExample {
-	public static void main1(String[] args) throws IOException
-	{
-		
-		// Get the path to the data
-		String dataPath = DataPath.get();
-
-		// Build the CRData as a Java Object
-		CRData crData = CRData.getData();
-		
-		
-		
-		// ====================================
-		// That's it.  Now you can use the data
-		// let's look at some basic examples:
-		// ====================================
-
-		CategoryList catList = crData.getCategoryList();
-		ProductList prodList = crData.getProductList();
-		
-		// Quickly dump the category tree in human-readable form debugging purposes
+//package ca.mcgill.cs.creco.data;
+//
+//import java.io.IOException;
+//
+//public class CRDataExample {
+//	public static void main(String[] args) throws IOException
+//	{
+//		
+//		// Get the path to the data
+//		String dataPath = DataPath.get();
+//
+//		// Build the CRData as a Java Object
+//		CRData crData = new CRData(dataPath);
+//		
+//		
+//		
+//		// ====================================
+//		// That's it.  Now you can use the data
+//		// let's look at some basic examples:
+//		// ====================================
+//
+//		CategoryList catList = crData.getCategoryList();
+//		ProductList prodList = crData.getProductList();
+//		
+//		// Quickly dump the category tree in human-readable form debugging purposes
 //		System.out.println(catList.dumpTree());
 //		System.out.println("\nSometimes its helpful, for debugging, just to see the category tree");
 //		System.out.println("The above was output using catList.dumpTree()\n");
@@ -34,17 +34,16 @@ public class CRDataExample {
 //		System.out.println("It also shows the number of products that actually include them. See the source for getters.");
 //		System.out.println("Hopefully, this is a leg up for feature selection.  Obviously more clever tricks will be needed though!");
 //		
-		System.out.println(catList.get("32968").describe());
-		System.out.println(catList.get("34382").describe());
-		System.out.println(catList.get("34381").describe());
-		
+//		System.out.println(catList.get("32968").describe());
+//		System.out.println(catList.get("34382").describe());
+//		System.out.println(catList.get("34381").describe());
+//		
 //		// Accessing the products of a category; accessing the category of a product
 //		System.out.println("You can access products from the category, or category from the products");
 //		Category humidifiers = catList.get("32968");
 //		Product aHumidifier = humidifiers.getProducts().iterator().next();
 //		System.out.println(humidifiers.getName() + " has " + humidifiers.getNumProducts() + " products in it.");
-//		System.out.println(humidifiers.getName() + " contains " + aHumidifier.getName() + " (" + aHumidifier.getId() + ")");
-//		System.out.println(aHumidifier.getSpec("3646").getValue());
+//		System.out.println(humidifiers.getName() + " contains " + aHumidifier.getName());
 //		System.out.println(aHumidifier.getName() + " is contained by " + aHumidifier.getCategory().getName());
 //		
 //		// Get the immediate child categories
@@ -73,13 +72,6 @@ public class CRDataExample {
 //		System.out.println("This isn't working yet because I haven't made it smart enough to eliminate the empty categories,");
 //		System.out.println("which leads to null pointer exceptions.  Comming soon!");
 //		// CRData smallCRData = new CRData(dataPath, new String[] {"product_homeGarden.json"});
-//		
-//		Category smartPhones = catList.get("28726");
-//		System.out.println("\n" + smartPhones.describe());
-//		for(Category child : smartPhones.getChildren())
-//		{
-//			System.out.println("\n" + child.describe());
-//		}
-		
-	}
-}
+//	}
+//}
+

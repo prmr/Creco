@@ -11,9 +11,9 @@ public class ProductList implements Iterable<Product>
 	
 	public ProductList() {}
 	
-	public Product get(int key) 
+	public Product get(String key) 
 	{
-		return this.hash.get(key);
+		return this.hash.get(key); 
 	}
 	
 	public void put(String key, Product val) 
@@ -30,4 +30,6 @@ public class ProductList implements Iterable<Product>
 	{
 		return Collections.unmodifiableCollection(hash.values()).iterator();
 	}
+
+	
 }
