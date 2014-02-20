@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.List;
 
 import ca.mcgill.cs.creco.data.Category;
+import ca.mcgill.cs.creco.logic.AttributeExtractor;
 import ca.mcgill.cs.creco.logic.model.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.search.CategorySearch;
 import ca.mcgill.cs.creco.logic.search.ProductSearch;
@@ -49,16 +50,16 @@ public class SearchService {
 		return new RankedFeaturesProducts(ratingList, specList, prodSearch);
 	}
 	
-	// Andrew define this method as you see fit!
 	private List<ScoredAttribute> getRatingList(Category eqClass, ProductSearchResult prodSearch)
 	{
-
+		AttributeExtractor ae = new AttributeExtractor(prodSearch, eqClass);
+		return ae.getScoredRatingList();
 	}
 	
-	// Andrew define this method as you see fit!
 	private List<ScoredAttribute> getSpecList(Category eqClass, ProductSearchResult prodSearch)
 	{
-
+		AttributeExtractor ae = new AttributeExtractor(prodSearch, eqClass);
+		return ae.getScoredSpecList();
 	}
 	
 	private ProductSearchResult getProductSearchResult(Category eqClass, String query)
