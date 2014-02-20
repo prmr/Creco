@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.List;
 
 import ca.mcgill.cs.creco.data.Category;
+import ca.mcgill.cs.creco.logic.model.ScoredAttribute;
 
 public class SearchService {
 
@@ -35,12 +36,13 @@ public class SearchService {
 	public List<Category> searchCategories(String query)
 	{
 		return categorySearch.queryCategories(query);
-	}
-	
+	}	
 	/*
 	public List<ScoredProduct> searchProducts(String eqId, String query)
 	{
 		return categorySearch.queryCategories(query);
 	}
 	*/
+	
+	
 }
