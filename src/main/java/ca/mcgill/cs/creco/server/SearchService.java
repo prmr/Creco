@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ca.mcgill.cs.creco.logic.search;
+package ca.mcgill.cs.creco.server;
 
 import java.io.IOException;
 import java.util.List;
 
 import ca.mcgill.cs.creco.data.Category;
+import ca.mcgill.cs.creco.logic.search.CategorySearch;
+import ca.mcgill.cs.creco.logic.search.ProductSearch;
 
 public class SearchService {
 
