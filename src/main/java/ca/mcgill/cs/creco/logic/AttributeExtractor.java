@@ -48,7 +48,6 @@ import ca.mcgill.cs.creco.logic.model.ScoredAttribute;
  * @see Category
  * @see Attribute
  */
-
 public class AttributeExtractor
 {
 
@@ -57,6 +56,24 @@ public class AttributeExtractor
 	private Iterable<SpecStat> aSpecList;
 	private ArrayList<ScoredAttribute> aScoredAttributeList;
 	
+	/**Constructor that takes a product list and an equivalence class.
+	 * @param pProductList subset of interesting products
+	 * @param pEquivalenceClass the whole space of interesting products
+	 */
+	public AttributeExtractor(List<Product> pProductList, Category pEquivalenceClass)
+	{
+		aProductList = pProductList;
+		aEquivalenceClass = pEquivalenceClass;
+		aSpecList = aEquivalenceClass.getSpecs();
+	}
+	/**
+	 * Computes the mean value of the attribute given a list of products if this attribute is numerical,
+	 * otherwise computes the mode of the value based on the same list of products.
+	 * NOTE: will eventually be implemented on the category also
+	 * @param pProductList List of products on which to evaluate the attribute
+	 * @param pAttributeID Id of the Attribute to be evaluated
+	 * @return AttributeValue which corresponds to the stat of that attribute
+	 */
 	public static AttributeValue extractMean(List<Product> pProductList, String pAttributeID)
 	{
 		double numericCount = 0;
@@ -69,6 +86,7 @@ public class AttributeExtractor
 			Spec s = p.getSpec(pAttributeID);
 			if( s != null)
 			{
+//				MODIFY WHEN ADDING CLASSES
 				String specString = s.getValue().toString();
 				String type = s.getType();
 				if(type.equals("int") || type.equals("double") || type.equals("float"))
@@ -109,7 +127,10 @@ public class AttributeExtractor
 		}
 		else if (trueCount > 0 || falseCount > 0)
 		{
-			if(trueCount > falseCount) return new AttributeValue(true);
+			if(trueCount > falseCount)
+			{
+				return new AttributeValue(true);
+			}
 			return new AttributeValue(false);
 			
 		}
@@ -128,26 +149,27 @@ public class AttributeExtractor
 		return new AttributeValue(maxAtt);
 	}
 	
-	public AttributeExtractor(List<Product> pProductList, Category pEquivalenceClass)
-	{
-		aProductList = pProductList;
-		aEquivalenceClass = pEquivalenceClass;
-		aSpecList = aEquivalenceClass.getSpecs();
-	}
+
 		
 	private void generateAttributeList()
 	{
 		updateRelativeAttributeScores();
-		Collections.sort(aScoredAttributeList, ScoredAttribute.sortByScore);		
+		Collections.sort(aScoredAttributeList, ScoredAttribute.SORT_BY_SCORE);		
 	}
 	
+	
+	//make helper functions to simplify this
+	/**Private classe that updates the attribute scores if the object's attributes.
+	 * Currently uses PCA to give scores to the attributes. 
+	 * 
+	 */
 	private void updateRelativeAttributeScores()
 	{
 //		this is where the magic happens
 //		to keep track of which attributes are being taken into account	
 //		uses hash map to avoid attributes with same or similar names which
 //		cause conflicts in weka <Name,index>
-		HashMap<String,String> attributeNames = new HashMap<String, String>();
+		HashMap<String, String> attributeNames = new HashMap<String, String>();
 		ArrayList<ScoredAttribute> scoredAttributes = new ArrayList<ScoredAttribute>();
 		FastVector attributeVector = new FastVector();
 		ArrayList<SpecStat> ssa = Lists.newArrayList(aSpecList);
@@ -184,12 +206,12 @@ public class AttributeExtractor
 					nominalValues.addElement(value);
 				}
 //				add the N/A String in case the object doesn't have the attribute
-				if(! nominalValues.contains("N/A"))
+				if(!nominalValues.contains("N/A"))
 				{
 					nominalValues.addElement("N/A");
 				}
 				attributeNames.put(a.getName(), "I"+index);
-				Attribute newAttribute = new Attribute("I"+index,nominalValues);
+				Attribute newAttribute = new Attribute("I"+index, nominalValues);
 				scoredAttributes.add(new ScoredAttribute(a.getAttribute()));
 				attributeVector.addElement(newAttribute);
 			}
@@ -218,7 +240,7 @@ public class AttributeExtractor
 				String value = "";
 				try
 				{
-					if(! scoredAttributes.get(i).isCat())
+					if(!scoredAttributes.get(i).isCat())
 					{
 						type = p.getSpec(scoredAttributes.get(i).getAttributeID()).getType();
 						value = p.getSpec(scoredAttributes.get(i).getAttributeID()).getValue().toString();
@@ -275,7 +297,7 @@ public class AttributeExtractor
 			PrincipalComponents eval = new PrincipalComponents();
 			//GreedyStepwise search = new GreedyStepwise();
 			//search.setSearchBackwards(true);
-			Ranker search=new Ranker();
+			Ranker search = new Ranker();
 			attsel.setEvaluator(eval);
 			attsel.setSearch(search);
 			attsel.SelectAttributes(dataset);
@@ -301,9 +323,13 @@ public class AttributeExtractor
 //			String Results = trainSelector.toResultsString();
 //			System.out.println(Results);
 		}
-		catch(Exception e)
+		catch(weka.core.WekaException e)
 		{
 			System.out.println("Weka ERROR:\n" + e);
+		}
+		catch(Exception e)
+		{
+			System.out.println("Weka Attribute ERROR:\n" + e);
 		}
 		aScoredAttributeList = scoredAttributes;
 		
@@ -311,26 +337,45 @@ public class AttributeExtractor
 	}
 		
 	
+	/**
+	 * @return The list of products used by the extractor
+	 */
 	public List<Product> getProductList() 
 	{
 		return aProductList;
 	}
 
+	/**
+	 * @param pProductList The list of products to be used by the extractor
+	 */
 	public void setProductList(List<Product> pProductList) 
 	{
 		this.aProductList = pProductList;
 	}
 
+	/**
+	 * @return The equivalence class used by the extractor
+	 */
 	public Category getEquivalenceClass() 
 	{
 		return aEquivalenceClass;
 	}
 
+	/**
+	 * @param pEquivalenceClass The equivalence class to be used by the extractor
+	 */
 	public void setEquivalenceClass(Category pEquivalenceClass) 
 	{
 		this.aEquivalenceClass = pEquivalenceClass;
 	}
 
+	/**
+	 * Call this method to get the list of scored attributes ranked from most important
+	 * to least important.
+	 * can return null pointers if it doesn't have any attributes to work with.
+	 * @return list of scored attributes ranked from most important
+	 * to least important.
+	 */
 	public ArrayList<ScoredAttribute> getScoredAttributeList() 
 	{
 		generateAttributeList();
