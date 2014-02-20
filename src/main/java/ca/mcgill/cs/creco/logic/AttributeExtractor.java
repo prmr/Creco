@@ -71,6 +71,7 @@ public class AttributeExtractor
 		aProductList = pProductList;
 		aEquivalenceClass = pEquivalenceClass;
 		aSpecList = aEquivalenceClass.getSpecs();
+		aRatingList = aEquivalenceClass.getRatings();
 	}
 	/**
 	 * Computes the mean value of the attribute given a list of products if this attribute is numerical,
@@ -366,7 +367,7 @@ public class AttributeExtractor
 			return;
 		}
 	    int index = 0;
-		for(SpecStat a : aSpecList)
+		for(RatingStat a : aRatingList)
 		{
 			
 //			check value type skip attribtues with mixed type
@@ -429,8 +430,8 @@ public class AttributeExtractor
 				{
 					if(!scoredAttributes.get(i).isCat())
 					{
-						type = p.getSpec(scoredAttributes.get(i).getAttributeID()).getType();
-						value = p.getSpec(scoredAttributes.get(i).getAttributeID()).getValue().toString();
+						type = p.getRating(scoredAttributes.get(i).getAttributeID()).getType();
+						value = p.getRating(scoredAttributes.get(i).getAttributeID()).getValue().toString();
 					}
 					else
 					{
@@ -578,7 +579,7 @@ public class AttributeExtractor
 	public ArrayList<ScoredAttribute> getScoredRatingList() 
 	{
 		generateRatingList();
-		return aScoredSpecList;
+		return aScoredRatingList;
 	}
 
 	
