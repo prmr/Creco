@@ -17,6 +17,7 @@ package ca.mcgill.cs.creco.logic.search;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -39,6 +40,10 @@ import org.apache.lucene.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ca.mcgill.cs.creco.data.CRData;
+import ca.mcgill.cs.creco.data.DataPath;
+import ca.mcgill.cs.creco.data.Product;
+import ca.mcgill.cs.creco.data.ProductList;
 import ca.mcgill.cs.creco.web.model.ProductVO;
 
 /**
@@ -65,23 +70,41 @@ public class ProductSearch
 		analyzer = new EnglishAnalyzer(VERSION);
 	}
 	
+	public void getprod() throws IOException{
+		
+		// Get the path to the data
+		String dataPath = DataPath.get();
+
+		// Build the CRData as a Java Object
+		CRData crData = new CRData(dataPath);
+		
+		ProductList prodList = crData.getProductList();
+		//System.out.println("size = "+prodList.size());
+		
+		addProducts(prodList);
+	}
+	
 	/**
 	 * Add products to the lucene search directory, with indexes on all the product's fields.
 	 * @param products list of products to store with lucene indices
 	 */
-	public void addProducts(List<ProductVO> products) 
+	public void addProducts(ProductList products) 
 	{
 		try 
 		{
 			Analyzer analyzer = new EnglishAnalyzer(VERSION);
 			IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(VERSION, analyzer));
-		for (ProductVO product : products) 
-		{
-			Document doc = new Document();
-			doc.add(new TextField(ID, product.getId(), Field.Store.YES));	
-			doc.add(new TextField(NAME, product.getName(), Field.Store.YES));
-			writer.addDocument(doc);
-		}
+			
+		
+			for(Product product : products){
+				
+				//Product product =(Product) itr.next();
+				Document doc = new Document();
+				doc.add(new TextField(ID, product.getId(), Field.Store.YES));	
+				doc.add(new TextField(NAME, product.getName(), Field.Store.YES));
+				writer.addDocument(doc);
+				}	
+		
 		writer.close();
 		}
 		catch (IOException e) 
@@ -97,7 +120,7 @@ public class ProductSearch
 	/*
 	public SearchResult queryProducts(String queryString) 
 	{
-		List<ProductVO> scoredResults = new ArrayList<ProductVO>();
+		ProductList scoredResults = new ProductList();
 		try 
 		{
 			Query query = new QueryParser(VERSION, NAME, analyzer).parse(queryString);
@@ -114,10 +137,11 @@ public class ProductSearch
 			    Document doc = searcher.doc(hits[i].doc);
 			    LOG.info((i + 1) + ". " + doc.get(NAME));
 			    
-			    ProductVO scoredProduct = new ProductVO();
+			   // ProductVO scoredProduct = new ProductVO();
+			    Product scoredProduct = new Product();
 			    scoredProduct.setId(doc.get(ID));
 			    scoredProduct.setName(doc.get(NAME));
-			    scoredResults.add(scoredProduct);
+			    scoredResults.put(doc.get(ID),scoredProduct);
 			}
 		}
 		catch (ParseException e)
@@ -128,7 +152,7 @@ public class ProductSearch
 		{
 			LOG.error(e.getMessage());
 		}	
-		SearchResult searchResult = new SearchResult(scoredResults);
+		ProductSearchResult searchResult = new ProductSearchResult(scoredResults);
 		return searchResult;
 	}
 	*/
