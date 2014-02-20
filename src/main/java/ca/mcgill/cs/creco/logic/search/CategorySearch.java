@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ca.mcgill.cs.creco.web.model.search;
+package ca.mcgill.cs.creco.logic.search;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.IntField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
@@ -42,75 +40,76 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.mcgill.cs.creco.data.CRData;
-import ca.mcgill.cs.creco.data.DataPath;
+import ca.mcgill.cs.creco.data.Category;
+import ca.mcgill.cs.creco.data.CategoryList;
 import ca.mcgill.cs.creco.data.Product;
-import ca.mcgill.cs.creco.data.ProductList;
-import ca.mcgill.cs.creco.web.model.ProductVO;
+
 
 /**
- * Searches a list of products with Lucene indexes.
+ * Searches a list of categories with Lucene indexes.
  */
-public class Search 
+public class CategorySearch 
 {
-	public static final String NAME = "name";
-	public static final String ID = "id";
+	public static final String CATEGORY_ID = "ID";
+	public static final String CATEGORY_NAME = "NAME";
+	public static final String FLATTENED_TEXT = "FLATTENED_TEXT";
 	
-	private static final Version VERSION = Version.LUCENE_46;
 	private static final int MAX_NUM_RESULTS = 10;
-	private static final Logger LOG = LoggerFactory.getLogger(Search.class);
+	private static final Version VERSION = Version.LUCENE_46;
+	private static final Logger LOG = LoggerFactory.getLogger(CategorySearch.class);
 	
 	private final Directory directory;
 	private final Analyzer analyzer;
+	
+	private CategoryList categoryList;
 
 	/**
 	 * Constructor.
 	 */
-	public Search() 
+	public CategorySearch() throws IOException
 	{
 		directory = new RAMDirectory();
 		analyzer = new EnglishAnalyzer(VERSION);
-	}
-	
-	public void getprod() throws IOException{
 		
-		// Get the path to the data
-		String dataPath = DataPath.get();
-
-		// Build the CRData as a Java Object
-		CRData crData = new CRData(dataPath);
-		
-		ProductList prodList = crData.getProductList();
-		//System.out.println("size = "+prodList.size());
-		
-		addProducts(prodList);
+		CRData crData = CRData.getData();
+		categoryList = crData.getCategoryList();
+		buildCategoryIndex(categoryList);
 	}
 	
 	/**
-	 * Add products to the lucene search directory, with indexes on all the product's fields.
-	 * @param products list of products to store with lucene indices
+	 * Add equivalence classes into the Lucene directory.
 	 */
-	public void addProducts(ProductList products) 
+	private void buildCategoryIndex(CategoryList categoryList) 
 	{
 		try 
 		{
 			Analyzer analyzer = new EnglishAnalyzer(VERSION);
 			IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(VERSION, analyzer));
-			
 		
-			for(Product product : products){
-				
-				//Product product =(Product) itr.next();
+			for (Category category : categoryList.getEqClasses()) {
+				String flattenedText = category.getName();
+				LOG.debug("Adding " + category.getName());
+				for (Product product : category.getProducts())
+				{
+					flattenedText += product.getName() + " ";
+					//flattenedText += product.getBrandName() + " ";
+					//flattenedText += product.getHighs() + " ";
+					//flattenedText += product.getLows() + " ";
+					//flattenedText += product.getDescription() + " ";
+					//flattenedText += product.getReview() + " ";
+					//flattenedText += product.getSummary() + " ";
+					//flattenedText += product.getBottomLine() + " ";
+				}
 				Document doc = new Document();
-				doc.add(new TextField(ID, product.getId(), Field.Store.YES));	
-				doc.add(new TextField(NAME, product.getName(), Field.Store.YES));
+				doc.add(new TextField(CATEGORY_ID, category.getId(), Field.Store.YES));
+				doc.add(new TextField(CATEGORY_NAME, category.getName(), Field.Store.YES));
+				doc.add(new TextField(FLATTENED_TEXT, flattenedText, Field.Store.YES));	
 				writer.addDocument(doc);
-				}	
-		
-		writer.close();
-		}
-		catch (IOException e) 
+			}
+			writer.close();
+		} catch (IOException e)
 		{
-			LOG.error(e.getMessage());
+			
 		}
 	}
 	
@@ -118,41 +117,45 @@ public class Search
 	 * Query the Lucene directory for matches to the query string.
 	 * @param queryString the search string
 	 */
-	public ProductSearchResult query(String queryString) 
+	public List<Category> queryCategories(String queryString) 
 	{
-		ProductList scoredResults = new ProductList();
+		List<Category> equivalenceClassResults = new ArrayList<Category>();
 		try 
 		{
-			Query query = new QueryParser(VERSION, NAME, analyzer).parse(queryString);
+			Query query = new QueryParser(VERSION, CATEGORY_NAME, analyzer).parse(queryString);
+			//Query query = new FuzzyQuery(new Term(FLATTENED_TEXT, queryString), 1);
 			DirectoryReader reader = DirectoryReader.open(directory);
 			IndexSearcher searcher = new IndexSearcher(reader);
 			TopScoreDocCollector results = TopScoreDocCollector.create(MAX_NUM_RESULTS, true);
 			
 			searcher.search(query, results);
 			ScoreDoc[] hits = results.topDocs().scoreDocs;
-			LOG.info("Found " + hits.length + " results.");	
+			
+			// If no category name matches are found, search in product names
+			if (hits.length == 0)
+			{
+				Query broaderQuery = new QueryParser(VERSION, FLATTENED_TEXT, analyzer).parse(queryString);
+				searcher.search(broaderQuery, results);
+				hits = results.topDocs().scoreDocs;
+			}
+			
+			LOG.info("Found " + hits.length + " results for \"" + queryString + "\"");	
 
 			for(int i = 0; i<hits.length; i++) 
 			{
 			    Document doc = searcher.doc(hits[i].doc);
-			    LOG.info((i + 1) + ". " + doc.get(NAME));
-			    
-			   // ProductVO scoredProduct = new ProductVO();
-			    Product scoredProduct = new Product();
-			    scoredProduct.setId(doc.get(ID));
-			    scoredProduct.setName(doc.get(NAME));
-			    scoredResults.put(doc.get(ID),scoredProduct);
+			    LOG.info(hits[i].score + " - " + categoryList.get(doc.get(CATEGORY_ID)).getName());
+			    equivalenceClassResults.add(categoryList.get(doc.get(CATEGORY_ID)));
 			}
+		}
+		catch (IOException e) 
+		{
+			LOG.error(e.getMessage());
 		}
 		catch (ParseException e)
 		{
 			LOG.error(e.getMessage());
 		}
-		catch (IOException e) 
-		{
-			LOG.error(e.getMessage());
-		}	
-		ProductSearchResult searchResult = new ProductSearchResult(scoredResults);
-		return searchResult;
+		return equivalenceClassResults;
 	}
 }

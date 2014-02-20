@@ -2,6 +2,8 @@ package ca.mcgill.cs.creco.data;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 
@@ -40,10 +42,14 @@ public class Category {
 	
 	// Derived fields set by associateProducts()
 	private ArrayList<Product> productsList;	
-	private ArrayList<String> ratingIntersection;
-	private ArrayList<String> specIntersection;
-	private Hashtable<String, SpecStat> specs;
-	private Hashtable<String, RatingStat> ratings;
+	private HashSet<String> ratingIntersection;
+	private HashSet<String> specIntersection;
+	private HashMap<String, SpecStat> specs;
+	private HashMap<String, RatingStat> ratings;
+	
+	// State fields for correcting implementing finding the intersection of children's attributes (later used for jaccard)
+	private boolean startNewRatingIntersection;
+	private boolean startNewSpecIntersection;
 	
 	Category(CategoryList catList, CategoryStub catStub, Category parent, int depth) 
 	{
@@ -66,14 +72,14 @@ public class Category {
 		// Now write the derived fields
 		this.catList = catList;
 		this.depth = depth;
-		this.ratings = new Hashtable<String, RatingStat>();
-		this.specs = new Hashtable<String, SpecStat>();
+		this.ratings = new HashMap<String, RatingStat>();
+		this.specs = new HashMap<String, SpecStat>();
 		this.parent = parent;
 		this.productsList = new ArrayList<Product>();
-		this.ratingIntersection = new ArrayList<String>();
-		this.specIntersection = new ArrayList<String>();
-		this.specs = new Hashtable<String, SpecStat>();
-		this.ratings = new Hashtable<String, RatingStat>();
+		this.ratingIntersection = new HashSet<String>();
+		this.specIntersection = new HashSet<String>();
+		this.specs = new HashMap<String, SpecStat>();
+		this.ratings = new HashMap<String, RatingStat>();
 		
 		// set the children, if any
 		this.children = new ArrayList<Category>();
@@ -109,20 +115,24 @@ public class Category {
 				this.children.add(new Category(this.catList, childCatStub, this, this.depth + 1));
 			}
 		}
+		
+		// Initialize the state ready for taking intersections of child category's attributes
+		this.startNewRatingIntersection = true;
+		this.startNewSpecIntersection = true;
 	}
 
 	void clearRatings()
 	{
-		this.ratings = new Hashtable<String, RatingStat>();
+		this.ratings = new HashMap<String, RatingStat>();
 	}
 	
 	void clearSpecs()
 	{
-		this.specs = new Hashtable<String, SpecStat>();
+		this.specs = new HashMap<String, SpecStat>();
 	}
 	
 	void calculateJaccard()
-	{
+	{		
 		double numerator  = ((double) (this.ratingIntersection.size() + this.specIntersection.size()));
 		double denominator = ((double) (this.ratings.size() + this.specs.size()));
 		if(denominator > 0)
@@ -179,7 +189,7 @@ public class Category {
 	
 	public boolean isSubEquivalence()
 	{
-		if(this.classType.equals("equivalence") || this.classType.equals("subEquivalence"))
+		if(this.classType.equals("equivalence") || this.classType.equals("subequivalence"))
 		{
 			return true;
 		}
@@ -210,7 +220,7 @@ public class Category {
 		desc += "\n - Ratings:\n";
 		for(RatingStat rating : this.ratings.values())
 		{
-			desc += "\t- " + rating.getName() + ": " + rating.getCount() + " (" + (float)(rating.getCount())/this.getCount()*100 + "%)";
+			desc += "\t- " + rating.getName() + " (" + rating.getId() +"): " + rating.getCount() + " (" + (float)(rating.getCount())/this.getCount()*100 + "%)";
 			if(rating.getValueMax() != null)
 			{
 				desc += " min/max: [" + rating.getValueMin() + ", " + rating.getValueMax() + "]";
@@ -220,7 +230,7 @@ public class Category {
 		desc += "\n - Specs:\n";
 		for(SpecStat spec : this.specs.values())
 		{
-			desc += "\t- " + spec.getName() + " : " + spec.getCount() + " (" + (float)(spec.getCount())/this.getCount()*100 + "%)";
+			desc += "\t- " + spec.getName() + " (" + spec.getId() + "): " + spec.getCount() + " (" + (float)(spec.getCount())/this.getCount()*100 + "%)";
 			if(spec.getValueMax() != null)
 			{
 				desc += " min/max: [" + spec.getValueMin() + ", " + spec.getValueMax() + "]";
@@ -231,103 +241,70 @@ public class Category {
 		return desc;
 	}
 	
-	public void intersectRatings(Iterable<RatingStat> ratings)
+	public void restartRatingIntersection()
 	{
-		// if the ratingsIntersection is empty (null), then just copy in the current set of ratings
-		if(this.ratingIntersection == null)
-		{
-			this.ratingIntersection = new ArrayList<String>();
-			for(RatingStat ratingStat : ratings)
-			{
-				this.ratingIntersection.add(ratingStat.getId());
-			}
-		}
-		
-		// Otherwise, scan the current set and remove any ratingId's not found in the passed set
-		else
-		{
-			for(String existingRatingId : this.ratingIntersection)
-			{
-				for(RatingStat newRating : ratings)
-				{
-					if(newRating.getId().equals(existingRatingId))
-					{
-						continue;
-					}
-				}
-				this.removeRatingFromIntersection(existingRatingId);
-			}
-		}
+		this.startNewRatingIntersection = true;
 	}
 	
-	
-	public void removeRatingFromIntersection(String ratingId)
+	public void restartSpecIntersection()
 	{
-		ArrayList<String> newRatingIntersection = new ArrayList<String>();
+		this.startNewSpecIntersection = true;
+	}
+	
+	public void intersectRatings(Category child)
+	{
+		// For the first child over which we take the intersection of ratings
+		// we simply note all the ratings it has
+		if(this.startNewRatingIntersection)
+		{
+			for(RatingStat rating : child.getRatings())
+			{
+				this.ratingIntersection.add(rating.getId());
+			}
+			this.startNewRatingIntersection = false;
+			return;
+		}
+		
+		// Subsequently, we remove any ratings that are not found in a given child
+		if(this.id.equals("28726"))
+		{
+			int a = 1;
+		}
+		HashSet<String> newRatingIntersection = new HashSet<String>(); 
 		for(String existingRatingId : this.ratingIntersection)
 		{
-			if(existingRatingId.equals(ratingId))
+			if(child.getRating(existingRatingId) != null)
 			{
-				continue;
+				newRatingIntersection.add(existingRatingId);
 			}
-			newRatingIntersection.add(ratingId);
 		}
-		this.setRatingIntersection(newRatingIntersection);
+		this.ratingIntersection = newRatingIntersection;
 	}
-	
-	public void intersectSpecs(Iterable<SpecStat> specs)
+		
+	public void intersectSpecs(Category child)
 	{
-		// if the specsIntersection is empty (null), then just copy in the current set of specs
-		if(this.specIntersection == null)
+		// For the first child over which we take the intersection of specs
+		// we simply note all the specs it has
+		if(this.startNewSpecIntersection)
 		{
-			this.specIntersection = new ArrayList<String>();
-			for(SpecStat specStat : specs)
+			for(SpecStat spec : child.getSpecs())
 			{
-				this.specIntersection.add(specStat.getId());
+				this.specIntersection.add(spec.getId());
 			}
+			this.startNewSpecIntersection = false;
+			return;
 		}
 		
-		// Otherwise, scan the current set and remove any specId's not found in the passed set
-		else
-		{
-			for(String existingSpecId : this.specIntersection)
-			{
-				for(SpecStat newSpec : specs)
-				{
-					if(newSpec.getId().equals(existingSpecId))
-					{
-						continue;
-					}
-				}
-				this.removeSpecFromIntersection(existingSpecId);
-			}
-		}
-	}
-	
-	
-	public void removeSpecFromIntersection(String specId)
-	{
-		ArrayList<String> newSpecIntersection = new ArrayList<String>();
+		// Subsequently, we remove any specs that are not found in a given child
+		HashSet<String> newSpecIntersection = new HashSet<String>();
 		for(String existingSpecId : this.specIntersection)
 		{
-			if(existingSpecId.equals(specId))
+			if(child.getSpec(existingSpecId) != null)
 			{
-				continue;
+				newSpecIntersection.add(existingSpecId);
 			}
-			newSpecIntersection.add(specId);
 		}
-		this.setSpecIntersection(newSpecIntersection);
-	}
-	
-	
-	public void setRatingIntersection(ArrayList<String> ratingIntersection)
-	{
-		this.ratingIntersection = ratingIntersection;
-	}
-	
-	public void setSpecIntersection(ArrayList<String> specIntersection)
-	{
-		this.specIntersection = specIntersection;
+		this.specIntersection = newSpecIntersection;
 	}
 	
 	public void putProduct(Product prod)
@@ -372,7 +349,7 @@ public class Category {
 		{
 			if(existingRating.getId().equals(rating.getId()))
 			{
-				existingRating.increment(rating.getCount());
+				existingRating.update(rating);
 				return;
 			}
 		}
@@ -383,6 +360,11 @@ public class Category {
 	public Iterable<RatingStat> getRatings()
 	{
 		return Collections.unmodifiableCollection(this.ratings.values());
+	}
+	
+	public RatingStat getRating(String id)
+	{
+		return this.ratings.get(id);
 	}
 	
 	public void mergeSpecs(Iterable<SpecStat> specs)
@@ -399,7 +381,7 @@ public class Category {
 		{
 			if(existingSpec.getId().equals(spec.getId()))
 			{
-				existingSpec.increment(spec.getCount());
+				existingSpec.update(spec);
 				return;
 			}
 		}
@@ -411,10 +393,12 @@ public class Category {
 	{
 		return Collections.unmodifiableCollection(this.specs.values());
 	}
-		
-	// TODO
-	// - I think that stat ratings should be managed from here for leafs
-	// 		that is, need to include updateRange etc.
+
+	public SpecStat getSpec(String id)
+	{
+		return this.specs.get(id);
+	}
+
 	public void putRatings(Iterable<Rating> ratings)
 	{
 		for(Rating rating : ratings)
@@ -422,7 +406,7 @@ public class Category {
 			this.putRating(rating);
 		}
 	}
-	
+
 	public void putSpec(Spec spec)
 	{
 		String specId = spec.getId();
@@ -453,13 +437,7 @@ public class Category {
 	
 	public Iterable<Product> getProducts()
 	{
-		return new Iterable<Product>()
-		{
-			public Iterator<Product> iterator()
-			{
-				return Collections.unmodifiableCollection(Category.this.productsList).iterator();
-			}
-		};
+		return Collections.unmodifiableCollection(Category.this.productsList);
 	}
 	
 	public int getCount()
@@ -518,14 +496,14 @@ public class Category {
 		return this.singularName;
 	}
 	
+	public String getPluralName()
+	{
+		return this.pluralName;
+	}
+	
 	public Iterable<Category> getChildren() 
 	{
-		return new Iterable<Category>()
-		{
-			public Iterator<Category> iterator() {
-				return Collections.unmodifiableCollection(Category.this.children).iterator();
-			}
-		};
+		return Collections.unmodifiableCollection(Category.this.children);
 	}
 	
 	public int size()

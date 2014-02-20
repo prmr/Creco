@@ -39,7 +39,6 @@ public class SearchService {
 		return categorySearch.queryCategories(query);
 	}
 	
-	public 
 	/*
 	public List<ScoredProduct> searchProducts(String eqId, String query)
 	{
