@@ -168,6 +168,11 @@ public class Product {
 	public String getName() {
 		return displayName;
 	}
+	
+	public String getName_()
+	{
+		return name;
+	}
 
 	public String getUpc() {
 		return upc;

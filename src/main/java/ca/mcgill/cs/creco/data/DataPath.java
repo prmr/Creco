@@ -29,7 +29,7 @@ public final class DataPath
 	private static String POINTER = ".localdatapath";
 	
 	private DataPath(){}
-	
+	// Hey there everythings working
 	/**
 	 * @return The path where the consumer reports data can be found locally. 
 	 * The return value is always terminated by a path separator character.

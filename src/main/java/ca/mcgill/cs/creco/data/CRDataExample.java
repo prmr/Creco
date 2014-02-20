@@ -3,14 +3,14 @@ package ca.mcgill.cs.creco.data;
 import java.io.IOException;
 
 public class CRDataExample {
-	public static void main(String[] args) throws IOException
+	public static void main1(String[] args) throws IOException
 	{
 		
 		// Get the path to the data
 		String dataPath = DataPath.get();
 
 		// Build the CRData as a Java Object
-		CRData crData = new CRData();
+		CRData crData = CRData.getData();
 		
 		
 		
@@ -23,7 +23,7 @@ public class CRDataExample {
 		ProductList prodList = crData.getProductList();
 		
 		// Quickly dump the category tree in human-readable form debugging purposes
-		System.out.println(catList.dumpTree());
+//		System.out.println(catList.dumpTree());
 //		System.out.println("\nSometimes its helpful, for debugging, just to see the category tree");
 //		System.out.println("The above was output using catList.dumpTree()\n");
 //		System.out.println("(E) indicates an equivalence class, and (e) is a subEquivalence class.");
@@ -34,10 +34,10 @@ public class CRDataExample {
 //		System.out.println("It also shows the number of products that actually include them. See the source for getters.");
 //		System.out.println("Hopefully, this is a leg up for feature selection.  Obviously more clever tricks will be needed though!");
 //		
-//		System.out.println(catList.get("32968").describe());
-//		System.out.println(catList.get("34382").describe());
-//		System.out.println(catList.get("34381").describe());
-//		
+		System.out.println(catList.get("32968").describe());
+		System.out.println(catList.get("34382").describe());
+		System.out.println(catList.get("34381").describe());
+		
 //		// Accessing the products of a category; accessing the category of a product
 //		System.out.println("You can access products from the category, or category from the products");
 //		Category humidifiers = catList.get("32968");
