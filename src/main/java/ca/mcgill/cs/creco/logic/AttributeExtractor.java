@@ -20,6 +20,8 @@ import com.google.common.collect.Lists;
 
 
 
+
+
 import weka.attributeSelection.AttributeSelection;
 //import weka.attributeSelection.CfsSubsetEval;
 //import weka.attributeSelection.GreedyStepwise;
@@ -36,12 +38,14 @@ import ca.mcgill.cs.creco.data.AttributeStat;
 import ca.mcgill.cs.creco.data.CRData;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.CategoryList;
+import ca.mcgill.cs.creco.data.ProductList;
 import ca.mcgill.cs.creco.data.RatingStat;
 import ca.mcgill.cs.creco.data.Spec;
 import ca.mcgill.cs.creco.data.SpecStat;
 import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.logic.model.AttributeValue;
 import ca.mcgill.cs.creco.logic.model.ScoredAttribute;
+import ca.mcgill.cs.creco.web.model.search.ProductSearchResult;
 
 
  /**
@@ -62,12 +66,25 @@ public class AttributeExtractor
 	private ArrayList<ScoredAttribute> aScoredSpecList;
 	private ArrayList<ScoredAttribute> aScoredRatingList;
 	
+	/**Constructor that takes a productsearch result and an equivalence class.
+	 * @param pProductSearchResult a lucene result
+	 * @param pEquivalenceClass the whole space of interesting products
+	 */
+	public AttributeExtractor(ProductSearchResult pProductSearchResult, Category pEquivalenceClass)
+	{
+		
+		aProductList = Lists.newArrayList(pProductSearchResult.getProducts().iterator());
+		aEquivalenceClass = pEquivalenceClass;
+		aSpecList = aEquivalenceClass.getSpecs();
+		aRatingList = aEquivalenceClass.getRatings();
+	}
 	/**Constructor that takes a product list and an equivalence class.
 	 * @param pProductList subset of interesting products
 	 * @param pEquivalenceClass the whole space of interesting products
 	 */
 	public AttributeExtractor(List<Product> pProductList, Category pEquivalenceClass)
 	{
+		
 		aProductList = pProductList;
 		aEquivalenceClass = pEquivalenceClass;
 		aSpecList = aEquivalenceClass.getSpecs();
