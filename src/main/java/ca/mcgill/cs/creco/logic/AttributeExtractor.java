@@ -1,8 +1,6 @@
 /**
- * TODO: Fix to work with product IDs merge with Gowri's code
- * Write  a few tests
- * Add ratings return
- * Add getCategory
+ * TODO: Add getCategory, create more helper methods for the update classes, possible more classes
+ *  
  */
 package ca.mcgill.cs.creco.logic;
 
@@ -11,8 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Collections;
 import java.util.Iterator;
-
-import ch.qos.logback.core.db.dialect.HSQLDBDialect;
 
 import com.google.common.collect.Lists;
 //import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
