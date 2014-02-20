@@ -1,4 +1,4 @@
-package ca.mcgill.cs.creco;
+package ca.mcgill.cs.creco.server;
 
 import java.lang.StringBuilder;
 import java.util.Date;
