@@ -31,6 +31,7 @@ public class ProductSearchResult
 	private final ProductList products;
 	
 	public ProductSearchResult(ProductList products){
+
 		this.products = products;
 	}
 	

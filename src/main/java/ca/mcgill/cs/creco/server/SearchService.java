@@ -19,10 +19,8 @@ import java.io.IOException;
 import java.util.List;
 
 import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.logic.model.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.search.CategorySearch;
 import ca.mcgill.cs.creco.logic.search.ProductSearch;
-import ca.mcgill.cs.creco.web.model.search.ProductSearchResult;
 
 public class SearchService {
 
@@ -41,30 +39,6 @@ public class SearchService {
 		return categorySearch.queryCategories(query);
 	}
 	
-	public RankedFeaturesProducts getRankedFeaturesProducts(Category eqClass, String query)
-	{
-		ProductSearchResult prodSearch = this.getProductSearchResult(eqClass, query);
-		List<ScoredAttribute> ratingList = this.getRatingList(eqClass, prodSearch);
-		List<ScoredAttribute> specList = this.getSpecList(eqClass, prodSearch);
-		return new RankedFeaturesProducts(ratingList, specList, prodSearch);
-	}
-	
-	// Andrew define this method as you see fit!
-	private List<ScoredAttribute> getRatingList(Category eqClass, ProductSearchResult prodSearch)
-	{
-
-	}
-	
-	// Andrew define this method as you see fit!
-	private List<ScoredAttribute> getSpecList(Category eqClass, ProductSearchResult prodSearch)
-	{
-
-	}
-	
-	private ProductSearchResult getProductSearchResult(Category eqClass, String query)
-	{
-		// Gowri -- make this code call your product search.
-	}
 	/*
 	public List<ScoredProduct> searchProducts(String eqId, String query)
 	{

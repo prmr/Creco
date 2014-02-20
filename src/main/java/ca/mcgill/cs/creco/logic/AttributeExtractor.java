@@ -1,8 +1,6 @@
 /**
- * TODO: Fix to work with product IDs merge with Gowri's code
- * Write  a few tests
- * Add ratings return
- * Add getCategory
+ * TODO: Add getCategory, create more helper methods for the update classes, possible more classes
+ *  
  */
 package ca.mcgill.cs.creco.logic;
 
@@ -12,10 +10,10 @@ import java.util.List;
 import java.util.Collections;
 import java.util.Iterator;
 
-import ch.qos.logback.core.db.dialect.HSQLDBDialect;
-
 import com.google.common.collect.Lists;
 //import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
+
+
 
 
 
@@ -36,12 +34,14 @@ import ca.mcgill.cs.creco.data.AttributeStat;
 import ca.mcgill.cs.creco.data.CRData;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.CategoryList;
+import ca.mcgill.cs.creco.data.ProductList;
 import ca.mcgill.cs.creco.data.RatingStat;
 import ca.mcgill.cs.creco.data.Spec;
 import ca.mcgill.cs.creco.data.SpecStat;
 import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.logic.model.AttributeValue;
 import ca.mcgill.cs.creco.logic.model.ScoredAttribute;
+import ca.mcgill.cs.creco.web.model.search.ProductSearchResult;
 
 
  /**
@@ -62,12 +62,25 @@ public class AttributeExtractor
 	private ArrayList<ScoredAttribute> aScoredSpecList;
 	private ArrayList<ScoredAttribute> aScoredRatingList;
 	
+	/**Constructor that takes a ProductSearchResult and an equivalence class.
+	 * @param pProductSearchResult a lucene result
+	 * @param pEquivalenceClass the whole space of interesting products
+	 */
+	public AttributeExtractor(ProductSearchResult pProductSearchResult, Category pEquivalenceClass)
+	{
+		
+		aProductList = Lists.newArrayList(pProductSearchResult.getProducts().iterator());
+		aEquivalenceClass = pEquivalenceClass;
+		aSpecList = aEquivalenceClass.getSpecs();
+		aRatingList = aEquivalenceClass.getRatings();
+	}
 	/**Constructor that takes a product list and an equivalence class.
 	 * @param pProductList subset of interesting products
 	 * @param pEquivalenceClass the whole space of interesting products
 	 */
 	public AttributeExtractor(List<Product> pProductList, Category pEquivalenceClass)
 	{
+		
 		aProductList = pProductList;
 		aEquivalenceClass = pEquivalenceClass;
 		aSpecList = aEquivalenceClass.getSpecs();

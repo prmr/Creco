@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ca.mcgill.cs.creco.logic.search;
+package ca.mcgill.cs.creco.web.model.search;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.IntField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
@@ -39,19 +41,23 @@ import org.apache.lucene.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ca.mcgill.cs.creco.data.CRData;
+import ca.mcgill.cs.creco.data.DataPath;
+import ca.mcgill.cs.creco.data.Product;
+import ca.mcgill.cs.creco.data.ProductList;
 import ca.mcgill.cs.creco.web.model.ProductVO;
 
 /**
  * Searches a list of products with Lucene indexes.
  */
-public class ProductSearch 
+public class Search 
 {
 	public static final String NAME = "name";
 	public static final String ID = "id";
 	
 	private static final Version VERSION = Version.LUCENE_46;
 	private static final int MAX_NUM_RESULTS = 10;
-	private static final Logger LOG = LoggerFactory.getLogger(ProductSearch.class);
+	private static final Logger LOG = LoggerFactory.getLogger(Search.class);
 	
 	private final Directory directory;
 	private final Analyzer analyzer;
@@ -59,29 +65,47 @@ public class ProductSearch
 	/**
 	 * Constructor.
 	 */
-	public ProductSearch() 
+	public Search() 
 	{
 		directory = new RAMDirectory();
 		analyzer = new EnglishAnalyzer(VERSION);
+	}
+	
+	public void getprod() throws IOException{
+		
+		// Get the path to the data
+		String dataPath = DataPath.get();
+
+		// Build the CRData as a Java Object
+		CRData crData = CRData.getData();
+		
+		ProductList prodList = crData.getProductList();
+		//System.out.println("size = "+prodList.size());
+		
+		addProducts(prodList);
 	}
 	
 	/**
 	 * Add products to the lucene search directory, with indexes on all the product's fields.
 	 * @param products list of products to store with lucene indices
 	 */
-	public void addProducts(List<ProductVO> products) 
+	public void addProducts(ProductList products) 
 	{
 		try 
 		{
 			Analyzer analyzer = new EnglishAnalyzer(VERSION);
 			IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(VERSION, analyzer));
-		for (ProductVO product : products) 
-		{
-			Document doc = new Document();
-			doc.add(new TextField(ID, product.getId(), Field.Store.YES));	
-			doc.add(new TextField(NAME, product.getName(), Field.Store.YES));
-			writer.addDocument(doc);
-		}
+			
+		
+			for(Product product : products){
+				
+				//Product product =(Product) itr.next();
+				Document doc = new Document();
+				doc.add(new TextField(ID, product.getId(), Field.Store.YES));	
+				doc.add(new TextField(NAME, product.getName(), Field.Store.YES));
+				writer.addDocument(doc);
+				}	
+		
 		writer.close();
 		}
 		catch (IOException e) 
@@ -94,10 +118,9 @@ public class ProductSearch
 	 * Query the Lucene directory for matches to the query string.
 	 * @param queryString the search string
 	 */
-	/*
-	public SearchResult queryProducts(String queryString) 
+	public ProductSearchResult query(String queryString) 
 	{
-		List<ProductVO> scoredResults = new ArrayList<ProductVO>();
+		ProductList scoredResults = new ProductList();
 		try 
 		{
 			Query query = new QueryParser(VERSION, NAME, analyzer).parse(queryString);
@@ -114,10 +137,11 @@ public class ProductSearch
 			    Document doc = searcher.doc(hits[i].doc);
 			    LOG.info((i + 1) + ". " + doc.get(NAME));
 			    
-			    ProductVO scoredProduct = new ProductVO();
+			   // ProductVO scoredProduct = new ProductVO();
+			    Product scoredProduct = new Product();
 			    scoredProduct.setId(doc.get(ID));
 			    scoredProduct.setName(doc.get(NAME));
-			    scoredResults.add(scoredProduct);
+			    scoredResults.put(doc.get(ID),scoredProduct);
 			}
 		}
 		catch (ParseException e)
@@ -128,8 +152,7 @@ public class ProductSearch
 		{
 			LOG.error(e.getMessage());
 		}	
-		SearchResult searchResult = new SearchResult(scoredResults);
+		ProductSearchResult searchResult = new ProductSearchResult(scoredResults);
 		return searchResult;
 	}
-	*/
 }
