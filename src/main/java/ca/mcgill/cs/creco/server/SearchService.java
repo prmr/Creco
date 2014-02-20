@@ -65,6 +65,7 @@ public class SearchService {
 	private ProductSearchResult getProductSearchResult(Category eqClass, String query)
 	{
 		// Gowri -- make this code call your product search.
+		return null;
 	}
 	/*
 	public List<ScoredProduct> searchProducts(String eqId, String query)
