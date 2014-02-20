@@ -26,12 +26,11 @@ import ca.mcgill.cs.creco.data.ProductList;
  * 
  * Real class
  */
-public class SearchResult
+public class ProductSearchResult
 {
 	private final ProductList products;
 	
-	public SearchResult(ProductList products){
-
+	public ProductSearchResult(ProductList products){
 		this.products = products;
 	}
 	

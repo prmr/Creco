@@ -118,7 +118,7 @@ public class Search
 	 * Query the Lucene directory for matches to the query string.
 	 * @param queryString the search string
 	 */
-	public SearchResult query(String queryString) 
+	public ProductSearchResult query(String queryString) 
 	{
 		ProductList scoredResults = new ProductList();
 		try 
@@ -152,7 +152,7 @@ public class Search
 		{
 			LOG.error(e.getMessage());
 		}	
-		SearchResult searchResult = new SearchResult(scoredResults);
+		ProductSearchResult searchResult = new ProductSearchResult(scoredResults);
 		return searchResult;
 	}
 }

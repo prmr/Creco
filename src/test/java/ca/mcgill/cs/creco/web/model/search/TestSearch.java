@@ -31,7 +31,7 @@ public class TestSearch
 		assertEquals(product,temp);
 
 		search.addProducts(products);
-		SearchResult result = search.query(testName);
+		ProductSearchResult result = search.query(testName);
 		Product resultProduct = result.getProducts().get(testId);
 		assertEquals(resultProduct.getName(), testName);
 	}
