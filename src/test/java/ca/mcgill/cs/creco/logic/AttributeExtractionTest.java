@@ -23,7 +23,7 @@ public class AttributeExtractionTest {
 		String catName = "";
 		try
 		{
-			CRData data = new CRData();
+			CRData data = CRData.getData();
 			CategoryList catList = data.getCategoryList();
 			for(Category c : catList)
 			{
@@ -35,8 +35,12 @@ public class AttributeExtractionTest {
 				Iterable<Product> products = c.getProducts();
 				List<Product> productList = Lists.newArrayList(products);
 				AttributeExtractor aec = new AttributeExtractor(productList, c);
-				ArrayList<ScoredAttribute> sal = aec.getScoredAttributeList();
-				System.out.println(sal);
+				ArrayList<ScoredAttribute> ssl = aec.getScoredSpecList();
+				ArrayList<ScoredAttribute> srl = aec.getScoredRatingList();
+				System.out.println("Specs:");
+				System.out.println(ssl);
+				System.out.println("Ratings:");
+				System.out.println(srl);
 			}
 			
 		}

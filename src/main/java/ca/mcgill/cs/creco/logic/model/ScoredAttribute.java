@@ -22,9 +22,6 @@ import ca.mcgill.cs.creco.data.*;
 /**
  *
  */
-/**
- *
- */
 public class ScoredAttribute 
 {
 	
