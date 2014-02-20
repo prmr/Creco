@@ -66,7 +66,7 @@ public class AttributeExtractor
 	private ArrayList<ScoredAttribute> aScoredSpecList;
 	private ArrayList<ScoredAttribute> aScoredRatingList;
 	
-	/**Constructor that takes a productsearch result and an equivalence class.
+	/**Constructor that takes a ProductSearchResult and an equivalence class.
 	 * @param pProductSearchResult a lucene result
 	 * @param pEquivalenceClass the whole space of interesting products
 	 */
