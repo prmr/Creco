@@ -28,8 +28,7 @@ public class SearchService {
 	public SearchService() throws IOException
 	{
 		this.categorySearch = new CategorySearch();
-		// TODO: add product search here
-		//this.productSearch = new ProductSearch();
+		this.productSearch = new ProductSearch();
 	}
 	
 	public List<Category> searchCategories(String query)
@@ -37,10 +36,10 @@ public class SearchService {
 		return categorySearch.queryCategories(query);
 	}
 	
-	/*
-	public List<ScoredProduct> searchProducts(String eqId, String query)
+	
+	public  ProductSearchResults searchProducts(String query, String eqClassID) 
 	{
-		return categorySearch.queryCategories(query);
+		return productSearch.queryProducts(query,eqClassID);
 	}
-	*/
+	
 }
