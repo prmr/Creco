@@ -16,7 +16,7 @@ public class CRData
 		"product_cars.json", "product_health.json", "product_homeGarden.json", 
 		"product_food.json", "product_babiesKids.json", "product_money.json"
 	};
-	private static String categoryFileName = "category";
+	private static String categoryFileName = "category.json";
 
 	private CRData() throws IOException
 	{
