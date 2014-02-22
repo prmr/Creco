@@ -88,7 +88,7 @@ public class CategorySearch
 		
 			for (Category category : categoryList.getEqClasses()) {
 				String flattenedText = category.getName();
-				LOG.debug("Adding " + category.getName());
+				LOG.debug("Adding " + category.getName() +", ID: " + category.getId());
 				for (Product product : category.getProducts())
 				{
 					flattenedText += product.getName() + " ";

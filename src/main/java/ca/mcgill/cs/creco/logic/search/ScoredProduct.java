@@ -26,7 +26,7 @@ import ca.mcgill.cs.creco.data.ProductList;
  */
 
 
-class ScoredProduct{
+public class ScoredProduct{
 	
 private final Product product;
 private float luceneScore;

@@ -33,9 +33,9 @@ public class TestDataPath
 		// in an environment-independent manner.
 		Field pointer = DataPath.class.getDeclaredField("POINTER");
 		pointer.setAccessible(true);
-		pointer.set(null, "src/test/java/ca/mcgill/cs/creco/util/.localdatapath");
+		pointer.set(null, "src/test/java/ca/mcgill/cs/creco/util/.localdatapath1");
 		String path = DataPath.get();
-		assertEquals("/home/gowri/data" + File.separator,DataPath.get());
+		assertEquals("C:\\temp\\data" + File.separator,DataPath.get());
 
 	}
 }

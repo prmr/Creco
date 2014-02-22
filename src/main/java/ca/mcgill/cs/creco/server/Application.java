@@ -13,20 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ca.mcgill.cs.creco;
+package ca.mcgill.cs.creco.server;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import java.io.IOException;
 
-@Controller
-public class GreetingController {
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.annotation.ComponentScan;
 
-    @RequestMapping("/greeting")
-    public String greeting(@RequestParam(value="name", required=false, defaultValue="World") String name, Model model) {
-        model.addAttribute("name", name);
-        return "greeting";
+
+@ComponentScan
+@EnableAutoConfiguration
+public class Application {
+
+    /**
+     * @param args
+     * @throws InterruptedException 
+     * @throws IOException 
+     */
+    public static void main(String[] args) throws IOException, InterruptedException
+    {
+        SpringApplication.run(Application.class, args);
+        start.start_update();
     }
 
 }
