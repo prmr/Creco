@@ -31,15 +31,13 @@ package ca.mcgill.cs.creco.logic.search;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.IntField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
@@ -59,16 +57,10 @@ import org.slf4j.LoggerFactory;
 import ca.mcgill.cs.creco.data.CRData;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.CategoryList;
-import ca.mcgill.cs.creco.data.DataPath;
 import ca.mcgill.cs.creco.data.Product;
-import ca.mcgill.cs.creco.data.ProductList;
-import ca.mcgill.cs.creco.web.model.ProductVO;
 
 /**
  * Searches a list of products ordered by equivalence classes with Lucene indexes.
- */
-/**
- *
  */
 public class ProductSearch 
 {
@@ -76,14 +68,13 @@ public class ProductSearch
 	public static final String ID = "id";
 	
 	private static final Version VERSION = Version.LUCENE_46;
-	private static final int MAX_NUM_RESULTS = 20;
+	private static final int MAX_NUM_RESULTS = 1000;
 	private static final Logger LOG = LoggerFactory.getLogger(ProductSearch.class);
 	
 	private final Directory directory;
 	private final Analyzer analyzer;
 	
 	private CategoryList categoryList;
-	private ProductList productList;
 
 
 	/**
@@ -97,68 +88,42 @@ public class ProductSearch
 		CRData crData = CRData.getData();
 
 		categoryList = crData.getCategoryList();
-		productList = crData.getProductList();
 		buildProductIndexByCategory(categoryList);
 	}
 	
 	/**
 	 * Add products into the Lucene directory.
 	 */
-	private void buildProductIndexByCategory(CategoryList categoryList) {
-		try {
-
+	private void buildProductIndexByCategory(CategoryList categoryList) 
+	{
+		//TODO: Might be more efficient to have a different index for each equivalence class,
+		// instead of searching all products in a single index, and then filtering out the
+		// results outside the equivalence class.
+		
+		try 
+		{
 			Analyzer analyzer = new EnglishAnalyzer(VERSION);
 			IndexWriter writer = new IndexWriter(directory,
 					new IndexWriterConfig(VERSION, analyzer));
 
-			for (Category category : categoryList.getEqClasses()) {
-				
-
-				for (Product product : category.getProducts()) {
-
-					LOG.debug("Adding category : " + category.getName()+" id : "+category.getId()+" product : "+product.getName());
+			for (Category category : categoryList.getEqClasses()) 
+			{
+				for (Product product : category.getProducts()) 
+				{
+					// LOG.debug("Adding category : " + category.getName()+" id : "+category.getId()+" product : "+product.getName());
 					Document doc = new Document();
 					doc.add(new TextField(ID, product.getId(), Field.Store.YES));
-					doc.add(new TextField(NAME, product.getName(),
-							Field.Store.YES));
+					doc.add(new TextField(NAME, product.getName(), Field.Store.YES));
 					writer.addDocument(doc);
 
 				}
 			}
 			writer.close();
-		} catch (IOException e) {
+		} catch (IOException e) 
+		{
 			LOG.error(e.getMessage());
 		}
 
-	}
-	
-	/**
-	 * Add products to the lucene search directory, with indexes on all the product's fields.
-	 * @param products list of products to store with lucene indices
-	 */
-	public void addProducts(ProductList products) 
-	{
-		try 
-		{
-			Analyzer analyzer = new EnglishAnalyzer(VERSION);
-			IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(VERSION, analyzer));
-			
-		
-			for(Product product : products){
-				
-				//Product product =(Product) itr.next();
-				Document doc = new Document();
-				doc.add(new TextField(ID, product.getId(), Field.Store.YES));	
-				doc.add(new TextField(NAME, product.getName(), Field.Store.YES));
-				writer.addDocument(doc);
-				}	
-		
-		writer.close();
-		}
-		catch (IOException e) 
-		{
-			LOG.error(e.getMessage());
-		}
 	}
 	
 	/**
@@ -167,15 +132,20 @@ public class ProductSearch
 	 * @param eqClassID the id of the equivalence class
 	 * @return ProductSearchResults an object of ProductSearchResults
 	 */
-	public ProductSearchResults queryProducts(String queryString, String eqClassID) 
+	public List<ScoredProduct> queryProducts(String queryString, String eqClassID) 
 	{
-		
 		Category c =categoryList.get(eqClassID);
+		if (c == null)
+		{
+			LOG.error("Invalid category ID: " + eqClassID);
+			return null;
+		}
 		
-		HashMap<String, Product> allProductsOfUserEq = new HashMap<String, Product>();
-		ArrayList<ProductSearchResult> scoredProductsList = new ArrayList<ProductSearchResult>();
+		Map<String, Product> allProductsOfUserEq = new HashMap<String, Product>();
+		List<ScoredProduct> scoredProducts = new ArrayList<ScoredProduct>();
 		
-		for(Product product :c.getProducts()){
+		for(Product product :c.getProducts())
+		{
 			allProductsOfUserEq.put(product.getId(), product);
 		}
 		try 
@@ -197,9 +167,7 @@ public class ProductSearch
 			    {
 			    	Product p=allProductsOfUserEq.get(doc.get(ID));
 			    	LOG.info(hits[i].score + ". " + doc.get(NAME));
-			       // Product p = productList.get(Integer.parseInt(doc.get(ID)));
-			    	scoredProductsList.add(new ProductSearchResult(p,hits[i].score,eqClassID));
-			    
+			    	scoredProducts.add(new ScoredProduct(p,hits[i].score,eqClassID));
 			    }
 			   
 			}
@@ -213,9 +181,7 @@ public class ProductSearch
 		{
 			LOG.error(e.getMessage());
 		}	
-		ProductSearchResults productSearchResults = new ProductSearchResults(scoredProductsList);
-		return productSearchResults;
-		
+		return scoredProducts;
 		
 	}
 	

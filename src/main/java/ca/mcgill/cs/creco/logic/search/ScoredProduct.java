@@ -26,13 +26,13 @@ import ca.mcgill.cs.creco.data.ProductList;
  */
 
 
-class ProductSearchResult{
+class ScoredProduct{
 	
 private final Product product;
 private float luceneScore;
 private String eqClassId;
 	
-	public ProductSearchResult(Product product, float luceneScore, String eqClassId){
+	public ScoredProduct(Product product, float luceneScore, String eqClassId){
 
 		this.product = product;
 		this.luceneScore=luceneScore;

@@ -15,10 +15,46 @@
  */
 package ca.mcgill.cs.creco.logic.search;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 public class SearchExample {
-	public static void main(String[] args) throws Exception
+	public static void productSearchExample() throws IOException
+	{
+		
+		SearchService search = new SearchService();
+
+		Scanner scanner = new Scanner (System.in);
+		String productName= "";
+		String eqClassId ="";
+		while(!productName.equals("exit"))
+		{
+			System.out.print("Enter your search query (or 'exit'): ");  
+			productName = scanner.nextLine();
+			System.out.print("Enter the equivalence class id : ");  
+			eqClassId= scanner.nextLine();
+			//  A sample query
+			//queryProducts("Avalanche 21-014","33118"); 
+
+			// Just used to debug, this re-initializes the index
+			if (productName.equals("refresh")){
+				search = new SearchService();
+			}
+			
+			List<ScoredProduct> scoredProducts = search.searchProducts(productName,eqClassId);
+			
+			for(ScoredProduct scoredProduct : scoredProducts){
+				
+				System.out.println("Lucene Score : "+scoredProduct.getLuceneScore()+"\tProduct Name : "+scoredProduct.getProduct().getName()
+						+"\tEquivalence Class Id : "+scoredProduct.getEqClassId());
+			}
+		}
+		scanner.close();
+
+	}
+	
+	public static void categorySearchExample() throws Exception
 	{
 		SearchService search = new SearchService();
 
@@ -37,6 +73,19 @@ public class SearchExample {
 			search.searchCategories(userinput);
 		}
 		scanner.close();
+	}
+	
+	public static void main(String[] args)
+	{
+		// categorySearchExample();
+		try
+		{
+			productSearchExample();
+		}
+		catch (IOException e)
+		{
+			System.out.println(e);
+		}
 	}
 
 }
