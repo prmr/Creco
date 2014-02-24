@@ -18,21 +18,25 @@
 	padding: 5px 5px 0 0;
 }
 
-#result{
-	/*display: none;*/
+#eq-result {
+	
 }
 
-.result-entry {
-	width: 300px;
-	border: 1px solid #CFCFCF;
-	line-height: 30px;
-	padding: 0 15px;
-	margin: 3px 0;
+.eq-result-entry {
+	background: rgb(240, 240, 240);
+	cursor: pointer;
+	display: -webkit-box;
+	line-height: 32px;
+	width: 350px;
+	border: 1px solid rgb(202, 202, 202);
+	border-radius: 4px;
+	margin: 4px 0;
+}
+.eq-result-name {
+	padding: 0 12px;
+}
 }
 
-.result-entry-count {
-	margin-left: 15px;
-}
 .badge {
 	cursor: pointer;
 }

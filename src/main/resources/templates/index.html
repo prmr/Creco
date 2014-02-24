@@ -20,36 +20,17 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-    <p th:text="'Hello, ' + ${name} + '!'" />
     <div id='demo'>			
 			<h3><span class="label label-info">Product Exploration Demo</span></h3>	
 
 			<div id='main_searchbar' class="input-group">
-				<input id='main_search_text' type="text" class="form-control" style="width: 350px" placeholder="Please enter product names, brands, etc."></input>
-				<button id='search_btn' type="button" class="btn btn-info">Search</button>
-				<button id='advance_btn' class='btn'>advanced >></button>
+				<form method="POST" th:object="${mainQuery}">
+					<input id='main_search_text' type="text" class="form-control" style="width: 350px" placeholder="Please enter product names, brands, etc."
+						th:field="*{query}"></input>
+					<input id='search_btn' type="submit" class="btn btn-info" value="Search"></input>	
+				</form>
 			</div>
 
-			<div id='advanced_searchbar' style='display:none'> 
-			</div>
-
-			<div id='result'>Result
-				<table class="table table-striped">
-					<thead>
-						<tr>
-							<th>ID</th>
-							<th>Name</th>
-						</tr>
-					</thead>
-					<tbody>
-	                    <tr th:each="product : ${productList.products}">
-	                        <td th:text="${product.id}"></td>
-	                        <td th:text="${product.name}"></td>
-	                    </tr>
-					</tbody>
-				</table>
-			</div>
-			<div id='products_wrapper'></div>
 	</div>
 </body>
 	<script src="//code.jquery.com/jquery-1.9.1.js"></script>

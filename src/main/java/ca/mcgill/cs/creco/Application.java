@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ca.mcgill.cs.creco.server;
+package ca.mcgill.cs.creco;
 
 import java.io.IOException;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.ComponentScan;
+
+import ca.mcgill.cs.creco.server.start;
 
 
 @ComponentScan
