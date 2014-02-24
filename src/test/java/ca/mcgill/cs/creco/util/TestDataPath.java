@@ -20,6 +20,8 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.lang.reflect.Field;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import ca.mcgill.cs.creco.data.DataPath;
@@ -37,4 +39,13 @@ public class TestDataPath
 		String path = DataPath.get();
 		assertEquals("C:\\temp\\data" + File.separator,DataPath.get());
 	}
+	
+	@After
+	public void resetDataPath() throws Exception
+	{
+		Field pointer = DataPath.class.getDeclaredField("POINTER");
+		pointer.setAccessible(true);
+		pointer.set(null, ".localdatapath");
+	}
+	
 }
