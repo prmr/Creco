@@ -11,18 +11,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 //import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
-
-
-
-
-
-
-
-
 
 import weka.attributeSelection.AttributeSelection;
 //import weka.attributeSelection.CfsSubsetEval;
@@ -37,10 +27,7 @@ import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import ca.mcgill.cs.creco.data.AttributeStat;
-import ca.mcgill.cs.creco.data.CRData;
 import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.data.CategoryList;
-import ca.mcgill.cs.creco.data.ProductList;
 import ca.mcgill.cs.creco.data.RatingStat;
 import ca.mcgill.cs.creco.data.Spec;
 import ca.mcgill.cs.creco.data.SpecStat;
