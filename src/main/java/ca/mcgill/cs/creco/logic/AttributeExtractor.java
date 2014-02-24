@@ -11,8 +11,13 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 //import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
+
+
+
 
 
 
@@ -40,6 +45,7 @@ import ca.mcgill.cs.creco.data.RatingStat;
 import ca.mcgill.cs.creco.data.Spec;
 import ca.mcgill.cs.creco.data.SpecStat;
 import ca.mcgill.cs.creco.data.Product;
+import ca.mcgill.cs.creco.logic.model.AttributeHashMap;
 import ca.mcgill.cs.creco.logic.model.AttributeValue;
 import ca.mcgill.cs.creco.logic.model.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
@@ -196,62 +202,28 @@ public class AttributeExtractor
 //		to keep track of which attributes are being taken into account	
 //		uses hash map to avoid attributes with same or similar names which
 //		cause conflicts in weka <Name,index>
-		HashMap<String, String> attributeNames = new HashMap<String, String>();
+//		HashMap<String, String> attributeNames = new HashMap<String, String>();
 		ArrayList<ScoredAttribute> scoredAttributes = new ArrayList<ScoredAttribute>();
-		FastVector attributeVector = new FastVector();
-		ArrayList<SpecStat> ssa = Lists.newArrayList(aSpecList);
+//		FastVector attributeVector = new FastVector();
+		ArrayList<AttributeStat> ssa = Lists.<AttributeStat>newArrayList(aSpecList);
+//		if there are no specs set scored attributes to null 
 	    if(ssa.size() <= 0)
 		{
 			aScoredSpecList = scoredAttributes;
 			return;
 		}
-	    int index = 0;
-		for(SpecStat a : aSpecList)
-		{
-			
-//			check value type skip attribtues with mixed type
-			if(a.getValueMin() != null && a.getValueEnum().size() > 0)
-			{
-				continue;
-			}
-//			numerical attribute
-			else if(a.getValueMin() != null)
-			{
-				attributeNames.put(a.getName(), "I"+index);
-				Attribute newAttribute = new Attribute("I"+index);
-				scoredAttributes.add(new ScoredAttribute(a.getAttribute()));
-				attributeVector.addElement(newAttribute);
-			}
-//			nominal attribute
-			else if(a.getValueEnum().size() > 0)
-			{
 
-				FastVector nominalValues = new FastVector();
-
-				for (String value : a.getValueEnum())
-				{
-					nominalValues.addElement(value);
-				}
-//				add the N/A String in case the object doesn't have the attribute
-				if(!nominalValues.contains("N/A"))
-				{
-					nominalValues.addElement("N/A");
-				}
-				attributeNames.put(a.getName(), "I"+index);
-				Attribute newAttribute = new Attribute("I"+index, nominalValues);
-				scoredAttributes.add(new ScoredAttribute(a.getAttribute()));
-				attributeVector.addElement(newAttribute);
-			}
-			index +=1;
-
-		}
+	    AttributeHashMap ahm = computeAttributeHash(ssa);
+	    FastVector attributeVector = ahm.getVector();
+	    //make scored attributes
+	    scoredAttributes = generateScoredAttribute(ssa);
 		Instances dataset = new Instances("attributes", attributeVector, aProductList.size());
+		
 		
 //		
 //		make all instances and add them to the instances object
 //		
-		
-		
+
 		for (Iterator<Product> it = aProductList.iterator(); it.hasNext(); )
 		{		
 		
@@ -260,7 +232,7 @@ public class AttributeExtractor
 
 			for(int i = 0 ; i < scoredAttributes.size(); i ++)
 			{
-				String indexName = attributeNames.get(scoredAttributes.get(i).getAttributeName());
+				String indexName = ahm.getHashValue(scoredAttributes.get(i).getAttributeName());
 				Attribute wekaAtt = dataset.attribute(indexName);
 				
 				String type = "";
@@ -373,55 +345,20 @@ public class AttributeExtractor
 //		to keep track of which attributes are being taken into account	
 //		uses hash map to avoid attributes with same or similar names which
 //		cause conflicts in weka <Name,index>
-		HashMap<String, String> attributeNames = new HashMap<String, String>();
 		ArrayList<ScoredAttribute> scoredAttributes = new ArrayList<ScoredAttribute>();
-		FastVector attributeVector = new FastVector();
-		ArrayList<RatingStat> ssa = Lists.newArrayList(aRatingList);
+		ArrayList<AttributeStat> ssa = Lists.<AttributeStat>newArrayList(aRatingList);
+//		if there are no specs set scored attributes to null 
 	    if(ssa.size() <= 0)
 		{
-			aScoredRatingList = scoredAttributes;
+			aScoredSpecList = scoredAttributes;
 			return;
 		}
-	    int index = 0;
-		for(RatingStat a : aRatingList)
-		{
-			
-//			check value type skip attribtues with mixed type
-			if(a.getValueMin() != null && a.getValueEnum().size() > 0)
-			{
-				continue;
-			}
-//			numerical attribute
-			else if(a.getValueMin() != null)
-			{
-				attributeNames.put(a.getName(), "I"+index);
-				Attribute newAttribute = new Attribute("I"+index);
-				scoredAttributes.add(new ScoredAttribute(a.getAttribute()));
-				attributeVector.addElement(newAttribute);
-			}
-//			nominal attribute
-			else if(a.getValueEnum().size() > 0)
-			{
 
-				FastVector nominalValues = new FastVector();
-
-				for (String value : a.getValueEnum())
-				{
-					nominalValues.addElement(value);
-				}
-//				add the N/A String in case the object doesn't have the attribute
-				if(!nominalValues.contains("N/A"))
-				{
-					nominalValues.addElement("N/A");
-				}
-				attributeNames.put(a.getName(), "I"+index);
-				Attribute newAttribute = new Attribute("I"+index, nominalValues);
-				scoredAttributes.add(new ScoredAttribute(a.getAttribute()));
-				attributeVector.addElement(newAttribute);
-			}
-			index +=1;
-
-		}
+	    AttributeHashMap ahm = computeAttributeHash(ssa);
+	    FastVector attributeVector = ahm.getVector();
+	    //make scored attributes
+	    scoredAttributes = generateScoredAttribute(ssa);
+	    
 		Instances dataset = new Instances("attributes", attributeVector, aProductList.size());
 		
 //		
@@ -437,7 +374,7 @@ public class AttributeExtractor
 
 			for(int i = 0 ; i < scoredAttributes.size(); i ++)
 			{
-				String indexName = attributeNames.get(scoredAttributes.get(i).getAttributeName());
+				String indexName = ahm.getHashValue((scoredAttributes.get(i).getAttributeName()));
 				Attribute wekaAtt = dataset.attribute(indexName);
 				
 				String type = "";
@@ -539,7 +476,68 @@ public class AttributeExtractor
 		
 		
 	}
+	
+	private AttributeHashMap computeAttributeHash(ArrayList<AttributeStat> pAS)
+	{
+		HashMap<String, String> attributeNames = new HashMap<String, String>();
+		FastVector attributeVector = new FastVector();
+		int index = 0;
+		for(AttributeStat a : pAS)
+		{
+			
+//			check value type skip attributes with mixed type
+			if(a.getValueMin() != null && a.getValueEnum().size() > 0)
+			{
+				continue;
+			}
+//			numerical attribute
+			else if(a.getValueMin() != null)
+			{
+				attributeNames.put(a.getName(), "I"+index);
+				Attribute newAttribute = new Attribute("I"+index);
+				//scoredAttributes.add(new ScoredAttribute(a.getAttribute()));
+				attributeVector.addElement(newAttribute);
+			}
+//			nominal attribute
+			else if(a.getValueEnum().size() > 0)
+			{
+
+				FastVector nominalValues = new FastVector();
+
+				for (String value : a.getValueEnum())
+				{
+					nominalValues.addElement(value);
+				}
+//				add the N/A String in case the object doesn't have the attribute
+				if(!nominalValues.contains("N/A"))
+				{
+					nominalValues.addElement("N/A");
+				}
+				attributeNames.put(a.getName(), "I"+index);
+				Attribute newAttribute = new Attribute("I"+index, nominalValues);
+				//scoredAttributes.add(new ScoredAttribute(a.getAttribute()));
+				attributeVector.addElement(newAttribute);
+			}
+			index +=1;
+		}
+		return new AttributeHashMap(attributeVector, attributeNames);
+	}
 		
+	private ArrayList<ScoredAttribute> generateScoredAttribute(ArrayList<AttributeStat> pAS)
+	{
+		ArrayList<ScoredAttribute> scoredAttributes = new ArrayList<ScoredAttribute>();
+	    for(AttributeStat a : pAS)
+	    {
+	    	// skip complex attributes
+	    	if(a.getValueMin() != null && a.getValueEnum().size() > 0)
+	    	{
+					continue;
+	    	}
+	    	scoredAttributes.add(new ScoredAttribute(a.getAttribute()));
+	    }
+	    return scoredAttributes;
+	}
+	
 	
 	/**
 	 * @return The list of products used by the extractor

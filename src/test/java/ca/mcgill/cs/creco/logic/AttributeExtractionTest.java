@@ -51,8 +51,8 @@ public class AttributeExtractionTest {
 		}
 		catch (Exception e)
 		{
-			System.out.println(catName + ": " + e);
-			fail("Exception caught");
+			System.out.println(catName + ": " + e);			
+			fail("Exception caught " + e);
 		}
 		
 	}

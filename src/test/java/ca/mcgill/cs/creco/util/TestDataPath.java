@@ -36,6 +36,5 @@ public class TestDataPath
 		pointer.set(null, "src/test/java/ca/mcgill/cs/creco/util/.localdatapath1");
 		String path = DataPath.get();
 		assertEquals("C:\\temp\\data" + File.separator,DataPath.get());
-
 	}
 }
