@@ -17,4 +17,9 @@ public class RankedFeaturesProducts {
 		this.aRatingList = pRatingList;
 		this.aProductSearchResult = pProductSearchResult;
 	}
+
+	public List<ScoredProduct> getaProductSearchResult()
+	{
+		return aProductSearchResult;
+	}
 }

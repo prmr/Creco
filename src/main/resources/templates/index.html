@@ -16,21 +16,22 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head> 
-    <title>Getting Started: Serving Web Content</title> 
+    <title>Creco</title> 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-    <div id='demo'>			
-			<h3><span class="label label-info">Product Exploration Demo</span></h3>	
-
+    <div id="demo">			
+			<div>
+				<span class="label label-info">CRECO</span>			
+			</div>
+			
 			<div id='main_searchbar' class="input-group">
-				<form method="POST" th:object="${mainQuery}">
+				<form action="/searchEqClass" method="POST" th:object="${mainQuery}">
 					<input id='main_search_text' type="text" class="form-control" style="width: 350px" placeholder="Please enter product names, brands, etc."
 						th:field="*{query}"></input>
 					<input id='search_btn' type="submit" class="btn btn-info" value="Search"></input>	
 				</form>
 			</div>
-
 	</div>
 </body>
 	<script src="//code.jquery.com/jquery-1.9.1.js"></script>

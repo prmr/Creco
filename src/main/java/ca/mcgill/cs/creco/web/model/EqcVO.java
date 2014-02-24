@@ -15,6 +15,7 @@
  */
 package ca.mcgill.cs.creco.web.model;
 
+
 public class EqcVO
 {
 	private String id;

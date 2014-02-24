@@ -31,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ca.mcgill.cs.creco.data.Category;
+import ca.mcgill.cs.creco.logic.search.ScoredProduct;
+import ca.mcgill.cs.creco.server.RankedFeaturesProducts;
 import ca.mcgill.cs.creco.server.SearchService;
 import ca.mcgill.cs.creco.web.model.EqcListVO;
 import ca.mcgill.cs.creco.web.model.EqcVO;
@@ -44,15 +46,31 @@ import ca.mcgill.cs.creco.web.model.ProductVO;
 public class SearchController
 {
 	private static final Logger LOG = LoggerFactory.getLogger(SearchController.class);
-	
+	private SearchService searchService;
 	
 	@Autowired
 	private ProductListVO productList;
 	
 	@Autowired
 	private EqcListVO eqcList;
-		
-	private SearchService searchService;
+	
+	@Autowired
+	private MainQueryVO mainQuery;
+
+	@ModelAttribute("mainQuery")
+	private MainQueryVO getMainQuery() {
+		return new MainQueryVO();
+	}
+
+	@ModelAttribute("eqcList")
+	private EqcListVO getEqcList() {
+		return eqcList;
+	}
+	
+	@ModelAttribute("productList")
+	private ProductListVO getProductList() {
+		return productList;
+	}
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public String init(Model model){
@@ -68,59 +86,46 @@ public class SearchController
 		return "/index";
 	}
 	
-	@RequestMapping(method = RequestMethod.POST)
-	public String searchEqClass(@ModelAttribute("mainQuery") MainQueryVO mainQuery, BindingResult result, RedirectAttributes redirectAttrs) {
-		System.out.println(mainQuery.getQuery());
-		List<Category> categoryList = searchService.searchCategories(mainQuery.getQuery());
+	@RequestMapping(value = "/searchEqClass", method = RequestMethod.POST)
+	public String searchEqClass(@ModelAttribute("mainQuery") MainQueryVO pMainQuery, BindingResult result, RedirectAttributes redirectAttrs) {
+		mainQuery = pMainQuery;
+		List<Category> categoryList = searchService.searchCategories(mainQuery.getQuery());		
 		
-		updateEqcList(categoryList);
-		return "/eqclass";
-	}
-	
-	@RequestMapping(value = "/searchRankedFeaturesProducts" , method = RequestMethod.GET)	
-	public String searchRankedFeaturesProducts(Model model)
-	{
-		fillProductList();
-		return "/rankedproducts";
-	}
-	
-	private void updateEqcList(List<Category> categoryList) {
-
+		//Converting
 		ArrayList<EqcVO> eqcs = new ArrayList<EqcVO>();		
 		for (Category cat: categoryList) {
-			EqcVO p = new EqcVO();
-			p.setId(cat.getId());
-			p.setName(cat.getName());
-			p.setCount(cat.getCount());
-			eqcs.add(p);
+			EqcVO eqc = new EqcVO();
+			eqc.setId(cat.getId());
+			eqc.setName(cat.getName());
+			eqc.setCount(cat.getCount());
+			eqcs.add(eqc);
 		}
 		eqcList.setEqcs(eqcs);
+		return "/eqclass";
 	}
 			
-	private void fillProductList() {
+	@RequestMapping(value = "/searchRankedFeaturesProducts", method = RequestMethod.POST)  
+	public String searchRankedFeaturesProducts(@ModelAttribute("eqc") EqcVO eqc) {  
+	    List<Category> categoryList = searchService.searchCategories(mainQuery.getQuery());
+	    Category target = null;
+	    for (Category cat: categoryList) {
+	    	if (cat.getId().equals(eqc.getId())) {
+	    		target = cat;
+	    	}
+	    }
+	    RankedFeaturesProducts rankedProducts = searchService.getRankedFeaturesProducts(target, mainQuery.getQuery());
+	    List<ScoredProduct> scoredProducts = rankedProducts.getaProductSearchResult();
+
+	    // Converting
 		ArrayList<ProductVO> products = new ArrayList<ProductVO>();		
-		for (int i = 0; i < 5; i++) {
+	    for (ScoredProduct sp: scoredProducts) {
 			ProductVO p = new ProductVO();
-			p.setId(String.valueOf(i));
-			p.setName("Product " + i);
+			p.setName(sp.getProduct().getName());
+			p.setId(sp.getProduct().getId());
 			products.add(p);
-		}
-		productList.setProducts(products);		
-	}
-	
-	@ModelAttribute("mainQuery")
-	private MainQueryVO getMainQuery() {
-		return new MainQueryVO();
-	}
-
-	@ModelAttribute("eqcList")
-	private EqcListVO getEqcList() {
-		return eqcList;
-	}
-	
-	@ModelAttribute("productList")
-	private ProductListVO getProductList() {
-		return productList;
-	}
-
+	    }
+		productList.setProducts(products);	
+		return "/rankedproducts";
+	}  
+		
 }

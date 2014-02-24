@@ -33,14 +33,9 @@
 				</form>
 			</div>
 
-			<div id='eq-result'>
-				<div class="eq-result-entry" th:each="eqc : ${eqcList.eqcs}">
-				    <form action="/searchRankedFeaturesProducts" method="POST">
-                        <input id="id" name="id" type="hidden" th:value="${eqc.id}"></input>
-                        <input id="id" name="name" type="hidden" th:value="${eqc.name}"></input>
-                        <input type="submit" th:value="${eqc.name}"></input>                       
-						<span class="badge" th:text="${eqc.count}"></span>
-                    </form>
+			<div id='rankedproduct-result'>
+				<div class="rankedproduct-result-entry" th:each="product : ${productList.products}">
+                    <div class="rankedproduct-result-name" th:text="${product.name}"></div>
 				</div>
 			</div>
 	</div>

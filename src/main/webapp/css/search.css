@@ -22,7 +22,8 @@
 	
 }
 
-.eq-result-entry {
+.eq-result-entry,
+.rankedproduct-result-entry {
 	background: rgb(240, 240, 240);
 	cursor: pointer;
 	display: -webkit-box;
@@ -32,9 +33,10 @@
 	border-radius: 4px;
 	margin: 4px 0;
 }
-.eq-result-name {
+
+.eq-result-name,
+.rankedproduct-result-name {
 	padding: 0 12px;
-}
 }
 
 .badge {
