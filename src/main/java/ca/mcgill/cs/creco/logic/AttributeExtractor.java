@@ -102,6 +102,8 @@ public class AttributeExtractor
 		double numericSum = 0;
 		int trueCount = 0;
 		int falseCount = 0;
+		double max = -1000000;
+		double min = 1000000;
 		HashMap<String, Integer> nominalCounts = new HashMap<String, Integer>();
 		for( Product p : pProductList)
 		{
@@ -113,6 +115,15 @@ public class AttributeExtractor
 				String type = s.getType();
 				if(type.equals("int") || type.equals("double") || type.equals("float"))
 				{
+					double val = Double.parseDouble(specString);
+					if(val > max)
+					{
+						max = val;
+					}
+					if(val < min)
+					{
+						min  = val;
+					}
 					numericCount ++;
 					numericSum += Double.parseDouble(specString);					
 				}
@@ -145,7 +156,7 @@ public class AttributeExtractor
 		}
 		if(numericCount > 0)
 		{
-			return new AttributeValue(numericSum/numericCount);
+			return new AttributeValue(numericSum/numericCount, min,max);
 		}
 		else if (trueCount > 0 || falseCount > 0)
 		{
@@ -158,17 +169,18 @@ public class AttributeExtractor
 		}
 		//to change
 		String maxAtt = "N/A";
-		int max = 0;
+		int maxCount = 0;
 		for(String key : nominalCounts.keySet())
 		{
 			int count = nominalCounts.get(key);
-			if(count > max)
+			if(count > maxCount)
 			{
 				maxAtt = key;
-				max = count;			
+				maxCount = count;			
 			}
 		}
-		return new AttributeValue(maxAtt);
+		List<String> dict = Lists.newArrayList(nominalCounts.keySet());
+		return new AttributeValue(maxAtt, dict);
 	}
 	
 
