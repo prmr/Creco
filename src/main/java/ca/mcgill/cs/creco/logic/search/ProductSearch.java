@@ -185,5 +185,34 @@ public class ProductSearch
 		
 	}
 	
+	/**
+	 * Searches all products within an equivalence class. Returns a sorted list of scored products
+	 * where the first products match the search query the most. Products within the equivalence
+	 * class which do not match the search query at all are still appended to the results with
+	 * a score of 0.
+	 * @param queryString
+	 * @param eqClassID
+	 * @return
+	 */
+	public List<ScoredProduct> queryProductsReturnAll(String queryString, String eqClassID) {
+		List<ScoredProduct> scoredProducts = queryProducts(queryString, eqClassID);
+		List<Product> matchingProducts = new ArrayList<Product>();
+		for (ScoredProduct scoredProduct : scoredProducts)
+		{
+			matchingProducts.add(scoredProduct.getProduct());
+		}
+		
+		Category category = categoryList.get(eqClassID);
+		for (Product product : category.getProducts())
+		{
+			if (!matchingProducts.contains(product))
+			{
+				ScoredProduct scoredProduct = new ScoredProduct(product, 0, eqClassID);
+				scoredProducts.add(scoredProduct);
+			}
+		}
+		
+		return scoredProducts;
+	}
 
 }
