@@ -3,13 +3,8 @@
 	margin: 0 5px;
 }
 
-#advance_btn {
-	text-decoration: underline;
-	background: transparent;	
-}
-
-#advanced_searchbar {
-	display: inline;
+#main_searchbar {
+	margin-bottom: 20px;	
 }
 
 .advanced-option {
@@ -22,13 +17,24 @@
 	
 }
 
+#feature {
+	float:left;
+}
+
+#rankedproduct-result {
+	float: right;
+	width: 70%;
+	padding: 0 20px;
+	border-left: 2px solid rgb(91, 200, 235);
+}
+
 .eq-result-entry,
 .rankedproduct-result-entry {
 	background: rgb(240, 240, 240);
 	cursor: pointer;
 	display: -webkit-box;
 	line-height: 32px;
-	width: 350px;
+	width: 450px;
 	border: 1px solid rgb(202, 202, 202);
 	border-radius: 4px;
 	margin: 4px 0;
