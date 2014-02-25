@@ -1,5 +1,7 @@
 /**
- * TODO: Add getCategory, create more helper methods for the update classes, possible more classes
+ * TODO: Add getCategory, 
+ * create more helper methods for the update classes,
+ * possible more classes
  *  
  */
 package ca.mcgill.cs.creco.logic;
@@ -65,7 +67,11 @@ public class AttributeExtractor
 		aProductList = new ArrayList<Product>();
 		for (ScoredProduct scoredProduct : pProductSearchResult)
 		{
-			aProductList.add(scoredProduct.getProduct());
+			//split the products with LuceneScore > 0;
+			if(scoredProduct.getLuceneScore() > 0.0)
+			{
+				aProductList.add(scoredProduct.getProduct());
+			}
 		}
 		aEquivalenceClass = pEquivalenceClass;
 		aSpecList = aEquivalenceClass.getSpecs();
@@ -317,7 +323,7 @@ public class AttributeExtractor
 		{
 			System.out.println("Weka Attribute ERROR:\n" + e);
 		}
-		aScoredSpecList = scoredAttributes;
+		aScoredSpecList = completeScoredSpecs(scoredAttributes);
 		
 		
 	}
@@ -459,7 +465,7 @@ public class AttributeExtractor
 		{
 			System.out.println("Weka Attribute ERROR:\n" + e);
 		}
-		aScoredRatingList = scoredAttributes;
+		aScoredRatingList = completeScoredRatings(scoredAttributes);
 		
 		
 	}
@@ -525,7 +531,54 @@ public class AttributeExtractor
 	    return scoredAttributes;
 	}
 	
+	private ArrayList<ScoredAttribute> completeScoredSpecs(ArrayList<ScoredAttribute> pScored)
+	{
+		HashMap<String, ScoredAttribute> fullMap = new HashMap<String, ScoredAttribute>();
+		//put
+		for(ScoredAttribute sAtt : pScored)
+		{
+			fullMap.put(sAtt.getAttributeID(), sAtt);
+		}
+		//add missing
+		for(SpecStat ss : aSpecList)
+		{
+			if(!fullMap.containsKey(ss.getId()))
+			{
+				ScoredAttribute sa = new ScoredAttribute(ss.getAttribute());
+				sa.setAttributeMean(new AttributeValue("N/A"));
+				fullMap.put(ss.getId(), sa);
+			}
+		}
+		ArrayList<ScoredAttribute> outList = Lists.newArrayList(fullMap.values());
+		Collections.sort(outList, ScoredAttribute.SORT_BY_SCORE);
+		return outList;
+		
+	}
+	private ArrayList<ScoredAttribute> completeScoredRatings(ArrayList<ScoredAttribute> pScored)
+    {
+		HashMap<String, ScoredAttribute> fullMap = new HashMap<String, ScoredAttribute>();
+		//put
+		for(ScoredAttribute sAtt : pScored)
+		{
+			fullMap.put(sAtt.getAttributeID(), sAtt);
+		}
+		//add missing
+		for(RatingStat ss : aRatingList)
+		{
+			if(!fullMap.containsKey(ss.getId()))
+			{
+				ScoredAttribute sa = new ScoredAttribute(ss.getAttribute());
+				sa.setAttributeMean(new AttributeValue("N/A"));
+				fullMap.put(ss.getId(), sa);
+			}
+		}
+		
+		ArrayList<ScoredAttribute> outList = Lists.newArrayList(fullMap.values());
+		Collections.sort(outList, ScoredAttribute.SORT_BY_SCORE);
+		return outList;
+    }
 	
+
 	/**
 	 * @return The list of products used by the extractor
 	 */
@@ -582,6 +635,7 @@ public class AttributeExtractor
 		generateRatingList();
 		return aScoredRatingList;
 	}
+	
 
 	
 }

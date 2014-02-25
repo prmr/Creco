@@ -46,10 +46,10 @@ public class AttributeExtractionTest {
 				AttributeExtractor aec = new AttributeExtractor(productSet, c);
 				ArrayList<ScoredAttribute> ssl = aec.getScoredSpecList();
 				ArrayList<ScoredAttribute> srl = aec.getScoredRatingList();
-//				System.out.println("Specs:");
-//				System.out.println(ssl);
-//				System.out.println("Ratings:");
-//				System.out.println(srl);
+				System.out.println("Specs:");
+				System.out.println(ssl);
+				System.out.println("Ratings:");
+				System.out.println(srl);
 			}
 			
 		}
