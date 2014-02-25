@@ -38,7 +38,7 @@ public class SearchService {
 	
 	public List<ScoredProduct> searchProducts(Category eqClass, String query)
 	{
-		return productSearch.queryProducts(query, eqClass.getId());
+		return productSearch.queryProductsReturnAll(query, eqClass.getId());
 	}
 	
 	public List<Category> searchCategories(String query)
