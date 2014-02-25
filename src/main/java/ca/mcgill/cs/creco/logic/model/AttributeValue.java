@@ -1,5 +1,7 @@
 package ca.mcgill.cs.creco.logic.model;
 
+import java.util.List;
+
 /**
  *AttributeValue class can either be boolean, nominal or numeric
  *Use boolean checks to know what type of attribute before getting
@@ -23,6 +25,10 @@ public class AttributeValue {
 	private String aNominalValue;
 	private double aNumericValue;
 	
+	private double aMin;
+	private double aMax;
+	private List<String> aDict;
+	
 	
 	/**Constructor for boolean attribute.
 	 * @param pBool attribute value
@@ -40,6 +46,12 @@ public class AttributeValue {
 		aNominalValue = pNominal;
 		aNominal = true;
 	}
+	public AttributeValue(String pNominal, List<String> pDict)
+	{
+		aNominalValue = pNominal;
+		aNominal = true;
+		aDict = pDict;
+	}
 	/**Constructor for numeric attribute.
 	 * @param pNumeric attribute value
 	 */
@@ -47,6 +59,13 @@ public class AttributeValue {
 	{
 		aNumericValue = pNumeric;
 		aNumeric = true;
+	}
+	public AttributeValue(double pNumeric, double pMin, double pMax)
+	{
+		aNumericValue = pNumeric;
+		aNumeric = true;
+		aMin = pMin;
+		aMax = pMax;
 	}
 	/**Check is attribute is boolean.
 	 * @return true is boolean attribute
@@ -94,6 +113,18 @@ public class AttributeValue {
 		return aNumericValue;
 	}
  
+	
+	
+	public double getMin() {
+		return aMin;
+	}
+	public double getMax() {
+		return aMax;
+	}
+	public List<String> getDict() {
+		return aDict;
+	}
+	
 	@Override
 	public String toString()
 	{
