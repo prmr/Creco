@@ -1,7 +1,10 @@
 package ca.mcgill.cs.creco.server;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import ca.mcgill.cs.creco.data.*;
+import ca.mcgill.cs.creco.logic.model.AttributeValue;
 import ca.mcgill.cs.creco.logic.model.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
 
@@ -13,9 +16,58 @@ public class RankedFeaturesProducts {
 	
 	public RankedFeaturesProducts(List<ScoredAttribute> pRatingList, List<ScoredAttribute> pSpecList, List<ScoredProduct> pProductSearchResult)
 	{
+		int count =0; int count2=0;
 		this.aSpecList = pSpecList;
 		this.aRatingList = pRatingList;
-		this.aProductSearchResult = pProductSearchResult;
+	
+		List<ScoredProduct> new_set = new ArrayList();
+		for(ScoredProduct p: pProductSearchResult)
+		{
+			count=count+1;
+		}
+		
+		for(ScoredProduct p: pProductSearchResult)
+		{
+			int flag=0;
+			Product product= p.getProduct();
+			Iterable<Spec> specs = product.getSpecs();
+			for(Spec a:specs)
+			{
+				for(ScoredAttribute b:pSpecList)
+				{
+					if(a.getName().equals(b.getAttributeName()))
+					{
+						TypedVal abc = a.getTypedValue();
+					//	s= attribute.getNominalValue();*/
+						String s = b.toString();
+						String main = new String();
+						if(a.getType().equals("bool"))
+						{
+							boolean value = (Boolean) a.getValue();
+							if(value==true)
+								main="true";
+							else
+								main="false";
+						}
+						else
+							main= String.valueOf(a.getValue());
+					//	System.out.println(main + " : "+s);
+						if(s.contains(main))
+							flag=1;
+					}	
+				}				
+			}
+			if(flag==1)
+			{
+				count2++;
+				new_set.add(p);
+			//	System.out.println("Nishanth : "+product.getName() );
+			}
+		}
+		if(count2>count/2)
+			this.aProductSearchResult = new_set;
+		else
+			this.aProductSearchResult = pProductSearchResult;
 	}
 
 	public List<ScoredProduct> getaProductSearchResult()
