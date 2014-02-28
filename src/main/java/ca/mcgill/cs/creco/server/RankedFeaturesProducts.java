@@ -74,4 +74,15 @@ public class RankedFeaturesProducts {
 	{
 		return aProductSearchResult;
 	}
+	
+	public List<ScoredAttribute> getaRatingList()
+	{
+		return aRatingList;
+	}
+	
+	public List<ScoredAttribute> getaSpecList()
+	{
+		return aSpecList;
+	}
+	
 }

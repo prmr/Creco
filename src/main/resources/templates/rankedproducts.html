@@ -32,28 +32,136 @@
 					<input id='search_btn' type="submit" class="btn btn-info" value="Search"></input>	
 				</form>
 			</div>
-			
-			<div id="feature">
-				<!-- Feature stuff here -->
-				Features and Attributes
-			</div>
 
+			<div id="feature" style="width: 40%;">
+				<!-- Feature stuff here -->
+				<div id="accordion-resizer" class="ui-widget-content">
+				<div id="accordion">				
+					<h3>Specifications</h3>
+					 	<div id='main_specs'>
+						 	<div>
+								<form id="myForm" action="/sendFeatures2" method="POST">							 		 	  	 					    							
+									<div th:each="specFeatures : ${specFeatureList.features}"><!--.sequence(1,2)}"> -->
+		    				 			<div th:if="${specFeatures.visible==true}">
+		    					 			<div th:switch="${specFeatures.type}"> 
+		 					    				<div th:case="'Bool'">						   
+		 					 	 					<div class="btn-group">
+		 					 	 						<p class="text-info"><span th:text="${specFeatures.name}"></span></p>
+							 		 	  					<div class="form-group1">								 		 	  	 			
+							 		 	  	 				 <input type="hidden" name="id" th:value="${specFeatures.id}"/>
+												   		      <input type="hidden" name = "name" th:value="${specFeatures.name}"/>											  																								 										   																			 							    					 				 					 	 					
+							 		 	  	 				  <label>Yes</label>
+							 		 	  	 				  <input type="radio" th:name="${specFeatures.name}"  th:value="true"  onclick="addFeature(this,this.name,this.value)"/>						 		 	  	 				  									  
+															  <label>No</label>
+															  <input type="radio" th:name="${specFeatures.name}" th:value="false" onclick="addFeature(this,this.name,this.value)"/>
+															  <label>Neutral</label>
+															  <input type="radio"  th:name="${specFeatures.name}"  th:value="NA" onclick="addFeature(this,this.name,this.value)"/>															 															
+														</div>																												
+													</div>
+									  			</div>	
+								  			<div th:case="'Numeric'">
+											 	<div th:text="${specFeatures.name}"></div>
+											 	  <input type="hidden" name="id" th:value="${specFeatures.id}"/>
+												  <input type="hidden" name = "name" th:value="${specFeatures.name}"/>											  																								 										   																			 							    					 				 					 	 					
+							 		 	  	 	   <span  class="max" style="border:0; color:#0DC6E9; font-weight:bold;"></span>
+							 		 	  	 	   <div th:id="${specFeatures.name}" class="slider-range"></div>						 		 	  	 	   		
+							 		 	  	</div>
+											  <div th:case="'Nominal'">
+											  	<div class="btn-group">											  												  
+												  	<span th:text="${specFeatures.name}"></span>
+												  	 <div class="form-group2" th:each="val : ${specFeatures.value}">
+												  	  	<input type="hidden" name="id" th:value="${specFeatures.id}"/>
+												   		<input type="hidden" name = "name" th:value="${specFeatures.name}"/>											  																								 										   																			 							    					 				 					 	 					
+									  	 
+														  <label th:text="${val}"></label>
+														  <input type="checkbox" th:name="${specFeatures.name}" th:value="${val}" onclick="isChecked(this,this.name,this.value)"/>									
+													</div>		 									 																				 
+												</div>						  				   	
+											  </div>						  
+											  <div th:case="*">UnKnown Feature Type</div> 
+											</div> 							
+									</div>																				
+								</div>
+								<!--<p><a href="popupFeature.html" class="popup">More</a></p>	-->	  					
+							</form>
+						</div>			
+						</div>								
+							<h3>Ratings</h3>
+								<div id='main_ratings'>	
+								<div>				
+								<form id="myForm" action="/sendFeatures2" method="POST">							 		 	  	 					    							
+									<div th:each="rateFeatures : ${rateFeatureList.features}"><!--.sequence(1,2)}"> -->
+		    				 			<div th:if="${rateFeatures.visible==true}">
+		    					 			<div th:switch="${rateFeatures.type}"> 
+		 					    				<div th:case="'Bool'">						   
+		 					 	 					<div class="btn-group">
+		 					 	 						<p class="text-info"><span th:text="${rateFeatures.name}"></span></p>
+							 		 	  					<div class="form-group1">								 		 	  	 			
+							 		 	  	 				 <input type="hidden" name="id" th:value="${rateFeatures.id}"/>
+												   		      <input type="hidden" name = "name" th:value="${rateFeatures.name}"/>											  																								 										   																			 							    					 				 					 	 					
+							 		 	  	 				  <label>Yes</label>
+							 		 	  	 				  <input type="radio" th:name="${rateFeatures.name}"  th:value="true"  onclick="addFeature(this,this.name,this.value)"/>						 		 	  	 				  									  
+															  <label>No</label>
+															  <input type="radio" th:name="${rateFeatures.name}" th:value="false" onclick="addFeature(this,this.name,this.value)"/>
+															  <label>Neutral</label>
+															  <input type="radio"  th:name="${rateFeatures.name}"  th:value="NA" onclick="addFeature(this,this.name,this.value)"/>															 															
+														</div>																												
+													</div>
+									  			</div>	
+								  			<div th:case="'Numeric'">
+											 	<div th:text="${rateFeatures.name}"></div>
+											 	  <input type="hidden" name="id" th:value="${rateFeatures.id}"/>
+												  <input type="hidden" name = "name" th:value="${rateFeatures.name}"/>											  																								 										   																			 							    					 				 					 	 					
+							 		 	  	 	   <span  class="max" style="border:0; color:#0DC6E9; font-weight:bold;"></span>
+							 		 	  	 	   <div th:id="${rateFeatures.name}" class="slider-range"></div>						 		 	  	 	   		
+							 		 	  	</div>
+											  <div th:case="'Nominal'">
+											  	<div class="btn-group">											  												  
+												  	<span th:text="${rateFeatures.name}"></span>
+												  	 <div class="form-group2" th:each="val : ${rateFeatures.value}">
+												  	  	<input type="hidden" name="id" th:value="${rateFeatures.id}"/>
+												   		<input type="hidden" name = "name" th:value="${rateFeatures.name}"/>											  																								 										   																			 							    					 				 					 	 					
+									  	 
+														  <label th:text="${val}"></label>
+														  <input type="checkbox" th:name="${rateFeatures.name}" th:value="${val}" onclick="isChecked(this,this.name,this.value)"/>									
+													</div>		 									 																				 
+												</div>						  				   	
+											  </div>						  
+											  <div th:case="*">UnKnown Feature Type</div> 
+											</div> 							
+									</div>
+																				
+								</div>
+							<!-- 	<p><a href="popupFeature.html" class="popup">More</a></p>	-->	  					
+							</form>
+						</div>	
+						</div>								 																				 					  	   																																										
+					</div><!--  accordion-->									
+					<button id='submit_btn' type="button" value="Submit" class="btn btn-info" onclick="sendFeatures()">Submit</button>																				
+				
+				</div>	
+			</div><!-- end feature-->		
 			<div id='rankedproduct-result'>
 				<div class="rankedproduct-result-entry" th:each="product : ${productList.products}">
                     <div class="rankedproduct-result-name" th:text="${product.name}"></div>
 				</div>
 			</div>
 	</div>
+	
 </body>
 	<script src="//code.jquery.com/jquery-1.9.1.js"></script>
 	<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"></link>
-	
+	<script src="js/features_form.js"></script>
+   
+
 	<script type='text/javascript' src='//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js'></script>
 	<link rel='stylesheet' type='text/css' href='//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css'></link>
 	<link rel='stylesheet' type='text/css' href='//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css'></link>
-	
-	
+
+
 	<link rel='stylesheet' type='text/css' href='css/main.css' />
 	<link rel='stylesheet' type='text/css' href='css/search.css' />
+	<link rel="stylesheet" type="text/css" href="css/slider.css" />
+	
 </html>
