@@ -355,7 +355,7 @@ public class AttributeExtractor
 //		if there are no specs set scored attributes to null 
 	    if(ssa.size() <= 0)
 		{
-			aScoredSpecList = scoredAttributes;
+			aScoredRatingList = scoredAttributes;
 			return;
 		}
 
