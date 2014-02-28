@@ -69,7 +69,7 @@ if (!file.exists()) {
 	//System.out.print(diffHours + " hours, ");
 	//System.out.print(diffMinutes + " minutes, ");
 	//System.out.print(diffSeconds + " seconds.");
-	if(diffDays>0||created_now==1)
+	if(diffDays>600)
 	{
 		change_flag=1;
 		   Thread.sleep(2000);
@@ -109,7 +109,7 @@ if (!file.exists()) {
     	   
     	   String category_name = Franchisereturn.getCategoryString();
     	   
-    	   if(change_flag==1)
+    	//   if(change_flag==1)
     	   {
     		   CRData crData =  CRData.setupWithFileNames(Franchisereturn.getProducts(),category_name);
     	   }

@@ -211,7 +211,6 @@ public class ProductSearch
 				scoredProducts.add(scoredProduct);
 			}
 		}
-		
 		return scoredProducts;
 	}
 

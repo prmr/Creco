@@ -8,18 +8,18 @@ private Franchisereturn(){}
 
 public static String[]  getProductString()
 {
-        return  new String[]{"food","health","money","babiesKids","homeGarden","appliances","cars","electronicsComputers","category"};
+        return  new String[]{"food.json","health.json","money.json","babiesKids.json","homeGarden.json","appliances.json","cars.json","electronicsComputers.json","category.json"};
 
 }
 
 public static String[]  getProducts()
 {
-        return  new String[]{"food","health","money","babiesKids","homeGarden","appliances","cars","electronicsComputers"};
+        return  new String[]{"food.json","health.json","money.json","babiesKids.json","homeGarden.json","appliances.json","cars.json","electronicsComputers.json"};
 
 }
 public static String getCategoryString()
 {
-	String category= "category";
+	String category= "category.json";
 return category;
 }
 }
