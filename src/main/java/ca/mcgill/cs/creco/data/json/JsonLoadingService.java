@@ -15,15 +15,20 @@
  */
 package ca.mcgill.cs.creco.data.json;
 
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.CategoryList;
 import ca.mcgill.cs.creco.data.IDataLoadingService;
+import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.data.ProductList;
 
 import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 
 /**
  * A service to load the Consumer Reports data from JSON files.
@@ -32,11 +37,13 @@ public class JsonLoadingService implements IDataLoadingService
 {
 	private String aPath;
 	private String aCategoryFileName;
+	private String[] aProductFileNames;
 	
-	public JsonLoadingService(String pPath, String pCategoryFileName)
+	public JsonLoadingService(String pPath, String pCategoryFileName, String[] pProductFileNames)
 	{
 		aPath = pPath;
 		aCategoryFileName = pCategoryFileName;
+		aProductFileNames = pProductFileNames;
 	}
 	
 	@Override
@@ -59,7 +66,7 @@ public class JsonLoadingService implements IDataLoadingService
 		return outputCategories;
 	}
 	
-	private Category buildCategory(CategoryStub pCategoryStub, Category pParent)
+	private static Category buildCategory(CategoryStub pCategoryStub, Category pParent)
 	{
 		Category lReturn = new Category(pCategoryStub.id, pCategoryStub.singularName, pParent);
 		
@@ -97,8 +104,52 @@ public class JsonLoadingService implements IDataLoadingService
 	@Override
 	public ProductList loadProducts() throws IOException 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		ProductList productList = new ProductList();
+
+		for(String fileName : aProductFileNames)
+		{
+			readFile(aPath + fileName, productList);
+		}
+		System.out.println("Found " + productList.size() + " products.\n");
+		return productList;
+	}
+	
+	private static void readFile(String filePath, ProductList prodList) throws IOException
+	{
+		InputStream in = new FileInputStream(filePath);
+		JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
+				
+		reader.beginArray();
+		while(reader.hasNext()) 
+		{
+			ProductStub prodStub = new Gson().fromJson(reader, ProductStub.class);
+			prodList.put(prodStub.id, buildProduct(prodStub));
+			
+		}
+		reader.endArray();
+		reader.close();
+		in.close();
+	}
+	
+	private static Product buildProduct(ProductStub pProductStub)
+	{
+		Product lReturn = new Product(pProductStub.id, pProductStub.displayName, pProductStub.isTested, pProductStub.category.id);
+		if(pProductStub.specs != null)
+		{
+			for(SpecStub spec : pProductStub.specs)
+			{
+				lReturn.addSpec(spec);
+			}
+		}
+		
+		if(pProductStub.ratings != null)
+		{
+			for(RatingStub rating : pProductStub.ratings)
+			{
+				lReturn.addRating(rating);
+			}
+		}
+		return lReturn;
 	}
 
 }

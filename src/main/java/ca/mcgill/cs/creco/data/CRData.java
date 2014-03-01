@@ -48,13 +48,12 @@ public final class CRData
 	
 	private CRData(String[] pProductFileNames, String pCategoryFileName) throws IOException
 	{
-		IDataLoadingService loadingService = new JsonLoadingService(DataPath.get(), pCategoryFileName);
+		IDataLoadingService loadingService = new JsonLoadingService(DataPath.get(), pCategoryFileName, pProductFileNames);
 				
 		aCategoryList = loadingService.loadCategories();
 		aCategoryList.eliminateSingletons();
 		
-		// Build the products list
-		ProductList prodList = ProductReader.read(DataPath.get(), pProductFileNames);
+		ProductList prodList = loadingService.loadProducts();
 		
 		// Put links from products to categories and vice-versa
 		aCategoryList.associateProducts(prodList);

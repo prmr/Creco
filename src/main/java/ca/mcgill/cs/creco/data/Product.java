@@ -18,12 +18,8 @@ package ca.mcgill.cs.creco.data;
 import java.util.Collections;
 import java.util.HashMap;
 
-import ca.mcgill.cs.creco.data.json.ProductStub;
 import ca.mcgill.cs.creco.data.json.RatingStub;
 import ca.mcgill.cs.creco.data.json.SpecStub;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 /**
  * Represents a product in the Consumer Reports database.
@@ -36,38 +32,42 @@ public class Product
 	private Boolean aIsTested;
 		
 	// Derived fields
-	private HashMap<String, Rating> aRatings;
-	private HashMap<String, Spec> aSpecs;
+	private HashMap<String, Rating> aRatings = new HashMap<String, Rating>();
+	private HashMap<String, Spec> aSpecs = new HashMap<String, Spec>();
 	private String aCategoryId;
 	private Category aCategory;
 	
-	Product(ProductStub prodStub) 
+	/**
+	 * Constructs a new product record.
+	 * @param pId The product id.
+	 * @param pDisplayName The display name of the product.
+	 * @param pIsTested Whether the product has been tested by Consumer Reports.
+	 * @param pCategoryId The ID of the category for this product.
+	 */
+	public Product(String pId, String pDisplayName, Boolean pIsTested, String pCategoryId)
 	{
-		// Copy fields from the stub
-		this.aId = prodStub.id;                     
-		this.aDisplayName = prodStub.displayName;                 
-		this.aIsTested = prodStub.isTested;      
-		
-		// Calculate derived fields
-		this.aCategoryId = prodStub.category.id;
-		
-		this.aSpecs = new HashMap<String, Spec>();
-		if(prodStub.specs != null)
-		{
-			for(SpecStub spec : prodStub.specs)
-			{
-				this.aSpecs.put(spec.attributeId, new Spec(spec));
-			}
-		}
-		
-		this.aRatings = new HashMap<String, Rating>();
-		if(prodStub.ratings != null)
-		{
-			for(RatingStub rating : prodStub.ratings)
-			{
-				this.aRatings.put(rating.attributeId, new Rating(rating));
-			}
-		}
+		aId = pId;
+		aDisplayName = pDisplayName;
+		aIsTested = pIsTested;
+		aCategoryId = pCategoryId;
+	}
+	
+	/**
+	 * Adds a spec to this product. 
+	 * @param pSpecStub The stub. TODO replace with non-dependency.
+	 */
+	public void addSpec(SpecStub pSpecStub)
+	{
+		aSpecs.put(pSpecStub.attributeId, new Spec(pSpecStub));
+	}
+	
+	/**
+	 * Adds a rating to this product. 
+	 * @param pRatingStub The stub. TODO replace with non-dependency.
+	 */
+	public void addRating(RatingStub pRatingStub)
+	{
+		aRatings.put(pRatingStub.attributeId, new Rating(pRatingStub));
 	}
 	
 	void setCategory(Category pCategory)
