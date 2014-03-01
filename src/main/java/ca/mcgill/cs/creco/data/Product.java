@@ -28,12 +28,8 @@ import com.google.gson.GsonBuilder;
 public class Product 
 {
 	// Fields directly copied from CR Data fields
-	private String summary;
 	private String mpn;
 	private String id;
-	private String subfranchise;
-	private String theCategory;
-	private String franchise;
 	private String imageLarge;
 	private String imageThumbnail;
 	private String displayName;
@@ -48,8 +44,6 @@ public class Product
 	private String bottomLine;
 	private String description;
 	private String dontBuyType;
-	private String supercategory;
-	private String subcategory;
 	private Double overallScoreMax;
 	private Double overallScoreMin; 
 	private Double overallScore;
@@ -60,7 +54,6 @@ public class Product
 		
 	// Derived fields
 	private int numRatings;
-	private int numSpecs;
 	private HashMap<String, Rating> ratings;
 	private HashMap<String, Spec> specs;
 	private String brandId;
@@ -69,19 +62,11 @@ public class Product
 	private String categoryId;
 	private Category category;
 	
-	// Unused fields
-	//private String vendorApiChannels;
-	//groups
-	
 	Product(ProductStub prodStub) 
 	{
 		// Copy fields from the stub
-		this.summary = prodStub.summary;                
 		this.mpn = prodStub.mpn;                    
 		this.id = prodStub.id;                     
-		this.subfranchise = prodStub.subfranchise;           
-		this.theCategory = prodStub.theCategory;            
-		this.franchise = prodStub.franchise;              
 		this.imageLarge = prodStub.imageLarge;             
 		this.imageThumbnail = prodStub.imageThumbnail;         
 		this.displayName = prodStub.displayName;            
@@ -96,8 +81,6 @@ public class Product
 		this.bottomLine = prodStub.bottomLine;             
 		this.description = prodStub.description;            
 		this.dontBuyType = prodStub.dontBuyType;            
-		this.supercategory = prodStub.supercategory;          
-		this.subcategory = prodStub.subcategory;   
 		this.overallScoreMax = prodStub.overallScoreMax;
 		this.overallScoreMin = prodStub.overallScoreMin;
 		this.overallScore = prodStub.overallScore;   
@@ -115,14 +98,12 @@ public class Product
 		this.brandId = (prodStub.brand != null)? prodStub.brand.id : null;
 		this.brandName = (prodStub.brand != null)? prodStub.brand.displayName : null;
 		
-		this.numSpecs = 0;
 		this.specs = new HashMap<String, Spec>();
 		if(prodStub.specs != null)
 		{
 			for(SpecStub spec : prodStub.specs)
 			{
 				this.specs.put(spec.attributeId, new Spec(spec));
-				this.numSpecs++;
 			}
 		}
 		
@@ -138,27 +119,22 @@ public class Product
 		}
 	}
 	
-	void setCategory(Category cat)
+	void setCategory(Category pCategory)
 	{
-		this.category = cat;
+		category = pCategory;
 	}
 	
+	/**
+	 * @return The category ID.
+	 */
 	public String getCategoryId() 
-	{
-		return this.categoryId;
-	}
+	{ return categoryId; }
 	
-	public int getNumSpecs() {
-		return this.numSpecs;
-	}
-	
-	public int getNumRatings() {
-		return this.numRatings;
-	}
-	
-	public String getSummary() {
-		return summary;
-	}
+	/**
+	 * @return The number of ratings.
+	 */
+	public int getNumRatings() 
+	{ return numRatings; }
 
 	public String getMpn() {
 		return mpn;
