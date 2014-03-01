@@ -26,10 +26,10 @@ import java.io.IOException;
  */
 public final class DataPath
 {
-	private static String POINTER = ".localdatapath";
+	private static String aPointer = ".localdatapath";
 	
 	private DataPath(){}
-	// Hey there everythings working
+	
 	/**
 	 * @return The path where the consumer reports data can be found locally. 
 	 * The return value is always terminated by a path separator character.
@@ -40,7 +40,7 @@ public final class DataPath
 		BufferedReader in = null;
 		try
 		{
-			in = new BufferedReader(new FileReader(POINTER));
+			in = new BufferedReader(new FileReader(aPointer));
 			String path = in.readLine();
 			if( !path.endsWith(File.separator))
 			{
