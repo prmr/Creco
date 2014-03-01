@@ -8,7 +8,7 @@
     <file-match-pattern match-pattern="." include-pattern="true"/>
   </fileset>
   <filter name="FilesFromPackage" enabled="true">
-    <filter-data value="src/main/java/ca/mcgill/cs/creco/data/stubs"/>
+    <filter-data value="src/main/java/ca/mcgill/cs/creco/data/json"/>
     <filter-data value="src/test/java"/>
   </filter>
 </fileset-config>

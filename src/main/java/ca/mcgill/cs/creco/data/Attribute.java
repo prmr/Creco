@@ -15,7 +15,7 @@
  */
 package ca.mcgill.cs.creco.data;
 
-import ca.mcgill.cs.creco.data.stubs.AttributeStub;
+import ca.mcgill.cs.creco.data.json.AttributeStub;
 
 public class Attribute 
 {

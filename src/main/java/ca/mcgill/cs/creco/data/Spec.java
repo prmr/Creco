@@ -15,7 +15,7 @@
  */
 package ca.mcgill.cs.creco.data;
 
-import ca.mcgill.cs.creco.data.stubs.SpecStub;
+import ca.mcgill.cs.creco.data.json.SpecStub;
 
 public class Spec extends Attribute 
 {

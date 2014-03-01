@@ -22,7 +22,7 @@ import java.util.HashSet;
 
 import org.thymeleaf.util.StringUtils;
 
-import ca.mcgill.cs.creco.data.stubs.CategoryStub;
+import ca.mcgill.cs.creco.data.json.CategoryStub;
 
 public class Category 
 {

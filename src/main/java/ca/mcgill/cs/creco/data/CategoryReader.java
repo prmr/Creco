@@ -19,7 +19,7 @@ package ca.mcgill.cs.creco.data;
 import java.io.FileReader;
 import java.io.IOException;
 
-import ca.mcgill.cs.creco.data.stubs.CategoryStub;
+import ca.mcgill.cs.creco.data.json.CategoryStub;
 
 import com.google.gson.Gson;
 
@@ -55,7 +55,7 @@ public class CategoryReader
 	public static CategoryList read(String path, String categoryFileName, double jaccardThreshhold) throws IOException 
 	{
 		// Make an empty CategoryList
-		CategoryList catList = new CategoryList(jaccardThreshhold);
+		CategoryList catList = new CategoryList();
 		
 		// Make some tools to help CategoryReader
 		Gson gson = new Gson();

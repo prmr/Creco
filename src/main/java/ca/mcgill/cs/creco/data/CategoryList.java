@@ -22,16 +22,16 @@ import java.util.Iterator;
 
 public class CategoryList implements Iterable<Category> 
 {
+	private static final double JACCARD_THRESHOLD = 0.8;
+	
 	private Hashtable<String, Category> hash;
 	private ArrayList<Category> franchises;
 	private ArrayList<Category> equivalenceClasses;
 	private ArrayList<Category> subEquivalenceClasses;
 	private ArrayList<Category> leaves;
-	private double jaccardThreshhold;
 	
-	public CategoryList(double jaccardThreshhold) 
+	public CategoryList() 
 	{
-		this.jaccardThreshhold = jaccardThreshhold;
 		this.hash = new Hashtable<String, Category>();
 		this.franchises = new ArrayList<Category>();
 		this.equivalenceClasses = new ArrayList<Category>();
@@ -108,7 +108,7 @@ public class CategoryList implements Iterable<Category>
 			else
 			{
 				Double jaccard = cat.getJaccard();
-				if(jaccard == null || jaccard < this.jaccardThreshhold)
+				if(jaccard == null || jaccard < JACCARD_THRESHOLD)
 				{
 					cat.setClassType("category");
 					for(Category child : children)

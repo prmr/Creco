@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ca.mcgill.cs.creco.data.stubs;
+package ca.mcgill.cs.creco.data.json;
 
 /**
  * Reflectively loaded by the GSON library, do not change the field names.

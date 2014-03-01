@@ -18,9 +18,9 @@ package ca.mcgill.cs.creco.data;
 import java.util.Collections;
 import java.util.HashMap;
 
-import ca.mcgill.cs.creco.data.stubs.ProductStub;
-import ca.mcgill.cs.creco.data.stubs.RatingStub;
-import ca.mcgill.cs.creco.data.stubs.SpecStub;
+import ca.mcgill.cs.creco.data.json.ProductStub;
+import ca.mcgill.cs.creco.data.json.RatingStub;
+import ca.mcgill.cs.creco.data.json.SpecStub;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

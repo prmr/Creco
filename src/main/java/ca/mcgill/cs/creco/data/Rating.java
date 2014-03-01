@@ -15,7 +15,7 @@
  */
 package ca.mcgill.cs.creco.data;
 
-import ca.mcgill.cs.creco.data.stubs.RatingStub;
+import ca.mcgill.cs.creco.data.json.RatingStub;
 
 public class Rating extends Attribute
 {

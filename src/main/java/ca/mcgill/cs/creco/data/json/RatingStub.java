@@ -13,28 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ca.mcgill.cs.creco.data.stubs;
+package ca.mcgill.cs.creco.data.json;
 
 /**
- * This class is designed to capture data from the CR database for attributes (ratings and specs) which are 
- * properties of products.  It is a superclass for RatingStub and SpecStub.
- * 
  * Reflectively loaded by the GSON library, do not change the field names.
- * 
- * @author enewe101
- *
  */
-public class AttributeStub 
-{
-	public String displayName;
-	public String description;
-	public String attributeId;
-	public String filterWidget;
-	public String dataPresentationFormat;
-	public String attributeGroup;
-	public String unitName;
-	public Object value;
-	public Integer sortOrder;
-	public Boolean isForDisplayOnCRO;
-	public Boolean isCategoryCommonAttribute;
-}
+public class RatingStub extends AttributeStub {}
