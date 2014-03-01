@@ -64,7 +64,7 @@ public class Category
 	private boolean startNewRatingIntersection;
 	private boolean startNewSpecIntersection;
 	
-	Category(CategoryList catList, CategoryStub catStub, Category parent, int depth) 
+	public Category(CategoryStub catStub, Category parent, int depth) 
 	{
 		// copy over the CR data fields
 		this.materialsCount = catStub.materialsCount;
@@ -83,7 +83,6 @@ public class Category
 		this.ratedProductsCount = catStub.ratedProductsCount;
 		
 		// Now write the derived fields
-		this.catList = catList;
 		this.depth = depth;
 		this.ratings = new HashMap<String, RatingStat>();
 		this.specs = new HashMap<String, SpecStat>();
@@ -125,7 +124,7 @@ public class Category
 			childCatStubs = (childCatStubs != null)? childCatStubs : new CategoryStub[0];
 			for(CategoryStub childCatStub : childCatStubs)
 			{
-				this.children.add(new Category(this.catList, childCatStub, this, this.depth + 1));
+				this.children.add(new Category(childCatStub, this, this.depth + 1));
 			}
 		}
 		

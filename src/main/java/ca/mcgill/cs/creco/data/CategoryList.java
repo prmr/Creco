@@ -39,7 +39,7 @@ public class CategoryList implements Iterable<Category>
 		this.leaves = new ArrayList<Category>();
 	}
 	
-	void addFranchise(Category franchise)
+	public void addFranchise(Category franchise)
 	{
 		this.franchises.add(franchise);
 	}

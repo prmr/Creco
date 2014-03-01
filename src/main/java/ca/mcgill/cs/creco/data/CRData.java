@@ -17,6 +17,8 @@ package ca.mcgill.cs.creco.data;
 
 import java.io.IOException;
 
+import ca.mcgill.cs.creco.data.json.JsonLoadingService;
+
 /**
  * Root of the object graph representing the consumer reports database. 
  * All of the data is accessible through a singleton CRData object. Just 
@@ -31,8 +33,6 @@ import java.io.IOException;
  */
 public final class CRData 
 {
-	private static final double JACCARD_THRESHOLD = 0.8;
-	
 	private static final String DEFAULT_CATEGORY_FILENAME = "category.json";
 	
 	private static final String[] DEFAULT_PRODUCT_FILENAMES = {
@@ -48,14 +48,13 @@ public final class CRData
 	
 	private CRData(String[] pProductFileNames, String pCategoryFileName) throws IOException
 	{
-		String dataPath = DataPath.get();
-		
-		// Build the CategoryList
-		aCategoryList = CategoryReader.read(dataPath, pCategoryFileName, JACCARD_THRESHOLD);
+		IDataLoadingService loadingService = new JsonLoadingService(DataPath.get(), pCategoryFileName);
+				
+		aCategoryList = loadingService.loadCategories();
 		aCategoryList.eliminateSingletons();
 		
 		// Build the products list
-		ProductList prodList = ProductReader.read(dataPath, pProductFileNames);
+		ProductList prodList = ProductReader.read(DataPath.get(), pProductFileNames);
 		
 		// Put links from products to categories and vice-versa
 		aCategoryList.associateProducts(prodList);
