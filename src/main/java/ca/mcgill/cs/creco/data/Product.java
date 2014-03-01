@@ -25,202 +25,125 @@ import ca.mcgill.cs.creco.data.json.SpecStub;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+/**
+ * Represents a product in the Consumer Reports database.
+ */
 public class Product 
 {
 	// Fields directly copied from CR Data fields
-	private String id;
-	private String displayName;
-	private String review;
-	private String highs;
-	private String lows;
-	private String bottomLine;
-	private String description;
-	private String dontBuyType;
-	private Double overallScoreMax;
-	private Double overallScoreMin; 
-	private Double overallScore;
-	private Boolean isRecommended;
-	private Boolean isBestSeller;
-	private Boolean isTested;
-	private Boolean isBestBuy;
+	private String aId;
+	private String aDisplayName;
+	private Boolean aIsTested;
 		
 	// Derived fields
-	private int numRatings;
-	private HashMap<String, Rating> ratings;
-	private HashMap<String, Spec> specs;
-	private String brandId;
-	private String brandName;
-	private Double price;
-	private String categoryId;
-	private Category category;
+	private HashMap<String, Rating> aRatings;
+	private HashMap<String, Spec> aSpecs;
+	private String aCategoryId;
+	private Category aCategory;
 	
 	Product(ProductStub prodStub) 
 	{
 		// Copy fields from the stub
-		this.id = prodStub.id;                     
-		this.displayName = prodStub.displayName;            
-		this.review = prodStub.review;                 
-		this.highs = prodStub.highs;                  
-		this.lows = prodStub.lows;                   
-		this.bottomLine = prodStub.bottomLine;             
-		this.description = prodStub.description;            
-		this.dontBuyType = prodStub.dontBuyType;            
-		this.overallScoreMax = prodStub.overallScoreMax;
-		this.overallScoreMin = prodStub.overallScoreMin;
-		this.overallScore = prodStub.overallScore;   
-		if(prodStub.price != null)
-		{
-			this.price = prodStub.price.value;
-		}
-		this.isRecommended = prodStub.isRecommended; 
-		this.isBestSeller = prodStub.isBestSeller;  
-		this.isTested = prodStub.isTested;      
-		this.isBestBuy = prodStub.isBestBuy;
+		this.aId = prodStub.id;                     
+		this.aDisplayName = prodStub.displayName;                 
+		this.aIsTested = prodStub.isTested;      
 		
 		// Calculate derived fields
-		this.categoryId = prodStub.category.id;
-		this.brandId = (prodStub.brand != null)? prodStub.brand.id : null;
-		this.brandName = (prodStub.brand != null)? prodStub.brand.displayName : null;
+		this.aCategoryId = prodStub.category.id;
 		
-		this.specs = new HashMap<String, Spec>();
+		this.aSpecs = new HashMap<String, Spec>();
 		if(prodStub.specs != null)
 		{
 			for(SpecStub spec : prodStub.specs)
 			{
-				this.specs.put(spec.attributeId, new Spec(spec));
+				this.aSpecs.put(spec.attributeId, new Spec(spec));
 			}
 		}
 		
-		this.numRatings = 0;
-		this.ratings = new HashMap<String, Rating>();
+		this.aRatings = new HashMap<String, Rating>();
 		if(prodStub.ratings != null)
 		{
 			for(RatingStub rating : prodStub.ratings)
 			{
-				this.ratings.put(rating.attributeId, new Rating(rating));
-				this.numRatings++;
+				this.aRatings.put(rating.attributeId, new Rating(rating));
 			}
 		}
 	}
 	
 	void setCategory(Category pCategory)
 	{
-		category = pCategory;
+		aCategory = pCategory;
 	}
 	
 	/**
 	 * @return The category ID.
 	 */
 	public String getCategoryId() 
-	{ return categoryId; }
+	{ return aCategoryId; }
 	
 	/**
 	 * @return The number of ratings.
 	 */
 	public int getNumRatings() 
-	{ return numRatings; }
+	{ return aRatings.size(); }
 
 	/**
 	 * @return The product ID.
 	 */
 	public String getId() 
-	{ return id; }
+	{ return aId; }
 
 	/**
 	 * @return The display name of the product.
 	 */
 	public String getName() 
-	{ return displayName; }
+	{ return aDisplayName; }
 	
-	public String getReview() {
-		return review;
-	}
+	/**
+	 * @return True if the product has been tested by Consumer Reports.
+	 */
+	public Boolean getIsTested() 
+	{ return aIsTested; }
 
-	public String getHighs() {
-		return highs;
-	}
+	/**
+	 * @return The product's category.
+	 */
+	public Category getCategory() 
+	{ return aCategory; }
 
-	public String getLows() {
-		return lows;
-	}
-
-	public String getBottomLine() {
-		return bottomLine;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public String getDontBuyType() {
-		return dontBuyType;
-	}
-
-	public Double getOverallScoreMax() {
-		return overallScoreMax;
-	}
-
-	public Double getOverallScoreMin() {
-		return overallScoreMin;
-	}
-
-	public Double getOverallScore() {
-		return overallScore;
-	}
-
-	public Boolean getIsRecommended() {
-		return isRecommended;
-	}
-
-	public Boolean getIsBestSeller() {
-		return isBestSeller;
-	}
-
-	public Boolean getIsTested() {
-		return isTested;
-	}
-
-	public Boolean getIsBestBuy() {
-		return isBestBuy;
-	}
-
-	public String getBrandId() {
-		return brandId;
-	}
-
-	public String getBrandName() {
-		return brandName;
-	}
-
-	public Double getPrice() {
-		return price;
-	}
-
-	public Category getCategory() {
-		return category;
-	}
-
-	public Iterable<Rating> getRatings() {
-		return Collections.unmodifiableCollection(Product.this.ratings.values());
-	}
-	
-	public Rating getRating(String id)
+	/**
+	 * @return A iterator on the ratings for this product.
+	 */
+	public Iterable<Rating> getRatings()
 	{
-		return this.ratings.get(id);
+		return Collections.unmodifiableCollection(Product.this.aRatings.values());
 	}
 	
-	public Iterable<Spec> getSpecs() {	
-		return Collections.unmodifiableCollection(Product.this.specs.values());
-	}
-	
-	public Spec getSpec(String id)
+	/**
+	 * Return the rating for this product with pId.
+	 * @param pId The id to look for.
+	 * @return The corresponding rating.
+	 */
+	public Rating getRating(String pId)
 	{
-		return this.specs.get(id);
+		return this.aRatings.get(pId);
 	}
 	
-	public String dump() 
+	/**
+	 * @return A iterator on the specs for this product.
+	 */
+	public Iterable<Spec> getSpecs() 
+	{	
+		return Collections.unmodifiableCollection(Product.this.aSpecs.values());
+	}
+	
+	/**
+	 * Return the spec for this product with pId.
+	 * @param pId The id to look for.
+	 * @return The corresponding rating.
+	 */
+	public Spec getSpec(String pId)
 	{
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		return gson.toJson(this);
-	}	
+		return this.aSpecs.get(pId);
+	}
 }
