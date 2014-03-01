@@ -18,7 +18,7 @@ package ca.mcgill.cs.creco.data.json;
 /**
  * Reflectively loaded by the GSON library, do not change the field names.
  */
-public class CategoryStub 
+class CategoryStub 
 {
 	public int materialsCount;
 	public String pluralName;

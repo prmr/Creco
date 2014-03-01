@@ -18,7 +18,7 @@ package ca.mcgill.cs.creco.data.json;
 /**
  * Reflectively loaded by the GSON library, do not change the field names.
  */
-public class PriceStub 
+class PriceStub 
 {
 	public String displayName;
 	public String description;
