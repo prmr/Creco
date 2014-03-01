@@ -168,7 +168,7 @@ public class CategoryList implements Iterable<Category>
 	
 	public void recursiveRefresh(Category cat, int depth)
 	{
-		cat.setDepth(depth);
+//		cat.setDepth(depth);
 		
 		for(Category child : cat.getChildren()) {
 			recursiveRefresh(child, depth + 1);
@@ -268,44 +268,44 @@ public class CategoryList implements Iterable<Category>
 		}
 	}
 	
-	public String dumpTree()
-	{
-		String dumpString = "";
-		for(Category franchise : this.franchises)
-		{
-			dumpString += this.recurseDumpTree(franchise);
-		}
-		
-		return dumpString;
-	}
+//	public String dumpTree()
+//	{
+//		String dumpString = "";
+//		for(Category franchise : this.franchises)
+//		{
+//			dumpString += this.recurseDumpTree(franchise);
+//		}
+//		
+//		return dumpString;
+//	}
 	
-	public String recurseDumpTree(Category cat)
-	{
-		// Process this level
-		int depth = cat.getDepth();
-		String dumpString = cat.getName() + " (" + cat.getId() + ")\n";
-		if(cat.isSubEquivalence())
-		{
-			if(cat.isEquivalence())
-			{
-				dumpString = "(E) " + dumpString;
-			}
-			else
-			{
-				dumpString = "(e) " + dumpString;
-			}
-		}
-		
-		for(int i=0; i < depth; i++)
-		{
-			dumpString = "\t" + dumpString;
-		}
-		
-		// Recurse on children
-		for(Category child : cat.getChildren())
-		{
-			dumpString += this.recurseDumpTree(child);
-		}
-		return dumpString;
-	}
+//	public String recurseDumpTree(Category cat)
+//	{
+//		// Process this level
+//		int depth = cat.getDepth();
+//		String dumpString = cat.getName() + " (" + cat.getId() + ")\n";
+//		if(cat.isSubEquivalence())
+//		{
+//			if(cat.isEquivalence())
+//			{
+//				dumpString = "(E) " + dumpString;
+//			}
+//			else
+//			{
+//				dumpString = "(e) " + dumpString;
+//			}
+//		}
+//		
+//		for(int i=0; i < depth; i++)
+//		{
+//			dumpString = "\t" + dumpString;
+//		}
+//		
+//		// Recurse on children
+//		for(Category child : cat.getChildren())
+//		{
+//			dumpString += this.recurseDumpTree(child);
+//		}
+//		return dumpString;
+//	}
 }

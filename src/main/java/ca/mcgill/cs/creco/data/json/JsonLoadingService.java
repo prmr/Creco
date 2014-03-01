@@ -42,24 +42,56 @@ public class JsonLoadingService implements IDataLoadingService
 	@Override
 	public CategoryList loadCategories() throws IOException 
 	{
-		CategoryList catList = new CategoryList();
-		
-		Gson gson = new Gson();
-		FileReader fr = new FileReader(aPath + aCategoryFileName);
-				
-		CategoryStub[] catArray = gson.fromJson(fr, CategoryStub[].class);
+		CategoryStub[] inputCategories = new Gson().fromJson(new FileReader(aPath + aCategoryFileName), CategoryStub[].class);
+		CategoryList outputCategories = new CategoryList();
 				
 		// Note that when the franchise category gets built, its children also 
 		// get built, and so on, recursively.
-		for(CategoryStub catStub : catArray)
+		for(CategoryStub inputCategory : inputCategories)
 		{
-			catList.addFranchise(new Category(catStub, null, 0));
+			Category outputCategory = buildCategory(inputCategory, null);
+			outputCategories.addFranchise(outputCategory);
 		}
 				
 		// Build a hashtable that provides random access to the categories
-		catList.index();
+		outputCategories.index();
 
-		return catList;
+		return outputCategories;
+	}
+	
+	private Category buildCategory(CategoryStub pCategoryStub, Category pParent)
+	{
+		Category lReturn = new Category(pCategoryStub.id, pCategoryStub.singularName, pParent);
+		
+		if(pCategoryStub.downLevel != null)
+		{
+			// figure out where the children are, if any
+			CategoryStub[] childCatStubs = new CategoryStub[0];
+			
+			if(pCategoryStub.downLevel.supercategory != null)
+			{
+				childCatStubs = pCategoryStub.downLevel.supercategory;
+			}
+			else if(pCategoryStub.downLevel.category != null)
+			{
+				childCatStubs = pCategoryStub.downLevel.category;
+			}
+			else if(pCategoryStub.downLevel.subfranchise != null)
+			{
+				childCatStubs = pCategoryStub.downLevel.subfranchise;
+			}
+			else if(pCategoryStub.downLevel.subcategory != null)
+			{
+				childCatStubs = pCategoryStub.downLevel.subcategory;
+			}
+						
+			for(CategoryStub childCatStub : childCatStubs)
+			{
+				lReturn.addChild(buildCategory(childCatStub, lReturn));
+			}
+		}
+		
+		return lReturn;
 	}
 
 	@Override
