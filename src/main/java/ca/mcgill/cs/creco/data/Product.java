@@ -28,16 +28,8 @@ import com.google.gson.GsonBuilder;
 public class Product 
 {
 	// Fields directly copied from CR Data fields
-	private String mpn;
 	private String id;
-	private String imageLarge;
-	private String imageThumbnail;
 	private String displayName;
-	private String name;
-	private String upc;
-	private String overallScoreDisplayName;
-	private String modelOverviewPageUrl;
-	private String genericColor;
 	private String review;
 	private String highs;
 	private String lows;
@@ -65,16 +57,8 @@ public class Product
 	Product(ProductStub prodStub) 
 	{
 		// Copy fields from the stub
-		this.mpn = prodStub.mpn;                    
 		this.id = prodStub.id;                     
-		this.imageLarge = prodStub.imageLarge;             
-		this.imageThumbnail = prodStub.imageThumbnail;         
 		this.displayName = prodStub.displayName;            
-		this.name = prodStub.name;                   
-		this.upc = prodStub.upc;                    
-		this.overallScoreDisplayName = prodStub.overallScoreDisplayName;
-		this.modelOverviewPageUrl = prodStub.modelOverviewPageUrl;   
-		this.genericColor = prodStub.genericColor;           
 		this.review = prodStub.review;                 
 		this.highs = prodStub.highs;                  
 		this.lows = prodStub.lows;                   
@@ -136,47 +120,18 @@ public class Product
 	public int getNumRatings() 
 	{ return numRatings; }
 
-	public String getMpn() {
-		return mpn;
-	}
+	/**
+	 * @return The product ID.
+	 */
+	public String getId() 
+	{ return id; }
 
-	public String getId() {
-		return id;
-	}
-
-	public String getImageLarge() {
-		return imageLarge;
-	}
-
-	public String getImageThumbnail() {
-		return imageThumbnail;
-	}
-
-	public String getName() {
-		return displayName;
-	}
+	/**
+	 * @return The display name of the product.
+	 */
+	public String getName() 
+	{ return displayName; }
 	
-	public String getName_()
-	{
-		return name;
-	}
-
-	public String getUpc() {
-		return upc;
-	}
-
-	public String getOverallScoreDisplayName() {
-		return overallScoreDisplayName;
-	}
-
-	public String getModelOverviewPageUrl() {
-		return modelOverviewPageUrl;
-	}
-
-	public String getGenericColor() {
-		return genericColor;
-	}
-
 	public String getReview() {
 		return review;
 	}
