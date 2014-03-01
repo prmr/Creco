@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ca.mcgill.cs.creco.util;
+package ca.mcgill.cs.creco.data;
 
 import static org.junit.Assert.assertEquals;
 
@@ -33,9 +33,9 @@ public class TestDataPath
 	{
 		// Reflectively reset the constant to be able to test 
 		// in an environment-independent manner.
-		Field pointer = DataPath.class.getDeclaredField("POINTER");
+		Field pointer = DataPath.class.getDeclaredField("aPointer");
 		pointer.setAccessible(true);
-		pointer.set(null, "src/test/java/ca/mcgill/cs/creco/util/.localdatapath1");
+		pointer.set(null, "src/test/java/ca/mcgill/cs/creco/data/.localdatapath1");
 		String path = DataPath.get();
 		assertEquals("C:\\temp\\data" + File.separator,DataPath.get());
 	}
@@ -43,7 +43,7 @@ public class TestDataPath
 	@After
 	public void resetDataPath() throws Exception
 	{
-		Field pointer = DataPath.class.getDeclaredField("POINTER");
+		Field pointer = DataPath.class.getDeclaredField("aPointer");
 		pointer.setAccessible(true);
 		pointer.set(null, ".localdatapath");
 	}

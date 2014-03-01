@@ -23,32 +23,32 @@ public class TypedVal
 	
 	public TypedVal(Object pValue)
 	{
-		this.aOriginalValue = pValue;
+		aOriginalValue = pValue;
 		
 		if(pValue == null)
 		{
-			this.aType = "null";
-			this.aValue = null;
+			aType = "null";
+			aValue = null;
 		}
 		else if(pValue instanceof Integer)
 		{
-			this.aType = "int";
-			this.aValue = pValue;
+			aType = "int";
+			aValue = pValue;
 		}
 		else if(pValue instanceof Double)
 		{
-			this.aType = "double";
-			this.aValue = pValue;
+			aType = "double";
+			aValue = pValue;
 		}
 		else if(pValue instanceof Float)
 		{
-			this.aType = "float";
-			this.aValue = pValue;
+			aType = "float";
+			aValue = pValue;
 		}
 		else if(pValue instanceof Boolean)
 		{
-			this.aType = "boolean";
-			this.aValue = pValue;
+			aType = "boolean";
+			aValue = pValue;
 		}
 		else if(pValue instanceof String)
 		{
@@ -56,35 +56,35 @@ public class TypedVal
 			// match int with optional '-' and decimal.
 			if(str.matches("-?\\d+"))
 			{
-				this.aType = "int";
-				this.aValue = Integer.parseInt(str);
+				aType = "int";
+				aValue = Integer.parseInt(str);
 			}
 			//match a number with optional '-' and decimal.
 			else if(str.matches("-?\\d+(\\.\\d+)?"))  
 			{
-				this.aType = "double";
-				this.aValue = Double.parseDouble(str);
+				aType = "double";
+				aValue = Double.parseDouble(str);
 			}
 			else if(str.matches("(y|Y)es"))
 			{
-				this.aType = "bool";
-				this.aValue = true;
+				aType = "bool";
+				aValue = true;
 			}
 			else if(str.matches("(n|N)o"))
 			{
-				this.aType = "bool";
-				this.aValue = false;
+				aType = "bool";
+				aValue = false;
 			}
 			else
 			{
-				this.aType = "String";
-				this.aValue = str;
+				aType = "String";
+				aValue = str;
 			}
 		}
 		else
 		{
-			this.aType = "unknown";
-			this.aValue = pValue;
+			aType = "unknown";
+			aValue = pValue;
 		}
 	}	
 	
