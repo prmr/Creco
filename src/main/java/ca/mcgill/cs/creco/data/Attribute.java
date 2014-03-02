@@ -22,75 +22,52 @@ import ca.mcgill.cs.creco.data.json.AttributeStub;
  */
 public class Attribute 
 {
-	private String displayName;
-	private String description;
-	private String attributeId;
-	private String filterWidget;
-	private String dataPresentationFormat;
-	private String attributeGroup;
-	private String unitName;
-	private TypedVal typedValue;
-	private Integer sortOrder;
-	private Boolean isForDisplayOnCRO;
-	private Boolean isCategoryCommonAttribute;
+	private String aDisplayName;
+	private String aDescription;
+	private String aAttributeId;
+	private TypedVal aTypedValue;
 	
 	Attribute(AttributeStub attStub)
 	{
-		this.displayName = attStub.displayName;
-		this.description = attStub.description;
-		this.attributeId = attStub.attributeId;
-		this.filterWidget = attStub.filterWidget;
-		this.dataPresentationFormat = attStub.dataPresentationFormat;
-		this.attributeGroup = attStub.attributeGroup; 
-		this.unitName = attStub.unitName; 
-		this.sortOrder = attStub.sortOrder;  
-		this.isForDisplayOnCRO = attStub.isForDisplayOnCRO; 
-		this.isCategoryCommonAttribute = attStub.isCategoryCommonAttribute;
-
-		this.typedValue = new TypedVal(attStub.value);
+		aDisplayName = attStub.displayName;
+		aDescription = attStub.description;
+		aAttributeId = attStub.attributeId;
+		aTypedValue = new TypedVal(attStub.value);
 	}
 
 	/**
 	 * @return The display name of the attribute.
 	 */
 	public String getName() 
-	{ return displayName; }
+	{ return aDisplayName; }
 
 	/**
 	 * @return The description of the attribute.
 	 */
 	public String getDescription() 
-	{ return description; }
+	{ return aDescription; }
 
 	/**
 	 * @return The id of this attribute.
 	 */
 	public String getId() 
-	{ return attributeId; }
+	{ return aAttributeId; }
 
 	/**
-	 * @return The filter widget.
+	 * @return The value for this attribute.
 	 */
-	public String getFilterWidget() 
-	{ return filterWidget; }
-
-	public String getDataPresentationFormat() { return dataPresentationFormat; }
-
-	public String getAttributeGroup() { return attributeGroup; }
-
-	public String getUnitName() { return unitName; }
-
-	public Object getValue() { return this.typedValue.getValue(); }
+	public Object getValue() 
+	{ return this.aTypedValue.getValue(); }
 	
-	public TypedVal getTypedValue() { return this.typedValue; }
+	/**
+	 * @return The typed value.
+	 */
+	public TypedVal getTypedValue() 
+	{ return this.aTypedValue; }
 
-	public Object getOriginalValue() { return this.typedValue.getOriginalValue(); }
-	
-	public String getType() { return this.typedValue.getType(); }
-
-	public Integer getSortOrder() { return sortOrder; }
-
-	public Boolean getIsForDisplayOnCRO() { return isForDisplayOnCRO; }
-
-	public Boolean getIsCategoryCommonAttribute() { return isCategoryCommonAttribute; }	
+	/**
+	 * @return The type of the value.
+	 */
+	public String getType() 
+	{ return this.aTypedValue.getType(); }
 }
