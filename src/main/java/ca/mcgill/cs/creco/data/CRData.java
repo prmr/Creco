@@ -16,6 +16,9 @@
 package ca.mcgill.cs.creco.data;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import ca.mcgill.cs.creco.data.json.JsonLoadingService;
 
@@ -28,10 +31,9 @@ import ca.mcgill.cs.creco.data.json.JsonLoadingService;
  * CRData crData = new CRData(DataPath.get()); 
  * The main entry points to the data are via the CategoryList and ProductList.
  * CategoryList catList = crData.getCategoryList();
- * ProductList prodList = crData.getProductList(); 
  * These provide access to categories or products by id, and are iterables.
  */
-public final class CRData 
+public final class CRData implements IDataCollector
 {
 	private static final String DEFAULT_CATEGORY_FILENAME = "category.json";
 	
@@ -44,7 +46,7 @@ public final class CRData
 	private static CRData instance = null;
 	
 	private CategoryList aCategoryList;
-	private ProductList aProductList;
+	private HashMap<String, Product> aProducts = new HashMap<String, Product>();
 	
 	private CRData(String[] pProductFileNames, String pCategoryFileName) throws IOException
 	{
@@ -53,10 +55,10 @@ public final class CRData
 		aCategoryList = loadingService.loadCategories();
 		aCategoryList.eliminateSingletons();
 		
-		ProductList prodList = loadingService.loadProducts();
+		loadingService.loadProducts(this);
 		
 		// Put links from products to categories and vice-versa
-		aCategoryList.associateProducts(prodList);
+		 aCategoryList.associateProducts(getProducts()); 
 		
 		// Roll up useful pre-processed statistics and find equivalence classes
 		aCategoryList.refresh();
@@ -76,6 +78,18 @@ public final class CRData
 			instance = new CRData(DEFAULT_PRODUCT_FILENAMES, DEFAULT_CATEGORY_FILENAME);
 		}
 		return instance;
+	}
+	
+	@Override
+	public void addCategory(Category pCategory)
+	{
+		// TODO
+	}
+	
+	@Override
+	public void addProduct(Product pProduct)
+	{
+		aProducts.put(pProduct.getId(), pProduct);
 	}
 
 	/**
@@ -105,9 +119,10 @@ public final class CRData
 	{ return aCategoryList; }
 	
 	/**
-	 * @return The list of products.
+	 * @return An interator on the product list.
 	 */
-	public ProductList getProductList() 
-	{ return aProductList; }
-	
+	public Iterator<Product> getProducts() 
+	{
+		return Collections.unmodifiableCollection(aProducts.values()).iterator();
+	}
 }

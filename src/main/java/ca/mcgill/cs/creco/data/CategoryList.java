@@ -189,29 +189,34 @@ public class CategoryList implements Iterable<Category>
 		this.hash.put(key, val);
 	}
 
-	public void associateProducts(ProductList prodList) 
+	/**
+	 * Associate products with categories and vice-versa.
+	 * @param pProducts The list of products.
+	 */
+	public void associateProducts(Iterator<Product> pProducts) 
 	{
-		for(Product prod : prodList)
+		while( pProducts.hasNext())
 		{
-			Category cat = this.get(prod.getCategoryId());
+			Product product = pProducts.next();
+			Category category = get(product.getCategoryId());
 			
 			// Create two way link between category and product
-			cat.putProduct(prod);
-			prod.setCategory(cat);
+			category.putProduct(product);
+			product.setCategory(category);
 			
 			// Aggregate some product info in the category
-			cat.putRatings(prod.getRatings());
-			cat.putSpecs(prod.getSpecs());
+			category.putRatings(product.getRatings());
+			category.putSpecs(product.getSpecs());
 			
 			// Increment the counts in this category
-			cat.incrementCount(1);
-			if(prod.getIsTested())
+			category.incrementCount(1);
+			if(product.getIsTested())
 			{
-				cat.incrementTestedCount(1);
+				category.incrementTestedCount(1);
 			}
-			if(prod.getNumRatings() > 0)
+			if(product.getNumRatings() > 0)
 			{
-				cat.incrementRatedCount(1);
+				category.incrementRatedCount(1);
 			}
 		}
 	}

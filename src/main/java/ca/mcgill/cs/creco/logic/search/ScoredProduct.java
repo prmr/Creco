@@ -15,10 +15,7 @@
  */
 package ca.mcgill.cs.creco.logic.search;
 
-import java.util.List;
-
 import ca.mcgill.cs.creco.data.Product;
-import ca.mcgill.cs.creco.data.ProductList;
 
 /**
  * 

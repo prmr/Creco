@@ -15,22 +15,20 @@
  */
 package ca.mcgill.cs.creco.data;
 
-import java.io.IOException;
-
 /**
- * Loads the product data from its persisted representation.
+ * Any object that can accept Category and Product objects.
  */
-public interface IDataLoadingService 
+public interface IDataCollector 
 {
 	/**
-	 * @return The list of product categories.
-	 * @throws IOException If there is any error retrieving the data.
+	 * Adds a category to the collector.
+	 * @param pCategory The category to add.
 	 */
-	CategoryList loadCategories() throws IOException;
+	void addCategory(Category pCategory);
 	
 	/**
-	 * @param pCollector The object collecting the loaded products.
-	 * @throws IOException If there is any error retrieving the data.
+	 * Adds a product to the collector.
+	 * @param pProduct The product to add.
 	 */
-	void loadProducts(IDataCollector pCollector) throws IOException;
+	void addProduct(Product pProduct);
 }

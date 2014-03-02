@@ -24,9 +24,9 @@ import java.io.InputStreamReader;
 import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.CategoryList;
+import ca.mcgill.cs.creco.data.IDataCollector;
 import ca.mcgill.cs.creco.data.IDataLoadingService;
 import ca.mcgill.cs.creco.data.Product;
-import ca.mcgill.cs.creco.data.ProductList;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
@@ -103,19 +103,15 @@ public class JsonLoadingService implements IDataLoadingService
 	}
 
 	@Override
-	public ProductList loadProducts() throws IOException 
+	public void loadProducts(IDataCollector pCollector) throws IOException 
 	{
-		ProductList productList = new ProductList();
-
 		for(String fileName : aProductFileNames)
 		{
-			readFile(aPath + fileName, productList);
+			readFile(aPath + fileName, pCollector);
 		}
-		System.out.println("Found " + productList.size() + " products.\n");
-		return productList;
 	}
 	
-	private static void readFile(String filePath, ProductList prodList) throws IOException
+	private static void readFile(String filePath, IDataCollector pCollector) throws IOException
 	{
 		InputStream in = new FileInputStream(filePath);
 		JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
@@ -124,7 +120,7 @@ public class JsonLoadingService implements IDataLoadingService
 		while(reader.hasNext()) 
 		{
 			ProductStub prodStub = new Gson().fromJson(reader, ProductStub.class);
-			prodList.put(prodStub.id, buildProduct(prodStub));
+			pCollector.addProduct(buildProduct(prodStub));
 			
 		}
 		reader.endArray();
