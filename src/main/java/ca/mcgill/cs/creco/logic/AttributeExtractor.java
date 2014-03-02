@@ -7,14 +7,11 @@
 package ca.mcgill.cs.creco.logic;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
-
-import com.google.common.collect.Lists;
-//import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 import weka.attributeSelection.AttributeSelection;
 //import weka.attributeSelection.CfsSubsetEval;
@@ -30,14 +27,15 @@ import weka.core.Instance;
 import weka.core.Instances;
 import ca.mcgill.cs.creco.data.AttributeStat;
 import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.data.RatingStat;
-import ca.mcgill.cs.creco.data.Spec;
-import ca.mcgill.cs.creco.data.SpecStat;
 import ca.mcgill.cs.creco.data.Product;
+import ca.mcgill.cs.creco.data.ProductList;
 import ca.mcgill.cs.creco.logic.model.AttributeHashMap;
 import ca.mcgill.cs.creco.logic.model.AttributeValue;
 import ca.mcgill.cs.creco.logic.model.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
+
+import com.google.common.collect.Lists;
+//import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 
  /**
@@ -53,8 +51,8 @@ public class AttributeExtractor
 
 	private List<Product> aProductList;
 	private Category aEquivalenceClass;
-	private Iterable<SpecStat> aSpecList;
-	private Iterable<RatingStat> aRatingList;
+	private Iterable<AttributeStat> aSpecList;
+	private Iterable<AttributeStat> aRatingList;
 	private ArrayList<ScoredAttribute> aScoredSpecList;
 	private ArrayList<ScoredAttribute> aScoredRatingList;
 	
@@ -107,7 +105,7 @@ public class AttributeExtractor
 		HashMap<String, Integer> nominalCounts = new HashMap<String, Integer>();
 		for( Product p : pProductList)
 		{
-			Spec s = p.getSpec(pAttributeID);
+			ca.mcgill.cs.creco.data.Attribute s = p.getSpec(pAttributeID);
 			if( s != null)
 			{
 //				MODIFY WHEN ADDING CLASSES
@@ -552,7 +550,7 @@ public class AttributeExtractor
 			fullMap.put(sAtt.getAttributeID(), sAtt);
 		}
 		//add missing
-		for(SpecStat ss : aSpecList)
+		for(AttributeStat ss : aSpecList)
 		{
 			if(!fullMap.containsKey(ss.getId()))
 			{
@@ -575,7 +573,7 @@ public class AttributeExtractor
 			fullMap.put(sAtt.getAttributeID(), sAtt);
 		}
 		//add missing
-		for(RatingStat ss : aRatingList)
+		for(AttributeStat ss : aRatingList)
 		{
 			if(!fullMap.containsKey(ss.getId()))
 			{

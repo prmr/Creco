@@ -44,8 +44,8 @@ public class Category
 	private ArrayList<Product> aProducts = new ArrayList<Product>();	
 	private HashSet<String> aRatingIntersection = new HashSet<String>();
 	private HashSet<String> aSpecIntersection = new HashSet<String>();
-	private HashMap<String, SpecStat> aSpecs = new HashMap<String, SpecStat>();
-	private HashMap<String, RatingStat> aRatings = new HashMap<String, RatingStat>();
+	private HashMap<String, AttributeStat> aSpecs = new HashMap<String, AttributeStat>();
+	private HashMap<String, AttributeStat> aRatings = new HashMap<String, AttributeStat>();
 	
 	// State fields for correcting implementing finding the intersection of children's attributes (later used for jaccard)
 	private boolean aStartNewRatingIntersection;
@@ -66,12 +66,12 @@ public class Category
 	
 	void clearRatings()
 	{
-		this.aRatings = new HashMap<String, RatingStat>();
+		this.aRatings = new HashMap<String, AttributeStat>();
 	}
 	
 	void clearSpecs()
 	{
-		this.aSpecs = new HashMap<String, SpecStat>();
+		this.aSpecs = new HashMap<String, AttributeStat>();
 	}
 	
 	void calculateJaccard()
@@ -156,7 +156,7 @@ public class Category
 		desc += " - number of specs: " + this.aSpecs.size() + "\n";
 		desc += " - Jaccard: " + this.aJaccardIndex + "\n";
 		desc += "\n - Ratings:\n";
-		for(RatingStat rating : this.aRatings.values())
+		for(AttributeStat rating : this.aRatings.values())
 		{
 			desc += "\t- " + rating.getName() + " (" + rating.getId() +"): " + rating.getCount() + " (" + (float)(rating.getCount())/this.getCount()*100 + "%)";
 			if(rating.getValueMax() != null)
@@ -166,7 +166,7 @@ public class Category
 			desc += " values: [" + StringUtils.join(rating.getValueEnum(), ", ") + "]\n";
 		}
 		desc += "\n - Specs:\n";
-		for(SpecStat spec : this.aSpecs.values())
+		for(AttributeStat spec : this.aSpecs.values())
 		{
 			desc += "\t- " + spec.getName() + " (" + spec.getId() + "): " + spec.getCount() + " (" + (float)(spec.getCount())/this.getCount()*100 + "%)";
 			if(spec.getValueMax() != null)
@@ -195,7 +195,7 @@ public class Category
 		// we simply note all the ratings it has
 		if(this.aStartNewRatingIntersection)
 		{
-			for(RatingStat rating : child.getRatings())
+			for(AttributeStat rating : child.getRatings())
 			{
 				this.aRatingIntersection.add(rating.getId());
 			}
@@ -225,7 +225,7 @@ public class Category
 		// we simply note all the specs it has
 		if(this.aStartNewSpecIntersection)
 		{
-			for(SpecStat spec : child.getSpecs())
+			for(AttributeStat spec : child.getSpecs())
 			{
 				this.aSpecIntersection.add(spec.getId());
 			}
@@ -250,10 +250,10 @@ public class Category
 		this.aProducts.add(prod);
 	}
 	
-	public void putRating(Rating rating)
+	public void putRating(Attribute rating)
 	{
 		String ratingId = rating.getId();
-		for(RatingStat existingRatingStat : this.aRatings.values())
+		for(AttributeStat existingRatingStat : this.aRatings.values())
 		{
 			if(existingRatingStat.getId().equals(ratingId))
 			{
@@ -262,23 +262,23 @@ public class Category
 				return;
 			}
 		}
-		RatingStat ratingStat = new RatingStat(rating);
+		AttributeStat ratingStat = new AttributeStat(rating);
 		ratingStat.increment(1);
 		ratingStat.updateRange(rating.getValue());
 		this.aRatings.put(rating.getId(), ratingStat);
 	}
 	
-	public void mergeRatings(Iterable<RatingStat> ratings)
+	public void mergeRatings(Iterable<AttributeStat> ratings)
 	{
-		for(RatingStat rating : ratings)
+		for(AttributeStat rating : ratings)
 		{
 			this.mergeRating(rating);
 		}
 	}
 	
-	public void mergeRating(RatingStat rating)
+	public void mergeRating(AttributeStat rating)
 	{
-		for(RatingStat existingRating : this.aRatings.values())
+		for(AttributeStat existingRating : this.aRatings.values())
 		{
 			if(existingRating.getId().equals(rating.getId()))
 			{
@@ -286,31 +286,31 @@ public class Category
 				return;
 			}
 		}
-		RatingStat newRating = new RatingStat(rating);
+		AttributeStat newRating = new AttributeStat(rating);
 		this.aRatings.put(rating.getId(), newRating);
 	}
 	
-	public Iterable<RatingStat> getRatings()
+	public Iterable<AttributeStat> getRatings()
 	{
 		return Collections.unmodifiableCollection(this.aRatings.values());
 	}
 	
-	public RatingStat getRating(String id)
+	public AttributeStat getRating(String id)
 	{
 		return this.aRatings.get(id);
 	}
 	
-	public void mergeSpecs(Iterable<SpecStat> specs)
+	public void mergeSpecs(Iterable<AttributeStat> specs)
 	{
-		for(SpecStat spec : specs)
+		for(AttributeStat spec : specs)
 		{
 			this.mergeSpec(spec);
 		}
 	}
 	
-	public void mergeSpec(SpecStat spec)
+	public void mergeSpec(AttributeStat spec)
 	{
-		for(SpecStat existingSpec: this.aSpecs.values())
+		for(AttributeStat existingSpec: this.aSpecs.values())
 		{
 			if(existingSpec.getId().equals(spec.getId()))
 			{
@@ -318,32 +318,32 @@ public class Category
 				return;
 			}
 		}
-		SpecStat newSpec = new SpecStat(spec);
+		AttributeStat newSpec = new AttributeStat(spec);
 		this.aSpecs.put(spec.getId(), newSpec);
 	}
 	
-	public Iterable<SpecStat> getSpecs()
+	public Iterable<AttributeStat> getSpecs()
 	{
 		return Collections.unmodifiableCollection(this.aSpecs.values());
 	}
 
-	public SpecStat getSpec(String id)
+	public AttributeStat getSpec(String id)
 	{
 		return this.aSpecs.get(id);
 	}
 
-	public void putRatings(Iterable<Rating> ratings)
+	public void putRatings(Iterable<Attribute> ratings)
 	{
-		for(Rating rating : ratings)
+		for(Attribute rating : ratings)
 		{
 			this.putRating(rating);
 		}
 	}
 
-	public void putSpec(Spec spec)
+	public void putSpec(Attribute spec)
 	{
 		String specId = spec.getId();
-		for(SpecStat existingSpecStat: this.aSpecs.values())
+		for(AttributeStat existingSpecStat: this.aSpecs.values())
 		{
 			if(existingSpecStat.getId().equals(specId))
 			{
@@ -352,7 +352,7 @@ public class Category
 				return;
 			}
 		}
-		SpecStat specStat = new SpecStat(spec);
+		AttributeStat specStat = new AttributeStat(spec);
 		specStat.increment(1);
 		specStat.updateRange(spec.getValue());
 		this.aSpecs.put(spec.getId(), specStat);
@@ -408,9 +408,9 @@ public class Category
 		this.aTestedCount = count;
 	}
 	
-	public void putSpecs(Iterable<Spec> specs)
+	public void putSpecs(Iterable<Attribute> specs)
 	{
-		for(Spec spec : specs)
+		for(Attribute spec : specs)
 		{
 			this.putSpec(spec);
 		}

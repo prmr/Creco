@@ -30,8 +30,8 @@ public class RankedFeaturesProducts {
 		{
 			int flag=0;
 			Product product= p.getProduct();
-			Iterable<Spec> specs = product.getSpecs();
-			for(Spec a:specs)
+			Iterable<Attribute> specs = product.getSpecs();
+			for(Attribute a:specs)
 			{
 				for(ScoredAttribute b:pSpecList)
 				{

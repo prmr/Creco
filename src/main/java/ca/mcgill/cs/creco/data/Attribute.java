@@ -22,10 +22,17 @@ import ca.mcgill.cs.creco.data.json.AttributeStub;
  */
 public class Attribute 
 {
+	/**
+	 * Wether an attribute is a rating or a specification.
+	 */
+	public enum AttributeType 
+	{ RATING, SPECIFICATION }
+	
 	private String aDisplayName;
 	private String aDescription;
 	private String aAttributeId;
 	private TypedVal aTypedValue;
+	private AttributeType aType;
 	
 	Attribute(AttributeStub attStub)
 	{
@@ -33,6 +40,23 @@ public class Attribute
 		aDescription = attStub.description;
 		aAttributeId = attStub.attributeId;
 		aTypedValue = new TypedVal(attStub.value);
+	}
+	
+	/**
+	 * Creates a new Attribute.
+	 * @param pType Specification or Rating.
+	 * @param pId The id of the attribute.
+	 * @param pName The display name.
+	 * @param pDescription The description.
+	 * @param pValue The value for the attribute.
+	 */
+	public Attribute( AttributeType pType, String pId, String pName, String pDescription, Object pValue )
+	{
+		aType = pType;
+		aAttributeId = pId;
+		aDescription = pDescription;
+		aDisplayName = pName;
+		aTypedValue = new TypedVal(pValue);
 	}
 
 	/**

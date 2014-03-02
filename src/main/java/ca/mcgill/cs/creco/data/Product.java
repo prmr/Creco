@@ -32,8 +32,8 @@ public class Product
 	private Boolean aIsTested;
 		
 	// Derived fields
-	private HashMap<String, Rating> aRatings = new HashMap<String, Rating>();
-	private HashMap<String, Spec> aSpecs = new HashMap<String, Spec>();
+	private HashMap<String, Attribute> aRatings = new HashMap<String, Attribute>();
+	private HashMap<String, Attribute> aSpecs = new HashMap<String, Attribute>();
 	private String aCategoryId;
 	private Category aCategory;
 	
@@ -58,7 +58,7 @@ public class Product
 	 */
 	public void addSpec(SpecStub pSpecStub)
 	{
-		aSpecs.put(pSpecStub.attributeId, new Spec(pSpecStub));
+		aSpecs.put(pSpecStub.attributeId, new Attribute(pSpecStub));
 	}
 	
 	/**
@@ -67,7 +67,7 @@ public class Product
 	 */
 	public void addRating(RatingStub pRatingStub)
 	{
-		aRatings.put(pRatingStub.attributeId, new Rating(pRatingStub));
+		aRatings.put(pRatingStub.attributeId, new Attribute(pRatingStub));
 	}
 	
 	void setCategory(Category pCategory)
@@ -114,7 +114,7 @@ public class Product
 	/**
 	 * @return A iterator on the ratings for this product.
 	 */
-	public Iterable<Rating> getRatings()
+	public Iterable<Attribute> getRatings()
 	{
 		return Collections.unmodifiableCollection(Product.this.aRatings.values());
 	}
@@ -124,7 +124,7 @@ public class Product
 	 * @param pId The id to look for.
 	 * @return The corresponding rating.
 	 */
-	public Rating getRating(String pId)
+	public Attribute getRating(String pId)
 	{
 		return this.aRatings.get(pId);
 	}
@@ -132,7 +132,7 @@ public class Product
 	/**
 	 * @return A iterator on the specs for this product.
 	 */
-	public Iterable<Spec> getSpecs() 
+	public Iterable<Attribute> getSpecs() 
 	{	
 		return Collections.unmodifiableCollection(Product.this.aSpecs.values());
 	}
@@ -142,7 +142,7 @@ public class Product
 	 * @param pId The id to look for.
 	 * @return The corresponding rating.
 	 */
-	public Spec getSpec(String pId)
+	public Attribute getSpec(String pId)
 	{
 		return this.aSpecs.get(pId);
 	}
