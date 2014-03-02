@@ -16,8 +16,10 @@
 package ca.mcgill.cs.creco.data;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 
 import ca.mcgill.cs.creco.data.json.JsonLoadingService;
@@ -36,6 +38,7 @@ import ca.mcgill.cs.creco.data.json.JsonLoadingService;
 public final class CRData implements IDataCollector
 {
 	private static final String DEFAULT_CATEGORY_FILENAME = "category.json";
+	private static final double JACCARD_THRESHOLD = 0.8;
 	
 	private static final String[] DEFAULT_PRODUCT_FILENAMES = {
 			"appliances.json", "electronicsComputers.json",
@@ -45,25 +48,30 @@ public final class CRData implements IDataCollector
 	
 	private static CRData instance = null;
 	
-	private CategoryList aCategoryList = new CategoryList();
 	private HashMap<String, Product> aProducts = new HashMap<String, Product>();
+	
+	private Hashtable<String, Category> aCategoryIndex = new Hashtable<String, Category>();
+	private ArrayList<Category> aFranchises = new ArrayList<Category>();
+	private ArrayList<Category> aEquivalenceClasses = new ArrayList<Category>();
+	private ArrayList<Category> aSubEquivalenceClasses = new ArrayList<Category>();
+	private ArrayList<Category> aLeaves = new ArrayList<Category>();
 	
 	private CRData(String[] pProductFileNames, String pCategoryFileName) throws IOException
 	{
 		IDataLoadingService loadingService = new JsonLoadingService(DataPath.get(), pCategoryFileName, pProductFileNames);
 				
 		loadingService.loadCategories(this);
-		aCategoryList.index();
-		aCategoryList.eliminateSingletons();
+		index();
+		eliminateSingletons();
 		
 		loadingService.loadProducts(this);
 		
 		// Put links from products to categories and vice-versa
-		 aCategoryList.associateProducts(getProducts()); 
+		associateProducts(getProducts()); 
 		
 		// Roll up useful pre-processed statistics and find equivalence classes
-		aCategoryList.refresh();
-		aCategoryList.findEquivalenceClasses();		
+		refresh();
+		findEquivalenceClasses();		
 	}
 	
 	/**
@@ -81,10 +89,20 @@ public final class CRData implements IDataCollector
 		return instance;
 	}
 	
+	/**
+	 * Get a category object based on its index.
+	 * @param pIndex The requested index.
+	 * @return The category corresponding to pIndex.
+	 */
+	public Category get(String pIndex) 
+	{
+		return aCategoryIndex.get(pIndex);
+	}
+	
 	@Override
 	public void addCategory(Category pCategory)
 	{
-		aCategoryList.addFranchise(pCategory);
+		addFranchise(pCategory);
 	}
 	
 	@Override
@@ -93,16 +111,14 @@ public final class CRData implements IDataCollector
 		aProducts.put(pProduct.getId(), pProduct);
 	}
 	
+	/**
+	 * @return The equivalence classes
+	 */
 	public Iterable<Category> getEquivalenceClasses()
 	{
-		return aCategoryList.getEqClasses();
+		return Collections.unmodifiableCollection(aEquivalenceClasses);
 	}
 	
-	public Category get(String key) 
-	{
-		return aCategoryList.get(key);
-	}
-
 	/**
 	 * Initializes the CRData based on specified filenames.
 	 * @return CRData singleton
@@ -124,21 +140,219 @@ public final class CRData implements IDataCollector
 	}
 	
 	/**
-	 * @return The list of categories.
+	 * @return An iterator on all the franchises
 	 */
-	public CategoryList getCategoryList() 
-	{ return aCategoryList; }
-	
 	public Iterator<Category> getCategories()
 	{
-		return aCategoryList.iterator();
+		return iterator();
 	}
 	
 	/**
-	 * @return An interator on the product list.
+	 * @return An iterator on the product list.
 	 */
 	public Iterator<Product> getProducts() 
 	{
 		return Collections.unmodifiableCollection(aProducts.values()).iterator();
+	}
+	
+	// ----- ***** ----- ***** PRIVATE METHODS ***** ----- ***** -----
+	
+	private void addFranchise(Category pFranchise)
+	{
+		aFranchises.add(pFranchise);
+	}
+	
+	private void findEquivalenceClasses() 
+	{
+		for(Category franchise : aFranchises)
+		{
+			recurseFindEquivalenceClasses(franchise, 0);
+		}
+	}
+	
+	private void recurseFindEquivalenceClasses(Category pCategory, int pMode)
+	{
+		Iterable<Category> children = pCategory.getChildren();
+		int numChildren = pCategory.getNumChildren();
+		
+		if(pMode == 1)
+		{
+			this.aSubEquivalenceClasses.add(pCategory);
+			for(Category child : children)
+			{
+				this.recurseFindEquivalenceClasses(child, 1);
+			}
+			return;
+		}
+		else
+		{
+			if(numChildren == 0)
+			{
+				this.aEquivalenceClasses.add(pCategory);
+				this.aSubEquivalenceClasses.add(pCategory);
+				return;
+			}
+			else
+			{
+				Double jaccard = pCategory.getJaccard();
+				if(jaccard == null || jaccard < JACCARD_THRESHOLD)
+				{
+					for(Category child : children)
+					{
+						this.recurseFindEquivalenceClasses(child, 0);
+					}
+					return;
+				}
+				else
+				{
+					this.aEquivalenceClasses.add(pCategory);
+					for(Category child : children)
+					{
+						this.recurseFindEquivalenceClasses(child, 1);
+					}
+					return;
+				}
+			}
+		}
+	}
+	
+	private Iterator<Category> iterator()
+	{
+		return Collections.unmodifiableCollection(this.aCategoryIndex.values()).iterator();
+	}
+	
+	private void index()
+	{
+		for(Category franchise : this.aFranchises)
+		{
+			this.recursiveIndex(franchise);
+		}
+	}
+	
+	private void recursiveIndex(Category pCategory)
+	{
+		this.put(pCategory.getId(), pCategory);
+		for(Category child : pCategory.getChildren())
+		{
+			recursiveIndex(child);
+		}
+		if(pCategory.getNumChildren() == 0)
+		{
+			this.aLeaves.add(pCategory);
+		}
+	}
+	
+	private void refresh() 
+	{			
+		// Now recursively refresh the category list
+		for(Category franchise : this.aFranchises)
+		{
+			this.recursiveRefresh(franchise, 0);
+		}
+	}
+	
+	private void recursiveRefresh(Category pCategory, int pDepth)
+	{
+		for(Category child : pCategory.getChildren()) 
+		{
+			recursiveRefresh(child, pDepth + 1);
+		}
+		
+		// We will be "rolling up" counts and various collections from the leaves up to the
+		// roots (franchises).  Make sure, for all non-leaves, that these are cleared out to start
+		if(pCategory.getNumChildren() > 0)
+		{
+			pCategory.setRatedCount(0);
+			pCategory.setTestedCount(0);
+			pCategory.setCount(0);
+			pCategory.clearRatings();
+			pCategory.clearSpecs();
+			pCategory.restartRatingIntersection();
+			pCategory.restartSpecIntersection();
+		}
+	
+		// Roll up counts and collections
+		for(Category child : pCategory.getChildren())
+		{
+			// aggregate children's collections
+			pCategory.mergeRatings(child.getRatings());
+			pCategory.mergeSpecs(child.getSpecs());
+			pCategory.intersectRatings(child);
+			pCategory.intersectSpecs(child);
+			
+			// aggregate children's counts
+			pCategory.putProducts(child.getProducts());
+			pCategory.incrementRatedCount(child.getRatedCount());
+			pCategory.incrementTestedCount(child.getTestedCount());
+			pCategory.incrementCount(child.getCount());
+		}
+		pCategory.calculateJaccard();
+	}
+	
+	private void put(String pKey, Category pValue) 
+	{
+		aCategoryIndex.put(pKey, pValue);
+	}
+
+	/**
+	 * Associate products with categories and vice-versa.
+	 * @param pProducts The list of products.
+	 */
+	private void associateProducts(Iterator<Product> pProducts) 
+	{
+		while( pProducts.hasNext())
+		{
+			Product product = pProducts.next();
+			Category category = get(product.getCategoryId());
+			
+			// Create two way link between category and product
+			category.putProduct(product);
+			product.setCategory(category);
+			
+			// Aggregate some product info in the category
+			category.putRatings(product.getRatings());
+			category.putSpecs(product.getSpecs());
+			
+			// Increment the counts in this category
+			category.incrementCount(1);
+			if(product.getIsTested())
+			{
+				category.incrementTestedCount(1);
+			}
+			if(product.getNumRatings() > 0)
+			{
+				category.incrementRatedCount(1);
+			}
+		}
+	}
+	
+	private void eliminateSingletons()
+	{
+		for(Category franchise : this.aFranchises)
+		{
+			this.recurseEliminateSingletons(franchise);
+		}
+	}
+	
+	private void recurseEliminateSingletons(Category pCategory)
+	{
+		// detect if this is a singleton, if so, splice it out of the hierarchy
+		if(pCategory.getNumChildren() == 1)
+		{
+			Category child = pCategory.getChildren().iterator().next();
+			Category parent = pCategory.getParent();
+			child.setParent(parent);
+			parent.removeChild(pCategory);
+			parent.addChild(child);
+
+			recurseEliminateSingletons(child);
+		}
+		else
+		{
+			for(Category child : pCategory.getChildren())
+			{
+				recurseEliminateSingletons(child);
+			}
+		}
 	}
 }
