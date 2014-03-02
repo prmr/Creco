@@ -44,11 +44,6 @@ public class CategoryList implements Iterable<Category>
 		this.franchises.add(franchise);
 	}
 	
-	void addLeaf(Category leaf)
-	{
-		this.leaves.add(leaf);
-	}
-	
 	public Category get(String key) 
 	{
 		return this.hash.get(key);
@@ -59,21 +54,6 @@ public class CategoryList implements Iterable<Category>
 		return Collections.unmodifiableCollection(this.equivalenceClasses);
 	}
 	
-	public int getNumEqClasses()
-	{
-		return this.equivalenceClasses.size();
-	}
-	
-	public int getNumSubEqClasses()
-	{
-		return this.subEquivalenceClasses.size();
-	}
-	
-	public Iterable<Category> getSubEqClasses()
-	{
-		return Collections.unmodifiableCollection(this.subEquivalenceClasses);
-	}
-	
 	public void findEquivalenceClasses() {
 		for(Category franchise : this.franchises)
 		{
@@ -81,7 +61,7 @@ public class CategoryList implements Iterable<Category>
 		}
 	}
 	
-	public void recurseFindEquivalenceClasses(Category cat, int mode)
+	private void recurseFindEquivalenceClasses(Category cat, int mode)
 	{
 		Iterable<Category> children = cat.getChildren();
 		int numChildren = cat.getNumChildren();
@@ -267,45 +247,4 @@ public class CategoryList implements Iterable<Category>
 			}
 		}
 	}
-	
-//	public String dumpTree()
-//	{
-//		String dumpString = "";
-//		for(Category franchise : this.franchises)
-//		{
-//			dumpString += this.recurseDumpTree(franchise);
-//		}
-//		
-//		return dumpString;
-//	}
-	
-//	public String recurseDumpTree(Category cat)
-//	{
-//		// Process this level
-//		int depth = cat.getDepth();
-//		String dumpString = cat.getName() + " (" + cat.getId() + ")\n";
-//		if(cat.isSubEquivalence())
-//		{
-//			if(cat.isEquivalence())
-//			{
-//				dumpString = "(E) " + dumpString;
-//			}
-//			else
-//			{
-//				dumpString = "(e) " + dumpString;
-//			}
-//		}
-//		
-//		for(int i=0; i < depth; i++)
-//		{
-//			dumpString = "\t" + dumpString;
-//		}
-//		
-//		// Recurse on children
-//		for(Category child : cat.getChildren())
-//		{
-//			dumpString += this.recurseDumpTree(child);
-//		}
-//		return dumpString;
-//	}
 }
