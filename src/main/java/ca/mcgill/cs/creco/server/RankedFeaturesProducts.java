@@ -37,7 +37,7 @@ public class RankedFeaturesProducts {
 				{
 					if(a.getName().equals(b.getAttributeName()))
 					{
-						TypedVal abc = a.getTypedValue();
+						TypedValue abc = a.getTypedValue();
 					//	s= attribute.getNominalValue();*/
 						String s = b.toString();
 						String main = new String();

@@ -104,7 +104,7 @@ public class AttributeStat
 		return this.attribute;
 	}
 	
-	void updateRange(TypedVal typedValue)
+	void updateRange(TypedValue typedValue)
 	{
 		String type = typedValue.getType();
 		Object value = typedValue.getValue();
@@ -127,7 +127,7 @@ public class AttributeStat
 	
 	void updateRange(Object value)
 	{
-		TypedVal typedValue = new TypedVal(value);
+		TypedValue typedValue = new TypedValue(value);
 		this.updateRange(typedValue);
 	}
 	

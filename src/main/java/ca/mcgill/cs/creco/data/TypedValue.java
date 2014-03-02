@@ -15,13 +15,13 @@
  */
 package ca.mcgill.cs.creco.data;
 
-public class TypedVal 
+public class TypedValue 
 {
 	private String aType;
 	private Object aValue;
 	private Object aOriginalValue;
 	
-	public TypedVal(Object pValue)
+	public TypedValue(Object pValue)
 	{
 		aOriginalValue = pValue;
 		

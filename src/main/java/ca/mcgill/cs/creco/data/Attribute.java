@@ -24,7 +24,7 @@ public class Attribute
 	private String aDisplayName;
 	private String aDescription;
 	private String aAttributeId;
-	private TypedVal aTypedValue;
+	private TypedValue aTypedValue;
 	
 	/**
 	 * Creates a new Attribute.
@@ -38,7 +38,7 @@ public class Attribute
 		aAttributeId = pId;
 		aDescription = pDescription;
 		aDisplayName = pName;
-		aTypedValue = new TypedVal(pValue);
+		aTypedValue = new TypedValue(pValue);
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class Attribute
 	/**
 	 * @return The typed value.
 	 */
-	public TypedVal getTypedValue() 
+	public TypedValue getTypedValue() 
 	{ return this.aTypedValue; }
 
 	/**
