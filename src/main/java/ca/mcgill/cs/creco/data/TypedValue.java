@@ -16,13 +16,13 @@
 package ca.mcgill.cs.creco.data;
 
 /**
- * Represents a value object from which a type has been inferred.
+ * Represents an immutable value object from which a type has been inferred.
  */
 public class TypedValue 
 {
-	private Type aType;
+	private final Type aType;
 	private Object aValue;
-	private Object aOriginalValue;
+	private final Object aOriginalValue;
 	
 	/**
 	 * The different types a typed value can take.

@@ -26,112 +26,140 @@ import ca.mcgill.cs.creco.data.TypedValue.Type;
  */
 public class AttributeStat 
 {
-	private int count;
-	private Number valueMin;
-	private Number valueMax;
-	private HashSet<String> valueEnum;
-	private Attribute attribute;
+	private int aCount = 0;
+	private Number aValueMin;
+	private Number aValueMax;
+	private HashSet<String> aValueEnum = new HashSet<String>();
+	private Attribute aAttribute;
 
-	public AttributeStat(Attribute attribute) 
+	/**
+	 * Creates an empty statistics object for this attribute.
+	 * @param pAttribute The attribute about which statistics are collected.
+	 */
+	public AttributeStat(Attribute pAttribute) 
 	{
-		this.attribute = attribute;
-		this.valueEnum = new HashSet<String>();
-		this.count = 0;
-	}
-
-	public AttributeStat(AttributeStat attribute) 
-	{
-		this.attribute = attribute.getAttribute();
-		this.valueEnum = new HashSet<String>();
-		this.valueEnum.addAll(attribute.getValueEnum());
-		this.valueMax = attribute.valueMax;
-		this.valueMin = attribute.valueMin;
-		this.count = attribute.getCount();
-	}
-	
-	public void update(AttributeStat attribute)
-	{
-		this.increment(attribute.getCount());
-		this.valueEnum.addAll(attribute.getValueEnum());
-		this.updateRange(attribute.getValueMax());
-		this.updateRange(attribute.getValueMin());
+		aAttribute = pAttribute;
 	}
 
-	public void update(Attribute attribute)
+	/**
+	 * Copy constructor.
+	 * @param pStats The stats to copy.
+	 */
+	public AttributeStat(AttributeStat pStats) 
 	{
-		this.increment(1);
-		this.updateRange(attribute.getTypedValue());
+		aAttribute = pStats.getAttribute();
+		aValueEnum.addAll(pStats.getValueEnum());
+		aValueMax = pStats.aValueMax;
+		aValueMin = pStats.aValueMin;
+		aCount = pStats.getCount();
+	}
+	
+	/**
+	 * Update this stat object to take into account the 
+	 * values in pStat.
+	 * @param pStatistics The statistics to integrate into this object.
+	 */
+	public void update(AttributeStat pStatistics)
+	{
+		increment(pStatistics.getCount());
+		aValueEnum.addAll(pStatistics.getValueEnum());
+		updateRange(pStatistics.getValueMax());
+		updateRange(pStatistics.getValueMin());
 	}
 
-	public String getName()
+	/**
+	 * Update this statistics object to take into account
+	 * the values from a single attribute.
+	 * @param pAttribute The attribute to consider.
+	 */
+	public void update(Attribute pAttribute)
 	{
-		return this.attribute.getName();
+		increment(1);
+		updateRange(pAttribute.getTypedValue());
 	}
 	
-	public String getId() {
-		return this.attribute.getId();
-	}
-	
-	public void increment(int add)
+	/**
+	 * @return The attribute described by this statistics object.
+	 */
+	public Attribute getAttribute()
 	{
-		this.count += add;
+		return aAttribute;
+	}
+
+	/**
+	 * Increment the number of attributes described by this statistics
+	 * by pAmount.
+	 * @param pAmount The amount to increment by.
+	 */
+	public void increment(int pAmount)
+	{
+		aCount += pAmount;
 	}
 	
+	/**
+	 * @return The number of attributes described by this statistics.
+	 */
 	public int getCount()
 	{
-		return this.count;
+		return aCount;
 	}
 
+	/**
+	 * @return The maximal value for this statistics.
+	 */
 	public Object getValueMax()
 	{
-		return this.valueMax;
+		return aValueMax;
 	}
 	
+	/**
+	 * @return The minimal value for this statistics.
+	 */
 	public Object getValueMin()
 	{
-		return this.valueMin;
+		return aValueMin;
 	}
 	
+	/**
+	 * @return The enumerated values for this statistics.
+	 */
 	public Set<String> getValueEnum()
 	{
-		if(this.valueEnum != null)
+		if(aValueEnum != null)
 		{
-			return Collections.unmodifiableSet(this.valueEnum);
+			return Collections.unmodifiableSet(aValueEnum);
 		}
 		return null;
 	}
 	
-	public Attribute getAttribute()
+	private void updateRange(TypedValue pTypedValue)
 	{
-		return this.attribute;
-	}
-	
-	void updateRange(TypedValue typedValue)
-	{
-		TypedValue.Type type = typedValue.getType();
-		Object value = typedValue.getValue();
+		TypedValue.Type type = pTypedValue.getType();
+		Object value = pTypedValue.getValue();
+		
 		if(type.equals(Type.INTEGER) || type.equals(Type.DOUBLE)) 
 		{
 			Number number = (Number) value;
-			if(this.valueMin == null || number.doubleValue() < this.valueMin.doubleValue())
+			if(aValueMin == null || number.doubleValue() < aValueMin.doubleValue())
 			{
-				this.valueMin = number;
+				aValueMin = number;
 			}
-			if(this.valueMax == null || number.doubleValue() > this.valueMax.doubleValue())
+			
+			if(aValueMax == null || number.doubleValue() > aValueMax.doubleValue())
 			{
-				this.valueMax = number;
+				aValueMax = number;
 			}
 		}
 		else if(type.equals(Type.STRING) || type.equals(Type.BOOLEAN))
 		{
-			this.valueEnum.add((String) ""+value);
+			aValueEnum.add((String) ""+value);
 		}		
 	}
 	
-	void updateRange(Object value)
+	void updateRange(Object pValue)
 	{
-		TypedValue typedValue = new TypedValue(value);
-		this.updateRange(typedValue);
+		TypedValue typedValue = new TypedValue(pValue);
+		updateRange(typedValue);
 	}
 	
 }

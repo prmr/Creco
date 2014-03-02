@@ -496,7 +496,7 @@ public class AttributeExtractor
 //			numerical attribute
 			else if(a.getValueMin() != null)
 			{
-				attributeNames.put(a.getName(), "I"+index);
+				attributeNames.put(a.getAttribute().getName(), "I"+index);
 				Attribute newAttribute = new Attribute("I"+index);
 				//scoredAttributes.add(new ScoredAttribute(a.getAttribute()));
 				attributeVector.addElement(newAttribute);
@@ -516,7 +516,7 @@ public class AttributeExtractor
 				{
 					nominalValues.addElement("N/A");
 				}
-				attributeNames.put(a.getName(), "I"+index);
+				attributeNames.put(a.getAttribute().getName(), "I"+index);
 				Attribute newAttribute = new Attribute("I"+index, nominalValues);
 				//scoredAttributes.add(new ScoredAttribute(a.getAttribute()));
 				attributeVector.addElement(newAttribute);
@@ -552,11 +552,11 @@ public class AttributeExtractor
 		//add missing
 		for(AttributeStat ss : aSpecList)
 		{
-			if(!fullMap.containsKey(ss.getId()))
+			if(!fullMap.containsKey(ss.getAttribute().getId()))
 			{
 				ScoredAttribute sa = new ScoredAttribute(ss.getAttribute());
 				sa.setAttributeMean(new AttributeValue("N/A"));
-				fullMap.put(ss.getId(), sa);
+				fullMap.put(ss.getAttribute().getId(), sa);
 			}
 		}
 		ArrayList<ScoredAttribute> outList = Lists.newArrayList(fullMap.values());
@@ -575,11 +575,11 @@ public class AttributeExtractor
 		//add missing
 		for(AttributeStat ss : aRatingList)
 		{
-			if(!fullMap.containsKey(ss.getId()))
+			if(!fullMap.containsKey(ss.getAttribute().getId()))
 			{
 				ScoredAttribute sa = new ScoredAttribute(ss.getAttribute());
 				sa.setAttributeMean(new AttributeValue("N/A"));
-				fullMap.put(ss.getId(), sa);
+				fullMap.put(ss.getAttribute().getId(), sa);
 			}
 		}
 		

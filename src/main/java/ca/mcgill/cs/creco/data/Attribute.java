@@ -17,14 +17,14 @@ package ca.mcgill.cs.creco.data;
 
 
 /**
- * Represents an attribute of a product.
+ * Represents an immutable attribute of a product.
  */
 public class Attribute 
 {
-	private String aDisplayName;
-	private String aDescription;
-	private String aAttributeId;
-	private TypedValue aTypedValue;
+	private final String aDisplayName;
+	private final String aDescription;
+	private final String aAttributeId;
+	private final TypedValue aTypedValue;
 	
 	/**
 	 * Creates a new Attribute.

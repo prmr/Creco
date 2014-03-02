@@ -118,7 +118,7 @@ public class Category
 		desc += "\n - Ratings:\n";
 		for(AttributeStat rating : this.aRatings.values())
 		{
-			desc += "\t- " + rating.getName() + " (" + rating.getId() +"): " + rating.getCount() + " (" + (float)(rating.getCount())/this.getCount()*100 + "%)";
+			desc += "\t- " + rating.getAttribute().getName() + " (" + rating.getAttribute().getId() +"): " + rating.getCount() + " (" + (float)(rating.getCount())/this.getCount()*100 + "%)";
 			if(rating.getValueMax() != null)
 			{
 				desc += " min/max: [" + rating.getValueMin() + ", " + rating.getValueMax() + "]";
@@ -128,7 +128,7 @@ public class Category
 		desc += "\n - Specs:\n";
 		for(AttributeStat spec : this.aSpecs.values())
 		{
-			desc += "\t- " + spec.getName() + " (" + spec.getId() + "): " + spec.getCount() + " (" + (float)(spec.getCount())/this.getCount()*100 + "%)";
+			desc += "\t- " + spec.getAttribute().getName() + " (" + spec.getAttribute().getId() + "): " + spec.getCount() + " (" + (float)(spec.getCount())/this.getCount()*100 + "%)";
 			if(spec.getValueMax() != null)
 			{
 				desc += " min/max: [" + spec.getValueMin() + ", " + spec.getValueMax() + "]";
@@ -157,7 +157,7 @@ public class Category
 		{
 			for(AttributeStat rating : child.getRatings())
 			{
-				this.aRatingIntersection.add(rating.getId());
+				this.aRatingIntersection.add(rating.getAttribute().getId());
 			}
 			this.aStartNewRatingIntersection = false;
 			return;
@@ -187,7 +187,7 @@ public class Category
 		{
 			for(AttributeStat spec : child.getSpecs())
 			{
-				this.aSpecIntersection.add(spec.getId());
+				this.aSpecIntersection.add(spec.getAttribute().getId());
 			}
 			this.aStartNewSpecIntersection = false;
 			return;
@@ -215,7 +215,7 @@ public class Category
 		String ratingId = rating.getId();
 		for(AttributeStat existingRatingStat : this.aRatings.values())
 		{
-			if(existingRatingStat.getId().equals(ratingId))
+			if(existingRatingStat.getAttribute().getId().equals(ratingId))
 			{
 				existingRatingStat.increment(1);
 				existingRatingStat.updateRange(rating.getValue());
@@ -240,14 +240,14 @@ public class Category
 	{
 		for(AttributeStat existingRating : this.aRatings.values())
 		{
-			if(existingRating.getId().equals(rating.getId()))
+			if(existingRating.getAttribute().getId().equals(rating.getAttribute().getId()))
 			{
 				existingRating.update(rating);
 				return;
 			}
 		}
 		AttributeStat newRating = new AttributeStat(rating);
-		this.aRatings.put(rating.getId(), newRating);
+		this.aRatings.put(rating.getAttribute().getId(), newRating);
 	}
 	
 	public Iterable<AttributeStat> getRatings()
@@ -272,14 +272,14 @@ public class Category
 	{
 		for(AttributeStat existingSpec: this.aSpecs.values())
 		{
-			if(existingSpec.getId().equals(spec.getId()))
+			if(existingSpec.getAttribute().getId().equals(spec.getAttribute().getId()))
 			{
 				existingSpec.update(spec);
 				return;
 			}
 		}
 		AttributeStat newSpec = new AttributeStat(spec);
-		this.aSpecs.put(spec.getId(), newSpec);
+		this.aSpecs.put(spec.getAttribute().getId(), newSpec);
 	}
 	
 	public Iterable<AttributeStat> getSpecs()
@@ -305,7 +305,7 @@ public class Category
 		String specId = spec.getId();
 		for(AttributeStat existingSpecStat: this.aSpecs.values())
 		{
-			if(existingSpecStat.getId().equals(specId))
+			if(existingSpecStat.getAttribute().getId().equals(specId))
 			{
 				existingSpecStat.increment(1);
 				existingSpecStat.updateRange(spec.getValue());
