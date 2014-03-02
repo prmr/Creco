@@ -63,17 +63,17 @@ public class Attribute
 	 * @return The value for this attribute.
 	 */
 	public Object getValue() 
-	{ return this.aTypedValue.getValue(); }
+	{ return aTypedValue.getValue(); }
 	
 	/**
 	 * @return The typed value.
 	 */
 	public TypedValue getTypedValue() 
-	{ return this.aTypedValue; }
+	{ return aTypedValue; }
 
 	/**
 	 * @return The type of the value.
 	 */
-	public String getType() 
-	{ return this.aTypedValue.getType(); }
+	public TypedValue.Type getType() 
+	{ return aTypedValue.getType(); }
 }

@@ -15,92 +15,105 @@
  */
 package ca.mcgill.cs.creco.data;
 
+/**
+ * Represents a value object from which a type has been inferred.
+ */
 public class TypedValue 
 {
-	private String aType;
+	private Type aType;
 	private Object aValue;
 	private Object aOriginalValue;
 	
+	/**
+	 * The different types a typed value can take.
+	 */
+	public enum Type 
+	{ NULL, INTEGER, DOUBLE, BOOLEAN, STRING, UNKNOWN }
+	
+	/**
+	 * Creates a new value object an infers its type.
+	 * @param pValue The value.
+	 */
 	public TypedValue(Object pValue)
 	{
 		aOriginalValue = pValue;
+		aValue = pValue;
 		
 		if(pValue == null)
 		{
-			aType = "null";
-			aValue = null;
+			aType = Type.NULL;
 		}
 		else if(pValue instanceof Integer)
 		{
-			aType = "int";
-			aValue = pValue;
+			aType = Type.INTEGER;
 		}
-		else if(pValue instanceof Double)
+		else if(pValue instanceof Double || pValue instanceof Float)
 		{
-			aType = "double";
-			aValue = pValue;
-		}
-		else if(pValue instanceof Float)
-		{
-			aType = "float";
-			aValue = pValue;
+			aType = Type.DOUBLE;
 		}
 		else if(pValue instanceof Boolean)
 		{
-			aType = "boolean";
-			aValue = pValue;
+			aType = Type.BOOLEAN;
 		}
 		else if(pValue instanceof String)
 		{
-			String str = (String) pValue; 
+			String theString = (String) pValue; 
 			// match int with optional '-' and decimal.
-			if(str.matches("-?\\d+"))
+			if(theString.matches("-?\\d+"))
 			{
-				aType = "int";
-				aValue = Integer.parseInt(str);
+				aType = Type.INTEGER;
+				aValue = Integer.parseInt(theString);
 			}
 			//match a number with optional '-' and decimal.
-			else if(str.matches("-?\\d+(\\.\\d+)?"))  
+			else if(theString.matches("-?\\d+(\\.\\d+)?"))  
 			{
-				aType = "double";
-				aValue = Double.parseDouble(str);
+				aType = Type.DOUBLE;
+				aValue = Double.parseDouble(theString);
 			}
-			else if(str.matches("(y|Y)es"))
+			else if(theString.matches("(y|Y)es"))
 			{
-				aType = "bool";
+				aType = Type.BOOLEAN;
 				aValue = true;
 			}
-			else if(str.matches("(n|N)o"))
+			else if(theString.matches("(n|N)o"))
 			{
-				aType = "bool";
+				aType = Type.BOOLEAN;
 				aValue = false;
 			}
 			else
 			{
-				aType = "String";
-				aValue = str;
+				aType = Type.STRING;
+				aValue = theString;
 			}
 		}
 		else
 		{
-			aType = "unknown";
-			aValue = pValue;
+			aType = Type.UNKNOWN;
 		}
 	}	
 	
-	String getType() 
+	/**
+	 * @return The inferred type of this value.
+	 */
+	public Type getType() 
 	{
-		return this.aType;
+		return aType;
 	}
 	
-	Object getValue()
+	/**
+	 * @return The value after type inference.
+	 */
+	public Object getValue()
 	{
-		return this.aValue;
+		return aValue;
 	}
 	
-	Object getOriginalValue()
+	/**
+	 * @return The value before type inference.
+	 */
+	public Object getOriginalValue()
 	{
-		return this.aOriginalValue;
+		return aOriginalValue;
 	}	
 }
 

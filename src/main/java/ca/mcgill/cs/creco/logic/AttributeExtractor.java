@@ -28,6 +28,8 @@ import weka.core.Instances;
 import ca.mcgill.cs.creco.data.AttributeStat;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.Product;
+import ca.mcgill.cs.creco.data.TypedValue;
+import ca.mcgill.cs.creco.data.TypedValue.Type;
 import ca.mcgill.cs.creco.logic.model.AttributeHashMap;
 import ca.mcgill.cs.creco.logic.model.AttributeValue;
 import ca.mcgill.cs.creco.logic.model.ScoredAttribute;
@@ -109,8 +111,7 @@ public class AttributeExtractor
 			{
 //				MODIFY WHEN ADDING CLASSES
 				String specString = s.getValue().toString();
-				String type = s.getType();
-				if(type.equals("int") || type.equals("double") || type.equals("float"))
+				if(s.getType() == Type.INTEGER || s.getType() == Type.DOUBLE )
 				{
 					double val = Double.parseDouble(specString);
 					if(val > max)
@@ -124,7 +125,7 @@ public class AttributeExtractor
 					numericCount ++;
 					numericSum += Double.parseDouble(specString);					
 				}
-				else if (type.equals("boolean"))
+				else if (s.getType() == Type.BOOLEAN)
 				{
 					if(specString.equals("true"))
 					{
@@ -237,7 +238,7 @@ public class AttributeExtractor
 				String indexName = ahm.getHashValue(scoredAttributes.get(i).getAttributeName());
 				Attribute wekaAtt = dataset.attribute(indexName);
 				
-				String type = "";
+				TypedValue.Type type = null;
 				String value = "";
 				try
 				{
@@ -248,7 +249,7 @@ public class AttributeExtractor
 					}
 					else
 					{
-						type = "String";
+						type = Type.STRING;
 						value = p.getCategory().getName();
 					}
 					
@@ -259,19 +260,19 @@ public class AttributeExtractor
 					if(wekaAtt.isNominal())
 					{
 //					entry zero should be N/A
-						type = "String";
+						type = Type.STRING;
 						value = wekaAtt.value(0);
 					}
 					else
 					{
 //						default no value for now 
-						type = "int";
+						type = Type.INTEGER;
 						value = "-127";
 					}
 				}
 				
 				
-				if(type.equals("int") || type.equals("double") || type.equals("float"))
+				if(type == Type.INTEGER || type == Type.DOUBLE )
 				{
 					inst.setValue(wekaAtt, Double.parseDouble(value));
 				}
@@ -379,7 +380,7 @@ public class AttributeExtractor
 				String indexName = ahm.getHashValue((scoredAttributes.get(i).getAttributeName()));
 				Attribute wekaAtt = dataset.attribute(indexName);
 				
-				String type = "";
+				TypedValue.Type type = null;
 				String value = "";
 				try
 				{
@@ -390,7 +391,7 @@ public class AttributeExtractor
 					}
 					else
 					{
-						type = "String";
+						type = Type.STRING;
 						value = p.getCategory().getName();
 					}
 					
@@ -401,19 +402,19 @@ public class AttributeExtractor
 					if(wekaAtt.isNominal())
 					{
 //					entry zero should be N/A
-						type = "String";
+						type = Type.STRING;
 						value = wekaAtt.value(0);
 					}
 					else
 					{
 //						default no value for now 
-						type = "int";
+						type = Type.INTEGER;
 						value = "-127";
 					}
 				}
 				
 				
-				if(type.equals("int") || type.equals("double") || type.equals("float"))
+				if(type == Type.INTEGER || type == Type.DOUBLE )
 				{
 					inst.setValue(wekaAtt, Double.parseDouble(value));
 				}

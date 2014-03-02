@@ -19,6 +19,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import ca.mcgill.cs.creco.data.TypedValue.Type;
+
 /**
  * Represents statistics about an product attribute.
  */
@@ -106,9 +108,10 @@ public class AttributeStat
 	
 	void updateRange(TypedValue typedValue)
 	{
-		String type = typedValue.getType();
+		TypedValue.Type type = typedValue.getType();
 		Object value = typedValue.getValue();
-		if(type.equals("int") || type.equals("float") || type.equals("double")) {
+		if(type.equals(Type.INTEGER) || type.equals(Type.DOUBLE)) 
+		{
 			Number number = (Number) value;
 			if(this.valueMin == null || number.doubleValue() < this.valueMin.doubleValue())
 			{
@@ -119,7 +122,7 @@ public class AttributeStat
 				this.valueMax = number;
 			}
 		}
-		else if(type.equals("String") || type.equals("boolean"))
+		else if(type.equals(Type.STRING) || type.equals(Type.BOOLEAN))
 		{
 			this.valueEnum.add((String) ""+value);
 		}		

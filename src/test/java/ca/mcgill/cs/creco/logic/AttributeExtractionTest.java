@@ -47,6 +47,7 @@ public class AttributeExtractionTest
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			System.out.println(catName + ": " + e);			
 			fail("Exception caught " + e);
 		}
