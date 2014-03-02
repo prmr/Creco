@@ -18,9 +18,6 @@ package ca.mcgill.cs.creco.data;
 import java.util.Collections;
 import java.util.HashMap;
 
-import ca.mcgill.cs.creco.data.json.RatingStub;
-import ca.mcgill.cs.creco.data.json.SpecStub;
-
 /**
  * Represents a product in the Consumer Reports database.
  */
@@ -54,20 +51,20 @@ public class Product
 	
 	/**
 	 * Adds a spec to this product. 
-	 * @param pSpecStub The stub. TODO replace with non-dependency.
+	 * @param pAttribute The attribute to add.
 	 */
-	public void addSpec(SpecStub pSpecStub)
+	public void addSpec(Attribute pAttribute)
 	{
-		aSpecs.put(pSpecStub.attributeId, new Attribute(pSpecStub));
+		aSpecs.put(pAttribute.getId(), pAttribute);
 	}
 	
 	/**
 	 * Adds a rating to this product. 
-	 * @param pRatingStub The stub. TODO replace with non-dependency.
+	 * @param pAttribute The attribute to add.
 	 */
-	public void addRating(RatingStub pRatingStub)
+	public void addRating(Attribute pAttribute)
 	{
-		aRatings.put(pRatingStub.attributeId, new Attribute(pRatingStub));
+		aRatings.put(pAttribute.getId(), pAttribute);
 	}
 	
 	void setCategory(Category pCategory)

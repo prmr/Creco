@@ -24,7 +24,7 @@ package ca.mcgill.cs.creco.data.json;
  * @author enewe101
  *
  */
-public class AttributeStub 
+class AttributeStub 
 {
 	public String displayName;
 	public String description;

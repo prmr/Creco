@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.CategoryList;
 import ca.mcgill.cs.creco.data.IDataLoadingService;
@@ -138,7 +139,7 @@ public class JsonLoadingService implements IDataLoadingService
 		{
 			for(SpecStub spec : pProductStub.specs)
 			{
-				lReturn.addSpec(spec);
+				lReturn.addSpec(new Attribute(spec.attributeId, spec.displayName, spec.description, spec.value));
 			}
 		}
 		
@@ -146,7 +147,7 @@ public class JsonLoadingService implements IDataLoadingService
 		{
 			for(RatingStub rating : pProductStub.ratings)
 			{
-				lReturn.addRating(rating);
+				lReturn.addRating(new Attribute(rating.attributeId, rating.displayName, rating.description, rating.value));
 			}
 		}
 		return lReturn;
