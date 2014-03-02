@@ -19,6 +19,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Represents statistics about an product attribute.
+ */
 public class AttributeStat 
 {
 	private int count;
@@ -61,46 +64,6 @@ public class AttributeStat
 	public String getName()
 	{
 		return this.attribute.getName();
-	}
-	
-	public String getDescription()
-	{
-		return this.attribute.getDescription();               
-	}
-	
-	public String getFilterWidget()
-	{
-		return this.attribute.getFilterWidget();              
-	}
-	
-	public String getDataPresentationFormat()
-	{
-		return this.attribute.getDataPresentationFormat();    
-	}
-	
-	public String getAttributeGroup()
-	{
-		return this.attribute.getAttributeGroup();            
-	}
-	
-	public String getUnitName()
-	{
-		return this.attribute.getUnitName();
-	}
-	
-	public int getSortOrder()
-	{
-		return this.attribute.getSortOrder();
-	}
-	
-	public boolean getIsForDisplayOnCRO()
-	{
-		return this.attribute.getIsForDisplayOnCRO();
-	}
-	
-	public boolean getIsCategoryCommonAttribute()
-	{
-		return this.attribute.getIsCategoryCommonAttribute();
 	}
 	
 	public String getId() {

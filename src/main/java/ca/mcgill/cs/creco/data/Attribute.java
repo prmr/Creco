@@ -17,6 +17,9 @@ package ca.mcgill.cs.creco.data;
 
 import ca.mcgill.cs.creco.data.json.AttributeStub;
 
+/**
+ * Represents an attribute of a product.
+ */
 public class Attribute 
 {
 	private String displayName;
@@ -47,15 +50,29 @@ public class Attribute
 		this.typedValue = new TypedVal(attStub.value);
 	}
 
-	public String getName() { return displayName; }
+	/**
+	 * @return The display name of the attribute.
+	 */
+	public String getName() 
+	{ return displayName; }
 
-	public String getDescription() { return description; }
+	/**
+	 * @return The description of the attribute.
+	 */
+	public String getDescription() 
+	{ return description; }
 
-	public String getAttributeId() { return attributeId; }
+	/**
+	 * @return The id of this attribute.
+	 */
+	public String getId() 
+	{ return attributeId; }
 
-	public String getId() { return this.getAttributeId(); }
-
-	public String getFilterWidget() { return filterWidget; }
+	/**
+	 * @return The filter widget.
+	 */
+	public String getFilterWidget() 
+	{ return filterWidget; }
 
 	public String getDataPresentationFormat() { return dataPresentationFormat; }
 
