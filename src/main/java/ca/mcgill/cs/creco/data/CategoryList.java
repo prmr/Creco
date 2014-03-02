@@ -68,7 +68,6 @@ class CategoryList implements Iterable<Category>
 		
 		if(mode == 1)
 		{
-			cat.setClassType("subequivalence");
 			this.subEquivalenceClasses.add(cat);
 			for(Category child : children)
 			{
@@ -80,7 +79,6 @@ class CategoryList implements Iterable<Category>
 		{
 			if(numChildren == 0)
 			{
-				cat.setClassType("equivalence");
 				this.equivalenceClasses.add(cat);
 				this.subEquivalenceClasses.add(cat);
 				return;
@@ -90,7 +88,6 @@ class CategoryList implements Iterable<Category>
 				Double jaccard = cat.getJaccard();
 				if(jaccard == null || jaccard < JACCARD_THRESHOLD)
 				{
-					cat.setClassType("category");
 					for(Category child : children)
 					{
 						this.recurseFindEquivalenceClasses(child, 0);
@@ -99,7 +96,6 @@ class CategoryList implements Iterable<Category>
 				}
 				else
 				{
-					cat.setClassType("equivalence");
 					this.equivalenceClasses.add(cat);
 					for(Category child : children)
 					{

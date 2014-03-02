@@ -35,7 +35,6 @@ public class Category
 	private int aCount;
 	private int aRatedCount;
 	private int aTestedCount;
-	private String aClassType;
 	private Category aParent; 
 	private Double aJaccardIndex;
 	private ArrayList<Category> aChildren = new ArrayList<Category>();
@@ -88,11 +87,6 @@ public class Category
 		}
 	}
 	
-	public int getNumProducts()
-	{
-		return this.aProducts.size();
-	}
-	
 	public int getNumChildren()
 	{
 		return this.aChildren.size();
@@ -101,40 +95,6 @@ public class Category
 	public Double getJaccard()
 	{
 		return this.aJaccardIndex;
-	}
-	
-	public void setClassType(String classType)
-	{
-		this.aClassType = classType;
-	}
-	
-	public String getClassType()
-	{
-		return this.aClassType;
-	}
-	
-	public boolean isEquivalence()
-	{
-		if(this.aClassType.equals("equivalence"))
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	
-	public boolean isSubEquivalence()
-	{
-		if(this.aClassType.equals("equivalence") || this.aClassType.equals("subequivalence"))
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
 	}
 	
 	public void putProducts(Iterable<Product> products)
