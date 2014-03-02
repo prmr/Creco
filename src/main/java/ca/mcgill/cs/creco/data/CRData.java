@@ -45,14 +45,15 @@ public final class CRData implements IDataCollector
 	
 	private static CRData instance = null;
 	
-	private CategoryList aCategoryList;
+	private CategoryList aCategoryList = new CategoryList();
 	private HashMap<String, Product> aProducts = new HashMap<String, Product>();
 	
 	private CRData(String[] pProductFileNames, String pCategoryFileName) throws IOException
 	{
 		IDataLoadingService loadingService = new JsonLoadingService(DataPath.get(), pCategoryFileName, pProductFileNames);
 				
-		aCategoryList = loadingService.loadCategories();
+		loadingService.loadCategories(this);
+		aCategoryList.index();
 		aCategoryList.eliminateSingletons();
 		
 		loadingService.loadProducts(this);
@@ -83,13 +84,23 @@ public final class CRData implements IDataCollector
 	@Override
 	public void addCategory(Category pCategory)
 	{
-		// TODO
+		aCategoryList.addFranchise(pCategory);
 	}
 	
 	@Override
 	public void addProduct(Product pProduct)
 	{
 		aProducts.put(pProduct.getId(), pProduct);
+	}
+	
+	public Iterable<Category> getEquivalenceClasses()
+	{
+		return aCategoryList.getEqClasses();
+	}
+	
+	public Category get(String key) 
+	{
+		return aCategoryList.get(key);
 	}
 
 	/**
@@ -117,6 +128,11 @@ public final class CRData implements IDataCollector
 	 */
 	public CategoryList getCategoryList() 
 	{ return aCategoryList; }
+	
+	public Iterator<Category> getCategories()
+	{
+		return aCategoryList.iterator();
+	}
 	
 	/**
 	 * @return An interator on the product list.

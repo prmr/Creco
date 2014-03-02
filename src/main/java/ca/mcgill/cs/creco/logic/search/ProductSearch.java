@@ -56,7 +56,6 @@ import org.slf4j.LoggerFactory;
 
 import ca.mcgill.cs.creco.data.CRData;
 import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.data.CategoryList;
 import ca.mcgill.cs.creco.data.Product;
 
 /**
@@ -73,9 +72,6 @@ public class ProductSearch
 	
 	private final Directory directory;
 	private final Analyzer analyzer;
-	
-	private CategoryList categoryList;
-
 
 	/**
 	 * Constructor.
@@ -85,16 +81,13 @@ public class ProductSearch
 	{
 		directory = new RAMDirectory();
 		analyzer = new EnglishAnalyzer(VERSION);
-		CRData crData = CRData.getData();
-
-		categoryList = crData.getCategoryList();
-		buildProductIndexByCategory(categoryList);
+		buildProductIndexByCategory();
 	}
 	
 	/**
 	 * Add products into the Lucene directory.
 	 */
-	private void buildProductIndexByCategory(CategoryList categoryList) 
+	private void buildProductIndexByCategory() 
 	{
 		//TODO: Might be more efficient to have a different index for each equivalence class,
 		// instead of searching all products in a single index, and then filtering out the
@@ -106,7 +99,7 @@ public class ProductSearch
 			IndexWriter writer = new IndexWriter(directory,
 					new IndexWriterConfig(VERSION, analyzer));
 
-			for (Category category : categoryList.getEqClasses()) 
+			for (Category category : CRData.getData().getEquivalenceClasses())
 			{
 				for (Product product : category.getProducts()) 
 				{
@@ -134,7 +127,9 @@ public class ProductSearch
 	 */
 	public List<ScoredProduct> queryProducts(String queryString, String eqClassID) 
 	{
-		Category c =categoryList.get(eqClassID);
+		Category c = null;
+		
+		try{c = CRData.getData().get(eqClassID);} catch(IOException e) {LOG.error(e.getMessage());}
 		if (c == null)
 		{
 			LOG.error("Invalid category ID: " + eqClassID);
@@ -202,7 +197,9 @@ public class ProductSearch
 			matchingProducts.add(scoredProduct.getProduct());
 		}
 		
-		Category category = categoryList.get(eqClassID);
+		Category category = null;
+		
+		try{category = CRData.getData().get(eqClassID);} catch(IOException e) {LOG.error(e.getMessage());}
 		for (Product product : category.getProducts())
 		{
 			if (!matchingProducts.contains(product))

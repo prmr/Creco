@@ -21,14 +21,13 @@ import java.util.Scanner;
 
 import ca.mcgill.cs.creco.data.CRData;
 import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.data.CategoryList;
 import ca.mcgill.cs.creco.server.SearchService;
 
 public class SearchExample {
 	public static void productSearchExample() throws IOException
 	{
 		CRData crData = CRData.getData();
-		CategoryList categoryList = crData.getCategoryList();
+		
 		SearchService search = new SearchService();
 
 		Scanner scanner = new Scanner (System.in);
@@ -40,7 +39,7 @@ public class SearchExample {
 			productName = scanner.nextLine();
 			System.out.print("Enter the equivalence class id : ");  
 			eqClassId= scanner.nextLine();
-			Category category = categoryList.get(eqClassId);
+			Category category = CRData.getData().get(eqClassId);
 			//  A sample query
 			//queryProducts("Avalanche 21-014","33118"); 
 

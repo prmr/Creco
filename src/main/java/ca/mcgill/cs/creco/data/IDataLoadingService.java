@@ -23,10 +23,10 @@ import java.io.IOException;
 public interface IDataLoadingService 
 {
 	/**
-	 * @return The list of product categories.
+	 * @param pCollector The object collecting the loaded categories.
 	 * @throws IOException If there is any error retrieving the data.
 	 */
-	CategoryList loadCategories() throws IOException;
+	void loadCategories(IDataCollector pCollector) throws IOException;
 	
 	/**
 	 * @param pCollector The object collecting the loaded products.

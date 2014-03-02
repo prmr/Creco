@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
 
 import ca.mcgill.cs.creco.data.CRData;
 import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.data.CategoryList;
 import ca.mcgill.cs.creco.data.Product;
 
 
@@ -61,8 +60,6 @@ public class CategorySearch
 	private final Directory directory;
 	private final Analyzer analyzer;
 	
-	private CategoryList categoryList;
-
 	/**
 	 * Constructor.
 	 */
@@ -70,23 +67,21 @@ public class CategorySearch
 	{
 		directory = new RAMDirectory();
 		analyzer = new EnglishAnalyzer(VERSION);
-		
-		CRData crData = CRData.getData();
-		categoryList = crData.getCategoryList();
-		buildCategoryIndex(categoryList);
+		buildCategoryIndex();
 	}
 	
 	/**
 	 * Add equivalence classes into the Lucene directory.
 	 */
-	private void buildCategoryIndex(CategoryList categoryList) 
+	private void buildCategoryIndex() 
 	{
 		try 
 		{
 			Analyzer analyzer = new EnglishAnalyzer(VERSION);
 			IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(VERSION, analyzer));
 		
-			for (Category category : categoryList.getEqClasses()) {
+			for (Category category : CRData.getData().getEquivalenceClasses()) 
+			{
 				String flattenedText = category.getName();
 				LOG.debug("Adding " + category.getName() +", ID: " + category.getId());
 				for (Product product : category.getProducts())
@@ -144,8 +139,8 @@ public class CategorySearch
 			for(int i = 0; i<hits.length; i++) 
 			{
 			    Document doc = searcher.doc(hits[i].doc);
-			    LOG.info(hits[i].score + " - " + categoryList.get(doc.get(CATEGORY_ID)).getName());
-			    equivalenceClassResults.add(categoryList.get(doc.get(CATEGORY_ID)));
+			    LOG.info(hits[i].score + " - " + CRData.getData().get(doc.get(CATEGORY_ID)).getName());
+			    equivalenceClassResults.add(CRData.getData().get(doc.get(CATEGORY_ID)));
 			}
 		}
 		catch (IOException e) 

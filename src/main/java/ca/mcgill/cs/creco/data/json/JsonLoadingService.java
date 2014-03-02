@@ -23,7 +23,6 @@ import java.io.InputStreamReader;
 
 import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.data.CategoryList;
 import ca.mcgill.cs.creco.data.IDataCollector;
 import ca.mcgill.cs.creco.data.IDataLoadingService;
 import ca.mcgill.cs.creco.data.Product;
@@ -48,23 +47,17 @@ public class JsonLoadingService implements IDataLoadingService
 	}
 	
 	@Override
-	public CategoryList loadCategories() throws IOException 
+	public void loadCategories(IDataCollector pCollector) throws IOException 
 	{
 		CategoryStub[] inputCategories = new Gson().fromJson(new FileReader(aPath + aCategoryFileName), CategoryStub[].class);
-		CategoryList outputCategories = new CategoryList();
 				
 		// Note that when the franchise category gets built, its children also 
 		// get built, and so on, recursively.
 		for(CategoryStub inputCategory : inputCategories)
 		{
 			Category outputCategory = buildCategory(inputCategory, null);
-			outputCategories.addFranchise(outputCategory);
+			pCollector.addCategory(outputCategory);
 		}
-				
-		// Build a hashtable that provides random access to the categories
-		outputCategories.index();
-
-		return outputCategories;
 	}
 	
 	private static Category buildCategory(CategoryStub pCategoryStub, Category pParent)

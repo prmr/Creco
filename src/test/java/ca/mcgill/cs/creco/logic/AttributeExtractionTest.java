@@ -4,13 +4,13 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.junit.Test;
 
 import ca.mcgill.cs.creco.data.CRData;
 import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.data.CategoryList;
 import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.logic.model.ScoredAttribute;
 
@@ -21,10 +21,10 @@ public class AttributeExtractionTest
 		String catName = "";
 		try
 		{
-			CRData data = CRData.getData();
-			CategoryList catList = data.getCategoryList();
-			for(Category c : catList)
+			Iterator<Category> categories = CRData.getData().getCategories();
+			while(categories.hasNext())
 			{
+				Category c = categories.next();
 				if(c.getJaccard() == null || c.getJaccard() < 0.8)
 				{
 					continue;

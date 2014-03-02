@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-public class CategoryList implements Iterable<Category> 
+class CategoryList implements Iterable<Category> 
 {
 	private static final double JACCARD_THRESHOLD = 0.8;
 	
