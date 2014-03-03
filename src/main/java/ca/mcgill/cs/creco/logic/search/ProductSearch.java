@@ -129,7 +129,7 @@ public class ProductSearch
 	{
 		Category c = null;
 		
-		try{c = CRData.getData().get(eqClassID);} catch(IOException e) {LOG.error(e.getMessage());}
+		try{c = CRData.getData().getCategory(eqClassID);} catch(IOException e) {LOG.error(e.getMessage());}
 		if (c == null)
 		{
 			LOG.error("Invalid category ID: " + eqClassID);
@@ -199,7 +199,7 @@ public class ProductSearch
 		
 		Category category = null;
 		
-		try{category = CRData.getData().get(eqClassID);} catch(IOException e) {LOG.error(e.getMessage());}
+		try{category = CRData.getData().getCategory(eqClassID);} catch(IOException e) {LOG.error(e.getMessage());}
 		for (Product product : category.getProducts())
 		{
 			if (!matchingProducts.contains(product))

@@ -39,7 +39,7 @@ public class SearchExample {
 			productName = scanner.nextLine();
 			System.out.print("Enter the equivalence class id : ");  
 			eqClassId= scanner.nextLine();
-			Category category = CRData.getData().get(eqClassId);
+			Category category = CRData.getData().getCategory(eqClassId);
 			//  A sample query
 			//queryProducts("Avalanche 21-014","33118"); 
 

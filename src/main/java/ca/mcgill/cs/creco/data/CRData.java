@@ -55,7 +55,6 @@ public final class CRData implements IDataCollector
 	private ArrayList<Category> aFranchises = new ArrayList<Category>();					// Top-level categories
 	private ArrayList<Category> aEquivalenceClasses = new ArrayList<Category>();
 	private ArrayList<Category> aSubEquivalenceClasses = new ArrayList<Category>();
-	private ArrayList<Category> aLeaves = new ArrayList<Category>();						// Categories with no children
 	
 	private CRData(String[] pProductFileNames, String pCategoryFileName) throws IOException
 	{
@@ -101,7 +100,7 @@ public final class CRData implements IDataCollector
 	 * @param pIndex The requested index.
 	 * @return The category corresponding to pIndex.
 	 */
-	public Category get(String pIndex) 
+	public Category getCategory(String pIndex) 
 	{
 		return aCategoryIndex.get(pIndex);
 	}
@@ -235,10 +234,6 @@ public final class CRData implements IDataCollector
 		{
 			index(child);
 		}
-		if(pCategory.getNumberOfChildren() == 0)
-		{
-			aLeaves.add(pCategory);
-		}
 	}
 	
 	private void refresh() 
@@ -297,7 +292,7 @@ public final class CRData implements IDataCollector
 		while( pProducts.hasNext())
 		{
 			Product product = pProducts.next();
-			Category category = get(product.getCategoryId());
+			Category category = getCategory(product.getCategoryId());
 			
 			// Create two way link between category and product
 			category.addProduct(product);
