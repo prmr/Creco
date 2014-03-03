@@ -27,6 +27,7 @@ import org.thymeleaf.util.StringUtils;
  */
 public class Category 
 {
+	private static final int PERCENT = 100;
 	// Fields copied directly from CR database
 	private String aId;
 	private String aSingularName;
@@ -42,8 +43,8 @@ public class Category
 	// Derived fields set by associateProducts()
 	private ArrayList<Product> aProducts = new ArrayList<Product>();	
 	private HashSet<String> aRatingIntersection = new HashSet<String>();
-	private HashSet<String> aSpecIntersection = new HashSet<String>();
-	private HashMap<String, AttributeStat> aSpecs = new HashMap<String, AttributeStat>();
+	private HashSet<String> aSpecificationIntersection = new HashSet<String>();
+	private HashMap<String, AttributeStat> aSpecifications = new HashMap<String, AttributeStat>();
 	private HashMap<String, AttributeStat> aRatings = new HashMap<String, AttributeStat>();
 	
 	// State fields for correcting implementing finding the intersection of children's attributes (later used for jaccard)
@@ -65,60 +66,62 @@ public class Category
 	
 	void clearRatings()
 	{
-		this.aRatings = new HashMap<String, AttributeStat>();
+		aRatings = new HashMap<String, AttributeStat>();
 	}
 	
 	void clearSpecs()
 	{
-		this.aSpecs = new HashMap<String, AttributeStat>();
+		aSpecifications = new HashMap<String, AttributeStat>();
 	}
 	
 	void calculateJaccard()
 	{		
-		double numerator  = ((double) (this.aRatingIntersection.size() + this.aSpecIntersection.size()));
-		double denominator = ((double) (this.aRatings.size() + this.aSpecs.size()));
+		double numerator  = (double) (aRatingIntersection.size() + aSpecificationIntersection.size());
+		double denominator = (double) (aRatings.size() + aSpecifications.size());
 		if(denominator > 0)
 		{
-			this.aJaccardIndex = numerator / denominator;
+			aJaccardIndex = numerator / denominator;
 		}
 		else
 		{
-			this.aJaccardIndex = null;
+			aJaccardIndex = null;
 		}
 	}
 	
 	public int getNumChildren()
 	{
-		return this.aChildren.size();
+		return aChildren.size();
 	}
 	
 	public Double getJaccard()
 	{
-		return this.aJaccardIndex;
+		return aJaccardIndex;
 	}
 	
 	public void putProducts(Iterable<Product> products)
 	{
 		for(Product prod : products)
 		{
-			this.putProduct(prod);
+			putProduct(prod);
 		}
 	}
 	
 	public String describe()
 	{
 		String desc = "";
-		desc += this.aSingularName + " (\"" + this.aId + "\")\n";
-		desc += " - count: " + this.aCount + "\n";
-		desc += " - ratedCount: " + this.aRatedCount + "\n";
-		desc += " - testedCount: " + this.aTestedCount + "\n";
-		desc += " - number of ratings: " + this.aRatings.size() + "\n";
-		desc += " - number of specs: " + this.aSpecs.size() + "\n";
-		desc += " - Jaccard: " + this.aJaccardIndex + "\n";
+		desc += aSingularName + " (\"" + aId + "\")\n";
+		desc += " - count: " + aCount + "\n";
+		desc += " - ratedCount: " + aRatedCount + "\n";
+		desc += " - testedCount: " + aTestedCount + "\n";
+		desc += " - number of ratings: " + aRatings.size() + "\n";
+		desc += " - number of specs: " + aSpecifications.size() + "\n";
+		desc += " - Jaccard: " + aJaccardIndex + "\n";
 		desc += "\n - Ratings:\n";
-		for(AttributeStat rating : this.aRatings.values())
+		for(AttributeStat rating : aRatings.values())
 		{
-			desc += "\t- " + rating.getAttribute().getName() + " (" + rating.getAttribute().getId() +"): " + rating.getCount() + " (" + (float)(rating.getCount())/this.getCount()*100 + "%)";
+			desc += "\t- " + rating.getAttribute().getName() + " (" + rating.getAttribute().getId() +
+					"): " + rating.getCount() + " (" + (float)(rating.getCount())/this.getCount()*PERCENT + "%)";
+			
 			if(rating.getValueMax() != null)
 			{
 				desc += " min/max: [" + rating.getValueMin() + ", " + rating.getValueMax() + "]";
@@ -126,9 +129,10 @@ public class Category
 			desc += " values: [" + StringUtils.join(rating.getValueEnum(), ", ") + "]\n";
 		}
 		desc += "\n - Specs:\n";
-		for(AttributeStat spec : this.aSpecs.values())
+		for(AttributeStat spec : this.aSpecifications.values())
 		{
-			desc += "\t- " + spec.getAttribute().getName() + " (" + spec.getAttribute().getId() + "): " + spec.getCount() + " (" + (float)(spec.getCount())/this.getCount()*100 + "%)";
+			desc += "\t- " + spec.getAttribute().getName() + " (" + spec.getAttribute().getId() + 
+					"): " + spec.getCount() + " (" + (float)(spec.getCount())/this.getCount()*PERCENT + "%)";
 			if(spec.getValueMax() != null)
 			{
 				desc += " min/max: [" + spec.getValueMin() + ", " + spec.getValueMax() + "]";
@@ -141,79 +145,80 @@ public class Category
 	
 	public void restartRatingIntersection()
 	{
-		this.aStartNewRatingIntersection = true;
+		aStartNewRatingIntersection = true;
 	}
 	
 	public void restartSpecIntersection()
 	{
-		this.aStartNewSpecIntersection = true;
+		
+		aStartNewSpecIntersection = true;
 	}
 	
 	public void intersectRatings(Category child)
 	{
 		// For the first child over which we take the intersection of ratings
 		// we simply note all the ratings it has
-		if(this.aStartNewRatingIntersection)
+		if(aStartNewRatingIntersection)
 		{
 			for(AttributeStat rating : child.getRatings())
 			{
-				this.aRatingIntersection.add(rating.getAttribute().getId());
+				aRatingIntersection.add(rating.getAttribute().getId());
 			}
-			this.aStartNewRatingIntersection = false;
+			aStartNewRatingIntersection = false;
 			return;
 		}
 		
 		// Subsequently, we remove any ratings that are not found in a given child
-		if(this.aId.equals("28726"))
+		if(aId.equals("28726"))
 		{
 			int a = 1;
 		}
 		HashSet<String> newRatingIntersection = new HashSet<String>(); 
-		for(String existingRatingId : this.aRatingIntersection)
+		for(String existingRatingId : aRatingIntersection)
 		{
 			if(child.getRating(existingRatingId) != null)
 			{
 				newRatingIntersection.add(existingRatingId);
 			}
 		}
-		this.aRatingIntersection = newRatingIntersection;
+		aRatingIntersection = newRatingIntersection;
 	}
 		
 	public void intersectSpecs(Category child)
 	{
 		// For the first child over which we take the intersection of specs
 		// we simply note all the specs it has
-		if(this.aStartNewSpecIntersection)
+		if(aStartNewSpecIntersection)
 		{
 			for(AttributeStat spec : child.getSpecs())
 			{
-				this.aSpecIntersection.add(spec.getAttribute().getId());
+				aSpecificationIntersection.add(spec.getAttribute().getId());
 			}
-			this.aStartNewSpecIntersection = false;
+			aStartNewSpecIntersection = false;
 			return;
 		}
 		
 		// Subsequently, we remove any specs that are not found in a given child
 		HashSet<String> newSpecIntersection = new HashSet<String>();
-		for(String existingSpecId : this.aSpecIntersection)
+		for(String existingSpecId : aSpecificationIntersection)
 		{
 			if(child.getSpec(existingSpecId) != null)
 			{
 				newSpecIntersection.add(existingSpecId);
 			}
 		}
-		this.aSpecIntersection = newSpecIntersection;
+		aSpecificationIntersection = newSpecIntersection;
 	}
 	
 	public void putProduct(Product prod)
 	{
-		this.aProducts.add(prod);
+		aProducts.add(prod);
 	}
 	
 	public void putRating(Attribute rating)
 	{
 		String ratingId = rating.getId();
-		for(AttributeStat existingRatingStat : this.aRatings.values())
+		for(AttributeStat existingRatingStat : aRatings.values())
 		{
 			if(existingRatingStat.getAttribute().getId().equals(ratingId))
 			{
@@ -225,20 +230,20 @@ public class Category
 		AttributeStat ratingStat = new AttributeStat(rating);
 		ratingStat.increment(1);
 		ratingStat.updateRange(rating.getValue());
-		this.aRatings.put(rating.getId(), ratingStat);
+		aRatings.put(rating.getId(), ratingStat);
 	}
 	
 	public void mergeRatings(Iterable<AttributeStat> ratings)
 	{
 		for(AttributeStat rating : ratings)
 		{
-			this.mergeRating(rating);
+			mergeRating(rating);
 		}
 	}
 	
 	public void mergeRating(AttributeStat rating)
 	{
-		for(AttributeStat existingRating : this.aRatings.values())
+		for(AttributeStat existingRating : aRatings.values())
 		{
 			if(existingRating.getAttribute().getId().equals(rating.getAttribute().getId()))
 			{
@@ -247,30 +252,30 @@ public class Category
 			}
 		}
 		AttributeStat newRating = new AttributeStat(rating);
-		this.aRatings.put(rating.getAttribute().getId(), newRating);
+		aRatings.put(rating.getAttribute().getId(), newRating);
 	}
 	
 	public Iterable<AttributeStat> getRatings()
 	{
-		return Collections.unmodifiableCollection(this.aRatings.values());
+		return Collections.unmodifiableCollection(aRatings.values());
 	}
 	
 	public AttributeStat getRating(String id)
 	{
-		return this.aRatings.get(id);
+		return aRatings.get(id);
 	}
 	
 	public void mergeSpecs(Iterable<AttributeStat> specs)
 	{
 		for(AttributeStat spec : specs)
 		{
-			this.mergeSpec(spec);
+			mergeSpec(spec);
 		}
 	}
 	
 	public void mergeSpec(AttributeStat spec)
 	{
-		for(AttributeStat existingSpec: this.aSpecs.values())
+		for(AttributeStat existingSpec: this.aSpecifications.values())
 		{
 			if(existingSpec.getAttribute().getId().equals(spec.getAttribute().getId()))
 			{
@@ -279,31 +284,31 @@ public class Category
 			}
 		}
 		AttributeStat newSpec = new AttributeStat(spec);
-		this.aSpecs.put(spec.getAttribute().getId(), newSpec);
+		aSpecifications.put(spec.getAttribute().getId(), newSpec);
 	}
 	
 	public Iterable<AttributeStat> getSpecs()
 	{
-		return Collections.unmodifiableCollection(this.aSpecs.values());
+		return Collections.unmodifiableCollection(aSpecifications.values());
 	}
 
 	public AttributeStat getSpec(String id)
 	{
-		return this.aSpecs.get(id);
+		return aSpecifications.get(id);
 	}
 
 	public void putRatings(Iterable<Attribute> ratings)
 	{
 		for(Attribute rating : ratings)
 		{
-			this.putRating(rating);
+			putRating(rating);
 		}
 	}
 
 	public void putSpec(Attribute spec)
 	{
 		String specId = spec.getId();
-		for(AttributeStat existingSpecStat: this.aSpecs.values())
+		for(AttributeStat existingSpecStat: aSpecifications.values())
 		{
 			if(existingSpecStat.getAttribute().getId().equals(specId))
 			{
@@ -315,94 +320,96 @@ public class Category
 		AttributeStat specStat = new AttributeStat(spec);
 		specStat.increment(1);
 		specStat.updateRange(spec.getValue());
-		this.aSpecs.put(spec.getId(), specStat);
+		aSpecifications.put(spec.getId(), specStat);
 	}
 	
 	public int getRatedCount()
 	{
-		return this.aRatedCount;
+		return aRatedCount;
 	}
 	
 	public int getTestedCount()
 	{
-		return this.aTestedCount;
+		return aTestedCount;
 	}
 	
 	public Iterable<Product> getProducts()
 	{
-		return Collections.unmodifiableCollection(Category.this.aProducts);
+		return Collections.unmodifiableCollection(aProducts);
 	}
 	
 	public int getCount()
 	{
-		return this.aCount;
+		return aCount;
 	}
 	
 	public void incrementCount(int add)
 	{
-		this.aCount += add;
+		aCount += add;
 	}
 	
 	public void incrementRatedCount(int add)
 	{
-		this.aRatedCount += add;
+		aRatedCount += add;
 	}
 	
 	public void incrementTestedCount(int add)
 	{
-		this.aTestedCount += add;
+		aTestedCount += add;
 	}
 	
 	public void setCount(int count)
 	{
-		this.aCount = count;
+		aCount = count;
 	}
 	
 	public void setRatedCount(int count)
 	{
-		this.aRatedCount = count;
+		aRatedCount = count;
 	}
 	
 	public void setTestedCount(int count)
 	{
-		this.aTestedCount = count;
+		aTestedCount = count;
 	}
 	
 	public void putSpecs(Iterable<Attribute> specs)
 	{
 		for(Attribute spec : specs)
 		{
-			this.putSpec(spec);
+			putSpec(spec);
 		}
 	}
 	
 	public void setParent(Category parent)
 	{
-		this.aParent = parent;
+		aParent = parent;
 	}	
 
-	public Category getParent() {
-		return this.aParent;
+	public Category getParent() 
+	{
+		return aParent;
 	}
 	
-	public String getName() {
-		return this.aSingularName;
+	public String getName() 
+	{
+		return aSingularName;
 	}
 	
 	public Iterable<Category> getChildren() 
 	{
-		return Collections.unmodifiableCollection(Category.this.aChildren);
+		return Collections.unmodifiableCollection(aChildren);
 	}
 	
 	public int size()
 	{
-		return this.aProducts.size();
+		return aProducts.size();
 	}
 	
 	public void removeChild(Category child)
 	{
 		ArrayList<Category> newChildren = new ArrayList<Category>();
-		for(Category existingChild : this.aChildren)
+		for(Category existingChild : aChildren)
 		{
 			if(existingChild.getId().equals(child.getId()))
 			{
@@ -410,18 +417,18 @@ public class Category
 			}
 			newChildren.add(existingChild);
 		}
-		this.aChildren = newChildren;
+		aChildren = newChildren;
 	}
 	
 	public void addChild(Category child)
 	{
-		this.aChildren.add(child);
+		aChildren.add(child);
 	}
 
 	
 	public String getId() 
 	{
-		return this.aId;
+		return aId;
 	}
 	
 }
