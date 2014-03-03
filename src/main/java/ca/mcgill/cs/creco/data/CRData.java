@@ -173,7 +173,7 @@ public final class CRData implements IDataCollector
 	private void recurseFindEquivalenceClasses(Category pCategory, int pMode)
 	{
 		Iterable<Category> children = pCategory.getChildren();
-		int numChildren = pCategory.getNumChildren();
+		int numChildren = pCategory.getNumberOfChildren();
 		
 		if(pMode == 1)
 		{
@@ -194,7 +194,7 @@ public final class CRData implements IDataCollector
 			}
 			else
 			{
-				Double jaccard = pCategory.getJaccard();
+				Double jaccard = pCategory.getJaccardIndex();
 				if(jaccard == null || jaccard < JACCARD_THRESHOLD)
 				{
 					for(Category child : children)
@@ -236,7 +236,7 @@ public final class CRData implements IDataCollector
 		{
 			recursiveIndex(child);
 		}
-		if(pCategory.getNumChildren() == 0)
+		if(pCategory.getNumberOfChildren() == 0)
 		{
 			this.aLeaves.add(pCategory);
 		}
@@ -260,7 +260,7 @@ public final class CRData implements IDataCollector
 		
 		// We will be "rolling up" counts and various collections from the leaves up to the
 		// roots (franchises).  Make sure, for all non-leaves, that these are cleared out to start
-		if(pCategory.getNumChildren() > 0)
+		if(pCategory.getNumberOfChildren() > 0)
 		{
 			pCategory.setRatedCount(0);
 			pCategory.setTestedCount(0);
@@ -276,7 +276,7 @@ public final class CRData implements IDataCollector
 		{
 			// aggregate children's collections
 			pCategory.mergeRatings(child.getRatings());
-			pCategory.mergeSpecs(child.getSpecs());
+			pCategory.mergeSpecs(child.getSpecifications());
 			pCategory.intersectRatings(child);
 			pCategory.intersectSpecs(child);
 			
@@ -306,12 +306,12 @@ public final class CRData implements IDataCollector
 			Category category = get(product.getCategoryId());
 			
 			// Create two way link between category and product
-			category.putProduct(product);
+			category.addProduct(product);
 			product.setCategory(category);
 			
 			// Aggregate some product info in the category
-			category.putRatings(product.getRatings());
-			category.putSpecs(product.getSpecs());
+			category.addRatings(product.getRatings());
+			category.putSpecifications(product.getSpecs());
 			
 			// Increment the counts in this category
 			category.incrementCount(1);
@@ -337,13 +337,13 @@ public final class CRData implements IDataCollector
 	private void recurseEliminateSingletons(Category pCategory)
 	{
 		// detect if this is a singleton, if so, splice it out of the hierarchy
-		if(pCategory.getNumChildren() == 1)
+		if(pCategory.getNumberOfChildren() == 1)
 		{
 			Category child = pCategory.getChildren().iterator().next();
 			Category parent = pCategory.getParent();
 			child.setParent(parent);
 			parent.removeChild(pCategory);
-			parent.addChild(child);
+			parent.addSubcategory(child);
 
 			recurseEliminateSingletons(child);
 		}

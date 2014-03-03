@@ -28,6 +28,7 @@ import org.thymeleaf.util.StringUtils;
 public class Category 
 {
 	private static final int PERCENT = 100;
+	
 	// Fields copied directly from CR database
 	private String aId;
 	private String aSingularName;
@@ -64,14 +65,127 @@ public class Category
 		aParent = pParent;
 	}
 	
+	//--- Public Method ---
+	
+	/**
+	 * @return The Jaccard index of the ratings and specifications covered
+	 * by this category.
+	 */
+	public Double getJaccardIndex()
+	{
+		return aJaccardIndex;
+	}
+	
+	/**
+	 * @return A collection of ratings associated with this category.
+	 */
+	public Iterable<AttributeStat> getRatings()
+	{
+		return Collections.unmodifiableCollection(aRatings.values());
+	}
+	
+	/**
+	 * @return A collection of specifications associated with this category.
+	 */
+	public Iterable<AttributeStat> getSpecifications()
+	{
+		return Collections.unmodifiableCollection(aSpecifications.values());
+	}
+	
+	/**
+	 * @return The products associated with this category.
+	 */
+	public Iterable<Product> getProducts()
+	{
+		return Collections.unmodifiableCollection(aProducts);
+	}
+	
+	/**
+	 * @return The count for this category.
+	 */
+	public int getCount()
+	{
+		return aCount;
+	}
+	
+	/**
+	 * @return The id of this category.
+	 */
+	public String getId() 
+	{
+		return aId;
+	}
+	
+	/**
+	 * @return The singular name of this category.
+	 */
+	public String getName() 
+	{
+		return aSingularName;
+	}
+	
+	/**
+	 * Adds a subcategory to this category.
+	 * @param pSubcategory the subcategory to add.
+	 */
+	public void addSubcategory(Category pSubcategory)
+	{
+		aChildren.add(pSubcategory);
+	}
+	
+	@Override
+	public String toString()
+	{
+		String description = "";
+		description += aSingularName + " (\"" + aId + "\")\n";
+		description += " - count: " + aCount + "\n";
+		description += " - ratedCount: " + aRatedCount + "\n";
+		description += " - testedCount: " + aTestedCount + "\n";
+		description += " - number of ratings: " + aRatings.size() + "\n";
+		description += " - number of specs: " + aSpecifications.size() + "\n";
+		description += " - Jaccard: " + aJaccardIndex + "\n";
+		description += "\n - Ratings:\n";
+		for(AttributeStat rating : aRatings.values())
+		{
+			description += "\t- " + rating.getAttribute().getName() + " (" + rating.getAttribute().getId() +
+					"): " + rating.getCount() + " (" + (float)(rating.getCount())/this.getCount()*PERCENT + "%)";
+			
+			if(rating.getValueMax() != null)
+			{
+				description += " min/max: [" + rating.getValueMin() + ", " + rating.getValueMax() + "]";
+			}
+			description += " values: [" + StringUtils.join(rating.getValueEnum(), ", ") + "]\n";
+		}
+		description += "\n - Specs:\n";
+		for(AttributeStat spec : this.aSpecifications.values())
+		{
+			description += "\t- " + spec.getAttribute().getName() + " (" + spec.getAttribute().getId() + 
+					"): " + spec.getCount() + " (" + (float)(spec.getCount())/this.getCount()*PERCENT + "%)";
+			if(spec.getValueMax() != null)
+			{
+				description += " min/max: [" + spec.getValueMin() + ", " + spec.getValueMax() + "]";
+			}
+			description += " values: [" + StringUtils.join(spec.getValueEnum(), ", ") + "]\n";
+		}
+		
+		return description;
+	}
+	
+	//--- Package-private stuff ---
+	
+	int getNumberOfChildren()
+	{
+		return aChildren.size();
+	}
+	
 	void clearRatings()
 	{
-		aRatings = new HashMap<String, AttributeStat>();
+		aRatings.clear();
 	}
 	
 	void clearSpecs()
 	{
-		aSpecifications = new HashMap<String, AttributeStat>();
+		aSpecifications.clear();
 	}
 	
 	void calculateJaccard()
@@ -88,79 +202,32 @@ public class Category
 		}
 	}
 	
-	public int getNumChildren()
+	void putProducts(Iterable<Product> pProducts)
 	{
-		return aChildren.size();
-	}
-	
-	public Double getJaccard()
-	{
-		return aJaccardIndex;
-	}
-	
-	public void putProducts(Iterable<Product> products)
-	{
-		for(Product prod : products)
+		for(Product prod : pProducts)
 		{
-			putProduct(prod);
+			addProduct(prod);
 		}
 	}
 	
-	public String describe()
-	{
-		String desc = "";
-		desc += aSingularName + " (\"" + aId + "\")\n";
-		desc += " - count: " + aCount + "\n";
-		desc += " - ratedCount: " + aRatedCount + "\n";
-		desc += " - testedCount: " + aTestedCount + "\n";
-		desc += " - number of ratings: " + aRatings.size() + "\n";
-		desc += " - number of specs: " + aSpecifications.size() + "\n";
-		desc += " - Jaccard: " + aJaccardIndex + "\n";
-		desc += "\n - Ratings:\n";
-		for(AttributeStat rating : aRatings.values())
-		{
-			desc += "\t- " + rating.getAttribute().getName() + " (" + rating.getAttribute().getId() +
-					"): " + rating.getCount() + " (" + (float)(rating.getCount())/this.getCount()*PERCENT + "%)";
-			
-			if(rating.getValueMax() != null)
-			{
-				desc += " min/max: [" + rating.getValueMin() + ", " + rating.getValueMax() + "]";
-			}
-			desc += " values: [" + StringUtils.join(rating.getValueEnum(), ", ") + "]\n";
-		}
-		desc += "\n - Specs:\n";
-		for(AttributeStat spec : this.aSpecifications.values())
-		{
-			desc += "\t- " + spec.getAttribute().getName() + " (" + spec.getAttribute().getId() + 
-					"): " + spec.getCount() + " (" + (float)(spec.getCount())/this.getCount()*PERCENT + "%)";
-			if(spec.getValueMax() != null)
-			{
-				desc += " min/max: [" + spec.getValueMin() + ", " + spec.getValueMax() + "]";
-			}
-			desc += " values: [" + StringUtils.join(spec.getValueEnum(), ", ") + "]\n";
-		}
-		
-		return desc;
-	}
-	
-	public void restartRatingIntersection()
+	void restartRatingIntersection()
 	{
 		aStartNewRatingIntersection = true;
 	}
 	
-	public void restartSpecIntersection()
+	void restartSpecIntersection()
 	{
 		
 		aStartNewSpecIntersection = true;
 	}
 	
-	public void intersectRatings(Category child)
+	void intersectRatings(Category pChild)
 	{
 		// For the first child over which we take the intersection of ratings
 		// we simply note all the ratings it has
 		if(aStartNewRatingIntersection)
 		{
-			for(AttributeStat rating : child.getRatings())
+			for(AttributeStat rating : pChild.getRatings())
 			{
 				aRatingIntersection.add(rating.getAttribute().getId());
 			}
@@ -176,7 +243,7 @@ public class Category
 		HashSet<String> newRatingIntersection = new HashSet<String>(); 
 		for(String existingRatingId : aRatingIntersection)
 		{
-			if(child.getRating(existingRatingId) != null)
+			if(pChild.getRating(existingRatingId) != null)
 			{
 				newRatingIntersection.add(existingRatingId);
 			}
@@ -184,13 +251,13 @@ public class Category
 		aRatingIntersection = newRatingIntersection;
 	}
 		
-	public void intersectSpecs(Category child)
+	void intersectSpecs(Category pChild)
 	{
 		// For the first child over which we take the intersection of specs
 		// we simply note all the specs it has
 		if(aStartNewSpecIntersection)
 		{
-			for(AttributeStat spec : child.getSpecs())
+			for(AttributeStat spec : pChild.getSpecifications())
 			{
 				aSpecificationIntersection.add(spec.getAttribute().getId());
 			}
@@ -202,7 +269,7 @@ public class Category
 		HashSet<String> newSpecIntersection = new HashSet<String>();
 		for(String existingSpecId : aSpecificationIntersection)
 		{
-			if(child.getSpec(existingSpecId) != null)
+			if(pChild.getSpecification(existingSpecId) != null)
 			{
 				newSpecIntersection.add(existingSpecId);
 			}
@@ -210,208 +277,178 @@ public class Category
 		aSpecificationIntersection = newSpecIntersection;
 	}
 	
-	public void putProduct(Product prod)
+	void addProduct(Product pProduct)
 	{
-		aProducts.add(prod);
+		aProducts.add(pProduct);
 	}
 	
-	public void putRating(Attribute rating)
+	void addRating(Attribute pRating)
 	{
-		String ratingId = rating.getId();
+		String ratingId = pRating.getId();
 		for(AttributeStat existingRatingStat : aRatings.values())
 		{
 			if(existingRatingStat.getAttribute().getId().equals(ratingId))
 			{
 				existingRatingStat.increment(1);
-				existingRatingStat.updateRange(rating.getValue());
+				existingRatingStat.updateRange(pRating.getValue());
 				return;
 			}
 		}
-		AttributeStat ratingStat = new AttributeStat(rating);
+		AttributeStat ratingStat = new AttributeStat(pRating);
 		ratingStat.increment(1);
-		ratingStat.updateRange(rating.getValue());
-		aRatings.put(rating.getId(), ratingStat);
+		ratingStat.updateRange(pRating.getValue());
+		aRatings.put(pRating.getId(), ratingStat);
 	}
 	
-	public void mergeRatings(Iterable<AttributeStat> ratings)
+	void mergeRatings(Iterable<AttributeStat> pRatings)
 	{
-		for(AttributeStat rating : ratings)
+		for(AttributeStat rating : pRatings)
 		{
 			mergeRating(rating);
 		}
 	}
 	
-	public void mergeRating(AttributeStat rating)
+	private void mergeRating(AttributeStat pRatingStat)
 	{
 		for(AttributeStat existingRating : aRatings.values())
 		{
-			if(existingRating.getAttribute().getId().equals(rating.getAttribute().getId()))
+			if(existingRating.getAttribute().getId().equals(pRatingStat.getAttribute().getId()))
 			{
-				existingRating.update(rating);
+				existingRating.update(pRatingStat);
 				return;
 			}
 		}
-		AttributeStat newRating = new AttributeStat(rating);
-		aRatings.put(rating.getAttribute().getId(), newRating);
+		AttributeStat newRating = new AttributeStat(pRatingStat);
+		aRatings.put(pRatingStat.getAttribute().getId(), newRating);
 	}
 	
-	public Iterable<AttributeStat> getRatings()
+	private AttributeStat getRating(String pId)
 	{
-		return Collections.unmodifiableCollection(aRatings.values());
+		return aRatings.get(pId);
 	}
 	
-	public AttributeStat getRating(String id)
+	void mergeSpecs(Iterable<AttributeStat> pSpecifications)
 	{
-		return aRatings.get(id);
-	}
-	
-	public void mergeSpecs(Iterable<AttributeStat> specs)
-	{
-		for(AttributeStat spec : specs)
+		for(AttributeStat spec : pSpecifications)
 		{
 			mergeSpec(spec);
 		}
 	}
 	
-	public void mergeSpec(AttributeStat spec)
+	private void mergeSpec(AttributeStat pSpecifications)
 	{
 		for(AttributeStat existingSpec: this.aSpecifications.values())
 		{
-			if(existingSpec.getAttribute().getId().equals(spec.getAttribute().getId()))
+			if(existingSpec.getAttribute().getId().equals(pSpecifications.getAttribute().getId()))
 			{
-				existingSpec.update(spec);
+				existingSpec.update(pSpecifications);
 				return;
 			}
 		}
-		AttributeStat newSpec = new AttributeStat(spec);
-		aSpecifications.put(spec.getAttribute().getId(), newSpec);
+		AttributeStat newSpec = new AttributeStat(pSpecifications);
+		aSpecifications.put(pSpecifications.getAttribute().getId(), newSpec);
 	}
 	
-	public Iterable<AttributeStat> getSpecs()
+	private AttributeStat getSpecification(String pId)
 	{
-		return Collections.unmodifiableCollection(aSpecifications.values());
+		return aSpecifications.get(pId);
 	}
 
-	public AttributeStat getSpec(String id)
+	void addRatings(Iterable<Attribute> pRatings)
 	{
-		return aSpecifications.get(id);
-	}
-
-	public void putRatings(Iterable<Attribute> ratings)
-	{
-		for(Attribute rating : ratings)
+		for(Attribute rating : pRatings)
 		{
-			putRating(rating);
+			addRating(rating);
 		}
 	}
 
-	public void putSpec(Attribute spec)
+	private void addSpecification(Attribute pSpecification)
 	{
-		String specId = spec.getId();
+		String specId = pSpecification.getId();
 		for(AttributeStat existingSpecStat: aSpecifications.values())
 		{
 			if(existingSpecStat.getAttribute().getId().equals(specId))
 			{
 				existingSpecStat.increment(1);
-				existingSpecStat.updateRange(spec.getValue());
+				existingSpecStat.updateRange(pSpecification.getValue());
 				return;
 			}
 		}
-		AttributeStat specStat = new AttributeStat(spec);
+		AttributeStat specStat = new AttributeStat(pSpecification);
 		specStat.increment(1);
-		specStat.updateRange(spec.getValue());
-		aSpecifications.put(spec.getId(), specStat);
+		specStat.updateRange(pSpecification.getValue());
+		aSpecifications.put(pSpecification.getId(), specStat);
 	}
 	
-	public int getRatedCount()
+	int getRatedCount()
 	{
 		return aRatedCount;
 	}
 	
-	public int getTestedCount()
+	int getTestedCount()
 	{
 		return aTestedCount;
 	}
 	
-	public Iterable<Product> getProducts()
+	void incrementCount(int pAmount)
 	{
-		return Collections.unmodifiableCollection(aProducts);
+		aCount += pAmount;
 	}
 	
-	public int getCount()
+	void incrementRatedCount(int pAmount)
 	{
-		return aCount;
+		aRatedCount += pAmount;
 	}
 	
-	public void incrementCount(int add)
+	void incrementTestedCount(int pAmount)
 	{
-		aCount += add;
+		aTestedCount += pAmount;
 	}
 	
-	public void incrementRatedCount(int add)
+	void setCount(int pCount)
 	{
-		aRatedCount += add;
+		aCount = pCount;
 	}
 	
-	public void incrementTestedCount(int add)
+	void setRatedCount(int pCount)
 	{
-		aTestedCount += add;
+		aRatedCount = pCount;
 	}
 	
-	public void setCount(int count)
+	void setTestedCount(int pCount)
 	{
-		aCount = count;
+		aTestedCount = pCount;
 	}
 	
-	public void setRatedCount(int count)
+	void putSpecifications(Iterable<Attribute> pSpecifications)
 	{
-		aRatedCount = count;
-	}
-	
-	public void setTestedCount(int count)
-	{
-		aTestedCount = count;
-	}
-	
-	public void putSpecs(Iterable<Attribute> specs)
-	{
-		for(Attribute spec : specs)
+		for(Attribute spec : pSpecifications)
 		{
-			putSpec(spec);
+			addSpecification(spec);
 		}
 	}
 	
-	public void setParent(Category parent)
+	void setParent(Category pParent)
 	{
-		aParent = parent;
+		aParent = pParent;
 	}	
 
-	public Category getParent() 
+	Category getParent() 
 	{
 		return aParent;
 	}
 	
-	public String getName() 
-	{
-		return aSingularName;
-	}
-	
-	public Iterable<Category> getChildren() 
+	Iterable<Category> getChildren() 
 	{
 		return Collections.unmodifiableCollection(aChildren);
 	}
 	
-	public int size()
-	{
-		return aProducts.size();
-	}
-	
-	public void removeChild(Category child)
+	void removeChild(Category pChild)
 	{
 		ArrayList<Category> newChildren = new ArrayList<Category>();
 		for(Category existingChild : aChildren)
 		{
-			if(existingChild.getId().equals(child.getId()))
+			if(existingChild.getId().equals(pChild.getId()))
 			{
 				continue;
 			}
@@ -420,16 +457,7 @@ public class Category
 		aChildren = newChildren;
 	}
 	
-	public void addChild(Category child)
-	{
-		aChildren.add(child);
-	}
-
 	
-	public String getId() 
-	{
-		return aId;
-	}
 	
 }
 

@@ -73,7 +73,7 @@ public class AttributeExtractor
 			}
 		}
 		aEquivalenceClass = pEquivalenceClass;
-		aSpecList = aEquivalenceClass.getSpecs();
+		aSpecList = aEquivalenceClass.getSpecifications();
 		aRatingList = aEquivalenceClass.getRatings();
 	}
 	/**Constructor that takes a product list and an equivalence class.
@@ -84,7 +84,7 @@ public class AttributeExtractor
 	{
 		aProductList = Lists.newArrayList(pProductList);
 		aEquivalenceClass = pEquivalenceClass;
-		aSpecList = aEquivalenceClass.getSpecs();
+		aSpecList = aEquivalenceClass.getSpecifications();
 		aRatingList = aEquivalenceClass.getRatings();
 	}
 	/**

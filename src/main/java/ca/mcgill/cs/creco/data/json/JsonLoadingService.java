@@ -88,7 +88,7 @@ public class JsonLoadingService implements IDataLoadingService
 						
 			for(CategoryStub childCatStub : childCatStubs)
 			{
-				lReturn.addChild(buildCategory(childCatStub, lReturn));
+				lReturn.addSubcategory(buildCategory(childCatStub, lReturn));
 			}
 		}
 		

@@ -25,7 +25,7 @@ public class AttributeExtractionTest
 			while(categories.hasNext())
 			{
 				Category c = categories.next();
-				if(c.getJaccard() == null || c.getJaccard() < 0.8)
+				if(c.getJaccardIndex() == null || c.getJaccardIndex() < 0.8)
 				{
 					continue;
 				}
