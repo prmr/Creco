@@ -40,7 +40,8 @@ public final class CRData implements IDataCollector
 	private static final String DEFAULT_CATEGORY_FILENAME = "category.json";
 	private static final double JACCARD_THRESHOLD = 0.8;
 	
-	private static final String[] DEFAULT_PRODUCT_FILENAMES = {
+	private static final String[] DEFAULT_PRODUCT_FILENAMES = 
+		{
 			"appliances.json", "electronicsComputers.json",
 			"cars.json", "health.json", "homeGarden.json", 
 			"food.json", "babiesKids.json", "money.json"
@@ -51,17 +52,23 @@ public final class CRData implements IDataCollector
 	private HashMap<String, Product> aProducts = new HashMap<String, Product>();
 	
 	private Hashtable<String, Category> aCategoryIndex = new Hashtable<String, Category>();
-	private ArrayList<Category> aFranchises = new ArrayList<Category>();
+	private ArrayList<Category> aFranchises = new ArrayList<Category>();					// Top-level categories
 	private ArrayList<Category> aEquivalenceClasses = new ArrayList<Category>();
 	private ArrayList<Category> aSubEquivalenceClasses = new ArrayList<Category>();
-	private ArrayList<Category> aLeaves = new ArrayList<Category>();
+	private ArrayList<Category> aLeaves = new ArrayList<Category>();						// Categories with no children
 	
 	private CRData(String[] pProductFileNames, String pCategoryFileName) throws IOException
 	{
 		IDataLoadingService loadingService = new JsonLoadingService(DataPath.get(), pCategoryFileName, pProductFileNames);
 				
 		loadingService.loadCategories(this);
-		index();
+		
+		// Build an index of all categories.
+		for(Category franchise : aFranchises)
+		{
+			index(franchise);
+		}
+		
 		eliminateSingletons();
 		
 		loadingService.loadProducts(this);
@@ -218,36 +225,28 @@ public final class CRData implements IDataCollector
 	
 	private Iterator<Category> iterator()
 	{
-		return Collections.unmodifiableCollection(this.aCategoryIndex.values()).iterator();
+		return Collections.unmodifiableCollection(aCategoryIndex.values()).iterator();
 	}
 	
-	private void index()
+	private void index(Category pCategory)
 	{
-		for(Category franchise : this.aFranchises)
-		{
-			this.recursiveIndex(franchise);
-		}
-	}
-	
-	private void recursiveIndex(Category pCategory)
-	{
-		this.put(pCategory.getId(), pCategory);
+		aCategoryIndex.put(pCategory.getId(), pCategory);
 		for(Category child : pCategory.getChildren())
 		{
-			recursiveIndex(child);
+			index(child);
 		}
 		if(pCategory.getNumberOfChildren() == 0)
 		{
-			this.aLeaves.add(pCategory);
+			aLeaves.add(pCategory);
 		}
 	}
 	
 	private void refresh() 
 	{			
 		// Now recursively refresh the category list
-		for(Category franchise : this.aFranchises)
+		for(Category franchise : aFranchises)
 		{
-			this.recursiveRefresh(franchise, 0);
+			recursiveRefresh(franchise, 0);
 		}
 	}
 	
@@ -288,11 +287,6 @@ public final class CRData implements IDataCollector
 		}
 		pCategory.calculateJaccard();
 	}
-	
-	private void put(String pKey, Category pValue) 
-	{
-		aCategoryIndex.put(pKey, pValue);
-	}
 
 	/**
 	 * Associate products with categories and vice-versa.
@@ -328,9 +322,9 @@ public final class CRData implements IDataCollector
 	
 	private void eliminateSingletons()
 	{
-		for(Category franchise : this.aFranchises)
+		for(Category franchise : aFranchises)
 		{
-			this.recurseEliminateSingletons(franchise);
+			recurseEliminateSingletons(franchise);
 		}
 	}
 	
