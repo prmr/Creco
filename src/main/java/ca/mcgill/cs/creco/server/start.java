@@ -110,7 +110,7 @@ if (!file.exists()) {
     	   
     	//   if(change_flag==1)
     	   {
-    		   CRData crData =  CRData.setupWithFileNames(Franchisereturn.getProducts(),category_name);
+    		  // CRData crData =  CRData.setupWithFileNames(Franchisereturn.getProducts(),category_name);
     	   }
 //System.out.println("Done");
     	   

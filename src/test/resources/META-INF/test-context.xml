@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	   					   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="TestDataStore" class="ca.mcgill.cs.creco.data.CRData">
+        <constructor-arg index="0">
+        	<array value-type="java.lang.String">
+		        <value>test-appliances.json</value>
+		        <value>test-electronicsComputers.json</value>
+		        <value>test-cars.json</value>
+		        <value>test-health.json</value>
+		        <value>test-homeGarden.json</value>
+		        <value>test-food.json</value>
+		        <value>test-babiesKids.json</value>
+		        <value>test-money.json</value>
+   			</array>
+    	</constructor-arg>
+    	<constructor-arg index="1" type="java.lang.String" value="test-category.json" />
+    </bean>
+
+</beans>

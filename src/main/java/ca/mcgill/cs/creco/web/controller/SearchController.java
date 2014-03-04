@@ -54,6 +54,8 @@ import ca.mcgill.cs.creco.web.model.UserFeatureModel;
 public class SearchController
 {
 	private static final Logger LOG = LoggerFactory.getLogger(SearchController.class);
+	
+	@Autowired
 	private SearchService searchService;
 	
 	private List<ScoredAttribute> scoredRatings; 
@@ -151,19 +153,11 @@ public class SearchController
 	
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String init(Model model){
-		try
-		{
-			searchService = new SearchService();
-			System.out.println("INIT");
-			 UserFeatureModel form = new UserFeatureModel();
-			 model.addAttribute("myForm", form);
-			 
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+	public String init(Model model)
+	{
+		 UserFeatureModel form = new UserFeatureModel();
+		 model.addAttribute("myForm", form);
+
 		return "/index";
 	}
 	

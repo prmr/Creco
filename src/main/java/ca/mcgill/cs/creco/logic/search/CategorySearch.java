@@ -38,16 +38,19 @@ import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import ca.mcgill.cs.creco.data.CRData;
 import ca.mcgill.cs.creco.data.Category;
+import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
 
 
 /**
  * Searches a list of categories with Lucene indexes.
  */
-public class CategorySearch 
+@Component
+public class CategorySearch implements ICategorySearch
 {
 	public static final String CATEGORY_ID = "ID";
 	public static final String CATEGORY_NAME = "NAME";
@@ -57,69 +60,62 @@ public class CategorySearch
 	private static final Version VERSION = Version.LUCENE_46;
 	private static final Logger LOG = LoggerFactory.getLogger(CategorySearch.class);
 	
-	private final Directory directory;
-	private final Analyzer analyzer;
+	private final Directory aDirectory;
+	private final Analyzer aAnalyzer;
+	
+	private IDataStore aDataStore;
 	
 	/**
 	 * Constructor.
+	 * @param pDataStore The database whose categories will be in the search index. 
+	 * @throws IOException If an exception is thrown during the creation of the product index.
 	 */
-	public CategorySearch() throws IOException
+	@Autowired
+	public CategorySearch(IDataStore pDataStore) throws IOException
 	{
-		directory = new RAMDirectory();
-		analyzer = new EnglishAnalyzer(VERSION);
+		aDirectory = new RAMDirectory();
+		aAnalyzer = new EnglishAnalyzer(VERSION);
+		aDataStore = pDataStore;
+
 		buildCategoryIndex();
 	}
 	
-	/**
-	 * Add equivalence classes into the Lucene directory.
-	 */
-	private void buildCategoryIndex() 
+	private void buildCategoryIndex() throws IOException
 	{
-		try 
+		IndexWriter writer = new IndexWriter(aDirectory, new IndexWriterConfig(VERSION, aAnalyzer));
+		for (Category category : aDataStore.getEquivalenceClasses()) 
 		{
-			Analyzer analyzer = new EnglishAnalyzer(VERSION);
-			IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(VERSION, analyzer));
-		
-			for (Category category : CRData.getData().getEquivalenceClasses()) 
+			String flattenedText = category.getName();
+			LOG.debug("Adding " + category.getName() +", ID: " + category.getId());
+			for (Product product : category.getProducts())
 			{
-				String flattenedText = category.getName();
-				LOG.debug("Adding " + category.getName() +", ID: " + category.getId());
-				for (Product product : category.getProducts())
-				{
-					flattenedText += product.getName() + " ";
-					//flattenedText += product.getBrandName() + " ";
-					//flattenedText += product.getHighs() + " ";
-					//flattenedText += product.getLows() + " ";
-					//flattenedText += product.getDescription() + " ";
-					//flattenedText += product.getReview() + " ";
-					//flattenedText += product.getSummary() + " ";
-					//flattenedText += product.getBottomLine() + " ";
-				}
-				Document doc = new Document();
-				doc.add(new TextField(CATEGORY_ID, category.getId(), Field.Store.YES));
-				doc.add(new TextField(CATEGORY_NAME, category.getName(), Field.Store.YES));
-				doc.add(new TextField(FLATTENED_TEXT, flattenedText, Field.Store.YES));	
-				writer.addDocument(doc);
+				flattenedText += product.getName() + " ";
+				//flattenedText += product.getBrandName() + " ";
+				//flattenedText += product.getHighs() + " ";
+				//flattenedText += product.getLows() + " ";
+				//flattenedText += product.getDescription() + " ";
+				//flattenedText += product.getReview() + " ";
+				//flattenedText += product.getSummary() + " ";
+				//flattenedText += product.getBottomLine() + " ";
 			}
-			writer.close();
-		} catch (IOException e)
-		{
-			
+			Document doc = new Document();
+			doc.add(new TextField(CATEGORY_ID, category.getId(), Field.Store.YES));
+			doc.add(new TextField(CATEGORY_NAME, category.getName(), Field.Store.YES));
+			doc.add(new TextField(FLATTENED_TEXT, flattenedText, Field.Store.YES));	
+			writer.addDocument(doc);
 		}
+		writer.close();
 	}
 	
-	/**
-	 * Query the Lucene directory for matches to the query string.
-	 * @param queryString the search string
-	 */
-	public List<Category> queryCategories(String queryString) 
+	@Override
+	public List<Category> queryCategories(String pQueryString) 
 	{
 		List<Category> equivalenceClassResults = new ArrayList<Category>();
 		try 
 		{
-			Query query = new QueryParser(VERSION, CATEGORY_NAME, analyzer).parse(queryString);
+			Query query = new QueryParser(VERSION, CATEGORY_NAME, aAnalyzer).parse(pQueryString);
 			//Query query = new FuzzyQuery(new Term(FLATTENED_TEXT, queryString), 1);
-			DirectoryReader reader = DirectoryReader.open(directory);
+			DirectoryReader reader = DirectoryReader.open(aDirectory);
 			IndexSearcher searcher = new IndexSearcher(reader);
 			TopScoreDocCollector results = TopScoreDocCollector.create(MAX_NUM_RESULTS, true);
 			
@@ -129,18 +125,18 @@ public class CategorySearch
 			// If no category name matches are found, search in product names
 			if (hits.length == 0)
 			{
-				Query broaderQuery = new QueryParser(VERSION, FLATTENED_TEXT, analyzer).parse(queryString);
+				Query broaderQuery = new QueryParser(VERSION, FLATTENED_TEXT, aAnalyzer).parse(pQueryString);
 				searcher.search(broaderQuery, results);
 				hits = results.topDocs().scoreDocs;
 			}
 			
-			LOG.info("Found " + hits.length + " results for \"" + queryString + "\"");	
+			LOG.info("Found " + hits.length + " results for \"" + pQueryString + "\"");	
 
 			for(int i = 0; i<hits.length; i++) 
 			{
 			    Document doc = searcher.doc(hits[i].doc);
-			    LOG.info(hits[i].score + " - " + CRData.getData().getCategory(doc.get(CATEGORY_ID)).getName());
-			    equivalenceClassResults.add(CRData.getData().getCategory(doc.get(CATEGORY_ID)));
+			    LOG.info(hits[i].score + " - " + aDataStore.getCategory(doc.get(CATEGORY_ID)).getName());
+			    equivalenceClassResults.add(aDataStore.getCategory(doc.get(CATEGORY_ID)));
 			}
 		}
 		catch (IOException e) 

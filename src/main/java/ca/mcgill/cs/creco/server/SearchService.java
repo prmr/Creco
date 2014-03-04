@@ -15,35 +15,35 @@
  */
 package ca.mcgill.cs.creco.server;
 
-import java.io.IOException;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.logic.AttributeExtractor;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
-import ca.mcgill.cs.creco.logic.search.CategorySearch;
-import ca.mcgill.cs.creco.logic.search.ProductSearch;
+import ca.mcgill.cs.creco.logic.search.ICategorySearch;
+import ca.mcgill.cs.creco.logic.search.IProductSearch;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
 
-public class SearchService {
+@Service
+public class SearchService
+{
 
-	private CategorySearch categorySearch;
-	private ProductSearch productSearch;
-	
-	public SearchService() throws IOException
-	{
-		this.categorySearch = new CategorySearch();
-		this.productSearch = new ProductSearch();
-	}
+	@Autowired
+	private ICategorySearch aCategorySearch;
+	@Autowired
+	private IProductSearch aProductSearch;
 	
 	public List<ScoredProduct> searchProducts(Category eqClass, String query)
 	{
-		return productSearch.queryProductsReturnAll(query, eqClass.getId());
+		return aProductSearch.queryProductsReturnAll(query, eqClass.getId());
 	}
 	
 	public List<Category> searchCategories(String query)
 	{
-		return categorySearch.queryCategories(query);
+		return aCategorySearch.queryCategories(query);
 	}
 	
 	public RankedFeaturesProducts getRankedFeaturesProducts(Category eqClass, String query)
