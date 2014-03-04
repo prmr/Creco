@@ -38,7 +38,6 @@ public class JsonLoadingService implements IDataLoadingService
 	private String aPath;
 	private String aCategoryFileName;
 	private String[] aProductFileNames;
-	private static String aPrefix = "";
 	
 	public JsonLoadingService(String pPath, String pCategoryFileName, String[] pProductFileNames)
 	{
@@ -63,8 +62,6 @@ public class JsonLoadingService implements IDataLoadingService
 	
 	private static Category buildCategory(CategoryStub pCategoryStub, Category pParent)
 	{
-		aPrefix += "  ";
-		System.out.println(aPrefix + pCategoryStub.singularName + " (" + pCategoryStub.id + ")");
 		Category lReturn = new Category(pCategoryStub.id, pCategoryStub.singularName, pParent);
 		
 		if(pCategoryStub.downLevel != null)
@@ -94,8 +91,6 @@ public class JsonLoadingService implements IDataLoadingService
 				lReturn.addSubcategory(buildCategory(childCatStub, lReturn));
 			}
 		}
-		
-		aPrefix = aPrefix.substring(2);
 		
 		return lReturn;
 	}
