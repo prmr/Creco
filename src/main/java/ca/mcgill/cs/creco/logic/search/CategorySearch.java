@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.document.Document;
@@ -43,7 +41,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import ca.mcgill.cs.creco.data.CRData;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
@@ -66,23 +63,27 @@ public class CategorySearch implements ICategorySearch
 	private final Directory aDirectory;
 	private final Analyzer aAnalyzer;
 	
-	@Autowired
-	private IDataStore aData;
+	private IDataStore aDataStore;
 	
 	/**
 	 * Constructor.
+	 * @param pDataStore The database whose categories will be in the search index. 
+	 * @throws IOException If an exception is thrown during the creation of the product index.
 	 */
-	public CategorySearch()
+	@Autowired
+	public CategorySearch(IDataStore pDataStore) throws IOException
 	{
 		aDirectory = new RAMDirectory();
 		aAnalyzer = new EnglishAnalyzer(VERSION);
+		aDataStore = pDataStore;
+
+		buildCategoryIndex();
 	}
 	
-	@PostConstruct
 	private void buildCategoryIndex() throws IOException
 	{
 		IndexWriter writer = new IndexWriter(aDirectory, new IndexWriterConfig(VERSION, aAnalyzer));
-		for (Category category : aData.getEquivalenceClasses()) 
+		for (Category category : aDataStore.getEquivalenceClasses()) 
 		{
 			String flattenedText = category.getName();
 			LOG.debug("Adding " + category.getName() +", ID: " + category.getId());
@@ -134,8 +135,8 @@ public class CategorySearch implements ICategorySearch
 			for(int i = 0; i<hits.length; i++) 
 			{
 			    Document doc = searcher.doc(hits[i].doc);
-			    LOG.info(hits[i].score + " - " + aData.getCategory(doc.get(CATEGORY_ID)).getName());
-			    equivalenceClassResults.add(aData.getCategory(doc.get(CATEGORY_ID)));
+			    LOG.info(hits[i].score + " - " + aDataStore.getCategory(doc.get(CATEGORY_ID)).getName());
+			    equivalenceClassResults.add(aDataStore.getCategory(doc.get(CATEGORY_ID)));
 			}
 		}
 		catch (IOException e) 

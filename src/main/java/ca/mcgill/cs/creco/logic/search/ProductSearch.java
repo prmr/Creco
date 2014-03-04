@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.document.Document;
@@ -65,52 +63,48 @@ public class ProductSearch implements IProductSearch
 	private final Directory aDirectory;
 	private final Analyzer aAnalyzer;
 
-	@Autowired
-	private IDataStore aData;
+	private IDataStore aDataStore;
 	
+
 	/**
 	 * Constructor.
+	 * @param pDataStore The database whose products will be in the search index. 
+	 * @throws IOException If an exception is thrown during the creation of the product index.
 	 */
-	public ProductSearch()
+	@Autowired
+	public ProductSearch(IDataStore pDataStore) throws IOException
 	{
 		aDirectory = new RAMDirectory();
 		aAnalyzer = new EnglishAnalyzer(VERSION);
+		aDataStore = pDataStore;
+		
+		buildProductIndexByCategory();
 	}
 	
 	/**
 	 * Add products into the Lucene directory.
 	 */
-	@PostConstruct
-	private void buildProductIndexByCategory() 
+	private void buildProductIndexByCategory() throws IOException
 	{
 		//TODO: Might be more efficient to have a different index for each equivalence class,
 		// instead of searching all products in a single index, and then filtering out the
 		// results outside the equivalence class.
-		
-		try 
-		{
-			Analyzer analyzer = new EnglishAnalyzer(VERSION);
-			IndexWriter writer = new IndexWriter(aDirectory,
-					new IndexWriterConfig(VERSION, analyzer));
 
-			for (Category category : aData.getEquivalenceClasses())
+		Analyzer analyzer = new EnglishAnalyzer(VERSION);
+		IndexWriter writer = new IndexWriter(aDirectory,
+				new IndexWriterConfig(VERSION, analyzer));
+		for (Category category : aDataStore.getEquivalenceClasses())
+		{
+			for (Product product : category.getProducts()) 
 			{
-				for (Product product : category.getProducts()) 
-				{
-					Document doc = new Document();
-					doc.add(new TextField(ID, product.getId(), Field.Store.YES));
-					doc.add(new TextField(NAME, product.getName(), Field.Store.YES));
-					writer.addDocument(doc);
-
+				Document doc = new Document();
+				doc.add(new TextField(ID, product.getId(), Field.Store.YES));
+				doc.add(new TextField(NAME, product.getName(), Field.Store.YES));
+				writer.addDocument(doc);
 				}
-			}
-			writer.close();
-		} 
-		catch (IOException e) 
-		{
-			LOG.error(e.getMessage());
 		}
-
+		writer.close();
+		
 	}
 	
 	/**
@@ -122,7 +116,7 @@ public class ProductSearch implements IProductSearch
 	@Override
 	public List<ScoredProduct> queryProducts(String pQueryString, String pCategoryID)
 	{
-		Category category = aData.getCategory(pCategoryID);
+		Category category = aDataStore.getCategory(pCategoryID);
 		if (category == null)
 		{
 			LOG.error("Invalid category ID: " + pCategoryID);
@@ -183,7 +177,7 @@ public class ProductSearch implements IProductSearch
 			matchingProducts.add(scoredProduct.getProduct());
 		}
 		
-		Category category = aData.getCategory(pCategoryId);
+		Category category = aDataStore.getCategory(pCategoryId);
 		
 		for (Product product : category.getProducts())
 		{
