@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.logic.AttributeExtractor;
-import ca.mcgill.cs.creco.logic.model.ScoredAttribute;
+import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.search.ICategorySearch;
 import ca.mcgill.cs.creco.logic.search.IProductSearch;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
