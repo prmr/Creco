@@ -134,8 +134,8 @@ public class CategorySearch implements ICategorySearch
 			for(int i = 0; i<hits.length; i++) 
 			{
 			    Document doc = searcher.doc(hits[i].doc);
-			    LOG.info(hits[i].score + " - " + CRData.getData().getCategory(doc.get(CATEGORY_ID)).getName());
-			    equivalenceClassResults.add(CRData.getData().getCategory(doc.get(CATEGORY_ID)));
+			    LOG.info(hits[i].score + " - " + aData.getCategory(doc.get(CATEGORY_ID)).getName());
+			    equivalenceClassResults.add(aData.getCategory(doc.get(CATEGORY_ID)));
 			}
 		}
 		catch (IOException e) 
