@@ -21,7 +21,8 @@ import java.util.List;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
-import ca.mcgill.cs.creco.logic.model.AttributeValue;
+
+import ca.mcgill.cs.creco.logic.AttributeValue;
 /*
  * A class representing a single feature (i.e., rating and spec) to be 
  * displayed to the user front end.

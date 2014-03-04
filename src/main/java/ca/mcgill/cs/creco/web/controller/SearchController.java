@@ -35,8 +35,8 @@ import com.google.gson.Gson;
 
 import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.logic.model.AttributeValue;
-import ca.mcgill.cs.creco.logic.model.ScoredAttribute;
+import ca.mcgill.cs.creco.logic.AttributeValue;
+import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
 import ca.mcgill.cs.creco.server.RankedFeaturesProducts;
 import ca.mcgill.cs.creco.server.SearchService;

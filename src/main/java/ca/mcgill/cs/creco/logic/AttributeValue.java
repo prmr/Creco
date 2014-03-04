@@ -1,4 +1,4 @@
-package ca.mcgill.cs.creco.logic.model;
+package ca.mcgill.cs.creco.logic;
 
 import java.util.List;
 
