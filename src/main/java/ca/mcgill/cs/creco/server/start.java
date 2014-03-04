@@ -20,7 +20,6 @@ import org.springframework.boot.SpringApplication;
 
 import ca.mcgill.cs.creco.data.CRData;
 import ca.mcgill.cs.creco.data.DataPath;
-import ca.mcgill.cs.creco.util.Franchisereturn;
 
 public class start {
 

@@ -12,7 +12,6 @@ import org.junit.Test;
 import ca.mcgill.cs.creco.data.CRData;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.Product;
-import ca.mcgill.cs.creco.logic.model.ScoredAttribute;
 
 public class AttributeExtractionTest
 {

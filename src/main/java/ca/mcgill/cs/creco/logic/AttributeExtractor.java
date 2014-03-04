@@ -30,9 +30,6 @@ import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.data.TypedValue.Type;
-import ca.mcgill.cs.creco.logic.model.AttributeHashMap;
-import ca.mcgill.cs.creco.logic.model.AttributeValue;
-import ca.mcgill.cs.creco.logic.model.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
 
 import com.google.common.collect.Lists;
