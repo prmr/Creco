@@ -18,6 +18,9 @@ package ca.mcgill.cs.creco.server;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.logic.AttributeExtractor;
 import ca.mcgill.cs.creco.logic.model.ScoredAttribute;
@@ -25,14 +28,15 @@ import ca.mcgill.cs.creco.logic.search.CategorySearch;
 import ca.mcgill.cs.creco.logic.search.ProductSearch;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
 
+@Service
 public class SearchService {
 
+	@Autowired
 	private CategorySearch categorySearch;
 	private ProductSearch productSearch;
 	
 	public SearchService() throws IOException
 	{
-		this.categorySearch = new CategorySearch();
 		this.productSearch = new ProductSearch();
 	}
 	

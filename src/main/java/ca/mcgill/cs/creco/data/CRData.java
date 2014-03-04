@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import org.springframework.stereotype.Component;
+
 import ca.mcgill.cs.creco.data.json.JsonLoadingService;
 
 /**
@@ -35,7 +37,8 @@ import ca.mcgill.cs.creco.data.json.JsonLoadingService;
  * CategoryList catList = crData.getCategoryList();
  * These provide access to categories or products by id, and are iterables.
  */
-public final class CRData implements IDataCollector
+@Component
+public final class CRData implements IDataCollector, IDataStore
 {
 	private static final String DEFAULT_CATEGORY_FILENAME = "category.json";
 	private static final double JACCARD_THRESHOLD = 0.8;
@@ -55,6 +58,11 @@ public final class CRData implements IDataCollector
 	private ArrayList<Category> aFranchises = new ArrayList<Category>();					// Top-level categories
 	private ArrayList<Category> aEquivalenceClasses = new ArrayList<Category>();
 	private ArrayList<Category> aSubEquivalenceClasses = new ArrayList<Category>();
+	
+	private CRData() throws IOException
+	{
+		this(DEFAULT_PRODUCT_FILENAMES, DEFAULT_CATEGORY_FILENAME);
+	}
 	
 	private CRData(String[] pProductFileNames, String pCategoryFileName) throws IOException
 	{
@@ -77,7 +85,9 @@ public final class CRData implements IDataCollector
 		
 		// Roll up useful pre-processed statistics and find equivalence classes
 		refresh();
-		findEquivalenceClasses();		
+		findEquivalenceClasses();
+		
+		instance = this;
 	}
 	
 	/**
@@ -100,6 +110,7 @@ public final class CRData implements IDataCollector
 	 * @param pIndex The requested index.
 	 * @return The category corresponding to pIndex.
 	 */
+	@Override
 	public Category getCategory(String pIndex) 
 	{
 		return aCategoryIndex.get(pIndex);
@@ -120,6 +131,7 @@ public final class CRData implements IDataCollector
 	/**
 	 * @return The equivalence classes
 	 */
+	@Override
 	public Iterable<Category> getEquivalenceClasses()
 	{
 		return Collections.unmodifiableCollection(aEquivalenceClasses);
@@ -148,6 +160,7 @@ public final class CRData implements IDataCollector
 	/**
 	 * @return An iterator on all the franchises
 	 */
+	@Override
 	public Iterator<Category> getCategories()
 	{
 		return iterator();
@@ -156,6 +169,7 @@ public final class CRData implements IDataCollector
 	/**
 	 * @return An iterator on the product list.
 	 */
+	@Override
 	public Iterator<Product> getProducts() 
 	{
 		return Collections.unmodifiableCollection(aProducts.values()).iterator();

@@ -64,7 +64,7 @@ public class JsonLoadingService implements IDataLoadingService
 	private static Category buildCategory(CategoryStub pCategoryStub, Category pParent)
 	{
 		aPrefix += "  ";
-		System.out.println(aPrefix + pCategoryStub.singularName + " (" + pCategoryStub.id + ")");
+		//System.out.println(aPrefix + pCategoryStub.singularName + " (" + pCategoryStub.id + ")");
 		Category lReturn = new Category(pCategoryStub.id, pCategoryStub.singularName, pParent);
 		
 		if(pCategoryStub.downLevel != null)

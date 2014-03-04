@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.document.Document;
@@ -38,15 +40,19 @@ import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import ca.mcgill.cs.creco.data.CRData;
 import ca.mcgill.cs.creco.data.Category;
+import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
 
 
 /**
  * Searches a list of categories with Lucene indexes.
  */
+@Component
 public class CategorySearch 
 {
 	public static final String CATEGORY_ID = "ID";
@@ -60,6 +66,9 @@ public class CategorySearch
 	private final Directory directory;
 	private final Analyzer analyzer;
 	
+	@Autowired
+	private IDataStore aData;
+	
 	/**
 	 * Constructor.
 	 */
@@ -67,45 +76,35 @@ public class CategorySearch
 	{
 		directory = new RAMDirectory();
 		analyzer = new EnglishAnalyzer(VERSION);
-		buildCategoryIndex();
 	}
 	
-	/**
-	 * Add equivalence classes into the Lucene directory.
-	 */
-	private void buildCategoryIndex() 
+	@PostConstruct
+	private void buildCategoryIndex() throws IOException
 	{
-		try 
+		Analyzer analyzer = new EnglishAnalyzer(VERSION);
+		IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(VERSION, analyzer));
+		for (Category category : aData.getEquivalenceClasses()) 
 		{
-			Analyzer analyzer = new EnglishAnalyzer(VERSION);
-			IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(VERSION, analyzer));
-		
-			for (Category category : CRData.getData().getEquivalenceClasses()) 
+			String flattenedText = category.getName();
+			LOG.debug("Adding " + category.getName() +", ID: " + category.getId());
+			for (Product product : category.getProducts())
 			{
-				String flattenedText = category.getName();
-				LOG.debug("Adding " + category.getName() +", ID: " + category.getId());
-				for (Product product : category.getProducts())
-				{
-					flattenedText += product.getName() + " ";
-					//flattenedText += product.getBrandName() + " ";
-					//flattenedText += product.getHighs() + " ";
-					//flattenedText += product.getLows() + " ";
-					//flattenedText += product.getDescription() + " ";
-					//flattenedText += product.getReview() + " ";
-					//flattenedText += product.getSummary() + " ";
-					//flattenedText += product.getBottomLine() + " ";
-				}
-				Document doc = new Document();
-				doc.add(new TextField(CATEGORY_ID, category.getId(), Field.Store.YES));
-				doc.add(new TextField(CATEGORY_NAME, category.getName(), Field.Store.YES));
-				doc.add(new TextField(FLATTENED_TEXT, flattenedText, Field.Store.YES));	
-				writer.addDocument(doc);
+				flattenedText += product.getName() + " ";
+				//flattenedText += product.getBrandName() + " ";
+				//flattenedText += product.getHighs() + " ";
+				//flattenedText += product.getLows() + " ";
+				//flattenedText += product.getDescription() + " ";
+				//flattenedText += product.getReview() + " ";
+				//flattenedText += product.getSummary() + " ";
+				//flattenedText += product.getBottomLine() + " ";
 			}
-			writer.close();
-		} catch (IOException e)
-		{
-			
+			Document doc = new Document();
+			doc.add(new TextField(CATEGORY_ID, category.getId(), Field.Store.YES));
+			doc.add(new TextField(CATEGORY_NAME, category.getName(), Field.Store.YES));
+			doc.add(new TextField(FLATTENED_TEXT, flattenedText, Field.Store.YES));	
+			writer.addDocument(doc);
 		}
+		writer.close();
 	}
 	
 	/**
