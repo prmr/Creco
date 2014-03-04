@@ -63,8 +63,8 @@ public class CategorySearch implements ICategorySearch
 	private static final Version VERSION = Version.LUCENE_46;
 	private static final Logger LOG = LoggerFactory.getLogger(CategorySearch.class);
 	
-	private final Directory directory;
-	private final Analyzer analyzer;
+	private final Directory aDirectory;
+	private final Analyzer aAnalyzer;
 	
 	@Autowired
 	private IDataStore aData;
@@ -72,17 +72,16 @@ public class CategorySearch implements ICategorySearch
 	/**
 	 * Constructor.
 	 */
-	public CategorySearch() throws IOException
+	public CategorySearch()
 	{
-		directory = new RAMDirectory();
-		analyzer = new EnglishAnalyzer(VERSION);
+		aDirectory = new RAMDirectory();
+		aAnalyzer = new EnglishAnalyzer(VERSION);
 	}
 	
 	@PostConstruct
 	private void buildCategoryIndex() throws IOException
 	{
-		Analyzer analyzer = new EnglishAnalyzer(VERSION);
-		IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(VERSION, analyzer));
+		IndexWriter writer = new IndexWriter(aDirectory, new IndexWriterConfig(VERSION, aAnalyzer));
 		for (Category category : aData.getEquivalenceClasses()) 
 		{
 			String flattenedText = category.getName();
@@ -108,14 +107,14 @@ public class CategorySearch implements ICategorySearch
 	}
 	
 	@Override
-	public List<Category> queryCategories(String queryString) 
+	public List<Category> queryCategories(String pQueryString) 
 	{
 		List<Category> equivalenceClassResults = new ArrayList<Category>();
 		try 
 		{
-			Query query = new QueryParser(VERSION, CATEGORY_NAME, analyzer).parse(queryString);
+			Query query = new QueryParser(VERSION, CATEGORY_NAME, aAnalyzer).parse(pQueryString);
 			//Query query = new FuzzyQuery(new Term(FLATTENED_TEXT, queryString), 1);
-			DirectoryReader reader = DirectoryReader.open(directory);
+			DirectoryReader reader = DirectoryReader.open(aDirectory);
 			IndexSearcher searcher = new IndexSearcher(reader);
 			TopScoreDocCollector results = TopScoreDocCollector.create(MAX_NUM_RESULTS, true);
 			
@@ -125,12 +124,12 @@ public class CategorySearch implements ICategorySearch
 			// If no category name matches are found, search in product names
 			if (hits.length == 0)
 			{
-				Query broaderQuery = new QueryParser(VERSION, FLATTENED_TEXT, analyzer).parse(queryString);
+				Query broaderQuery = new QueryParser(VERSION, FLATTENED_TEXT, aAnalyzer).parse(pQueryString);
 				searcher.search(broaderQuery, results);
 				hits = results.topDocs().scoreDocs;
 			}
 			
-			LOG.info("Found " + hits.length + " results for \"" + queryString + "\"");	
+			LOG.info("Found " + hits.length + " results for \"" + pQueryString + "\"");	
 
 			for(int i = 0; i<hits.length; i++) 
 			{

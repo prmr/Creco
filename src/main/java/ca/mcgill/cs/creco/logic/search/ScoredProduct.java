@@ -19,38 +19,35 @@ import ca.mcgill.cs.creco.data.Product;
 
 /**
  * 
- * A single product returned by ProductSearch(Lucene)
+ * Product scored according to the search query and its features.
  */
-
-
-public class ScoredProduct{
+public class ScoredProduct
+{
 	
-private final Product product;
-private float luceneScore;
-private String eqClassId;
-	
-	public ScoredProduct(Product product, float luceneScore, String eqClassId){
-
-		this.product = product;
-		this.luceneScore=luceneScore;
-		this.eqClassId=eqClassId;
+	private final Product aProduct;
+	private float aLuceneScore;
+	private String aCategoryID;
+		
+	public ScoredProduct(Product pProduct, float pLuceneScore, String pCategoryID)
+	{
+		this.aProduct = pProduct;
+		this.aLuceneScore = pLuceneScore;
+		this.aCategoryID = pCategoryID;
 	}
 	
 	public Product getProduct()
 	{
-		return product;
+		return aProduct;
 	}
-	
+		
 	public float getLuceneScore()
 	{
-		return luceneScore;
+		return aLuceneScore;
 	}
-
+	
 	public String getEqClassId()
 	{
-		return eqClassId;
-	}
-	
-	
-	
+		return aCategoryID;
+	}	
+		
 }

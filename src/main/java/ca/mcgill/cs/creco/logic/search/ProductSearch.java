@@ -1,17 +1,4 @@
 /**
-SearchService search = new SearchService();
-
-		Scanner scanner = new Scanner (System.in);
-		String userinput= "";
-		while(!userinput.equals("exit"))
-		{
-			System.out.print("Enter your search query (or 'exit'): ");  
-			userinput = scanner.nextLine();
-
-			// Just used to debug, this re-initializes the index
-			if (userinput.equals("refresh")){
-				search = new SearchService();
-			}
  * Copyright 2014 McGill University
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,7 +45,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import ca.mcgill.cs.creco.data.CRData;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
@@ -76,20 +62,19 @@ public class ProductSearch implements IProductSearch
 	private static final int MAX_NUM_RESULTS = 1000;
 	private static final Logger LOG = LoggerFactory.getLogger(ProductSearch.class);
 	
-	private final Directory directory;
-	private final Analyzer analyzer;
+	private final Directory aDirectory;
+	private final Analyzer aAnalyzer;
 
 	@Autowired
 	private IDataStore aData;
+	
 	/**
 	 * Constructor.
-	 * @throws IOException 
 	 */
-	public ProductSearch() throws IOException 
+	public ProductSearch()
 	{
-		directory = new RAMDirectory();
-		analyzer = new EnglishAnalyzer(VERSION);
-		//buildProductIndexByCategory();
+		aDirectory = new RAMDirectory();
+		aAnalyzer = new EnglishAnalyzer(VERSION);
 	}
 	
 	/**
@@ -105,14 +90,13 @@ public class ProductSearch implements IProductSearch
 		try 
 		{
 			Analyzer analyzer = new EnglishAnalyzer(VERSION);
-			IndexWriter writer = new IndexWriter(directory,
+			IndexWriter writer = new IndexWriter(aDirectory,
 					new IndexWriterConfig(VERSION, analyzer));
 
 			for (Category category : aData.getEquivalenceClasses())
 			{
 				for (Product product : category.getProducts()) 
 				{
-					// LOG.debug("Adding category : " + category.getName()+" id : "+category.getId()+" product : "+product.getName());
 					Document doc = new Document();
 					doc.add(new TextField(ID, product.getId(), Field.Store.YES));
 					doc.add(new TextField(NAME, product.getName(), Field.Store.YES));
@@ -121,7 +105,8 @@ public class ProductSearch implements IProductSearch
 				}
 			}
 			writer.close();
-		} catch (IOException e) 
+		} 
+		catch (IOException e) 
 		{
 			LOG.error(e.getMessage());
 		}
@@ -130,49 +115,47 @@ public class ProductSearch implements IProductSearch
 	
 	/**
 	 * Query the Lucene directory for matches to the query string.
-	 * @param queryString the search string
-	 * @param eqClassID the id of the equivalence class
+	 * @param pQueryString the search string
+	 * @param pCategoryID the id of the equivalence class
 	 * @return ProductSearchResults an object of ProductSearchResults
 	 */
 	@Override
-	public List<ScoredProduct> queryProducts(String queryString, String eqClassID)
+	public List<ScoredProduct> queryProducts(String pQueryString, String pCategoryID)
 	{
-		Category c = null;
-		
-		try{c = CRData.getData().getCategory(eqClassID);} catch(IOException e) {LOG.error(e.getMessage());}
-		if (c == null)
+		Category category = aData.getCategory(pCategoryID);
+		if (category == null)
 		{
-			LOG.error("Invalid category ID: " + eqClassID);
+			LOG.error("Invalid category ID: " + pCategoryID);
 			return null;
 		}
 		
-		Map<String, Product> allProductsOfUserEq = new HashMap<String, Product>();
+		Map<String, Product> productsInCategory = new HashMap<String, Product>();
 		List<ScoredProduct> scoredProducts = new ArrayList<ScoredProduct>();
 		
-		for(Product product :c.getProducts())
+		for(Product product :category.getProducts())
 		{
-			allProductsOfUserEq.put(product.getId(), product);
+			productsInCategory.put(product.getId(), product);
 		}
+		
 		try 
 		{
-			Query query = new QueryParser(VERSION, NAME, analyzer).parse(queryString);
-			DirectoryReader reader = DirectoryReader.open(directory);
+			Query query = new QueryParser(VERSION, NAME, aAnalyzer).parse(pQueryString);
+			DirectoryReader reader = DirectoryReader.open(aDirectory);
 			IndexSearcher searcher = new IndexSearcher(reader);
 			TopScoreDocCollector results = TopScoreDocCollector.create(MAX_NUM_RESULTS, true);
 			
 			searcher.search(query, results);
 			ScoreDoc[] hits = results.topDocs().scoreDocs;
-			//LOG.info("Found " + hits.length + " results.");	
 
 			for(int i = 0; i<hits.length; i++) 
 			{
 			    Document doc = searcher.doc(hits[i].doc);
 			    
-			    if(allProductsOfUserEq.containsKey(doc.get(ID)))
+			    if(productsInCategory.containsKey(doc.get(ID)))
 			    {
-			    	Product p=allProductsOfUserEq.get(doc.get(ID));
+			    	Product product = productsInCategory.get(doc.get(ID));
 			    	LOG.info(hits[i].score + ". " + doc.get(NAME));
-			    	scoredProducts.add(new ScoredProduct(p,hits[i].score,eqClassID));
+			    	scoredProducts.add(new ScoredProduct(product, hits[i].score, pCategoryID));
 			    }
 			   
 			}
@@ -191,22 +174,22 @@ public class ProductSearch implements IProductSearch
 	}
 	
 	@Override
-	public List<ScoredProduct> queryProductsReturnAll(String queryString, String eqClassID) {
-		List<ScoredProduct> scoredProducts = queryProducts(queryString, eqClassID);
+	public List<ScoredProduct> queryProductsReturnAll(String pQueryString, String pCategoryId)
+	{
+		List<ScoredProduct> scoredProducts = queryProducts(pQueryString, pCategoryId);
 		List<Product> matchingProducts = new ArrayList<Product>();
 		for (ScoredProduct scoredProduct : scoredProducts)
 		{
 			matchingProducts.add(scoredProduct.getProduct());
 		}
 		
-		Category category = null;
+		Category category = aData.getCategory(pCategoryId);
 		
-		try{category = CRData.getData().getCategory(eqClassID);} catch(IOException e) {LOG.error(e.getMessage());}
 		for (Product product : category.getProducts())
 		{
 			if (!matchingProducts.contains(product))
 			{
-				ScoredProduct scoredProduct = new ScoredProduct(product, 0, eqClassID);
+				ScoredProduct scoredProduct = new ScoredProduct(product, 0, pCategoryId);
 				scoredProducts.add(scoredProduct);
 			}
 		}
