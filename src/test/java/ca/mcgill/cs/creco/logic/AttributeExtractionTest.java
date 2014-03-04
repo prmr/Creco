@@ -8,19 +8,28 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import ca.mcgill.cs.creco.data.CRData;
 import ca.mcgill.cs.creco.data.Category;
+import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:/META-INF/test-context.xml"})
 public class AttributeExtractionTest
 {
+	@Autowired
+	IDataStore aDataStore;
+	
 	@Test
 	public void testAllCategories() {
 		String catName = "";
 		try
 		{
-			Iterator<Category> categories = CRData.getData().getCategories();
+			Iterator<Category> categories = aDataStore.getCategories();
 			while(categories.hasNext())
 			{
 				Category c = categories.next();

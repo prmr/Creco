@@ -50,8 +50,6 @@ public final class CRData implements IDataCollector, IDataStore
 			"food.json", "babiesKids.json", "money.json"
 		};
 	
-	private static CRData instance = null;
-	
 	private HashMap<String, Product> aProducts = new HashMap<String, Product>();
 	
 	private Hashtable<String, Category> aCategoryIndex = new Hashtable<String, Category>();
@@ -86,24 +84,8 @@ public final class CRData implements IDataCollector, IDataStore
 		// Roll up useful pre-processed statistics and find equivalence classes
 		refresh();
 		findEquivalenceClasses();
-		
-		instance = this;
 	}
 	
-	/**
-	 * Initializes the CR Data on the first call, and subsequently
-	 * returns the singleton instance of the CR data.
-	 * @return CRData singleton
-	 * @throws IOException if the data cannot be accessed
-	 */
-	public static CRData getData() throws IOException
-	{
-		if (instance == null)
-		{
-			instance = new CRData(DEFAULT_PRODUCT_FILENAMES, DEFAULT_CATEGORY_FILENAME);
-		}
-		return instance;
-	}
 	
 	/**
 	 * Get a category object based on its index.
@@ -135,26 +117,6 @@ public final class CRData implements IDataCollector, IDataStore
 	public Iterable<Category> getEquivalenceClasses()
 	{
 		return Collections.unmodifiableCollection(aEquivalenceClasses);
-	}
-	
-	/**
-	 * Initializes the CRData based on specified filenames.
-	 * @return CRData singleton
-	 * @param pProductFileNames The list of file names for the product data.
-	 * @param pCategoryFileName The name of the category file.
-	 * @throws IOException If the database was already initialized.
-	 */
-	public static CRData setupWithFileNames(String[] pProductFileNames, String pCategoryFileName) throws IOException 
-	{
-		if (instance == null)
-		{
-			instance = new CRData(pProductFileNames, pCategoryFileName);
-		} 
-		else
-		{
-			throw new IOException("CR Database was already initialized. Use CRData.getData() instead.");
-		}
-		return instance;
 	}
 	
 	/**
