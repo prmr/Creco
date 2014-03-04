@@ -53,7 +53,7 @@ import ca.mcgill.cs.creco.data.Product;
  * Searches a list of categories with Lucene indexes.
  */
 @Component
-public class CategorySearch 
+public class CategorySearch implements ICategorySearch
 {
 	public static final String CATEGORY_ID = "ID";
 	public static final String CATEGORY_NAME = "NAME";
@@ -107,10 +107,7 @@ public class CategorySearch
 		writer.close();
 	}
 	
-	/**
-	 * Query the Lucene directory for matches to the query string.
-	 * @param queryString the search string
-	 */
+	@Override
 	public List<Category> queryCategories(String queryString) 
 	{
 		List<Category> equivalenceClassResults = new ArrayList<Category>();

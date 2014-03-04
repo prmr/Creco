@@ -34,6 +34,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.document.Document;
@@ -53,15 +55,19 @@ import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import ca.mcgill.cs.creco.data.CRData;
 import ca.mcgill.cs.creco.data.Category;
+import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
 
 /**
  * Searches a list of products ordered by equivalence classes with Lucene indexes.
  */
-public class ProductSearch 
+@Component
+public class ProductSearch implements IProductSearch
 {
 	public static final String NAME = "name";
 	public static final String ID = "id";
@@ -73,6 +79,8 @@ public class ProductSearch
 	private final Directory directory;
 	private final Analyzer analyzer;
 
+	@Autowired
+	private IDataStore aData;
 	/**
 	 * Constructor.
 	 * @throws IOException 
@@ -81,12 +89,13 @@ public class ProductSearch
 	{
 		directory = new RAMDirectory();
 		analyzer = new EnglishAnalyzer(VERSION);
-		buildProductIndexByCategory();
+		//buildProductIndexByCategory();
 	}
 	
 	/**
 	 * Add products into the Lucene directory.
 	 */
+	@PostConstruct
 	private void buildProductIndexByCategory() 
 	{
 		//TODO: Might be more efficient to have a different index for each equivalence class,
@@ -99,7 +108,7 @@ public class ProductSearch
 			IndexWriter writer = new IndexWriter(directory,
 					new IndexWriterConfig(VERSION, analyzer));
 
-			for (Category category : CRData.getData().getEquivalenceClasses())
+			for (Category category : aData.getEquivalenceClasses())
 			{
 				for (Product product : category.getProducts()) 
 				{
@@ -125,7 +134,8 @@ public class ProductSearch
 	 * @param eqClassID the id of the equivalence class
 	 * @return ProductSearchResults an object of ProductSearchResults
 	 */
-	public List<ScoredProduct> queryProducts(String queryString, String eqClassID) 
+	@Override
+	public List<ScoredProduct> queryProducts(String queryString, String eqClassID)
 	{
 		Category c = null;
 		
@@ -180,15 +190,7 @@ public class ProductSearch
 		
 	}
 	
-	/**
-	 * Searches all products within an equivalence class. Returns a sorted list of scored products
-	 * where the first products match the search query the most. Products within the equivalence
-	 * class which do not match the search query at all are still appended to the results with
-	 * a score of 0.
-	 * @param queryString
-	 * @param eqClassID
-	 * @return
-	 */
+	@Override
 	public List<ScoredProduct> queryProductsReturnAll(String queryString, String eqClassID) {
 		List<ScoredProduct> scoredProducts = queryProducts(queryString, eqClassID);
 		List<Product> matchingProducts = new ArrayList<Product>();
