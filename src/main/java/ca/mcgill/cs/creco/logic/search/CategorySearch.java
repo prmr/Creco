@@ -86,17 +86,9 @@ public class CategorySearch implements ICategorySearch
 		for (Category category : aDataStore.getEquivalenceClasses()) 
 		{
 			String flattenedText = category.getName();
-			LOG.debug("Adding " + category.getName() +", ID: " + category.getId());
 			for (Product product : category.getProducts())
 			{
 				flattenedText += product.getName() + " ";
-				//flattenedText += product.getBrandName() + " ";
-				//flattenedText += product.getHighs() + " ";
-				//flattenedText += product.getLows() + " ";
-				//flattenedText += product.getDescription() + " ";
-				//flattenedText += product.getReview() + " ";
-				//flattenedText += product.getSummary() + " ";
-				//flattenedText += product.getBottomLine() + " ";
 			}
 			Document doc = new Document();
 			doc.add(new TextField(CATEGORY_ID, category.getId(), Field.Store.YES));
@@ -113,30 +105,29 @@ public class CategorySearch implements ICategorySearch
 		List<Category> equivalenceClassResults = new ArrayList<Category>();
 		try 
 		{
-			Query query = new QueryParser(VERSION, CATEGORY_NAME, aAnalyzer).parse(pQueryString);
-			//Query query = new FuzzyQuery(new Term(FLATTENED_TEXT, queryString), 1);
 			DirectoryReader reader = DirectoryReader.open(aDirectory);
 			IndexSearcher searcher = new IndexSearcher(reader);
 			TopScoreDocCollector results = TopScoreDocCollector.create(MAX_NUM_RESULTS, true);
 			
-			searcher.search(query, results);
+			// Search category names
+			Query categoryNameQuery = new QueryParser(VERSION, CATEGORY_NAME, aAnalyzer).parse(pQueryString);
+			searcher.search(categoryNameQuery, results);
+			
+			// Search flattened text (only product names for now)
+			Query flattenedTextQuery = new QueryParser(VERSION, FLATTENED_TEXT, aAnalyzer).parse(pQueryString);
+			searcher.search(flattenedTextQuery, results);
+			
 			ScoreDoc[] hits = results.topDocs().scoreDocs;
 			
-			// If no category name matches are found, search in product names
-			if (hits.length == 0)
-			{
-				Query broaderQuery = new QueryParser(VERSION, FLATTENED_TEXT, aAnalyzer).parse(pQueryString);
-				searcher.search(broaderQuery, results);
-				hits = results.topDocs().scoreDocs;
-			}
-			
-			LOG.info("Found " + hits.length + " results for \"" + pQueryString + "\"");	
-
 			for(int i = 0; i<hits.length; i++) 
 			{
 			    Document doc = searcher.doc(hits[i].doc);
-			    LOG.info(hits[i].score + " - " + aDataStore.getCategory(doc.get(CATEGORY_ID)).getName());
-			    equivalenceClassResults.add(aDataStore.getCategory(doc.get(CATEGORY_ID)));
+			    Category resultCategory = aDataStore.getCategory(doc.get(CATEGORY_ID));
+
+			    if (!equivalenceClassResults.contains(resultCategory))
+			    {
+			    	equivalenceClassResults.add(resultCategory);
+			    }
 			}
 		}
 		catch (IOException e) 
