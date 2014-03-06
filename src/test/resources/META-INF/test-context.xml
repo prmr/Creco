@@ -25,5 +25,11 @@
     		<ref bean="TestDataStore"/>
     	</constructor-arg>
     </bean>
+    
+    <bean id="TestProductSearch" class="ca.mcgill.cs.creco.logic.search.ProductSearch">
+    	<constructor-arg index="0">
+    		<ref bean="TestDataStore"/>
+    	</constructor-arg>
+    </bean>
 
 </beans>
