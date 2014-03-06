@@ -139,17 +139,15 @@ public class ProductSearch implements IProductSearch
 			TopScoreDocCollector results = TopScoreDocCollector.create(MAX_NUM_RESULTS, true);
 			
 			searcher.search(query, results);
-			ScoreDoc[] hits = results.topDocs().scoreDocs;
 
-			for(int i = 0; i<hits.length; i++) 
+			for(ScoreDoc scoredResult : results.topDocs().scoreDocs) 
 			{
-			    Document doc = searcher.doc(hits[i].doc);
-			    
+			    Document doc = searcher.doc(scoredResult.doc);
 			    if(productsInCategory.containsKey(doc.get(ID)))
 			    {
 			    	Product product = productsInCategory.get(doc.get(ID));
-			    	LOG.info(hits[i].score + ". " + doc.get(NAME));
-			    	scoredProducts.add(new ScoredProduct(product, hits[i].score, pCategoryID));
+			    	LOG.info(scoredResult.score + ". " + doc.get(NAME));
+			    	scoredProducts.add(new ScoredProduct(product, scoredResult.score, pCategoryID));
 			    }
 			   
 			}
@@ -177,8 +175,8 @@ public class ProductSearch implements IProductSearch
 			matchingProducts.add(scoredProduct.getProduct());
 		}
 		
+		// Add remaining products from the category, even if they didn't match the query
 		Category category = aDataStore.getCategory(pCategoryId);
-		
 		for (Product product : category.getProducts())
 		{
 			if (!matchingProducts.contains(product))

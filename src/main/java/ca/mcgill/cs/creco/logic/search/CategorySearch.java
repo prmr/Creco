@@ -116,12 +116,10 @@ public class CategorySearch implements ICategorySearch
 			// Search flattened text (only product names for now)
 			Query flattenedTextQuery = new QueryParser(VERSION, FLATTENED_TEXT, aAnalyzer).parse(pQueryString);
 			searcher.search(flattenedTextQuery, results);
-			
-			ScoreDoc[] hits = results.topDocs().scoreDocs;
-			
-			for(int i = 0; i<hits.length; i++) 
+
+			for(ScoreDoc scoredResult : results.topDocs().scoreDocs) 
 			{
-			    Document doc = searcher.doc(hits[i].doc);
+			    Document doc = searcher.doc(scoredResult.doc);
 			    Category resultCategory = aDataStore.getCategory(doc.get(CATEGORY_ID));
 
 			    if (!equivalenceClassResults.contains(resultCategory))

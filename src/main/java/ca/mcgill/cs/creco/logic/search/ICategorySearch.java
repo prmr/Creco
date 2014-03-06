@@ -5,14 +5,14 @@ import java.util.List;
 import ca.mcgill.cs.creco.data.Category;
 
 /**
- * Searches the database for equivalence classes.
+ * Searches the database for categories.
  */
 public interface ICategorySearch
 {
 
 	/**
-	 * Searches the database for matching equivalence classes (or categories).
-	 * @param pQueryString The query string.
+	 * Searches the database for matching categories (or equivalence classes).
+	 * @param pQueryString The string to match against category names and other fields.
 	 * @return A list of categories whose name or products match the query string.
 	 */
 	List<Category> queryCategories(String pQueryString);
