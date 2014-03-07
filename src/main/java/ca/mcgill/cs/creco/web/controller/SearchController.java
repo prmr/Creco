@@ -39,11 +39,13 @@ import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
+import ca.mcgill.cs.creco.logic.AttributeExtractor;
 import ca.mcgill.cs.creco.logic.AttributeValue;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
+import ca.mcgill.cs.creco.logic.search.ICategorySearch;
+import ca.mcgill.cs.creco.logic.search.IProductSearch;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
-import ca.mcgill.cs.creco.server.RankedFeaturesProducts;
-import ca.mcgill.cs.creco.server.SearchService;
+import ca.mcgill.cs.creco.util.RankedFeaturesProducts;
 import ca.mcgill.cs.creco.web.model.EqcListVO;
 import ca.mcgill.cs.creco.web.model.EqcVO;
 import ca.mcgill.cs.creco.web.model.FeatureListVO;
@@ -59,8 +61,6 @@ public class SearchController
 {
 	private static final Logger LOG = LoggerFactory.getLogger(SearchController.class);
 	
-	@Autowired
-	private SearchService searchService;
 	
 	private List<ScoredAttribute> scoredRatings; 
 	private List<ScoredAttribute> scoredSpecs; 
@@ -91,7 +91,11 @@ public class SearchController
 	@Autowired
 	private IDataStore aDataStore;
 	
+	@Autowired
+	private ICategorySearch aCategorySearch;
 	
+	@Autowired
+	private IProductSearch aProductSearch;
 	
 	@ModelAttribute("mainQuery")
 	private MainQueryVO getMainQuery() {
@@ -291,7 +295,7 @@ public class SearchController
 	   @RequestMapping(value="/ajax", method=RequestMethod.POST )  
  @ResponseBody  
  public String createSmartphone(@RequestBody String typedString) {  
-		   List<Category> categoryList = searchService.searchCategories(typedString);		
+		   List<Category> categoryList = aCategorySearch.queryCategories(typedString);		
 
 		   int count=0;
 		   String ajax_code=new String();
@@ -339,7 +343,7 @@ public class SearchController
 	@RequestMapping(value = "/searchEqClass", method = RequestMethod.POST)
 	public String searchEqClass(@ModelAttribute("mainQuery") MainQueryVO pMainQuery, BindingResult result, RedirectAttributes redirectAttrs) {
 		mainQuery = pMainQuery;
-		List<Category> categoryList = searchService.searchCategories(mainQuery.getQuery());		
+		List<Category> categoryList = aCategorySearch.queryCategories(mainQuery.getQuery());	
 		
 		//Converting
 		ArrayList<EqcVO> eqcs = new ArrayList<EqcVO>();		
@@ -356,14 +360,19 @@ public class SearchController
 			
 	@RequestMapping(value = "/searchRankedFeaturesProducts", method = RequestMethod.POST)  
 	public String searchRankedFeaturesProducts(@ModelAttribute("eqc") EqcVO eqc) {  
-	    List<Category> categoryList = searchService.searchCategories(mainQuery.getQuery());
+	    List<Category> categoryList = aCategorySearch.queryCategories(mainQuery.getQuery());
 	    Category target = null;
 	    for (Category cat: categoryList) {
 	    	if (cat.getId().equals(eqc.getId())) {
 	    		target = cat;
 	    	}
 	    }
-	    RankedFeaturesProducts rankedProducts = searchService.getRankedFeaturesProducts(target, mainQuery.getQuery());
+	    
+		List<ScoredProduct> prodSearch = aProductSearch.queryProductsReturnAll(mainQuery.getQuery(), target.getId());
+		AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
+		List<ScoredAttribute> ratingList = ae.getScoredRatingList();
+		List<ScoredAttribute> specList = ae.getScoredSpecList();
+	    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(ratingList, specList, prodSearch);
 	    List<ScoredProduct> scoredProducts = rankedProducts.getaProductSearchResult();
 	    
 	    scoredRatings = rankedProducts.getaRatingList();
