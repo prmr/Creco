@@ -106,11 +106,12 @@ public class AttributeExtractor
 			ca.mcgill.cs.creco.data.Attribute s = p.getSpec(pAttributeID);
 			if( s != null)
 			{
+				TypedValue tv = s.getTypedValue();
 //				MODIFY WHEN ADDING CLASSES
-				String specString = s.getValue().toString();
-				if(s.getType() == Type.INTEGER || s.getType() == Type.DOUBLE )
+				//String specString = s.getValue().toString();
+				if(tv.getType() == Type.INTEGER || tv.getType() == Type.DOUBLE )
 				{
-					double val = Double.parseDouble(specString);
+					double val = tv.getNumericValue();
 					if(val > max)
 					{
 						max = val;
@@ -120,11 +121,11 @@ public class AttributeExtractor
 						min  = val;
 					}
 					numericCount ++;
-					numericSum += Double.parseDouble(specString);					
+					numericSum += tv.getNumericValue();					
 				}
-				else if (s.getType() == Type.BOOLEAN)
+				else if (tv.getType() == Type.BOOLEAN)
 				{
-					if(specString.equals("true"))
+					if(tv.getBooleanValue())
 					{
 						trueCount ++;
 					}
@@ -136,22 +137,22 @@ public class AttributeExtractor
 				else
 				{
 					int count;
-					if (nominalCounts.containsKey(specString))
+					if (nominalCounts.containsKey(tv.getNominalValue()))
 					{
-						count = nominalCounts.get(specString);
+						count = nominalCounts.get(tv.getNominalValue());
 					}
 					else
 					{
 						count = 0;
 					}
-					nominalCounts.put(specString, count + 1);
+					nominalCounts.put(tv.getNominalValue(), count + 1);
 				}
 			}
 			
 		}
 		if(numericCount > 0)
 		{
-			return new TypedValue(numericSum/numericCount, min,max);
+			return new TypedValue(numericSum/numericCount);//, min,max);
 		}
 		else if (trueCount > 0 || falseCount > 0)
 		{
@@ -175,7 +176,7 @@ public class AttributeExtractor
 			}
 		}
 		List<String> dict = Lists.newArrayList(nominalCounts.keySet());
-		return new TypedValue(maxAtt, dict);
+		return new TypedValue(maxAtt);//, dict);
 	}
 	
 
@@ -322,13 +323,13 @@ public class AttributeExtractor
 //			String Results = trainSelector.toResultsString();
 //			System.out.println(Results);
 		}
-		catch(weka.core.WekaException e)
+		catch(weka.core.WekaException e1)
 		{
-			System.out.println("Weka ERROR:\n" + e);
+			System.out.println("Weka ERROR:\n" + e1);
 		}
-		catch(Exception e)
+		catch(Exception e2)
 		{
-			System.out.println("Weka Attribute ERROR:\n" + e);
+			System.out.println("Weka Select Attribute ERROR:\n" + e2);
 		}
 		aScoredSpecList = completeScoredSpecs(scoredAttributes);
 		
@@ -464,13 +465,13 @@ public class AttributeExtractor
 //			String Results = trainSelector.toResultsString();
 //			System.out.println(Results);
 		}
-		catch(weka.core.WekaException e)
+		catch(weka.core.WekaException e1)
 		{
-			System.out.println("Weka ERROR:\n" + e);
+			System.out.println("Weka ERROR:\n" + e1);
 		}
-		catch(Exception e)
+		catch(Exception e2)
 		{
-			System.out.println("Weka Attribute ERROR:\n" + e);
+			System.out.println("Weka Select Attribute ERROR:\n" + e2);
 		}
 		aScoredRatingList = completeScoredRatings(scoredAttributes);
 		
