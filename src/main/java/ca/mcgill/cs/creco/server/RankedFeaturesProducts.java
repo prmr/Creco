@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.mcgill.cs.creco.data.*;
-import ca.mcgill.cs.creco.logic.TypedValue;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
 

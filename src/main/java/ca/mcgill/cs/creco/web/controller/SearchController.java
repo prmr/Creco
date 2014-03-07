@@ -35,7 +35,8 @@ import com.google.gson.Gson;
 
 import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.logic.TypedValue;
+import ca.mcgill.cs.creco.data.TypedValue;
+import ca.mcgill.cs.creco.data.TypedValue.Type;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
 import ca.mcgill.cs.creco.server.RankedFeaturesProducts;
@@ -237,15 +238,15 @@ public class SearchController
 			
 			TypedValue val = scoredSpecs.get(i).getAttributeMean();			
 			
-			if(val.isBool() && val!=null)
+			if(val.getType() == Type.BOOLEAN && val!=null)
 			{	
 				f.setType("Bool");								
-				values.add(val.getBoolValue()+"");
+				values.add(val.getBooleanValue()+"");
 				f.setValue(values);
 			}
 			else
 			{
-				if(val.isNumeric() && val!=null)
+				if((val.getType() == Type.DOUBLE || val.getType() == Type.INTEGER ) && val!=null)
 					{
 						f.setType("Numeric");					
 						values.add(val.getNumericValue()+"");
@@ -253,7 +254,7 @@ public class SearchController
 					}
 				else
 				{
-					if(val.isNominal() && val!=null)
+					if(val.getType() == Type.STRING  && val!=null)
 					{
 						if(val.getNominalValue().equalsIgnoreCase("true") || val.getNominalValue().equalsIgnoreCase("false")) 
 						{
@@ -295,15 +296,15 @@ public class SearchController
 			
 			TypedValue val = scoredRatings.get(i).getAttributeMean();	
 			
-			if(val.isBool() && val!=null)
+			if(val.getType() == Type.BOOLEAN && val!=null)
 			{
 				f.setType("Bool");								
-				values.add(val.getBoolValue()+"");
+				values.add(val.getBooleanValue()+"");
 				f.setValue(values);
 			}
 			else
 			{
-				if(val.isNumeric() && val!=null)
+				if((val.getType() == Type.DOUBLE || val.getType() == Type.INTEGER ) && val!=null)
 				{
 					f.setType("Numeric");					
 					values.add(val.getNumericValue()+"");
@@ -311,7 +312,7 @@ public class SearchController
 				}
 				else
 				{
-					if(val.isNominal() && val!=null)
+					if(val.getType() == Type.STRING && val!=null)
 					{
 						if(val.getNominalValue().equalsIgnoreCase("true") || val.getNominalValue().equalsIgnoreCase("false")) 
 						{
