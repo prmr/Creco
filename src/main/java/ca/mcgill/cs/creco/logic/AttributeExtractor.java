@@ -47,13 +47,16 @@ import com.google.common.collect.Lists;
 public class AttributeExtractor
 {
 
+	private static final double DEFAULT_MIN = 10000000;
+	private static final double DEFAULT_MAX = -10000000;
+	
 	private List<Product> aProductList;
 	private Category aEquivalenceClass;
 	private Iterable<AttributeStat> aSpecList;
 	private Iterable<AttributeStat> aRatingList;
 	private ArrayList<ScoredAttribute> aScoredSpecList;
 	private ArrayList<ScoredAttribute> aScoredRatingList;
-	
+
 	/**Constructor that takes a ProductSearchResult and an equivalence class.
 	 * @param pProductSearchResult a lucene result
 	 * @param pEquivalenceClass the whole space of interesting products
@@ -98,8 +101,8 @@ public class AttributeExtractor
 		double numericSum = 0;
 		int trueCount = 0;
 		int falseCount = 0;
-		double max = -1000000;
-		double min = 1000000;
+		double max = DEFAULT_MAX;
+		double min = DEFAULT_MIN;
 		HashMap<String, Integer> nominalCounts = new HashMap<String, Integer>();
 		for( Product p : pProductList)
 		{
@@ -152,7 +155,7 @@ public class AttributeExtractor
 		}
 		if(numericCount > 0)
 		{
-			return new TypedValue(numericSum/numericCount);//, min,max);
+			return new TypedValue(numericSum/numericCount);
 		}
 		else if (trueCount > 0 || falseCount > 0)
 		{
@@ -175,8 +178,8 @@ public class AttributeExtractor
 				maxCount = count;			
 			}
 		}
-		List<String> dict = Lists.newArrayList(nominalCounts.keySet());
-		return new TypedValue(maxAtt);//, dict);
+		//List<String> dict = Lists.newArrayList(nominalCounts.keySet());
+		return new TypedValue(maxAtt);
 	}
 	
 
@@ -375,7 +378,7 @@ public class AttributeExtractor
 
 			for(int i = 0 ; i < scoredAttributes.size(); i ++)
 			{
-				String indexName = ahm.getHashValue((scoredAttributes.get(i).getAttributeName()));
+				String indexName = ahm.getHashValue(scoredAttributes.get(i).getAttributeName());
 				Attribute wekaAtt = dataset.attribute(indexName);
 				
 				TypedValue.Type type = null;
