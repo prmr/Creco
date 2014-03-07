@@ -596,7 +596,6 @@ public class SearchController
 		
 		RankedFeaturesProducts Products = new RankedFeaturesProducts();
 		List<ScoredProduct> productsToDisplay = Products.FilterandReturn(userScoredFeaturesSpecs);
-
 		//call Priya sorting function and pass userScoredFeatures as parameter
 		
 		return "popupFeature";
