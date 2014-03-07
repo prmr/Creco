@@ -35,7 +35,7 @@ import com.google.gson.Gson;
 
 import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.logic.AttributeValue;
+import ca.mcgill.cs.creco.logic.TypedValue;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
 import ca.mcgill.cs.creco.server.RankedFeaturesProducts;
@@ -235,7 +235,7 @@ public class SearchController
 			f.setRate(false);			
 			f.setVisible(true);
 			
-			AttributeValue val = scoredSpecs.get(i).getAttributeMean();			
+			TypedValue val = scoredSpecs.get(i).getAttributeMean();			
 			
 			if(val.isBool() && val!=null)
 			{	
@@ -293,7 +293,7 @@ public class SearchController
 			f.setSpec(false);			
 			f.setVisible(true);
 			
-			AttributeValue val = scoredRatings.get(i).getAttributeMean();	
+			TypedValue val = scoredRatings.get(i).getAttributeMean();	
 			
 			if(val.isBool() && val!=null)
 			{
@@ -380,7 +380,7 @@ public class SearchController
 			ScoredAttribute sa = locateFeatureScoredAttribute(scoredSpecs, tempName);
 			if ( sa != null)
 			{
-				AttributeValue av = new AttributeValue(userFMSpec.getValues().get(i));				
+				TypedValue av = new TypedValue(userFMSpec.getValues().get(i));				
 				sa.setAttributeMean(av);
 				userScoredFeaturesSpecs.add(sa);				
 			}
@@ -397,7 +397,7 @@ public class SearchController
 			ScoredAttribute sa = locateFeatureScoredAttribute(scoredSpecs, tempName);
 			if ( sa != null)
 			{
-				AttributeValue av = new AttributeValue(userFMRate.getValues().get(i));				
+				TypedValue av = new TypedValue(userFMRate.getValues().get(i));				
 				sa.setAttributeMean(av);
 				userScoredFeaturesRates.add(sa);				
 			}

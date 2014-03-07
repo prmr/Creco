@@ -58,7 +58,7 @@ public class ScoredAttribute
     private String aAttributeID;
  	private String aAttributeName;
  	private double aAttributeScore;
- 	private AttributeValue aAttributeMean;
+ 	private TypedValue aAttributeMean;
  	private boolean aIsCat;
      
 	/**Constructor from an attribute.
@@ -126,7 +126,7 @@ public class ScoredAttribute
 	 * @return mean or mode of this attribute given a product list used to 
 	 * calculate the score
 	 */
-	public AttributeValue getAttributeMean() 
+	public TypedValue getAttributeMean() 
 	{
 		return aAttributeMean;
 	}
@@ -135,7 +135,7 @@ public class ScoredAttribute
 	 * @param pAttributeMean mean or mode of this attribute given a product list used to 
 	 * calculate the score
 	 */
-	public void setAttributeMean(AttributeValue pAttributeMean) 
+	public void setAttributeMean(TypedValue pAttributeMean) 
 	{
 		this.aAttributeMean = pAttributeMean;
 	}

@@ -92,7 +92,7 @@ public class AttributeExtractor
 	 * @param pAttributeID Id of the Attribute to be evaluated
 	 * @return AttributeValue which corresponds to the stat of that attribute
 	 */
-	public static AttributeValue extractMean(List<Product> pProductList, String pAttributeID)
+	public static TypedValue extractMean(List<Product> pProductList, String pAttributeID)
 	{
 		double numericCount = 0;
 		double numericSum = 0;
@@ -151,15 +151,15 @@ public class AttributeExtractor
 		}
 		if(numericCount > 0)
 		{
-			return new AttributeValue(numericSum/numericCount, min,max);
+			return new TypedValue(numericSum/numericCount, min,max);
 		}
 		else if (trueCount > 0 || falseCount > 0)
 		{
 			if(trueCount > falseCount)
 			{
-				return new AttributeValue(true);
+				return new TypedValue(true);
 			}
-			return new AttributeValue(false);
+			return new TypedValue(false);
 			
 		}
 		//to change
@@ -175,7 +175,7 @@ public class AttributeExtractor
 			}
 		}
 		List<String> dict = Lists.newArrayList(nominalCounts.keySet());
-		return new AttributeValue(maxAtt, dict);
+		return new TypedValue(maxAtt, dict);
 	}
 	
 
@@ -552,7 +552,7 @@ public class AttributeExtractor
 			if(!fullMap.containsKey(ss.getAttribute().getId()))
 			{
 				ScoredAttribute sa = new ScoredAttribute(ss.getAttribute());
-				sa.setAttributeMean(new AttributeValue("N/A"));
+				sa.setAttributeMean(new TypedValue("N/A"));
 				fullMap.put(ss.getAttribute().getId(), sa);
 			}
 		}
@@ -575,7 +575,7 @@ public class AttributeExtractor
 			if(!fullMap.containsKey(ss.getAttribute().getId()))
 			{
 				ScoredAttribute sa = new ScoredAttribute(ss.getAttribute());
-				sa.setAttributeMean(new AttributeValue("N/A"));
+				sa.setAttributeMean(new TypedValue("N/A"));
 				fullMap.put(ss.getAttribute().getId(), sa);
 			}
 		}
