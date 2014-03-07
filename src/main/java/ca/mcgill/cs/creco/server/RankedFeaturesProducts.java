@@ -10,23 +10,32 @@ import ca.mcgill.cs.creco.logic.search.ScoredProduct;
 
 
 public class RankedFeaturesProducts {
-	private final List<ScoredAttribute> aRatingList;
-	private final List<ScoredAttribute> aSpecList;
-	private final List<ScoredProduct> aProductSearchResult;
+	private static List<ScoredProduct> main_aProductSearchResult;
+
+	private static List<ScoredAttribute> aRatingList;
+
+	private static List<ScoredAttribute> aSpecList;
+
+	private static List<ScoredProduct> aProductSearchResult;
+	
+public RankedFeaturesProducts()
+{
+	
+}
 	
 	public RankedFeaturesProducts(List<ScoredAttribute> pRatingList, List<ScoredAttribute> pSpecList, List<ScoredProduct> pProductSearchResult)
 	{
-		int count =0; int count2=0;
-		this.aSpecList = pSpecList;
-		this.aRatingList = pRatingList;
+		RankedFeaturesProducts.main_aProductSearchResult=pProductSearchResult;
+		RankedFeaturesProducts.aProductSearchResult=pProductSearchResult;
+		RankedFeaturesProducts.aSpecList = pSpecList;
+		RankedFeaturesProducts.aRatingList = pRatingList;
+
+	}
 	
-		List<ScoredProduct> new_set = new ArrayList();
-		for(ScoredProduct p: pProductSearchResult)
-		{
-			count=count+1;
-		}
-		
-		for(ScoredProduct p: pProductSearchResult)
+	public List<ScoredProduct> FilterandReturn(List<ScoredAttribute> pSpecList)
+	{
+		List<ScoredProduct> new_set = new ArrayList<ScoredProduct>();
+		for(ScoredProduct p: RankedFeaturesProducts.main_aProductSearchResult)
 		{
 			int flag=0;
 			Product product= p.getProduct();
@@ -37,38 +46,27 @@ public class RankedFeaturesProducts {
 				{
 					if(a.getName().equals(b.getAttributeName()))
 					{
-						TypedValue abc = a.getTypedValue();
-					//	s= attribute.getNominalValue();*/
-						String s = b.toString();
-						String main = new String();
-						if(a.getType().equals("bool"))
+						if((b.getAttributeMean().toString()).equals("NA"))
 						{
-							boolean value = (Boolean) a.getValue();
-							if(value==true)
-								main="true";
-							else
-								main="false";
+							continue;
 						}
-						else
-							main= String.valueOf(a.getValue());
-					//	System.out.println(main + " : "+s);
-						if(s.contains(main))
-							flag=1;
-					}	
-				}				
+						if(!(String.valueOf(a.getValue()).equals(b.getAttributeMean().toString())))
+								{
+									flag=1;
+								}
+					}
+				}
+
 			}
-			if(flag==1)
+			if(flag==0)
 			{
-				count2++;
 				new_set.add(p);
-			//	System.out.println("Nishanth : "+product.getName() );
 			}
 		}
-		if(count2>count/2)
-			this.aProductSearchResult = new_set;
-		else
-			this.aProductSearchResult = pProductSearchResult;
+		RankedFeaturesProducts.aProductSearchResult = new_set;
+		return(RankedFeaturesProducts.aProductSearchResult);
 	}
+
 
 	public List<ScoredProduct> getaProductSearchResult()
 	{
