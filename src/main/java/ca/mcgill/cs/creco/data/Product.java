@@ -27,6 +27,8 @@ public class Product
 	private String aId;
 	private String aDisplayName;
 	private Boolean aIsTested;
+	private String aBrandName;
+	
 		
 	// Derived fields
 	private HashMap<String, Attribute> aRatings = new HashMap<String, Attribute>();
@@ -34,21 +36,27 @@ public class Product
 	private String aCategoryId;
 	private Category aCategory;
 	
+	
 	/**
 	 * Constructs a new product record.
 	 * @param pId The product id.
 	 * @param pDisplayName The display name of the product.
 	 * @param pIsTested Whether the product has been tested by Consumer Reports.
 	 * @param pCategoryId The ID of the category for this product.
+	 * @param pBrandName The brand name
 	 */
-	public Product(String pId, String pDisplayName, Boolean pIsTested, String pCategoryId)
+	public Product(String pId, String pDisplayName, Boolean pIsTested, String pCategoryId, String pBrandName)
 	{
 		aId = pId;
 		aDisplayName = pDisplayName;
 		aIsTested = pIsTested;
 		aCategoryId = pCategoryId;
+		aBrandName = pBrandName;
+		
 	}
 	
+	
+
 	/**
 	 * Adds a spec to this product. 
 	 * @param pAttribute The attribute to add.
@@ -89,12 +97,24 @@ public class Product
 	 */
 	public String getId() 
 	{ return aId; }
+	
+	
 
 	/**
-	 * @return The display name of the product.
+	 * @return The modified display name of the product.
 	 */
 	public String getName() 
-	{ return aDisplayName; }
+	{ 
+		
+		if(aBrandName != null)
+		{
+			return aBrandName +" " +aDisplayName;
+		} 
+		else
+		{
+			return aDisplayName;
+		}
+		}
 	
 	/**
 	 * @return True if the product has been tested by Consumer Reports.
