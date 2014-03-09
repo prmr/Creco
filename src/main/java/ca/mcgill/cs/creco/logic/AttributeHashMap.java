@@ -24,8 +24,5 @@ public class AttributeHashMap {
 	{
 		return aMap.get(key);
 	}
-	
-	
-	
 
 }

@@ -17,7 +17,9 @@ package ca.mcgill.cs.creco.logic;
 
 import java.util.Comparator;
 
-import ca.mcgill.cs.creco.data.*;
+import ca.mcgill.cs.creco.data.TypedValue;
+import ca.mcgill.cs.creco.data.Attribute;
+import ca.mcgill.cs.creco.data.Category;
 
 /**
  *
