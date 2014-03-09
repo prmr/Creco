@@ -123,7 +123,17 @@ public class JsonLoadingService implements IDataLoadingService
 	
 	private static Product buildProduct(ProductStub pProductStub)
 	{
-		Product lReturn = new Product(pProductStub.id, pProductStub.displayName, pProductStub.isTested, pProductStub.category.id);
+		Product lReturn ;
+		
+		if(pProductStub.brand != null)
+		{
+			 lReturn = new Product(pProductStub.id, pProductStub.displayName, pProductStub.isTested, pProductStub.category.id, pProductStub.brand.displayName);
+		}
+		else
+		{
+			 lReturn = new Product(pProductStub.id, pProductStub.displayName, pProductStub.isTested, pProductStub.category.id, null);
+		}
+		
 		if(pProductStub.specs != null)
 		{
 			for(SpecStub spec : pProductStub.specs)

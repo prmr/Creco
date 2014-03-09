@@ -1,0 +1,107 @@
+<!-- 
+ Copyright 2014 McGill University
+ 
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ 
+      http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+    <title>Creco</title> 
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<script type="text/javascript" th:object="${mainQuery}">
+function abcd(val){
+    $.ajax({  
+        url: "ajax.html",  
+        data: val,  
+        type: "POST",  
+          
+        beforeSend: function(xhr) {  
+            xhr.setRequestHeader("Accept", "application/json");  
+            xhr.setRequestHeader("Content-Type", "application/json");  
+        },  
+        success: function(smartphone) {  
+//alert(smartphone);    
+//var temporary='hey yo';
+//temporary += smartphone;
+// $("#eq-result").html(temporary);
+//var temporary2 = '<h2>This is me one and only</h2>';
+//var temporary3= '<div class="eq-result-entry" th:each="eqc : ${eqcList.eqcs}">'+'this is me here'+'  <form action="/searchRankedFeaturesProducts" method="POST">'+'<input id="id" name="id" type="hidden" th:value="${eqc.id}"></input> <input id="id" name="name" type="hidden" th:value="${eqc.name}"></input> <input type="submit" th:value="${eqc.name}"></input><span class="badge" th:text="${eqc.count}">${eqc.count}</span>'+'check again'+'</form>'+'</div>';
+//alert (temporary3);
+//temporary2 += temporary;
+//$("#search_btn").trigger( "click" );
+$("#eq-result").html(smartphone);
+        }  
+    });  
+}
+  function crunchifyAjax(val) {
+  //  	$.ajax({
+    //		type : "GET",
+    //		data : 	"name=" + val,
+     //       url : 'ajaxtest.html',
+    //        success : function(respose) {
+    //        alert("hry");
+    //        var data123 = response;
+    //        alert(data123);
+    //      //	  $("#eq-result").html("this is nihsnahs");
+           //     $("eq-result").html('<div class="eq-result-entry" th:each="eqc : ${eqcList.eqcs}"><form action="/searchRankedFeaturesProducts" method="POST">            <input id="id" name="id" type="hidden" th:value="${eqc.id}"></input>               <input id="id" name="name" type="hidden" th:value="${eqc.name}"></input>   <input type="submit" th:value="${eqc.name}"></input>  <span class="badge" th:text="${eqc.count}"></span> </form>		</div>');
+     //       	alert("now");
+    //        }, 
+     //       error : function(e) {  
+     //           alert('Error: ' + e);   
+     //          } 
+     //   });
+
+    }
+
+</script>
+
+<body>
+    <div id='demo'>			
+			<div>
+				<span class="label label-info">CRECO</span>			
+			</div>
+
+			<div id='main_searchbar' class="input-group">
+				<form action="/searchEqClass" method="POST" th:object="${mainQuery}">
+					<input id='main_search_text' type="text" class="form-control" style="width: 350px" placeholder="Please enter product names, brands, etc."
+					onkeyup="javascript:abcd($('#main_search_text').val())" 	th:field="*{query}"></input>
+					<input id='search_btn' type="submit" class="btn btn-info" value="Search"></input>	
+				</form>
+			</div>
+
+			<div id='eq-result'>
+				<div class="eq-result-entry" th:each="eqc : ${eqcList.eqcs}">
+				    <form action="/searchRankedFeaturesProducts" method="POST">
+                        <input id="id" name="id" type="hidden" th:value="${eqc.id}"></input>
+                        <input id="id" name="name" type="hidden" th:value="${eqc.name}"></input>
+                        <input type="submit" th:value="${eqc.name}"></input>                       
+						<span class="badge" th:text="${eqc.count}"></span>
+                    </form>
+				</div>
+			</div>
+	</div>
+</body>
+	<script src="//code.jquery.com/jquery-1.9.1.js"></script>
+	<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"></link>
+	
+	<script type='text/javascript' src='//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js'></script>
+	<link rel='stylesheet' type='text/css' href='//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css'></link>
+	<link rel='stylesheet' type='text/css' href='//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css'></link>
+	
+	
+	<link rel='stylesheet' type='text/css' href='css/main.css' />
+	<link rel='stylesheet' type='text/css' href='css/search.css' />
+</html>

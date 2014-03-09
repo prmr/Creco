@@ -249,6 +249,13 @@ $(function() {
 		        data: ({dataSpec:sjData,dataRate:rjData}),
 		        success: function(data) {
 		        	console.log("Success..");
+		        },
+		        complete: function(data)
+		        {
+		        	$("#rankedproduct-result").hide().html(data).fadeIn('fast');
+		        	console.log("Complete");
+		        	
+		        	//location.reload();
 		        }
 		      });			    		
 	}

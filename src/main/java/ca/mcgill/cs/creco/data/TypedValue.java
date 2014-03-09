@@ -31,9 +31,9 @@ public class TypedValue
 	private boolean aBooleanValue;
 	private final Object aOriginalValue;
 	
-//	private double aMin;
-//	private double aMax;
-//	private List<String> aDict;
+	private double aMin;
+	private double aMax;
+	private List<String> aDict;
 	
 	/**
 	 * The different types a typed value can take.
@@ -41,31 +41,31 @@ public class TypedValue
 	public enum Type 
 	{ NULL, INTEGER, DOUBLE, BOOLEAN, STRING, UNKNOWN }
 	
-//	/**
-//	 * Creates a new value object an infers its type. Also stores min and max
-//	 * values found in data
-//	 * @param pValue The value.
-//	 * @param pMin minimum value the attribute takes in data
-//	 * @param pMax maximum value the attribute takes in data
-//	 */
-//	public TypedValue(Object pValue, double pMin, double pMax)
-//	{
-//		this(pValue);
-//		aMin = pMin;
-//		aMax = pMax;
-//		
-//	}
-//	/**
-//	 * Creates a new value object an infers its type. Also stores 
-//	 * possible values for this item
-//	 * @param pValue The value.
-//	 * @param pDict list of values found in data
-//	 */
-//	public TypedValue(Object pValue, List<String> pDict)
-//	{
-//		this(pValue);
-//		aDict = pDict;		
-//	}
+	/**
+	 * Creates a new value object an infers its type. Also stores min and max
+	 * values found in data
+	 * @param pValue The value.
+	 * @param pMin minimum value the attribute takes in data
+	 * @param pMax maximum value the attribute takes in data
+	 */
+	public TypedValue(Object pValue, double pMin, double pMax)
+	{
+		this(pValue);
+		aMin = pMin;
+		aMax = pMax;
+		
+	}
+	/**
+	 * Creates a new value object an infers its type. Also stores 
+	 * possible values for this item
+	 * @param pValue The value.
+	 * @param pDict list of values found in data
+	 */
+	public TypedValue(Object pValue, List<String> pDict)
+	{
+		this(pValue);
+		aDict = pDict;		
+	}
 	/**
 	 * Creates a new value object an infers its type.
 	 * @param pValue The value.
@@ -179,28 +179,28 @@ public class TypedValue
 		return aOriginalValue;
 	}
 	
-//	/**
-//	 * @return minimum value recorded in data
-//	 */
-//	public double getMin() 
-//	{
-//		return aMin;
-//	}
-//	/**
-//	 * @return maximum value recorded in data
-//	 */
-//	public double getMax() 
-//	{
-//		return aMax;
-//	}
-//	/**
-//	 * @return list of string values recorded in data
-//	 */
-//	public List<String> getDict() 
-//	{
-//		return aDict;
-//	}	
-//	
+	/**
+	 * @return minimum value recorded in data
+	 */
+	public double getMin() 
+	{
+		return aMin;
+	}
+	/**
+	 * @return maximum value recorded in data
+	 */
+	public double getMax() 
+	{
+		return aMax;
+	}
+	/**
+	 * @return list of string values recorded in data
+	 */
+	public List<String> getDict() 
+	{
+		return aDict;
+	}	
+	
 	
 }
 
