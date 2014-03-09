@@ -34,6 +34,9 @@ import ca.mcgill.cs.creco.logic.search.ScoredProduct;
 
 import com.google.common.collect.Lists;
 //import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 
  /**
@@ -47,9 +50,9 @@ import com.google.common.collect.Lists;
 public class AttributeExtractor
 {
 
+	final Logger logger = LoggerFactory.getLogger(AttributeExtractor.class);
 	private static final double DEFAULT_MIN = 10000000;
 	private static final double DEFAULT_MAX = -10000000;
-	
 	private List<Product> aProductList;
 	private Category aEquivalenceClass;
 	private Iterable<AttributeStat> aSpecList;
@@ -256,7 +259,6 @@ public class AttributeExtractor
 						value = p.getCategory().getName();
 					}
 					
-					//System.out.println("VAL: " + value);
 				}
 				catch(NullPointerException npe)
 				{
@@ -308,7 +310,6 @@ public class AttributeExtractor
 			attsel.setSearch(search);
 			attsel.SelectAttributes(dataset);
 			double[][] meritScores = attsel.rankedAttributes();
-			//System.out.println(Utils.arrayToString(meritScores));
 			
 			for(double[] score :meritScores)
 			{
@@ -327,15 +328,15 @@ public class AttributeExtractor
 //			trainSelector.setEvaluator(eval);
 //			trainSelector.SelectAttributes(dataset);
 //			String Results = trainSelector.toResultsString();
-//			System.out.println(Results);
 		}
 		catch(weka.core.WekaException e1)
 		{
-			System.out.println("Weka ERROR:\n" + e1);
+			logger.error("Weka ERROR:" + e1);
+
 		}
 		catch(Exception e2)
 		{
-			System.out.println("Weka Select Attribute ERROR:\n" + e2);
+			logger.info("Weka Attribute ERROR:\n" + e2 +"\nContinuing");
 		}
 		aScoredSpecList = completeScoredSpecs(scoredAttributes);
 		
@@ -399,7 +400,7 @@ public class AttributeExtractor
 						value = p.getCategory().getName();
 					}
 					
-					//System.out.println("VAL: " + value);
+
 				}
 				catch(NullPointerException npe)
 				{
@@ -450,7 +451,7 @@ public class AttributeExtractor
 			attsel.setSearch(search);
 			attsel.SelectAttributes(dataset);
 			double[][] meritScores = attsel.rankedAttributes();
-			//System.out.println(Utils.arrayToString(meritScores));
+			
 			
 			for(double[] score :meritScores)
 			{
@@ -469,15 +470,16 @@ public class AttributeExtractor
 //			trainSelector.setEvaluator(eval);
 //			trainSelector.SelectAttributes(dataset);
 //			String Results = trainSelector.toResultsString();
-//			System.out.println(Results);
+
 		}
 		catch(weka.core.WekaException e1)
 		{
-			System.out.println("Weka ERROR:\n" + e1);
+			logger.error("Weka ERROR:" + e1);
 		}
 		catch(Exception e2)
 		{
-			System.out.println("Weka Select Attribute ERROR:\n" + e2);
+			logger.info("Weka Attribute ERROR:\n" + e2 +"\nContinuing");
+
 		}
 		aScoredRatingList = completeScoredRatings(scoredAttributes);
 		
