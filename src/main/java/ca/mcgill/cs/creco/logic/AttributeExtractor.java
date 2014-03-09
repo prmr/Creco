@@ -87,6 +87,8 @@ public class AttributeExtractor
 	/**
 	 * Computes the mean value of the attribute given a list of products if this attribute is numerical,
 	 * otherwise computes the mode of the value based on the same list of products.
+	 * If the attribute is not homogeneous will either return the string value mode of N/A,
+	 * when not string values are present
 	 * NOTE: will eventually be implemented on the category also
 	 * @param pProductList List of products on which to evaluate the attribute
 	 * @param pAttributeID Id of the Attribute to be evaluated
@@ -149,11 +151,11 @@ public class AttributeExtractor
 			}
 			
 		}
-		if(numericCount > 0)
+		if(numericCount > 0 && numericCount == pProductList.size())
 		{
 			return new AttributeValue(numericSum/numericCount, min,max);
 		}
-		else if (trueCount > 0 || falseCount > 0)
+		else if ((trueCount > 0 || falseCount > 0) && trueCount +falseCount == pProductList.size())
 		{
 			if(trueCount > falseCount)
 			{
@@ -256,8 +258,9 @@ public class AttributeExtractor
 				{
 					if(wekaAtt.isNominal())
 					{
-//					entry zero should be N/A
+
 						type = Type.STRING;
+//						entry zero should be N/A
 						value = wekaAtt.value(0);
 					}
 					else
