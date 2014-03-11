@@ -62,9 +62,9 @@ public class SearchController
 	private static final Logger LOG = LoggerFactory.getLogger(SearchController.class);
 	
 	
-	private List<ScoredAttribute> scoredRatings; 
-	private List<ScoredAttribute> scoredSpecs; 
-	List<ScoredProduct> scoredProducts;
+	private List<ScoredAttribute> aScoredRatings; 
+	private List<ScoredAttribute> aScoredSpecs; 
+	List<ScoredProduct> aScoredProducts;
 	
 	@Autowired
 	private ProductListVO productList;
@@ -141,26 +141,26 @@ public class SearchController
 	public void setScoredRatings(List<ScoredAttribute> pScoredRatings)
 	{
 		System.out.println("in setscoredRatings " + pScoredRatings.toString());
-		this.scoredRatings=pScoredRatings;	
+		this.aScoredRatings=pScoredRatings;	
 		
 	}
 	public void setScoredSpecs(List<ScoredAttribute> pScoredSpecs)
 	{
 		System.out.println("in setscoredSpecs"+ pScoredSpecs.toString());
 		
-		this.scoredSpecs=pScoredSpecs;	
+		this.aScoredSpecs=pScoredSpecs;	
 		
 	}
 
 	public List<ScoredAttribute> getScoredSpecs()
 	{
-		return this.scoredSpecs;
+		return this.aScoredSpecs;
 		
 	}	
 	
 	public List<ScoredAttribute> getScoredRatings()
 	{
-		return this.scoredRatings;
+		return this.aScoredRatings;
 		
 	}	
 	
@@ -328,10 +328,10 @@ public class SearchController
 	{
 		 UserFeatureModel form = new UserFeatureModel();
 		 model.addAttribute("myForm", form);
-		 specFeatureList = new FeatureListVO ();
-		 rateFeatureList = new FeatureListVO ();
-
-		return "/index";
+		 specFeatureList = new FeatureListVO();
+		 rateFeatureList = new FeatureListVO();
+		 productList = new ProductListVO ();
+		 return "/index";								
 	}
 	
 	@RequestMapping(value = "/experiment", method = RequestMethod.GET)
@@ -376,14 +376,14 @@ public class SearchController
 		List<ScoredAttribute> ratingList = ae.getScoredRatingList();
 		List<ScoredAttribute> specList = ae.getScoredSpecList();
 	    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(ratingList, specList, prodSearch);
-	    scoredProducts = rankedProducts.getaProductSearchResult();
+	    aScoredProducts = rankedProducts.getaProductSearchResult();
 	    
-	    scoredRatings = rankedProducts.getaRatingList();
-	    scoredSpecs = rankedProducts.getaSpecList();
+	    aScoredRatings = rankedProducts.getaRatingList();
+	    aScoredSpecs = rankedProducts.getaSpecList();
 	    	   
 	    // Converting
 		ArrayList<ProductVO> products = new ArrayList<ProductVO>();		
-	    for (ScoredProduct sp: scoredProducts) 
+	    for (ScoredProduct sp: aScoredProducts) 
 	    {
 			ProductVO p = new ProductVO();
 			p.setName(sp.getProduct().getName());
@@ -404,7 +404,7 @@ public class SearchController
 
 		//For now will get top 10 scores
 		int featureNumToDisplay = 10;
-		for (int i = 0 ; i < scoredSpecs.size() ; i++)
+		for (int i = 0 ; i < aScoredSpecs.size() ; i++)
 		{
 
 			if(i>featureNumToDisplay)
@@ -414,13 +414,14 @@ public class SearchController
 
 			values = new ArrayList<String>();
 			FeatureVO f = new FeatureVO();
-			f.setId(scoredSpecs.get(i).getAttributeID());
-			f.setName(scoredSpecs.get(i).getAttributeName());
+			f.setId(aScoredSpecs.get(i).getAttributeID());
+			f.setName(aScoredSpecs.get(i).getAttributeName());
 			f.setSpec(true);
 			f.setRate(false);			
 			f.setVisible(true);
+			f.setDesc(aScoredSpecs.get(i).getaAttributeDesc());
 
-			AttributeValue val = scoredSpecs.get(i).getAttributeMean();			
+			AttributeValue val = aScoredSpecs.get(i).getAttributeMean();			
 
 			if(val.isBool() && val!=null)
 			{	
@@ -434,7 +435,8 @@ public class SearchController
 					{
 						f.setType("Numeric");
 						f.setMinValue(val.getMin());
-						f.setMaxValue(val.getMax());										
+						f.setMaxValue(val.getMax());
+						System.out.println("min "+val.getMin()+" max "+val.getMax());
 						values.add(val.getNumericValue()+"");
 						f.setValue((ArrayList<String>)values);										
 					}
@@ -466,7 +468,7 @@ public class SearchController
 				specFeatures.add(f);	
 		}		
 
-		for (int i = 0; i < scoredRatings.size() ; i++)
+		for (int i = 0; i < aScoredRatings.size() ; i++)
 		{
 			if(i > featureNumToDisplay)
 			{
@@ -474,15 +476,16 @@ public class SearchController
 			}
 			values = new ArrayList <String>() ;
 			FeatureVO f = new FeatureVO();
-			f.setId(scoredRatings.get(i).getAttributeID());
-			f.setName(scoredRatings.get(i).getAttributeName());
-			System.out.println("***********Rate Name ********* "+ f.getName());
+			f.setId(aScoredRatings.get(i).getAttributeID());
+			f.setName(aScoredRatings.get(i).getAttributeName());
+			LOG.debug("***********Rate Name ********* "+ f.getName());
 
+			f.setDesc(aScoredRatings.get(i).getaAttributeDesc());
 			f.setRate(true);
 			f.setSpec(false);			
 			f.setVisible(true);
 
-			AttributeValue val = scoredRatings.get(i).getAttributeMean();	
+			AttributeValue val = aScoredRatings.get(i).getAttributeMean();	
 
 			if(val.isBool() && val!=null)
 			{
@@ -546,55 +549,59 @@ public class SearchController
 	{
 		return "/rankedproducts";
 	}
+	@RequestMapping(value="/rankedproducts", method = RequestMethod.GET)
+	public String getRankedProducts2() 
+	{
+		return "/rankedproducts";
+	}
 	
-	@RequestMapping(value="/sendFeatures", method = RequestMethod.POST)	
+	/**
+	 * */
+	@RequestMapping(value = "/sendFeatures", method = RequestMethod.POST)	
 	public String sendCurrentFeatureList(@RequestParam String dataSpec, @RequestParam String dataRate)
 	{
-		System.out.println(" data is  " + dataSpec);
 
-		System.out.println(" data is  " + dataRate);
-
+		LOG.debug(" data is  " + dataSpec);
+		LOG.debug(" data is  " + dataRate);
 		Gson gson = new Gson();
 		UserFeatureModel userFMSpec = gson.fromJson(dataSpec, UserFeatureModel.class);
 		UserFeatureModel userFMRate = gson.fromJson(dataRate, UserFeatureModel.class);
 
+		List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
+		List<ScoredAttribute> userScoredFeaturesRates = new ArrayList<ScoredAttribute>();
+			
 		for(int i = 0 ; i < userFMSpec.getNames().size() ; i++)
 		{
 			String tempName = userFMSpec.getNames().get(i);
-			int indx = locateFeatureScoredAttribute(scoredSpecs, tempName);
-			AttributeValue av = new AttributeValue(userFMSpec.getValues().get(i));				
-			if(indx != -1){
-				scoredSpecs.get(indx).setAttributeMean(av);
-			}
-
+			ScoredAttribute sa = locateFeatureScoredAttribute(aScoredSpecs, tempName);
+			if ( sa != null)
+			{
+				AttributeValue av = new AttributeValue(userFMSpec.getValues().get(i));				
+				sa.setAttributeMean(av);
+				userScoredFeaturesSpecs.add(sa);				
+			}			
 		}
-
+		
 		for(int i = 0 ; i < userFMRate.getNames().size() ; i++)
 		{
-			String tempName2 = userFMRate.getNames().get(i);
-			System.out.println(" tempName2 " + tempName2);			
-
-			int indx2 = locateFeatureScoredAttribute(scoredRatings, tempName2);
-			AttributeValue av = new AttributeValue(userFMRate.getValues().get(i));							
-			if(indx2 != -1){
-				scoredRatings.get(indx2).setAttributeMean(av);
+			String tempName = userFMRate.getNames().get(i);
+			ScoredAttribute sa = locateFeatureScoredAttribute(aScoredSpecs, tempName);			
+			if ( sa != null)
+			{
+				AttributeValue av = new AttributeValue(userFMRate.getValues().get(i));				
+				sa.setAttributeMean(av);
+				userScoredFeaturesRates.add(sa);				
 			}
 		}
-
-		System.out.println(" Done ");
-
-		System.out.println(" specs " + scoredSpecs.toString());
-		System.out.println(" old products "+ scoredProducts.toString());
-
-		for(ScoredProduct sa : scoredProducts)
+		
+		for(ScoredProduct sa : aScoredProducts)
 		{
-			System.out.println("old "+ sa.getProduct().getName());	
-			break;
-
+			System.out.println("old "+ sa.getProduct().getName());						
 		}
-		RankedFeaturesProducts Products = new RankedFeaturesProducts();
-		List<ScoredProduct> productsToDisplay = Products.FilterandReturn(scoredSpecs);
 	
+		RankedFeaturesProducts Products = new RankedFeaturesProducts();
+		List<ScoredProduct> productsToDisplay = Products.FilterandReturn(userScoredFeaturesSpecs);
+
 			// Converting
 			ArrayList<ProductVO> products = new ArrayList<ProductVO>();		
 		    for (ScoredProduct sp: productsToDisplay)
@@ -605,34 +612,33 @@ public class SearchController
 				products.add(p);
 			 }
 			productList.setProducts(products);	
-			System.out.println(" new products "+ products.toString());
+			LOG.debug(" new products "+ products.toString());
 			for(ProductVO sa : products)
 			{
-				System.out.println("new "+ sa.getName());			
-//				break;
+				LOG.debug("new "+ sa.getName());			
 			}
 
-			return "/rankedproducts";		
+			return "/rankedproducts";	
+		
 	}	
 
-	/**********************************************************************/
 	/**
 	 * 
 	 * @param pFeatureList : feature list, either specs or ratings
 	 * @param pName   : Name of feature to locate
-	 * @return ScoredAttribute matching the pName
+	 * @return ScoredAttribute matched object
 	 */
-	public int locateFeatureScoredAttribute(List<ScoredAttribute> pFeatureList, String pName)
+	public ScoredAttribute locateFeatureScoredAttribute(List<ScoredAttribute> pFeatureList, String pName)
 	{
 		for (int i = 0 ; i< pFeatureList.size() ; i++)
 		{
 			ScoredAttribute temp = pFeatureList.get(i);
 			if(temp.getAttributeName().equals(pName))
 			{
-				System.out.println("old mean value is " + pFeatureList.get(i).getAttributeMean());
-				return i;
+				LOG.debug("old mean value is " + pFeatureList.get(i).getAttributeMean());
+				return temp;
 			}
 		}
-		return -1;
+		return null;
 	}
 }

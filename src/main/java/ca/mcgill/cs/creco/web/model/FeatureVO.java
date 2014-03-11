@@ -34,6 +34,7 @@ public class FeatureVO
 	private String id;
 	private String name;
 	private double score;
+	private String desc;
 	private String type;
 	private ArrayList<String> value;
 	private String uValue;	
@@ -148,6 +149,14 @@ public class FeatureVO
 
 	public void setuValue(String uValue) {
 		this.uValue = uValue;
+	}
+
+	public String getDesc() {
+		return desc;
+	}
+
+	public void setDesc(String desc) {
+		this.desc = desc;
 	}
 
 }

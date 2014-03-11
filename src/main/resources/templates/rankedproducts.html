@@ -20,7 +20,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-    <div id='demo'>			
+    <div id='creco'>			
 			<div>
 				<span class="label label-info">CRECO</span>			
 			</div>
@@ -44,10 +44,10 @@
 									<div th:each="specFeatures : ${specFeatureList.features}"><!--.sequence(1,2)}"> -->
 		    				 			<div th:if="${specFeatures.visible==true}">
 		    					 			<div th:switch="${specFeatures.type}"> 
-		 					    				<div th:case="'Bool'">						   
-		 					 	 					<div class="btn-group">
-		 					 	 						<p class="text-info"><span th:text="${specFeatures.name}"></span></p>
-							 		 	  					<div class="form-group1">								 		 	  	 			
+		 					    				<div th:case="'Bool'">						   		 					 	 	 	  			
+		 					 	 					<div class="btn-group">		
+		 					 	 					<p><span th:text="${specFeatures.name}"></span><img src="img/info.ico" alt="Description"  class="img-rounded" align="middle" data-toggle="tooltip" data-placement="right" th:title="${specFeatures.desc}"/></p>								 		 	  				 					 	 						 					 	 						
+							 		 	  				<div class="form-group1">								 		 	  	 			
 							 		 	  	 				 <input type="hidden" name="id" th:value="${specFeatures.id}"/>
 												   		      <input type="hidden" name = "name" th:value="${specFeatures.name}"/>											  																								 										   																			 							    					 				 					 	 					
 							 		 	  	 				  <label>Yes</label>
@@ -60,21 +60,25 @@
 													</div>
 									  			</div>	
 								  			<div th:case="'Numeric'">
-											 	<div th:text="${specFeatures.name}"></div>
+											 	<p><span th:text="${specFeatures.name}"></span><img src="img/info.ico" alt="Description"  align="middle" data-toggle="tooltip" data-placement="right" th:title="${specFeatures.desc}"/></p>
 											 	  <input type="hidden" name="id" th:value="${specFeatures.id}"/>
-												  <input type="hidden" name = "name" th:value="${specFeatures.name}"/>											  																								 										   																			 							    					 				 					 	 					
-							 		 	  	 	   <span  class="max" style="border:0; color:#0DC6E9; font-weight:bold;"></span>
-							 		 	  	 	   <div th:id="${specFeatures.name}" class="slider-range"></div>						 		 	  	 	   		
+												  <input type="hidden" name = "name" th:value="${specFeatures.name}"/>
+												  <input type="hidden" name = "min" th:value="${specFeatures.minValue}"/>
+												  <input type="hidden" name = "max" th:value="${specFeatures.maxValue}"/>
+												 <div th:name="${specFeatures.name}"> 											  																								 										   																			 							    					 				 					 	 					
+							 		 	  	 	  	<div th:id="${specFeatures.name}" class="slider-range" th:max="${specFeatures.maxValue}" th:min="${specFeatures.minValue}"></div>
+							 		 	  	 	 	<input type="text" th:name="${specFeatures.name}" class="slider_value" readonly="readonly"/>							 		 	  	 	 	
+							 		 	  	 	 </div>					 		 	  	 	   		
 							 		 	  	</div>
+							 		 	  	
 											  <div th:case="'Nominal'">
 											  	<div class="btn-group">											  												  
-												  	<span th:text="${specFeatures.name}"></span>
+											  		<p><span th:text="${specFeatures.name}"></span><img src="img/info.ico" alt="Description"  align="middle" data-toggle="tooltip" data-placement="right" th:title="${specFeatures.desc}"/></p>												  	
 												  	 <div class="form-group2" th:each="val : ${specFeatures.value}">
 												  	  	<input type="hidden" name="id" th:value="${specFeatures.id}"/>
-												   		<input type="hidden" name = "name" th:value="${specFeatures.name}"/>											  																								 										   																			 							    					 				 					 	 					
-									  	 
-														  <label th:text="${val}"></label>
-														  <input type="checkbox" th:name="${specFeatures.name}" th:value="${val}" onclick="isChecked(this,this.name,this.value)"/>									
+			 									   		<input type="hidden" name = "name" th:value="${specFeatures.name}"/>											  																								 										   																			 							    					 				 					 	 												  	 
+	    												<label th:text="${val}"></label>
+														<input type="checkbox" th:name="${specFeatures.name}" th:value="${val}" onclick="isChecked(this,this.name,this.value)"/>									
 													</div>		 									 																				 
 												</div>						  				   	
 											  </div>						  
@@ -95,7 +99,7 @@
 		    					 			<div th:switch="${rateFeatures.type}"> 
 		 					    				<div th:case="'Bool'">						   
 		 					 	 					<div class="btn-group">
-		 					 	 						<p class="text-info"><span th:text="${rateFeatures.name}"></span></p>
+		 					 	 						<p><span th:text="${rateFeatures.name}"></span><img src="img/info.ico" alt="Description"  align="middle" data-toggle="tooltip" data-placement="right" th:title="${rateFeatures.desc}"/></p>	
 							 		 	  					<div class="form-group1">								 		 	  	 			
 							 		 	  	 				 <input type="hidden" name="id" th:value="${rateFeatures.id}"/>
 												   		      <input type="hidden" name = "name" th:value="${rateFeatures.name}"/>											  																								 										   																			 							    					 				 					 	 					
@@ -109,21 +113,25 @@
 													</div>
 									  			</div>	
 								  			<div th:case="'Numeric'">
-											 	<div th:text="${rateFeatures.name}"></div>
+					 	 						<p><span th:text="${rateFeatures.name}"></span><img src="img/info.ico" alt="Description"  align="middle" data-toggle="tooltip" data-placement="right" th:title="${rateFeatures.desc}"/></p>
 											 	  <input type="hidden" name="id" th:value="${rateFeatures.id}"/>
-												  <input type="hidden" name = "name" th:value="${rateFeatures.name}"/>											  																								 										   																			 							    					 				 					 	 					
-							 		 	  	 	   <span  class="max" style="border:0; color:#0DC6E9; font-weight:bold;"></span>
-							 		 	  	 	   <div th:id="${rateFeatures.name}" class="slider-range"></div>						 		 	  	 	   		
+												  <input type="hidden" name = "name" th:value="${rateFeatures.name}"/>
+												  <input type="hidden" name = "min" th:value="${rateFeatures.minValue}"/>
+												  <input type="hidden" name = "max" th:value="${rateFeatures.maxValue}"/>
+												  <div th:name="${rateFeatures.name}"> 											  																								 										   																			 							    					 				 					 	 					
+							 		 	  	 	  	<div th:id="${rateFeatures.name}" class="slider-range" th:max="${rateFeatures.maxValue}" th:min="${rateFeatures.minValue}"></div>
+							 		 	  	 	 	<input type="text" th:name="${rateFeatures.name}" class="slider_value" readonly="readonly"/>							 		 	  	 	 	
+							 		 	  	 	 </div>						 	 											 	 						
+					 	 						  <!--  <span  class="max" style="border:0; color:#0DC6E9; font-weight:bold;"></span> -->							 		 	  	 	 
 							 		 	  	</div>
 											  <div th:case="'Nominal'">
 											  	<div class="btn-group">											  												  
-												  	<span th:text="${rateFeatures.name}"></span>
+	 					 	 						<p><span th:text="${rateFeatures.name}"></span><img src="img/info.ico" alt="Description"  align="middle" data-toggle="tooltip" data-placement="right" th:title="${rateFeatures.desc}"/></p>
 												  	 <div class="form-group2" th:each="val : ${rateFeatures.value}">
 												  	  	<input type="hidden" name="id" th:value="${rateFeatures.id}"/>
-												   		<input type="hidden" name = "name" th:value="${rateFeatures.name}"/>											  																								 										   																			 							    					 				 					 	 					
-									  	 
-														  <label th:text="${val}"></label>
-														  <input type="checkbox" th:name="${rateFeatures.name}" th:value="${val}" onclick="isChecked(this,this.name,this.value)"/>									
+												   		<input type="hidden" name = "name" th:value="${rateFeatures.name}"/>											  																								 										   																			 							    					 				 					 	 														  	 
+													    <label th:text="${val}"></label>
+													    <input type="checkbox" th:name="${rateFeatures.name}" th:value="${val}" onclick="isChecked(this,this.name,this.value)"/>									
 													</div>		 									 																				 
 												</div>						  				   	
 											  </div>						  

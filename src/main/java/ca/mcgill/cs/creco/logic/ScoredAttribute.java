@@ -60,7 +60,8 @@ public class ScoredAttribute
  	private double aAttributeScore;
  	private AttributeValue aAttributeMean;
  	private boolean aIsCat;
-     
+	private String aAttributeDesc;
+	   
 	/**Constructor from an attribute.
 	 * @param pAttribute attribute to build score for.
 	 */
@@ -70,6 +71,7 @@ public class ScoredAttribute
 		aAttributeID = pAttribute.getId();
 		aAttributeScore = 0.0;
 		aAttributeName = pAttribute.getName();
+		aAttributeDesc = pAttribute.getDescription();
 	}
 	/** Constructor from a Category.
 	 * @param pCat category to treat as attribute
@@ -80,6 +82,7 @@ public class ScoredAttribute
 		aAttributeID = pCat.getId();
 		aAttributeScore = 0.0;
 		aAttributeName = pCat.getName();
+		aAttributeDesc = pCat.getName();
 	}
 	
 	/**
@@ -119,7 +122,7 @@ public class ScoredAttribute
 	@Override
 	public String toString()
 	{
-		return aAttributeName + ", " + aAttributeID + ": " + aAttributeScore + ", " + aAttributeMean + "||";
+		return aAttributeName + ", " + aAttributeID + ", "+ aAttributeDesc +": " + aAttributeScore + ", " + aAttributeMean + "||";
 	}
 
 	/**
@@ -148,5 +151,14 @@ public class ScoredAttribute
 	}
 	
 	
+	public String getaAttributeDesc() 
+	{
+		return aAttributeDesc;
+	}
+	
+	public void setaAttributeDesc(String aAttributeDesc)
+	{
+		this.aAttributeDesc = aAttributeDesc;
+	}
 	
 }
