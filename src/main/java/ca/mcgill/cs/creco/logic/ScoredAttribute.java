@@ -17,7 +17,9 @@ package ca.mcgill.cs.creco.logic;
 
 import java.util.Comparator;
 
-import ca.mcgill.cs.creco.data.*;
+import ca.mcgill.cs.creco.data.TypedValue;
+import ca.mcgill.cs.creco.data.Attribute;
+import ca.mcgill.cs.creco.data.Category;
 
 /**
  *
@@ -58,7 +60,7 @@ public class ScoredAttribute
     private String aAttributeID;
  	private String aAttributeName;
  	private double aAttributeScore;
- 	private AttributeValue aAttributeMean;
+ 	private TypedValue aAttributeMean;
  	private boolean aIsCat;
 	private String aAttributeDesc;
 	   
@@ -129,7 +131,7 @@ public class ScoredAttribute
 	 * @return mean or mode of this attribute given a product list used to 
 	 * calculate the score
 	 */
-	public AttributeValue getAttributeMean() 
+	public TypedValue getAttributeMean() 
 	{
 		return aAttributeMean;
 	}
@@ -138,7 +140,7 @@ public class ScoredAttribute
 	 * @param pAttributeMean mean or mode of this attribute given a product list used to 
 	 * calculate the score
 	 */
-	public void setAttributeMean(AttributeValue pAttributeMean) 
+	public void setAttributeMean(TypedValue pAttributeMean) 
 	{
 		this.aAttributeMean = pAttributeMean;
 	}

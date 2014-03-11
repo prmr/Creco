@@ -142,7 +142,7 @@ public class AttributeExtractionTest
 			pal.add(p);
 			
 		}
-		assertTrue(AttributeExtractor.extractMean( pal , "test").getBoolValue());
+		assertTrue(AttributeExtractor.extractMean( pal , "test").getBooleanValue());
 	}
 	
 	@Test

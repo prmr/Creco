@@ -15,14 +15,25 @@
  */
 package ca.mcgill.cs.creco.data;
 
+import java.util.List;
+
 /**
  * Represents an immutable value object from which a type has been inferred.
+ * Presently stores min and max or possible string values if necessary.
+ * Should probably be handled somewhere else.
  */
 public class TypedValue 
 {
 	private final Type aType;
 	private Object aValue;
+	private double aNumericValue;
+	private String aNominalValue;
+	private boolean aBooleanValue;
 	private final Object aOriginalValue;
+	
+	private double aMin;
+	private double aMax;
+	private List<String> aDict;
 	
 	/**
 	 * The different types a typed value can take.
@@ -30,6 +41,31 @@ public class TypedValue
 	public enum Type 
 	{ NULL, INTEGER, DOUBLE, BOOLEAN, STRING, UNKNOWN }
 	
+	/**
+	 * Creates a new value object an infers its type. Also stores min and max
+	 * values found in data
+	 * @param pValue The value.
+	 * @param pMin minimum value the attribute takes in data
+	 * @param pMax maximum value the attribute takes in data
+	 */
+	public TypedValue(Object pValue, double pMin, double pMax)
+	{
+		this(pValue);
+		aMin = pMin;
+		aMax = pMax;
+		
+	}
+	/**
+	 * Creates a new value object an infers its type. Also stores 
+	 * possible values for this item
+	 * @param pValue The value.
+	 * @param pDict list of values found in data
+	 */
+	public TypedValue(Object pValue, List<String> pDict)
+	{
+		this(pValue);
+		aDict = pDict;		
+	}
 	/**
 	 * Creates a new value object an infers its type.
 	 * @param pValue The value.
@@ -62,27 +98,32 @@ public class TypedValue
 			if(theString.matches("-?\\d+"))
 			{
 				aType = Type.INTEGER;
+				aNumericValue = Integer.parseInt(theString);
 				aValue = Integer.parseInt(theString);
 			}
 			//match a number with optional '-' and decimal.
 			else if(theString.matches("-?\\d+(\\.\\d+)?"))  
 			{
 				aType = Type.DOUBLE;
+				aNumericValue = Double.parseDouble(theString);
 				aValue = Double.parseDouble(theString);
 			}
 			else if(theString.matches("(y|Y)es"))
 			{
 				aType = Type.BOOLEAN;
+				aBooleanValue = true;
 				aValue = true;
 			}
 			else if(theString.matches("(n|N)o"))
 			{
 				aType = Type.BOOLEAN;
+				aBooleanValue = false;
 				aValue = false;
 			}
 			else
 			{
 				aType = Type.STRING;
+				aNominalValue = theString;
 				aValue = theString;
 			}
 		}
@@ -101,11 +142,33 @@ public class TypedValue
 	}
 	
 	/**
+	 * @Deprecated use method for specific type instead.
 	 * @return The value after type inference.
 	 */
 	public Object getValue()
 	{
 		return aValue;
+	}
+	/**
+	 * @return The numeric value after type inference.
+	 */
+	public double getNumericValue()
+	{
+		return aNumericValue;
+	}
+	/**
+	 * @return The boolean value after type inference.
+	 */
+	public boolean getBooleanValue()
+	{
+		return aBooleanValue;
+	}
+	/**
+	 * @return The nominal value after type inference.
+	 */
+	public String getNominalValue()
+	{
+		return aNominalValue;
 	}
 	
 	/**
@@ -114,6 +177,30 @@ public class TypedValue
 	public Object getOriginalValue()
 	{
 		return aOriginalValue;
+	}
+	
+	/**
+	 * @return minimum value recorded in data
+	 */
+	public double getMin() 
+	{
+		return aMin;
+	}
+	/**
+	 * @return maximum value recorded in data
+	 */
+	public double getMax() 
+	{
+		return aMax;
+	}
+	/**
+	 * @return list of string values recorded in data
+	 */
+	public List<String> getDict() 
+	{
+		return aDict;
 	}	
+	
+	
 }
 

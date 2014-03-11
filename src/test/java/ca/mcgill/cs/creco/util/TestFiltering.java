@@ -31,9 +31,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.Category;
+import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.logic.AttributeExtractor;
-import ca.mcgill.cs.creco.logic.AttributeValue;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.search.ICategorySearch;
 import ca.mcgill.cs.creco.logic.search.IProductSearch;
@@ -114,7 +114,7 @@ public class TestFiltering {
 		    List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
 			Attribute test= new Attribute( "doesnt matter", "Manual controls", "doesn't matter", true );
 		  ScoredAttribute test_score = new ScoredAttribute(test);
-		  AttributeValue temporary = new AttributeValue(false);
+		  TypedValue temporary = new TypedValue(false);
 		  test_score.setAttributeMean(temporary); 
 		  userScoredFeaturesSpecs.add(test_score);
 			RankedFeaturesProducts Products = new RankedFeaturesProducts();
@@ -142,7 +142,7 @@ public class TestFiltering {
 		    List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
 			Attribute test= new Attribute( "doesnt matter", "Multiple recline positions", "doesn't matter", true );
 		  ScoredAttribute test_score = new ScoredAttribute(test);
-		  AttributeValue temporary = new AttributeValue("NA");
+		  TypedValue temporary = new TypedValue("NA");
 		  test_score.setAttributeMean(temporary); 
 		  userScoredFeaturesSpecs.add(test_score);
 			RankedFeaturesProducts Products = new RankedFeaturesProducts();

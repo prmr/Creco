@@ -37,10 +37,12 @@ import com.google.gson.Gson;
 
 import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.Category;
+import ca.mcgill.cs.creco.data.TypedValue;
+import ca.mcgill.cs.creco.data.TypedValue.Type;
+
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.logic.AttributeExtractor;
-import ca.mcgill.cs.creco.logic.AttributeValue;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.search.ICategorySearch;
 import ca.mcgill.cs.creco.logic.search.IProductSearch;
@@ -438,19 +440,20 @@ public class SearchController
 			f.setSpec(true);
 			f.setRate(false);			
 			f.setVisible(true);
+
 			f.setDesc(aScoredSpecs.get(i).getaAttributeDesc());
 
-			AttributeValue val = aScoredSpecs.get(i).getAttributeMean();			
+			TypedValue val = aScoredSpecs.get(i).getAttributeMean();			
 
-			if(val.isBool() && val!=null)
+			if(val.getType() == Type.BOOLEAN && val!=null)
 			{	
 				f.setType("Bool");								
-				values.add(val.getBoolValue()+"");
+				values.add(val.getBooleanValue()+"");
 				f.setValue((ArrayList<String>) values);
 			}
 			else
 			{
-				if(val.isNumeric() && val!=null)
+				if((val.getType() == Type.DOUBLE || val.getType() == Type.INTEGER ) && val!=null)
 					{
 						f.setType("Numeric");
 						f.setMinValue(val.getMin());
@@ -460,7 +463,7 @@ public class SearchController
 					}
 				else
 				{
-					if(val.isNominal() && val!=null)
+					if(val.getType() == Type.STRING  && val!=null)
 					{
 						if(val.getNominalValue().equalsIgnoreCase("true") || val.getNominalValue().equalsIgnoreCase("false")) 
 						{
@@ -503,17 +506,19 @@ public class SearchController
 			f.setSpec(false);			
 			f.setVisible(true);
 
-			AttributeValue val = aScoredRatings.get(i).getAttributeMean();	
+			TypedValue val = aScoredRatings.get(i).getAttributeMean();	
 
-			if(val.isBool() && val!=null)
+			if(val.getType() == Type.BOOLEAN && val!=null)
 			{
 				f.setType("Bool");								
-				values.add(val.getBoolValue()+"");
+
+				values.add(val.getBooleanValue()+"");
 				f.setValue((ArrayList<String>)values);
+
 			}
 			else
 			{
-				if(val.isNumeric() && val!=null)
+				if((val.getType() == Type.DOUBLE || val.getType() == Type.INTEGER ) && val!=null)
 				{
 					f.setType("Numeric");
 					f.setMinValue(val.getMin());
@@ -523,7 +528,7 @@ public class SearchController
 				}
 				else
 				{
-					if(val.isNominal() && val!=null)
+					if(val.getType() == Type.STRING && val!=null)
 					{
 						if(val.getNominalValue().equalsIgnoreCase("true") || val.getNominalValue().equalsIgnoreCase("false")) 
 						{
@@ -594,7 +599,7 @@ public class SearchController
 			ScoredAttribute sa = locateFeatureScoredAttribute(aScoredSpecs, tempName);
 			if ( sa != null)
 			{
-				AttributeValue av = new AttributeValue(userFMSpec.getValues().get(i));				
+				TypedValue av = new TypedValue(userFMSpec.getValues().get(i));				
 				sa.setAttributeMean(av);
 				userScoredFeaturesSpecs.add(sa);				
 			}			
@@ -606,12 +611,11 @@ public class SearchController
 			ScoredAttribute sa = locateFeatureScoredAttribute(aScoredSpecs, tempName);			
 			if ( sa != null)
 			{
-				AttributeValue av = new AttributeValue(userFMRate.getValues().get(i));				
+				TypedValue av = new TypedValue(userFMRate.getValues().get(i));				
 				sa.setAttributeMean(av);
 				userScoredFeaturesRates.add(sa);				
 			}
 		}
-		
 		for(ScoredProduct sa : aScoredProducts)
 		{
 			LOG.debug(sa.toString());					
