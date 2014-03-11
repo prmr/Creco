@@ -15,12 +15,12 @@
 -->
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head> 
-    <title>Creco</title> 
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
-<body>
-    <div id='demo'>			
+	<head> 
+	    <title>Creco</title> 
+	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	</head>
+	<body>
+	    <div id='search'>			
 			<div>
 				<span class="label label-info">CRECO</span>			
 			</div>
@@ -146,22 +146,16 @@
                     <div class="rankedproduct-result-name" th:text="${product.name}"></div>
 				</div>
 			</div>
-	</div>
-	
-</body>
-	<script src="//code.jquery.com/jquery-1.9.1.js"></script>
-	<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"></link>
+		</div>
+	</body>
+	<script type='text/javascript' src="lib/jquery-1.9.1.js"></script>
+	<script type='text/javascript' src="lib/jquery-ui.js"></script>	
+	<script type='text/javascript' src='lib/bootstrap.min.js'></script>	
+	<script type='text/javascript' src="js/autocomplete.js"></script> 
 	<script src="js/features_form.js"></script>
-   
-
-	<script type='text/javascript' src='//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js'></script>
-	<link rel='stylesheet' type='text/css' href='//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css'></link>
-	<link rel='stylesheet' type='text/css' href='//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css'></link>
-
-
-	<link rel='stylesheet' type='text/css' href='css/main.css' />
+	<link rel="stylesheet" href="lib/jquery-ui.css"></link>
+	<link rel='stylesheet' type='text/css' href='lib/bootstrap.min.css'></link>
+	<link rel='stylesheet' type='text/css' href='lib/bootstrap-theme.min.css'></link>
 	<link rel='stylesheet' type='text/css' href='css/search.css' />
 	<link rel="stylesheet" type="text/css" href="css/slider.css" />
-	
 </html>
