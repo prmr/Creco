@@ -224,6 +224,8 @@ public class SearchController
 		 
 		   for (Category category123 : aDataStore.getEquivalenceClasses()) 
 			{
+			   if(category123.getCount()==0)
+				   continue; 
 			   int value;
 			   if(category123.getName().toLowerCase().contains(abcd.toLowerCase()))
 				   value=0;
@@ -302,6 +304,8 @@ public class SearchController
 		   String ajax_code=new String();
 			ArrayList<EqcVO> eqcs = new ArrayList<EqcVO>();		
 			for (Category cat: categoryList) {
+				if(cat.getCount()==0)
+					continue; 
 				count++;
 				EqcVO eqc = new EqcVO();
 				   ajax_code=ajax_code.concat("<form action=\"/searchRankedFeaturesProducts\" method=\"POST\">");
@@ -348,9 +352,26 @@ public class SearchController
 		mainQuery = pMainQuery;
 		List<Category> categoryList = aCategorySearch.queryCategories(mainQuery.getQuery());	
 		
+		
+		//Nishanth code 
+		String main_string = "";
+		for (Category category123 : aDataStore.getEquivalenceClasses()) 
+		{
+		   if(category123.getCount()==0)
+			   continue;
+		 main_string=main_string.concat("\"");
+		 main_string=main_string.concat(category123.getName());
+		 main_string=main_string.concat("\"");
+		 main_string=main_string.concat(",");
+		 main_string=main_string.concat("\n");
+		}
+		System.out.println(main_string);
+		// Nishanth code
 		//Converting
 		ArrayList<EqcVO> eqcs = new ArrayList<EqcVO>();		
 		for (Category cat: categoryList) {
+			if(cat.getCount()==0)
+				continue;
 			EqcVO eqc = new EqcVO();
 			eqc.setId(cat.getId());
 			eqc.setName(cat.getName());
