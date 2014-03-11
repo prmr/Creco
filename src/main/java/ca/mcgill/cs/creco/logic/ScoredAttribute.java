@@ -152,15 +152,20 @@ public class ScoredAttribute
 		return aIsCat;
 	}
 	
-	
+	/**
+	 * @return String representing the attribute description
+	 * */	
 	public String getaAttributeDesc() 
 	{
 		return aAttributeDesc;
 	}
 	
-	public void setaAttributeDesc(String aAttributeDesc)
+	/**
+	 * @param pAttributeDesc description of this attribute
+	 * ***/	
+	public void setaAttributeDesc(String pAttributeDesc)
 	{
-		this.aAttributeDesc = aAttributeDesc;
+		this.aAttributeDesc = pAttributeDesc;
 	}
 	
 }

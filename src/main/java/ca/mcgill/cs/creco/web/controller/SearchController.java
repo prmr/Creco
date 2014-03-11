@@ -459,7 +459,9 @@ public class SearchController
 						f.setMinValue(val.getMin());
 						f.setMaxValue(val.getMax());
 						values.add(val.getNumericValue()+"");
-						f.setValue((ArrayList<String>)values);										
+						f.setValue((ArrayList<String>)values);	
+						System.out.println("min "+val.getMin()+" max "+val.getMax());
+						
 					}
 				else
 				{
@@ -467,20 +469,28 @@ public class SearchController
 					{
 						if(val.getNominalValue().equalsIgnoreCase("true") || val.getNominalValue().equalsIgnoreCase("false")) 
 						{
+							System.out.println("if 1"+ val.getNominalValue());
 								f.setType("Bool");
 						}
 						else 
 						{
+							System.out.println("else1 "+ val.getNominalValue());
+
 								f.setType("Nominal");
 						}
 
 							if(val.getNominalValue().equals("N/A"))
 							{
+								System.out.println("if 2"+ val.getNominalValue());
+
 								values.add("N/A");
 							}
 							else
 							{
-								values = val.getDict();								
+								System.out.println("else2 "+ val.getNominalValue());
+
+								values = val.getDict();
+								System.out.println("else2 and dict is " +val.getDict());
 							}
 							f.setValue((ArrayList<String>)values);										
 						}
