@@ -27,26 +27,28 @@ public class Category2
 	// Fields copied directly from CR database
 	private String aId;
 	private String aSingularName;
-	private Category2 aRootCategory; 
+	private String aRootCategoryName; 
 	private ArrayList<Product> aProducts = new ArrayList<Product>();	
 	private ArrayList<AttributeStat> aSpecifications = new ArrayList<AttributeStat>();
 	private ArrayList<AttributeStat> aRatings = new  ArrayList<AttributeStat>();
 	
-	/**
-	 * Creates a new Category initialized only with the parameter fields.
-	 * @param pId The Category ID
-	 * @param pSingularName The singular name of the category.
-	 * @param pRootCategory The category's parent, or null if this is a root category.
-	 */
-	Category2(String pId, String pSingularName, Category2 pRootCategory, 
-			  ArrayList<Product> pProducts, ArrayList<AttributeStat> pSpecifications, ArrayList<AttributeStat> pRatings)
+	Category2(String pId, String pSingularName, String pRootCategory, 
+			  Collection<Product> pProducts, Collection<AttributeStat> pSpecifications, Collection<AttributeStat> pRatings)
 	{
 		aId = pId;
 		aSingularName = pSingularName;
-		aRootCategory = pRootCategory;
+		aRootCategoryName = pRootCategory;
 		aProducts.addAll(pProducts);
 		aSpecifications.addAll(pSpecifications);
 		aRatings.addAll(pRatings);
+	}
+	
+	/**
+	 * @return The name of the franchise for this category.
+	 */
+	public String getFranchise()
+	{
+		return aRootCategoryName;
 	}
 	
 	/**
@@ -87,14 +89,6 @@ public class Category2
 	public String getName() 
 	{
 		return aSingularName;
-	}
-	
-	/**
-	 * @return The root category for this category.
-	 */
-	public Category2 getRoot()
-	{
-		return aRootCategory;
 	}
 }
 

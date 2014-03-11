@@ -65,6 +65,14 @@ public class Category
 		aParent = pParent;
 	}
 	
+	/**
+	 * @return The immutable Category object representing this category.
+	 */
+	public Category2 getCategory()
+	{
+		return new Category2(aId, aSingularName, getRootCategoryName(), aProducts, aSpecifications.values(), aRatings.values());
+	}
+	
 	//--- Public Method ---
 	
 	/**
@@ -172,6 +180,18 @@ public class Category
 	}
 	
 	//--- Package-private stuff ---
+	
+	String getRootCategoryName()
+	{
+		if( aParent == null )
+		{
+			return aSingularName;
+		}
+		else
+		{
+			return getRootCategoryName();
+		}
+	}
 	
 	int getNumberOfChildren()
 	{
