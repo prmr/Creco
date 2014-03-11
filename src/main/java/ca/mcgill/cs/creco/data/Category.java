@@ -322,7 +322,7 @@ public class Category
 		aRatings.put(pRatingStat.getAttribute().getId(), newRating);
 	}
 	
-	private AttributeStat getRating(String pId)
+	public AttributeStat getRating(String pId)
 	{
 		return aRatings.get(pId);
 	}
@@ -349,7 +349,7 @@ public class Category
 		aSpecifications.put(pSpecifications.getAttribute().getId(), newSpec);
 	}
 	
-	private AttributeStat getSpecification(String pId)
+	public AttributeStat getSpecification(String pId)
 	{
 		return aSpecifications.get(pId);
 	}

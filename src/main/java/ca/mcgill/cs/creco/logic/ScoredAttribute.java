@@ -15,7 +15,14 @@
  */
 package ca.mcgill.cs.creco.logic;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.google.common.collect.Lists;
 
 import ca.mcgill.cs.creco.data.*;
 
@@ -55,21 +62,26 @@ public class ScoredAttribute
 
      };
 	
+ 	@Autowired
+ 	private IDataStore aDataStore;
     private String aAttributeID;
  	private String aAttributeName;
  	private double aAttributeScore;
- 	private AttributeValue aAttributeMean;
+ 	private TypedValue aAttributeMean;
  	private boolean aIsCat;
+ 	private String aCategoryID;
      
 	/**Constructor from an attribute.
 	 * @param pAttribute attribute to build score for.
+	 * @param Category in hwich the attribute is present
 	 */
-	public ScoredAttribute(Attribute pAttribute)
+	public ScoredAttribute(Attribute pAttribute, Category pCat)
 	{
 		aIsCat = false;
 		aAttributeID = pAttribute.getId();
 		aAttributeScore = 0.0;
 		aAttributeName = pAttribute.getName();
+		aCategoryID = pCat.getId();
 	}
 	/** Constructor from a Category.
 	 * @param pCat category to treat as attribute
@@ -80,6 +92,7 @@ public class ScoredAttribute
 		aAttributeID = pCat.getId();
 		aAttributeScore = 0.0;
 		aAttributeName = pCat.getName();
+		aCategoryID = pCat.getId();
 	}
 	
 	/**
@@ -126,7 +139,7 @@ public class ScoredAttribute
 	 * @return mean or mode of this attribute given a product list used to 
 	 * calculate the score
 	 */
-	public AttributeValue getAttributeMean() 
+	public TypedValue getAttributeMean() 
 	{
 		return aAttributeMean;
 	}
@@ -135,7 +148,7 @@ public class ScoredAttribute
 	 * @param pAttributeMean mean or mode of this attribute given a product list used to 
 	 * calculate the score
 	 */
-	public void setAttributeMean(AttributeValue pAttributeMean) 
+	public void setAttributeMean(TypedValue pAttributeMean) 
 	{
 		this.aAttributeMean = pAttributeMean;
 	}
@@ -146,6 +159,51 @@ public class ScoredAttribute
 	{
 		return aIsCat;
 	}
+	
+	public TypedValue getMin()
+	{
+		AttributeStat a;
+		a = aDataStore.getCategory(aCategoryID).getSpecification(aAttributeID);
+		if(a == null)
+		{
+			a = aDataStore.getCategory(aCategoryID).getSpecification(aAttributeID);
+		}
+		if(a == null){
+			return new  TypedValue(0);
+		}
+		return new TypedValue(a.getValueMin());
+	}
+	
+	public TypedValue getMax()
+	{
+		AttributeStat a;
+		a = aDataStore.getCategory(aCategoryID).getSpecification(aAttributeID);
+		if(a == null)
+		{
+			a = aDataStore.getCategory(aCategoryID).getSpecification(aAttributeID);
+		}
+		if(a == null){
+			return new TypedValue(0);
+		}
+		return new TypedValue(a.getValueMax());
+	}
+	
+	public List<String> getDict()
+	{
+		AttributeStat a;
+		a = aDataStore.getCategory(aCategoryID).getSpecification(aAttributeID);
+		if(a == null)
+		{
+			a = aDataStore.getCategory(aCategoryID).getSpecification(aAttributeID);
+		}
+		if(a == null){
+			return new ArrayList<String>();
+		}
+		return Lists.newArrayList(a.getValueEnum());
+	}
+	
+
+	
 	
 	
 	

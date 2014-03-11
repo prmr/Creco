@@ -39,6 +39,8 @@ import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
+import ca.mcgill.cs.creco.data.TypedValue;
+import ca.mcgill.cs.creco.data.TypedValue.Type;
 import ca.mcgill.cs.creco.logic.AttributeExtractor;
 import ca.mcgill.cs.creco.logic.AttributeValue;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
@@ -420,27 +422,27 @@ public class SearchController
 			f.setRate(false);			
 			f.setVisible(true);
 
-			AttributeValue val = scoredSpecs.get(i).getAttributeMean();			
+			TypedValue val = scoredSpecs.get(i).getAttributeMean();			
 
-			if(val.isBool() && val!=null)
+			if(val.getType() == Type.BOOLEAN && val!=null)
 			{	
 				f.setType("Bool");								
-				values.add(val.getBoolValue()+"");
+				values.add(val.getBooleanValue()+"");
 				f.setValue((ArrayList<String>) values);
 			}
 			else
 			{
-				if(val.isNumeric() && val!=null)
+				if((val.getType() == Type.INTEGER || val.getType() == Type.DOUBLE ) && val!=null)
 					{
 						f.setType("Numeric");
-						f.setMinValue(val.getMin());
-						f.setMaxValue(val.getMax());										
+						f.setMinValue(scoredSpecs.get(i).getMin().getNumericValue());
+						f.setMaxValue(scoredSpecs.get(i).getMax().getNumericValue());										
 						values.add(val.getNumericValue()+"");
 						f.setValue((ArrayList<String>)values);										
 					}
 				else
 				{
-					if(val.isNominal() && val!=null)
+					if(val.getType() == Type.STRING && val!=null)
 					{
 						if(val.getNominalValue().equalsIgnoreCase("true") || val.getNominalValue().equalsIgnoreCase("false")) 
 						{
@@ -457,7 +459,7 @@ public class SearchController
 							}
 							else
 							{
-								values= val.getDict();								
+								values= scoredSpecs.get(i).getDict();								
 							}
 							f.setValue((ArrayList<String>)values);										
 						}
@@ -482,27 +484,27 @@ public class SearchController
 			f.setSpec(false);			
 			f.setVisible(true);
 
-			AttributeValue val = scoredRatings.get(i).getAttributeMean();	
+			TypedValue val = scoredRatings.get(i).getAttributeMean();	
 
-			if(val.isBool() && val!=null)
+			if(val.getType() == Type.BOOLEAN && val!=null)
 			{
 				f.setType("Bool");								
-				values.add(val.getBoolValue()+"");
+				values.add(val.getBooleanValue()+"");
 				f.setValue((ArrayList<String>)values);
 			}
 			else
 			{
-				if(val.isNumeric() && val!=null)
+				if((val.getType() == Type.INTEGER || val.getType() == Type.DOUBLE ) && val!=null)
 				{
 					f.setType("Numeric");
-					f.setMinValue(val.getMin());
-					f.setMaxValue(val.getMax());					
+					f.setMinValue(scoredRatings.get(i).getMin().getNumericValue());
+					f.setMaxValue(scoredRatings.get(i).getMax().getNumericValue());					
 					values.add(val.getNumericValue()+"");
 					f.setValue((ArrayList<String>)values);										
 				}
 				else
 				{
-					if(val.isNominal() && val!=null)
+					if(val.getType() == Type.STRING && val!=null)
 					{
 						if(val.getNominalValue().equalsIgnoreCase("true") || val.getNominalValue().equalsIgnoreCase("false")) 
 						{
@@ -519,7 +521,7 @@ public class SearchController
 						}
 						else
 						{
-							values=val.getDict();					
+							values=scoredRatings.get(i).getDict();					
 						}
 						f.setValue((ArrayList<String>)values);										
 					}
@@ -562,7 +564,7 @@ public class SearchController
 		{
 			String tempName = userFMSpec.getNames().get(i);
 			int indx = locateFeatureScoredAttribute(scoredSpecs, tempName);
-			AttributeValue av = new AttributeValue(userFMSpec.getValues().get(i));				
+			TypedValue av = new TypedValue(userFMSpec.getValues().get(i));				
 			if(indx != -1){
 				scoredSpecs.get(indx).setAttributeMean(av);
 			}
@@ -575,8 +577,9 @@ public class SearchController
 			System.out.println(" tempName2 " + tempName2);			
 
 			int indx2 = locateFeatureScoredAttribute(scoredRatings, tempName2);
-			AttributeValue av = new AttributeValue(userFMRate.getValues().get(i));							
-			if(indx2 != -1){
+			TypedValue av = new TypedValue(userFMRate.getValues().get(i));							
+			if(indx2 != -1)
+			{
 				scoredRatings.get(indx2).setAttributeMean(av);
 			}
 		}

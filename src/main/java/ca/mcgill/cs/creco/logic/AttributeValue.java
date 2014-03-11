@@ -2,20 +2,12 @@ package ca.mcgill.cs.creco.logic;
 
 import java.util.List;
 
+
 /**
- *AttributeValue class can either be boolean, nominal or numeric
- *Use boolean checks to know what type of attribute before getting
- *value. If you try to get a value different from the one of the 
- *attribute it will return null.
- *
+ *@deprecated
  */
-/**
- *
- */
-/**
- *
- */
-public class AttributeValue {
+public class AttributeValue 
+{
 	
 	private boolean aBool;
 	private boolean aNominal;

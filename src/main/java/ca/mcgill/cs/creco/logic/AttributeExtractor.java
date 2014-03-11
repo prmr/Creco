@@ -98,7 +98,7 @@ public class AttributeExtractor
 	 * @param pAttributeID Id of the Attribute to be evaluated
 	 * @return AttributeValue which corresponds to the stat of that attribute
 	 */
-	public static AttributeValue extractMean(List<Product> pProductList, String pAttributeID)
+	public static TypedValue extractMean(List<Product> pProductList, String pAttributeID)
 	{
 		double numericCount = 0;
 		double numericSum = 0;
@@ -157,15 +157,15 @@ public class AttributeExtractor
 		}
 		if(numericCount > 0 && numericCount == pProductList.size())
 		{
-			return new AttributeValue(numericSum/numericCount, min,max);
+			return new TypedValue(numericSum/numericCount);
 		}
 		else if ((trueCount > 0 || falseCount > 0) && trueCount +falseCount == pProductList.size())
 		{
 			if(trueCount > falseCount)
 			{
-				return new AttributeValue(true);
+				return new TypedValue(true);
 			}
-			return new AttributeValue(false);
+			return new TypedValue(false);
 			
 		}
 		//to change
@@ -180,8 +180,7 @@ public class AttributeExtractor
 				maxCount = count;			
 			}
 		}
-		List<String> dict = Lists.newArrayList(nominalCounts.keySet());
-		return new AttributeValue(maxAtt, dict);
+		return new TypedValue(maxAtt);
 	}
 	
 
@@ -537,7 +536,7 @@ public class AttributeExtractor
 	    	{
 					continue;
 	    	}
-	    	scoredAttributes.add(new ScoredAttribute(a.getAttribute()));
+	    	scoredAttributes.add(new ScoredAttribute(a.getAttribute(),aEquivalenceClass));
 	    }
 	    return scoredAttributes;
 	}
@@ -555,8 +554,8 @@ public class AttributeExtractor
 		{
 			if(!fullMap.containsKey(ss.getAttribute().getId()))
 			{
-				ScoredAttribute sa = new ScoredAttribute(ss.getAttribute());
-				sa.setAttributeMean(new AttributeValue("N/A"));
+				ScoredAttribute sa = new ScoredAttribute(ss.getAttribute(), aEquivalenceClass);
+				sa.setAttributeMean(new TypedValue("N/A"));
 				fullMap.put(ss.getAttribute().getId(), sa);
 			}
 		}
@@ -578,8 +577,8 @@ public class AttributeExtractor
 		{
 			if(!fullMap.containsKey(ss.getAttribute().getId()))
 			{
-				ScoredAttribute sa = new ScoredAttribute(ss.getAttribute());
-				sa.setAttributeMean(new AttributeValue("N/A"));
+				ScoredAttribute sa = new ScoredAttribute(ss.getAttribute(),aEquivalenceClass);
+				sa.setAttributeMean(new TypedValue("N/A"));
 				fullMap.put(ss.getAttribute().getId(), sa);
 			}
 		}

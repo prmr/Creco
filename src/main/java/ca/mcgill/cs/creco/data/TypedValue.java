@@ -24,6 +24,10 @@ public class TypedValue
 	private Object aValue;
 	private final Object aOriginalValue;
 	
+	private boolean aBooleanValue;
+	private String aNominalValue;
+	private double aNumericValue;
+	
 	/**
 	 * The different types a typed value can take.
 	 */
@@ -46,14 +50,22 @@ public class TypedValue
 		else if(pValue instanceof Integer)
 		{
 			aType = Type.INTEGER;
+			aNumericValue = ((Integer) pValue).doubleValue();
 		}
-		else if(pValue instanceof Double || pValue instanceof Float)
+		else if(pValue instanceof Double )
 		{
 			aType = Type.DOUBLE;
+			aNumericValue = (Double) pValue;
+		}
+		else if( pValue instanceof Float)
+		{
+			aType = Type.DOUBLE;
+			aNumericValue = ((Float) pValue).doubleValue();
 		}
 		else if(pValue instanceof Boolean)
 		{
 			aType = Type.BOOLEAN;
+			aBooleanValue = (Boolean) pValue;
 		}
 		else if(pValue instanceof String)
 		{
@@ -62,28 +74,33 @@ public class TypedValue
 			if(theString.matches("-?\\d+"))
 			{
 				aType = Type.INTEGER;
-				aValue = Integer.parseInt(theString);
+				aValue = Double.parseDouble(theString);
+				aNumericValue = Double.parseDouble(theString);
 			}
 			//match a number with optional '-' and decimal.
 			else if(theString.matches("-?\\d+(\\.\\d+)?"))  
 			{
 				aType = Type.DOUBLE;
 				aValue = Double.parseDouble(theString);
+				aNumericValue = Double.parseDouble(theString);
 			}
 			else if(theString.matches("(y|Y)es"))
 			{
 				aType = Type.BOOLEAN;
 				aValue = true;
+				aBooleanValue = true;
 			}
 			else if(theString.matches("(n|N)o"))
 			{
 				aType = Type.BOOLEAN;
 				aValue = false;
+				aBooleanValue = false;
 			}
 			else
 			{
 				aType = Type.STRING;
 				aValue = theString;
+				aNominalValue = theString;
 			}
 		}
 		else
@@ -114,6 +131,24 @@ public class TypedValue
 	public Object getOriginalValue()
 	{
 		return aOriginalValue;
+	}
+
+	public boolean getBooleanValue()
+	{
+		return aBooleanValue;
+	}
+
+	public String getNominalValue() 
+	{
+		return aNominalValue;
+	}
+
+	public double getNumericValue() 
+	{
+		return aNumericValue;
 	}	
+	
+	
+	
 }
 

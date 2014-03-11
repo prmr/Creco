@@ -2,6 +2,7 @@ package ca.mcgill.cs.creco.data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
@@ -80,12 +81,12 @@ public class TestTypedValue
 	{
 		TypedValue value = new TypedValue("28");
 		assertEquals("28", value.getOriginalValue());
-		assertEquals(new Integer(28), value.getValue());
+		assertTrue(28 ==  value.getNumericValue());
 		assertEquals(Type.INTEGER, value.getType());
 		
 		value = new TypedValue("-28");
 		assertEquals("-28", value.getOriginalValue());
-		assertEquals(new Integer(-28), value.getValue());
+		assertTrue(-28 == value.getNumericValue());
 		assertEquals(Type.INTEGER, value.getType());
 	}
 	
@@ -132,7 +133,7 @@ public class TestTypedValue
 	{
 		TypedValue value = new TypedValue("Fuzzy Wuzzy was a woman?");
 		assertEquals("Fuzzy Wuzzy was a woman?", value.getOriginalValue());
-		assertEquals("Fuzzy Wuzzy was a woman?", value.getValue());
+		assertEquals("Fuzzy Wuzzy was a woman?", value.getNominalValue());
 		assertEquals(Type.STRING, value.getType());
 	}
 	
