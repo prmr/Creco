@@ -77,14 +77,14 @@ public class TestCRData
 		assertEquals("28947", aDataStore.getCategory("33768").getParent().getId()); // Category merging
 	}
 	
-	// Categories that are not eq classes do not exist.
-//	@Test
-//	public void testCategories1()
-//	{
-//		assertNull(aDataStore.getCategory("28934"));
-//		assertNull(aDataStore.getCategory("28935"));
-//		assertNull(aDataStore.getCategory("33191"));
-//		assertNull(aDataStore.getCategory("28713"));
-//		assertNull(aDataStore.getCategory("28985"));
-//	}
+	 // Categories that are not eq classes do not exist.
+	@Test
+	public void testCategories1()
+	{
+		assertNull(aDataStore.getCategory2("28934"));
+		assertNull(aDataStore.getCategory2("28935"));
+		assertNull(aDataStore.getCategory2("33191"));
+		assertNull(aDataStore.getCategory2("28713"));
+		assertNull(aDataStore.getCategory2("28985"));
+	}
 }
