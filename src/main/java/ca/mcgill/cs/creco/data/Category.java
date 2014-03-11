@@ -189,7 +189,7 @@ public class Category
 		}
 		else
 		{
-			return getRootCategoryName();
+			return aParent.getRootCategoryName();
 		}
 	}
 	

@@ -57,6 +57,7 @@ public final class CRData implements IDataCollector, IDataStore
 	private ArrayList<Category> aRootCategories = new ArrayList<Category>();					// Top-level categories
 	private ArrayList<Category> aEquivalenceClasses = new ArrayList<Category>();
 	private ArrayList<Category> aSubEquivalenceClasses = new ArrayList<Category>();
+	private HashMap<String, Category2> aCategory2Index = new HashMap<String, Category2>();
 	
 	private CRData() throws IOException
 	{
@@ -84,6 +85,11 @@ public final class CRData implements IDataCollector, IDataStore
 		// Roll up useful pre-processed statistics and find equivalence classes
 		refresh();
 		findEquivalenceClasses();
+		
+		for( Category c : getEquivalenceClasses())
+		{
+			aCategory2Index.put(c.getId(), c.getCategory());
+		}
 	}
 	
 	
@@ -96,6 +102,15 @@ public final class CRData implements IDataCollector, IDataStore
 	public Category getCategory(String pIndex) 
 	{
 		return aCategoryIndex.get(pIndex);
+	}
+	
+	/**
+	 * @param pIndex The requested index.
+	 * @return The category corresponding to pIndex.
+	 */
+	public Category2 getCategory2(String pIndex)
+	{
+		return aCategory2Index.get(pIndex);
 	}
 	
 	@Override
@@ -124,13 +139,7 @@ public final class CRData implements IDataCollector, IDataStore
 	@Override
 	public Collection<Category2> getCategories()
 	{
-		ArrayList<Category2> lReturn = new ArrayList<Category2>();
-		for( Category category : aEquivalenceClasses )
-		{
-			lReturn.add(category.getCategory());
-		}
-		
-		return lReturn;
+		return Collections.unmodifiableCollection(aCategory2Index.values());
 	}
 	
 	/**
