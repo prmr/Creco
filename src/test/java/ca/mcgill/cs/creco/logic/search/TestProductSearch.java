@@ -41,13 +41,15 @@ public class TestProductSearch {
 	IProductSearch aProductSearch;
 	
 	private static String SMARTPHONE_CATEGORY_ID = "28726";
+	private static String IPHONE_5S_16GB_VERIZON_ID = "231983";
 	
 	@Test
 	public void testExactStringMatch() throws IOException
 	{
 		List<ScoredProduct> scoredProducts = aProductSearch.queryProducts("iPhone 5s (16GB) (Verizon)", SMARTPHONE_CATEGORY_ID);
 		
-		assertEquals("iPhone 5s (16GB) (Verizon)", scoredProducts.get(0).getProduct().getName());
+		
+		assertEquals(IPHONE_5S_16GB_VERIZON_ID, scoredProducts.get(0).getProduct().getId());
 	}
 	
 	@Test
@@ -55,7 +57,15 @@ public class TestProductSearch {
 	{
 		List<ScoredProduct> scoredProducts = aProductSearch.queryProducts("iPhone 5s (16GB) (Veribon)", SMARTPHONE_CATEGORY_ID);
 		
-		assertEquals("iPhone 5s (16GB) (Verizon)", scoredProducts.get(0).getProduct().getName());
+		assertEquals(IPHONE_5S_16GB_VERIZON_ID, scoredProducts.get(0).getProduct().getId());
+	}
+	
+	@Test
+	public void testFuzzyMatch() throws IOException
+	{
+		List<ScoredProduct> scoredProducts = aProductSearch.queryProducts("verizon iphone 5s 16gb", SMARTPHONE_CATEGORY_ID);
+		
+		assertEquals(IPHONE_5S_16GB_VERIZON_ID, scoredProducts.get(0).getProduct().getId());
 	}
 	
 	@Test

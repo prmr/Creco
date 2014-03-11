@@ -51,13 +51,15 @@ public class AttributeExtractor
 {
 
 	final Logger logger = LoggerFactory.getLogger(AttributeExtractor.class);
+	private static final double DEFAULT_MIN = 10000000;
+	private static final double DEFAULT_MAX = -10000000;
 	private List<Product> aProductList;
 	private Category aEquivalenceClass;
 	private Iterable<AttributeStat> aSpecList;
 	private Iterable<AttributeStat> aRatingList;
 	private ArrayList<ScoredAttribute> aScoredSpecList;
 	private ArrayList<ScoredAttribute> aScoredRatingList;
-	
+
 	/**Constructor that takes a ProductSearchResult and an equivalence class.
 	 * @param pProductSearchResult a lucene result
 	 * @param pEquivalenceClass the whole space of interesting products
@@ -104,19 +106,20 @@ public class AttributeExtractor
 		double numericSum = 0;
 		int trueCount = 0;
 		int falseCount = 0;
-		double max = -1000000;
-		double min = 1000000;
+		double max = DEFAULT_MAX;
+		double min = DEFAULT_MIN;
 		HashMap<String, Integer> nominalCounts = new HashMap<String, Integer>();
 		for( Product p : pProductList)
 		{
 			ca.mcgill.cs.creco.data.Attribute s = p.getSpec(pAttributeID);
 			if( s != null)
 			{
+				TypedValue tv = s.getTypedValue();
 //				MODIFY WHEN ADDING CLASSES
-				String specString = s.getValue().toString();
-				if(s.getType() == Type.INTEGER || s.getType() == Type.DOUBLE )
+				//String specString = s.getValue().toString();
+				if(tv.getType() == Type.INTEGER || tv.getType() == Type.DOUBLE )
 				{
-					double val = Double.parseDouble(specString);
+					double val = tv.getNumericValue();
 					if(val > max)
 					{
 						max = val;
@@ -126,11 +129,11 @@ public class AttributeExtractor
 						min  = val;
 					}
 					numericCount ++;
-					numericSum += Double.parseDouble(specString);					
+					numericSum += tv.getNumericValue();					
 				}
-				else if (s.getType() == Type.BOOLEAN)
+				else if (tv.getType() == Type.BOOLEAN)
 				{
-					if(specString.equals("true"))
+					if(tv.getBooleanValue())
 					{
 						trueCount ++;
 					}
@@ -142,15 +145,15 @@ public class AttributeExtractor
 				else
 				{
 					int count;
-					if (nominalCounts.containsKey(specString))
+					if (nominalCounts.containsKey(tv.getNominalValue()))
 					{
-						count = nominalCounts.get(specString);
+						count = nominalCounts.get(tv.getNominalValue());
 					}
 					else
 					{
 						count = 0;
 					}
-					nominalCounts.put(specString, count + 1);
+					nominalCounts.put(tv.getNominalValue(), count + 1);
 				}
 			}
 			
@@ -325,13 +328,14 @@ public class AttributeExtractor
 //			trainSelector.SelectAttributes(dataset);
 //			String Results = trainSelector.toResultsString();
 		}
-		catch(weka.core.WekaException e)
+		catch(weka.core.WekaException e1)
 		{
-			logger.error("Weka ERROR:" + e);
+			logger.error("Weka ERROR:" + e1);
+
 		}
-		catch(Exception e)
+		catch(Exception e2)
 		{
-			logger.info("Weka Attribute ERROR:\n" + e +"\nContinuing");
+			logger.info("Weka Attribute ERROR:\n" + e2 +"\nContinuing");
 		}
 		aScoredSpecList = completeScoredSpecs(scoredAttributes);
 		
@@ -377,7 +381,7 @@ public class AttributeExtractor
 
 			for(int i = 0 ; i < scoredAttributes.size(); i ++)
 			{
-				String indexName = ahm.getHashValue((scoredAttributes.get(i).getAttributeName()));
+				String indexName = ahm.getHashValue(scoredAttributes.get(i).getAttributeName());
 				Attribute wekaAtt = dataset.attribute(indexName);
 				
 				TypedValue.Type type = null;
@@ -467,13 +471,14 @@ public class AttributeExtractor
 //			String Results = trainSelector.toResultsString();
 
 		}
-		catch(weka.core.WekaException e)
+		catch(weka.core.WekaException e1)
 		{
-			logger.error("Weka ERROR:" + e);
+			logger.error("Weka ERROR:" + e1);
 		}
-		catch(Exception e)
+		catch(Exception e2)
 		{
-			logger.info("Weka Attribute ERROR:\n" + e +"\nContinuing");
+			logger.info("Weka Attribute ERROR:\n" + e2 +"\nContinuing");
+
 		}
 		aScoredRatingList = completeScoredRatings(scoredAttributes);
 		
@@ -555,6 +560,7 @@ public class AttributeExtractor
 			if(!fullMap.containsKey(ss.getAttribute().getId()))
 			{
 				ScoredAttribute sa = new ScoredAttribute(ss.getAttribute(), aEquivalenceClass);
+
 				sa.setAttributeMean(new TypedValue("N/A"));
 				fullMap.put(ss.getAttribute().getId(), sa);
 			}
@@ -578,6 +584,7 @@ public class AttributeExtractor
 			if(!fullMap.containsKey(ss.getAttribute().getId()))
 			{
 				ScoredAttribute sa = new ScoredAttribute(ss.getAttribute(),aEquivalenceClass);
+
 				sa.setAttributeMean(new TypedValue("N/A"));
 				fullMap.put(ss.getAttribute().getId(), sa);
 			}

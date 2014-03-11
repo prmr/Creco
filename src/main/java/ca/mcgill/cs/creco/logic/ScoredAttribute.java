@@ -24,7 +24,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.Lists;
 
-import ca.mcgill.cs.creco.data.*;
+import ca.mcgill.cs.creco.data.AttributeStat;
+import ca.mcgill.cs.creco.data.IDataStore;
+import ca.mcgill.cs.creco.data.TypedValue;
+import ca.mcgill.cs.creco.data.Attribute;
+import ca.mcgill.cs.creco.data.Category;
 
 /**
  *
@@ -69,11 +73,14 @@ public class ScoredAttribute
  	private double aAttributeScore;
  	private TypedValue aAttributeMean;
  	private boolean aIsCat;
+
  	private String aCategoryID;
-     
+ 	private String aAttributeDesc;
+	   
+
 	/**Constructor from an attribute.
 	 * @param pAttribute attribute to build score for.
-	 * @param Category in hwich the attribute is present
+	 * @param Category in which the attribute is present
 	 */
 	public ScoredAttribute(Attribute pAttribute, Category pCat)
 	{
@@ -82,6 +89,9 @@ public class ScoredAttribute
 		aAttributeScore = 0.0;
 		aAttributeName = pAttribute.getName();
 		aCategoryID = pCat.getId();
+
+		aAttributeDesc = pAttribute.getDescription();
+
 	}
 	/** Constructor from a Category.
 	 * @param pCat category to treat as attribute
@@ -93,6 +103,8 @@ public class ScoredAttribute
 		aAttributeScore = 0.0;
 		aAttributeName = pCat.getName();
 		aCategoryID = pCat.getId();
+		aAttributeDesc = pCat.getName();
+
 	}
 	
 	/**
@@ -132,7 +144,7 @@ public class ScoredAttribute
 	@Override
 	public String toString()
 	{
-		return aAttributeName + ", " + aAttributeID + ": " + aAttributeScore + ", " + aAttributeMean + "||";
+		return aAttributeName + ", " + aAttributeID + ", "+ aAttributeDesc +": " + aAttributeScore + ", " + aAttributeMean + "||";
 	}
 
 	/**
@@ -205,6 +217,22 @@ public class ScoredAttribute
 
 	
 	
+
+	/**
+	 * @return String representing the attribute description
+	 * */	
+	public String getaAttributeDesc() 
+	{
+		return aAttributeDesc;
+	}
+
 	
+	/**
+	 * @param pAttributeDesc description of this attribute
+	 * ***/	
+	public void setaAttributeDesc(String pAttributeDesc)
+	{
+		this.aAttributeDesc = pAttributeDesc;
+	}
 	
 }

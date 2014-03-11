@@ -30,7 +30,8 @@ public class UserFeatureModel implements Serializable {
 	private ArrayList<String> ids;
 	private ArrayList<String> names;
 	private ArrayList<String> values;
-	public String getQuery()  {
+	public String getQuery()
+	{
 		return query;
 	}
 	public void setQuery(String query) {

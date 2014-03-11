@@ -37,23 +37,45 @@ $(function() {
 	          $( "#accordion" ).accordion( "refresh" );
 	        }
 	      });
-		   
-		$(".slider-range").slider({
+		
+	    var div = $("div.slider-range");
+	    var slider= $(".slider-range").slider({
   	        range: true,
-	        min: 0,
-	        max: 100,
-		    step:1,
-		    values: [30, 50],
+  	        step:0.1,
+		    values: [0,0],
+		    slide: function (event, ui) {
+		    	var min= $(this).closest("div").attr("min");		    	
+		    	var max= $(this).closest("div").attr("max");
+			    	
+		    	if (min >=0 && max<=1)
+		    	{
+		    		$(this).slider("option","min",0);
+			    	$(this).slider("option","max",1);			    			    		
+		    	}else{
+		    		if(min >=0 && max<=5)
+			    	{
+			    		$(this).slider("option","min",0);
+				    	$(this).slider("option","max",5);			    			    				    			
+		    		}else{
+			    		 $(this).slider("option","min",min);
+				    	 $(this).slider("option","max",max);			    	
+		    		}
+		    	}
+		    	 var minVal = $(this).slider("option", "min"),
+		    	 maxVal = $(this).slider("option", "max");
+	        },
 		    stop:function(){
 		    	var id_div= $(this).closest("div").attr("id");
-		 	    console.log("div id is " + id_div);
+		 	 
+		 	    var text=$(':input[type="text"][name="'+id_div+'"]');
+		 	    text.val($(this).slider("values", 0)+" : "+ $(this).slider("values", 1));
 	    	     var minVal = $(this).slider("values", 0),
 	    	 	 maxVal = $(this).slider("values", 1);
 	    	     var meanVal=(minVal+maxVal)/2;
 		    	 addFeature(this,id_div,meanVal);
-		    	//setMinMax(minVal,maxVal,id_div);
 		    	}, 
 		 });
+	 
 	});
 	
 	function findParentID(node, id)
@@ -252,10 +274,10 @@ $(function() {
 		        },
 		        complete: function(data)
 		        {
-		        	$("#rankedproduct-result").hide().html(data).fadeIn('fast');
-		        	console.log("Complete");
-		        	
-		        	//location.reload();
+		        //	$("#rankedproduct-result").html(data).fadeIn('fast');
+		        	console.log("Complete ");//+JSON.stringify(data));		        	
+		        	//$("#rankedproduct-result").load();//.fadeIn('fast');		        	
+		        	location.reload();
 		        }
 		      });			    		
 	}
