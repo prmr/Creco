@@ -16,6 +16,8 @@
 package ca.mcgill.cs.creco.util;
 
 import static org.junit.Assert.assertEquals;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,11 +40,14 @@ import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.search.ICategorySearch;
 import ca.mcgill.cs.creco.logic.search.IProductSearch;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
+import ca.mcgill.cs.creco.web.controller.SearchController;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/META-INF/test-context.xml"})
 public class TestFiltering {
 
+	private static final Logger LOG = LoggerFactory.getLogger(SearchController.class);
+	
 	@Autowired
 	IDataStore aDataStore;
 	
@@ -119,7 +124,7 @@ public class TestFiltering {
 		  userScoredFeaturesSpecs.add(test_score);
 			RankedFeaturesProducts Products = new RankedFeaturesProducts();
 			List<ScoredProduct> productsToDisplay = Products.FilterandReturn(userScoredFeaturesSpecs);
-		System.out.println(productsToDisplay.size());
+		LOG.debug(new Integer(productsToDisplay.size()).toString());
 			assertEquals(60, productsToDisplay.size());
 	}
 	@Test
@@ -147,7 +152,7 @@ public class TestFiltering {
 		  userScoredFeaturesSpecs.add(test_score);
 			RankedFeaturesProducts Products = new RankedFeaturesProducts();
 			List<ScoredProduct> productsToDisplay = Products.FilterandReturn(userScoredFeaturesSpecs);
-		System.out.println(productsToDisplay.size());
+		LOG.debug(new Integer(productsToDisplay.size()).toString());
 			assertEquals(scoredProducts.size(), productsToDisplay.size());
 	}
 }

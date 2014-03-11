@@ -140,13 +140,13 @@ public class SearchController
 	
 	public void setScoredRatings(List<ScoredAttribute> pScoredRatings)
 	{
-		System.out.println("in setscoredRatings " + pScoredRatings.toString());
+		LOG.debug("in setscoredRatings " + pScoredRatings.toString());
 		this.scoredRatings=pScoredRatings;	
 		
 	}
 	public void setScoredSpecs(List<ScoredAttribute> pScoredSpecs)
 	{
-		System.out.println("in setscoredSpecs"+ pScoredSpecs.toString());
+		LOG.debug("in setscoredSpecs"+ pScoredSpecs.toString());
 		
 		this.scoredSpecs=pScoredSpecs;	
 		
@@ -365,7 +365,7 @@ public class SearchController
 		 main_string=main_string.concat(",");
 		 main_string=main_string.concat("\n");
 		}
-		System.out.println(main_string);
+		LOG.debug(main_string);
 		// Nishanth code
 		//Converting
 		ArrayList<EqcVO> eqcs = new ArrayList<EqcVO>();		
@@ -497,7 +497,7 @@ public class SearchController
 			FeatureVO f = new FeatureVO();
 			f.setId(scoredRatings.get(i).getAttributeID());
 			f.setName(scoredRatings.get(i).getAttributeName());
-			System.out.println("***********Rate Name ********* "+ f.getName());
+			LOG.debug("***********Rate Name ********* "+ f.getName());
 
 			f.setRate(true);
 			f.setSpec(false);			
@@ -571,9 +571,9 @@ public class SearchController
 	@RequestMapping(value="/sendFeatures", method = RequestMethod.POST)	
 	public String sendCurrentFeatureList(@RequestParam String dataSpec, @RequestParam String dataRate)
 	{
-		System.out.println(" data is  " + dataSpec);
+		LOG.debug(" data is  " + dataSpec);
 
-		System.out.println(" data is  " + dataRate);
+		LOG.debug(" data is  " + dataRate);
 
 		Gson gson = new Gson();
 		UserFeatureModel userFMSpec = gson.fromJson(dataSpec, UserFeatureModel.class);
@@ -593,7 +593,7 @@ public class SearchController
 		for(int i = 0 ; i < userFMRate.getNames().size() ; i++)
 		{
 			String tempName2 = userFMRate.getNames().get(i);
-			System.out.println(" tempName2 " + tempName2);			
+			LOG.debug(" tempName2 " + tempName2);			
 
 			int indx2 = locateFeatureScoredAttribute(scoredRatings, tempName2);
 			AttributeValue av = new AttributeValue(userFMRate.getValues().get(i));							
@@ -602,14 +602,14 @@ public class SearchController
 			}
 		}
 
-		System.out.println(" Done ");
+		LOG.debug(" Done ");
 
-		System.out.println(" specs " + scoredSpecs.toString());
-		System.out.println(" old products "+ scoredProducts.toString());
+		LOG.debug(" specs " + scoredSpecs.toString());
+		LOG.debug(" old products "+ scoredProducts.toString());
 
 		for(ScoredProduct sa : scoredProducts)
 		{
-			System.out.println("old "+ sa.getProduct().getName());	
+			LOG.debug("old "+ sa.getProduct().getName());	
 			break;
 
 		}
@@ -626,10 +626,10 @@ public class SearchController
 				products.add(p);
 			 }
 			productList.setProducts(products);	
-			System.out.println(" new products "+ products.toString());
+			LOG.debug(" new products "+ products.toString());
 			for(ProductVO sa : products)
 			{
-				System.out.println("new "+ sa.getName());			
+				LOG.debug("new "+ sa.getName());			
 //				break;
 			}
 
@@ -650,7 +650,7 @@ public class SearchController
 			ScoredAttribute temp = pFeatureList.get(i);
 			if(temp.getAttributeName().equals(pName))
 			{
-				System.out.println("old mean value is " + pFeatureList.get(i).getAttributeMean());
+				LOG.debug("old mean value is " + pFeatureList.get(i).getAttributeMean());
 				return i;
 			}
 		}
