@@ -53,7 +53,7 @@ public final class CRData implements IDataCollector, IDataStore
 	private HashMap<String, Product> aProducts = new HashMap<String, Product>();
 	
 	private Hashtable<String, Category> aCategoryIndex = new Hashtable<String, Category>();
-	private ArrayList<Category> aFranchises = new ArrayList<Category>();					// Top-level categories
+	private ArrayList<Category> aRootCategories = new ArrayList<Category>();					// Top-level categories
 	private ArrayList<Category> aEquivalenceClasses = new ArrayList<Category>();
 	private ArrayList<Category> aSubEquivalenceClasses = new ArrayList<Category>();
 	
@@ -69,12 +69,11 @@ public final class CRData implements IDataCollector, IDataStore
 		loadingService.loadCategories(this);
 		
 		// Build an index of all categories.
-		for(Category franchise : aFranchises)
+		for(Category category : aRootCategories)
 		{
-			index(franchise);
+			index(category);
+			eliminateSingletons(category);
 		}
-		
-		eliminateSingletons();
 		
 		loadingService.loadProducts(this);
 		
@@ -101,7 +100,7 @@ public final class CRData implements IDataCollector, IDataStore
 	@Override
 	public void addCategory(Category pCategory)
 	{
-		addFranchise(pCategory);
+		aRootCategories.add(pCategory);
 	}
 	
 	@Override
@@ -139,14 +138,9 @@ public final class CRData implements IDataCollector, IDataStore
 	
 	// ----- ***** ----- ***** PRIVATE METHODS ***** ----- ***** -----
 	
-	private void addFranchise(Category pFranchise)
-	{
-		aFranchises.add(pFranchise);
-	}
-	
 	private void findEquivalenceClasses() 
 	{
-		for(Category franchise : aFranchises)
+		for(Category franchise : aRootCategories)
 		{
 			recurseFindEquivalenceClasses(franchise, 0);
 		}
@@ -215,7 +209,7 @@ public final class CRData implements IDataCollector, IDataStore
 	private void refresh() 
 	{			
 		// Now recursively refresh the category list
-		for(Category franchise : aFranchises)
+		for(Category franchise : aRootCategories)
 		{
 			recursiveRefresh(franchise, 0);
 		}
@@ -291,15 +285,7 @@ public final class CRData implements IDataCollector, IDataStore
 		}
 	}
 	
-	private void eliminateSingletons()
-	{
-		for(Category franchise : aFranchises)
-		{
-			recurseEliminateSingletons(franchise);
-		}
-	}
-	
-	private void recurseEliminateSingletons(Category pCategory)
+	private void eliminateSingletons(Category pCategory)
 	{
 		// detect if this is a singleton, if so, splice it out of the hierarchy
 		if(pCategory.getNumberOfChildren() == 1)
@@ -310,13 +296,13 @@ public final class CRData implements IDataCollector, IDataStore
 			parent.removeChild(pCategory);
 			parent.addSubcategory(child);
 
-			recurseEliminateSingletons(child);
+			eliminateSingletons(child);
 		}
 		else
 		{
 			for(Category child : pCategory.getChildren())
 			{
-				recurseEliminateSingletons(child);
+				eliminateSingletons(child);
 			}
 		}
 	}
