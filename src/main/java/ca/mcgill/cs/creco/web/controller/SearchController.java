@@ -367,7 +367,6 @@ public class SearchController
 		 main_string=main_string.concat(",");
 		 main_string=main_string.concat("\n");
 		}
-		System.out.println(main_string);
 		// Nishanth code
 		//Converting
 		ArrayList<EqcVO> eqcs = new ArrayList<EqcVO>();		
@@ -473,19 +472,17 @@ public class SearchController
 					{
 						if(val.getNominalValue().equalsIgnoreCase("true") || val.getNominalValue().equalsIgnoreCase("false")) 
 						{
-							System.out.println("if 1"+ val.getNominalValue());
+
 								f.setType("Bool");
 						}
 						else 
 						{
-							System.out.println("else1 "+ val.getNominalValue());
-
+							
 								f.setType("Nominal");
 						}
 
 							if(val.getNominalValue().equals("N/A"))
 							{
-								System.out.println("if 2"+ val.getNominalValue());
 
 								values.add("N/A");
 							}

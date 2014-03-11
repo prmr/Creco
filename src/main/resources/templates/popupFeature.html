@@ -15,65 +15,60 @@
  limitations under the License.
 -->
 <html xmlns:th="http://www.thymeleaf.org">
-<head> 
-    <title>Getting Started: Serving Web Content</title> 
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
-	<script src="//code.jquery.com/jquery-1.9.1.js"></script>
-	<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"></link>
-	
-	<script src="js/bootstrap-slider.js"></script> 
-	 <script src="js/features_form.js"></script> 
-	 </head> 
-<body>
-	<form id="extraForm" action="/sendFeatures2" method="POST">
-		<div th:each="feature : ${specFeatureList.features}"><!--.sequence(1,2)}"> -->
-   		<div th:if="${feature.visible==true}">
-    		<div th:if="${feature.spec==true}">     				    			 
-   	 			<div th:switch="${feature.type}"> 
- 	    			<div th:case="'Bool'">						   
-		 				<div class="btn-group">
-			  				<p class="text-info"><span th:text="${feature.name}"></span></p>
-			 	 				<div class="form-group1">
-									  <label>Yes</label>
-									  <input type="radio" th:name="${feature.name}" th:value="true"/>									  
-									  <label>No</label>
-									  <input type="radio" th:name="${feature.name}" th:value="false"/>
-									  <label>Neutral</label>
-									  <input type="radio" th:name="${feature.name}" th:value="na"/>
-								</div>		 									 																				 
+	<head> 
+    	<title>Getting Started: Serving Web Content</title> 
+    	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>   
+	</head> 
+	<body>
+		<form id="extraForm" action="/sendFeatures2" method="POST">
+			<div th:each="feature : ${specFeatureList.features}"><!--.sequence(1,2)}"> -->
+	   		<div th:if="${feature.visible==true}">
+	    		<div th:if="${feature.spec==true}">     				    			 
+	   	 			<div th:switch="${feature.type}"> 
+	 	    			<div th:case="'Bool'">						   
+			 				<div class="btn-group">
+				  				<p class="text-info"><span th:text="${feature.name}"></span></p>
+				 	 				<div class="form-group1">
+										  <label>Yes</label>
+										  <input type="radio" th:name="${feature.name}" th:value="true"/>									  
+										  <label>No</label>
+										  <input type="radio" th:name="${feature.name}" th:value="false"/>
+										  <label>Neutral</label>
+										  <input type="radio" th:name="${feature.name}" th:value="na"/>
+									</div>		 									 																				 
+							</div>
+					 	</div>
+					 	<div th:case="'Numeric'">
+										  	<span th:text="${feature.name}"></span>	 									 					
+											<input class="slider-cls" th:name="${feature.name}" th:value="${feature.value[0]}"/>
 						</div>
-				 	</div>
-				 	<div th:case="'Numeric'">
-									  	<span th:text="${feature.name}"></span>	 									 					
-										<input class="slider-cls" th:name="${feature.name}" th:value="${feature.value[0]}"/>
+						<div th:case="'Nominal'">
+							<div class="btn-group" data-toggle="buttons">
+							  	<p class="text-info"><span th:text="${feature.name}"></span></p>
+							  	 <div th:each="val : ${feature.value}">							  	 								 
+										  <span class="btn btn-xs btn-primary" th:text="${val}">
+										    <input type="checkbox" th:name="${feature.name}" th:value="${val}"/>
+										  </span>									  
+									</div>
+								</div>		 									 																				 
+							</div>						  				   											  
+							<div th:case="*">Type is different</div> 
+						</div> 
 					</div>
-					<div th:case="'Nominal'">
-						<div class="btn-group" data-toggle="buttons">
-						  	<p class="text-info"><span th:text="${feature.name}"></span></p>
-						  	 <div th:each="val : ${feature.value}">							  	 								 
-									  <span class="btn btn-xs btn-primary" th:text="${val}">
-									    <input type="checkbox" th:name="${feature.name}" th:value="${val}"/>
-									  </span>									  
-								</div>
-							</div>		 									 																				 
-						</div>						  				   											  
-						<div th:case="*">Type is different</div> 
-					</div> 
-				</div>
-			</div>     	   																	
-		</div>
- <button id='submit_btn' type="button" value="Send Features" class="btn btn-info">OK</button>								 
-</form>
-</body>
-
-	
-	<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" />
-	<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css" />
-	<link rel="stylesheet" type="text/css" href="css/main.css" />
-	<link rel="stylesheet" type="text/css" href="css/search.css" />
+				</div>     	   																	
+			</div>
+			<button id='submit_btn' type="button" value="Send Features" class="btn btn-info">OK</button>								 
+		</form>
+	</body>	
+	<script type='text/javascript' src="lib/jquery-1.9.1.js"></script>
+	<script type='text/javascript' src="lib/jquery-ui.js"></script>	
+	<script type='text/javascript' src='lib/bootstrap.min.js'></script>	
+	<script type='text/javascript' src="js/autocomplete.js"></script> 
+	<script type='text/javascript' src="js/bootstrap-slider.js"></script> 
+	<script type='text/javascript' src="js/features_form.js"></script> 
+	<link rel="stylesheet" href="lib/jquery-ui.css"></link>
+	<link rel='stylesheet' type='text/css' href='lib/bootstrap.min.css'></link>
+	<link rel='stylesheet' type='text/css' href='lib/bootstrap-theme.min.css'></link>
+	<link rel='stylesheet' type='text/css' href='css/search.css' />
 	<link rel="stylesheet" type="text/css" href="css/slider.css" />
-	
-
 </html>

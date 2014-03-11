@@ -174,11 +174,20 @@ public class ScoredAttribute
 	
 	public TypedValue getMin()
 	{
-		AttributeStat a;
-		a = aDataStore.getCategory(aCategoryID).getSpecification(aAttributeID);
-		if(a == null)
-		{
+		AttributeStat a = null;
+		try{
 			a = aDataStore.getCategory(aCategoryID).getSpecification(aAttributeID);
+		}
+		catch(NullPointerException npe)
+		{
+			try
+			{
+			a = aDataStore.getCategory(aCategoryID).getRating(aAttributeID);
+			}
+			catch(NullPointerException npe2)
+			{
+				
+			}
 		}
 		if(a == null){
 			return new  TypedValue(0);
@@ -188,11 +197,20 @@ public class ScoredAttribute
 	
 	public TypedValue getMax()
 	{
-		AttributeStat a;
-		a = aDataStore.getCategory(aCategoryID).getSpecification(aAttributeID);
-		if(a == null)
-		{
+		AttributeStat a = null;
+		try{
 			a = aDataStore.getCategory(aCategoryID).getSpecification(aAttributeID);
+		}
+		catch(NullPointerException npe)
+		{
+			try
+			{
+			a = aDataStore.getCategory(aCategoryID).getRating(aAttributeID);
+			}
+			catch(NullPointerException npe2)
+			{
+				
+			}
 		}
 		if(a == null){
 			return new TypedValue(0);
@@ -202,11 +220,20 @@ public class ScoredAttribute
 	
 	public List<String> getDict()
 	{
-		AttributeStat a;
-		a = aDataStore.getCategory(aCategoryID).getSpecification(aAttributeID);
-		if(a == null)
-		{
+		AttributeStat a = null;
+		try{
 			a = aDataStore.getCategory(aCategoryID).getSpecification(aAttributeID);
+		}
+		catch(NullPointerException npe)
+		{
+			try
+			{
+			a = aDataStore.getCategory(aCategoryID).getRating(aAttributeID);
+			}
+			catch(NullPointerException npe2)
+			{
+				
+			}
 		}
 		if(a == null){
 			return new ArrayList<String>();
