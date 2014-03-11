@@ -140,13 +140,11 @@ public class SearchController
 	
 	public void setScoredRatings(List<ScoredAttribute> pScoredRatings)
 	{
-		System.out.println("in setscoredRatings " + pScoredRatings.toString());
 		this.aScoredRatings=pScoredRatings;	
 		
 	}
 	public void setScoredSpecs(List<ScoredAttribute> pScoredSpecs)
 	{
-		System.out.println("in setscoredSpecs"+ pScoredSpecs.toString());
 		
 		this.aScoredSpecs=pScoredSpecs;	
 		
@@ -436,7 +434,6 @@ public class SearchController
 						f.setType("Numeric");
 						f.setMinValue(val.getMin());
 						f.setMaxValue(val.getMax());
-						System.out.println("min "+val.getMin()+" max "+val.getMax());
 						values.add(val.getNumericValue()+"");
 						f.setValue((ArrayList<String>)values);										
 					}
@@ -596,7 +593,7 @@ public class SearchController
 		
 		for(ScoredProduct sa : aScoredProducts)
 		{
-			System.out.println("old "+ sa.getProduct().getName());						
+			LOG.debug(sa.toString());					
 		}
 	
 		RankedFeaturesProducts Products = new RankedFeaturesProducts();
