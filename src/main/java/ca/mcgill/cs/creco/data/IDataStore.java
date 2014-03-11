@@ -1,5 +1,6 @@
 package ca.mcgill.cs.creco.data;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 /**
@@ -25,7 +26,7 @@ public interface IDataStore
 	 * Gets all categories from the database.
 	 * @return An iterable set of all the categories.
 	 */
-	Iterator<Category> getCategories();
+	Collection<Category2> getCategories();
 	
 	/**
 	 * Gets all products from the database.

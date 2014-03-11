@@ -4,10 +4,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.Collections;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.Category;
+import ca.mcgill.cs.creco.data.Category2;
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
@@ -28,38 +29,33 @@ public class AttributeExtractionTest
 	@Autowired
 	IDataStore aDataStore;
 	
-	@Test
-	public void testAllCategories() 
-	{
-		String catName = "";
-		try
-		{
-			Iterator<Category> categories = aDataStore.getCategories();
-			while(categories.hasNext())
-			{
-				Category c = categories.next();
-				if(c.getJaccardIndex() == null || c.getJaccardIndex() < 0.8)
-				{
-					continue;
-				}
-				catName = c.getName();
-				Set<Product> productSet = new HashSet<Product>();
-				for (Product product : c.getProducts())
-				{
-					productSet.add(product);
-				}
-				AttributeExtractor aec = new AttributeExtractor(productSet, c);
-				ArrayList<ScoredAttribute> ssl = aec.getScoredSpecList();
-				ArrayList<ScoredAttribute> srl = aec.getScoredRatingList();
-			}
-			
-		}
-		catch (Exception e)
-		{
-			fail("Exception caught " + e);
-		}
-		
-	}
+	// prmr removed because that was the only accessor of getCategories.
+//	@Test
+//	public void testAllCategories() 
+//	{
+//		String catName = "";
+//		try
+//		{
+//			for(Category2 c : aDataStore.getCategories())
+//			{
+//				catName = c.getName();
+//				Set<Product> productSet = new HashSet<Product>();
+//				for(Product product : c.getProducts())
+//				{
+//					productSet.add(product);
+//				}
+//				AttributeExtractor aec = new AttributeExtractor(productSet, c);
+//				ArrayList<ScoredAttribute> ssl = aec.getScoredSpecList();
+//				ArrayList<ScoredAttribute> srl = aec.getScoredRatingList();
+//			}
+//			
+//		}
+//		catch (Exception e)
+//		{
+//			fail("Exception caught " + e);
+//		}
+//		
+//	}
 	
 	@Test
 	public void testSorting() 

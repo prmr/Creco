@@ -17,6 +17,7 @@ package ca.mcgill.cs.creco.data;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -110,18 +111,18 @@ public final class CRData implements IDataCollector, IDataStore
 	}
 	
 	/**
-	 * @return The equivalence classes
+	 * @return The equivalence classes.
+	 * @deprecated use getCategories instead.
 	 */
 	@Override
+	@Deprecated
 	public Iterable<Category> getEquivalenceClasses()
 	{
 		return Collections.unmodifiableCollection(aEquivalenceClasses);
 	}
 	
-	/**
-	 * @return The equivalence classes
-	 */
-	public Iterable<Category2> getCategories2()
+	@Override
+	public Collection<Category2> getCategories()
 	{
 		ArrayList<Category2> lReturn = new ArrayList<Category2>();
 		for( Category category : aEquivalenceClasses )
@@ -130,15 +131,6 @@ public final class CRData implements IDataCollector, IDataStore
 		}
 		
 		return lReturn;
-	}
-	
-	/**
-	 * @return An iterator on all the franchises
-	 */
-	@Override
-	public Iterator<Category> getCategories()
-	{
-		return iterator();
 	}
 	
 	/**
