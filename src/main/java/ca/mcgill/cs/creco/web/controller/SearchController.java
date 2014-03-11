@@ -394,7 +394,7 @@ public class SearchController
 		AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
 		List<ScoredAttribute> ratingList = ae.getScoredRatingList();
 		List<ScoredAttribute> specList = ae.getScoredSpecList();
-	    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(ratingList, specList, prodSearch);
+	    RankedFeaturesProducts rankedProducts = new RankedFeaturesProducts(ratingList, specList, prodSearch);
 	    aScoredProducts = rankedProducts.getaProductSearchResult();
 	    
 	    aScoredRatings = rankedProducts.getaRatingList();
@@ -477,7 +477,7 @@ public class SearchController
 							}
 							else
 							{
-								values= val.getDict();								
+								values = val.getDict();								
 							}
 							f.setValue((ArrayList<String>)values);										
 						}
