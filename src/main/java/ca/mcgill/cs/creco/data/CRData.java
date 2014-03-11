@@ -119,6 +119,20 @@ public final class CRData implements IDataCollector, IDataStore
 	}
 	
 	/**
+	 * @return The equivalence classes
+	 */
+	public Iterable<Category2> getCategories2()
+	{
+		ArrayList<Category2> lReturn = new ArrayList<Category2>();
+		for( Category category : aEquivalenceClasses )
+		{
+			lReturn.add(category.getCategory());
+		}
+		
+		return lReturn;
+	}
+	
+	/**
 	 * @return An iterator on all the franchises
 	 */
 	@Override
@@ -153,10 +167,10 @@ public final class CRData implements IDataCollector, IDataStore
 		
 		if(pMode == 1)
 		{
-			this.aSubEquivalenceClasses.add(pCategory);
+			aSubEquivalenceClasses.add(pCategory);
 			for(Category child : children)
 			{
-				this.recurseFindEquivalenceClasses(child, 1);
+				recurseFindEquivalenceClasses(child, 1);
 			}
 			return;
 		}
@@ -164,8 +178,8 @@ public final class CRData implements IDataCollector, IDataStore
 		{
 			if(numChildren == 0)
 			{
-				this.aEquivalenceClasses.add(pCategory);
-				this.aSubEquivalenceClasses.add(pCategory);
+				aEquivalenceClasses.add(pCategory);
+				aSubEquivalenceClasses.add(pCategory);
 				return;
 			}
 			else
@@ -175,16 +189,16 @@ public final class CRData implements IDataCollector, IDataStore
 				{
 					for(Category child : children)
 					{
-						this.recurseFindEquivalenceClasses(child, 0);
+						recurseFindEquivalenceClasses(child, 0);
 					}
 					return;
 				}
 				else
 				{
-					this.aEquivalenceClasses.add(pCategory);
+					aEquivalenceClasses.add(pCategory);
 					for(Category child : children)
 					{
-						this.recurseFindEquivalenceClasses(child, 1);
+						recurseFindEquivalenceClasses(child, 1);
 					}
 					return;
 				}
