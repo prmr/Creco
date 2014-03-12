@@ -18,17 +18,17 @@ package ca.mcgill.cs.creco.logic;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.google.common.collect.Lists;
-
+import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.AttributeStat;
+import ca.mcgill.cs.creco.data.Category;
+import ca.mcgill.cs.creco.data.Category2;
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.TypedValue;
-import ca.mcgill.cs.creco.data.Attribute;
-import ca.mcgill.cs.creco.data.Category;
+
+import com.google.common.collect.Lists;
 
 /**
  *
@@ -82,7 +82,7 @@ public class ScoredAttribute
 	 * @param pAttribute attribute to build score for.
 	 * @param Category in which the attribute is present
 	 */
-	public ScoredAttribute(Attribute pAttribute, Category pCat)
+	public ScoredAttribute(Attribute pAttribute, Category2 pCat)
 	{
 		aIsCat = false;
 		aAttributeID = pAttribute.getId();
@@ -175,21 +175,23 @@ public class ScoredAttribute
 	public TypedValue getMin()
 	{
 		AttributeStat a = null;
-		try{
-			a = aDataStore.getCategory(aCategoryID).getSpecification(aAttributeID);
+		try
+		{
+			a = aDataStore.getCategory2(aCategoryID).getSpecification(aAttributeID);
 		}
 		catch(NullPointerException npe)
 		{
 			try
 			{
-			a = aDataStore.getCategory(aCategoryID).getRating(aAttributeID);
+			a = aDataStore.getCategory2(aCategoryID).getRating(aAttributeID);
 			}
 			catch(NullPointerException npe2)
 			{
 				
 			}
 		}
-		if(a == null){
+		if(a == null)
+		{
 			return new  TypedValue(0);
 		}
 		return new TypedValue(a.getValueMin());
@@ -199,20 +201,21 @@ public class ScoredAttribute
 	{
 		AttributeStat a = null;
 		try{
-			a = aDataStore.getCategory(aCategoryID).getSpecification(aAttributeID);
+			a = aDataStore.getCategory2(aCategoryID).getSpecification(aAttributeID);
 		}
 		catch(NullPointerException npe)
 		{
 			try
 			{
-			a = aDataStore.getCategory(aCategoryID).getRating(aAttributeID);
+			a = aDataStore.getCategory2(aCategoryID).getRating(aAttributeID);
 			}
 			catch(NullPointerException npe2)
 			{
 				
 			}
 		}
-		if(a == null){
+		if(a == null)
+		{
 			return new TypedValue(0);
 		}
 		return new TypedValue(a.getValueMax());
@@ -221,21 +224,23 @@ public class ScoredAttribute
 	public List<String> getDict()
 	{
 		AttributeStat a = null;
-		try{
-			a = aDataStore.getCategory(aCategoryID).getSpecification(aAttributeID);
+		try
+		{
+			a = aDataStore.getCategory2(aCategoryID).getSpecification(aAttributeID);
 		}
 		catch(NullPointerException npe)
 		{
 			try
 			{
-			a = aDataStore.getCategory(aCategoryID).getRating(aAttributeID);
+			a = aDataStore.getCategory2(aCategoryID).getRating(aAttributeID);
 			}
 			catch(NullPointerException npe2)
 			{
 				
 			}
 		}
-		if(a == null){
+		if(a == null)
+		{
 			return new ArrayList<String>();
 		}
 		return Lists.newArrayList(a.getValueEnum());

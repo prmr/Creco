@@ -125,8 +125,8 @@ public class Product
 	/**
 	 * @return The product's category.
 	 */
-	public Category getCategory() 
-	{ return aCategory; }
+	public Category2 getCategory() 
+	{ return aCategory.getCategory(); }
 
 	/**
 	 * @return A iterator on the ratings for this product.

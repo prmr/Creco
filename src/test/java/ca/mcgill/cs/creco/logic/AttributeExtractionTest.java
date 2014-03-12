@@ -1,13 +1,9 @@
 package ca.mcgill.cs.creco.logic;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ca.mcgill.cs.creco.data.Attribute;
+import ca.mcgill.cs.creco.data.AttributeStat;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.Category2;
 import ca.mcgill.cs.creco.data.IDataStore;
@@ -64,7 +61,8 @@ public class AttributeExtractionTest
 		ArrayList<ScoredAttribute> sal = new ArrayList<ScoredAttribute>();
 		for(int i = 0; i < 10; i++)
 		{
-			ScoredAttribute sa = new ScoredAttribute(new Attribute(i+ "", i+ "", i+ "", null), new Category("test", "test", null));
+			ScoredAttribute sa = new ScoredAttribute(new Attribute(i+ "", i+ "", i+ "", null), new Category2("test", "test", "test", new ArrayList<Product>(), 
+					new ArrayList<AttributeStat>(), new ArrayList<AttributeStat>()));
 			sa.setAttributeScore(i);
 			sal.add(sa);
 		}
@@ -173,7 +171,8 @@ public class AttributeExtractionTest
 	public void testEmptySepcs() 
 	{
 		
-		Category cat = new Category("empty", "test", null);
+		Category2 cat = new Category2("empty", "test", "test", new ArrayList<Product>(), 
+				new ArrayList<AttributeStat>(), new ArrayList<AttributeStat>());
 		ArrayList<ScoredProduct> spal = new  ArrayList<ScoredProduct>();
 		for(int i = 0; i < 10; i++)
 		{

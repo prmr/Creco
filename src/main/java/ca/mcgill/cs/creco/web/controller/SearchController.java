@@ -33,14 +33,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.google.gson.Gson;
-
 //import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.Category;
+import ca.mcgill.cs.creco.data.Category2;
+import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.data.TypedValue.Type;
-
-import ca.mcgill.cs.creco.data.IDataStore;
 //import ca.mcgill.cs.creco.data.Product;
 //import ca.mcgill.cs.creco.data.TypedValue;
 //import ca.mcgill.cs.creco.data.TypedValue.Type;
@@ -58,6 +56,8 @@ import ca.mcgill.cs.creco.web.model.MainQueryVO;
 import ca.mcgill.cs.creco.web.model.ProductListVO;
 import ca.mcgill.cs.creco.web.model.ProductVO;
 import ca.mcgill.cs.creco.web.model.UserFeatureModel;
+
+import com.google.gson.Gson;
 
 @Controller
 public class SearchController
@@ -263,14 +263,14 @@ public class SearchController
 		   int min2 = 200;
 		   int min3 = 200;
 		   int min4 = 200;
-		   Category min1S = null;
-		   Category min2S = null;
-		   Category min3S = null;
-		   Category min4S = null;
+		   Category2 min1S = null;
+		   Category2 min2S = null;
+		   Category2 min3S = null;
+		   Category2 min4S = null;
 		 
-		   for (Category category123 : aDataStore.getEquivalenceClasses()) 
+		   for (Category2 category123 : aDataStore.getCategories()) 
 			{
-			   if(category123.getCount() == 0)
+			   if(category123.getNumberOfProducts() == 0)
 			   {
 				   continue; 
 			   
@@ -324,25 +324,25 @@ public class SearchController
 		ajaxReturn = ajaxReturn.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min1S.getName()+"></input>");
 		   ajaxReturn = ajaxReturn.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min1S.getName()+"></input>");
 		   ajaxReturn = ajaxReturn.concat("<input type=\"submit\" value=\""+min1S.getName()+"\"></input>") ;
-		   ajaxReturn = ajaxReturn.concat("	<span class=\"badge\">"+min1S.getCount()+"</span>");
+		   ajaxReturn = ajaxReturn.concat("	<span class=\"badge\">"+min1S.getNumberOfProducts()+"</span>");
 		   ajaxReturn = ajaxReturn.concat( "</form>");
 		ajaxReturn = ajaxReturn.concat("<form action=\"/searchRankedFeaturesProducts\" method=\"POST\">");
 		ajaxReturn = ajaxReturn.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min2S.getName()+"></input>");
 		   ajaxReturn = ajaxReturn.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min2S.getName()+"></input>");
 		   ajaxReturn = ajaxReturn.concat("<input type=\"submit\" value=\""+min2S.getName()+"\"></input>") ;
-		   ajaxReturn = ajaxReturn.concat("	<span class=\"badge\">"+min2S.getCount()+"</span>");
+		   ajaxReturn = ajaxReturn.concat("	<span class=\"badge\">"+min2S.getNumberOfProducts()+"</span>");
 		   ajaxReturn = ajaxReturn.concat( "</form>");
 		ajaxReturn = ajaxReturn.concat("<form action=\"/searchRankedFeaturesProducts\" method=\"POST\">");
 		ajaxReturn = ajaxReturn.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min3S.getName()+"></input>");
 		   ajaxReturn = ajaxReturn.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min3S.getName()+"></input>");
 		   ajaxReturn = ajaxReturn.concat("<input type=\"submit\" value=\""+min3S.getName()+"\"></input>") ;
-		   ajaxReturn = ajaxReturn.concat("	<span class=\"badge\">"+min3S.getCount()+"</span>");
+		   ajaxReturn = ajaxReturn.concat("	<span class=\"badge\">"+min3S.getNumberOfProducts()+"</span>");
 		   ajaxReturn = ajaxReturn.concat( "</form>");
 		ajaxReturn = ajaxReturn.concat("<form action=\"/searchRankedFeaturesProducts\" method=\"POST\">");
 		ajaxReturn = ajaxReturn.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min4S.getName()+"></input>");
 		   ajaxReturn = ajaxReturn.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min4S.getName()+"></input>");
 		   ajaxReturn = ajaxReturn.concat("<input type=\"submit\" value=\""+min4S.getName()+"\"></input>") ;
-		   ajaxReturn = ajaxReturn.concat("	<span class=\"badge\">"+min4S.getCount()+"</span>");
+		   ajaxReturn = ajaxReturn.concat("	<span class=\"badge\">"+min4S.getNumberOfProducts()+"</span>");
 		   ajaxReturn = ajaxReturn.concat( "</form>");
 		   return ajaxReturn;
 	}
@@ -357,14 +357,14 @@ public class SearchController
  @ResponseBody  
  public String createSmartphone(@RequestBody String typedString)
 	   {  
-		   List<Category> categoryList = aCategorySearch.queryCategories(typedString);		
+		   List<Category2> categoryList = aCategorySearch.queryCategories(typedString);		
 
 		   int count = 0;
 		   String ajaxCode = new String();
 			ArrayList<EqcVO> eqcs = new ArrayList<EqcVO>();		
-			for (Category cat: categoryList) 
+			for (Category2 cat: categoryList) 
 			{
-				if(cat.getCount() == 0)
+				if(cat.getNumberOfProducts() == 0)
 				{
 					continue; 
 				}
@@ -374,12 +374,12 @@ public class SearchController
 				   String s = new String("<input id=\"id\" name=\"id\" type=\"hidden\" value="+cat.getName()+"></input>");
 				   s = s.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+cat.getName()+"></input>");
 				   s = s.concat("<input type=\"submit\" value=\""+cat.getName()+"\"></input>" );
-				   s = s.concat("	<span class=\"badge\">"+cat.getCount()+"</span>");
+				   s = s.concat("	<span class=\"badge\">"+cat.getNumberOfProducts()+"</span>");
 				   s = s.concat("</form>");
 				   ajaxCode = ajaxCode.concat(s);
 				eqc.setId(cat.getId());
 				eqc.setName(cat.getName());
-				eqc.setCount(cat.getCount());
+				eqc.setCount(cat.getNumberOfProducts());
 				eqcs.add(eqc);
 			}
 			aEqcList.setEqcs(eqcs);
@@ -431,14 +431,14 @@ public class SearchController
 	@RequestMapping(value = "/searchEqClass", method = RequestMethod.POST)
 	public String searchEqClass(@ModelAttribute("mainQuery") MainQueryVO pMainQuery, BindingResult result, RedirectAttributes redirectAttrs) {
 		aMainQuery = pMainQuery;
-		List<Category> categoryList = aCategorySearch.queryCategories(aMainQuery.getQuery());	
+		List<Category2> categoryList = aCategorySearch.queryCategories(aMainQuery.getQuery());	
 		
 		
 		//Nishanth code 
 		String mainString = "";
-		for (Category category123 : aDataStore.getEquivalenceClasses()) 
+		for (Category2 category123 : aDataStore.getCategories()) 
 		{
-		   if(category123.getCount() == 0)
+		   if(category123.getNumberOfProducts() == 0)
 		   {
 			   continue;
 		   }
@@ -454,16 +454,16 @@ public class SearchController
 		// Nishanth code
 		//Converting
 		ArrayList<EqcVO> eqcs = new ArrayList<EqcVO>();		
-		for (Category cat: categoryList)
+		for (Category2 cat: categoryList)
 		{
-			if(cat.getCount() == 0)
+			if(cat.getNumberOfProducts() == 0)
 			{
 				continue;
 			}
 			EqcVO eqc = new EqcVO();
 			eqc.setId(cat.getId());
 			eqc.setName(cat.getName());
-			eqc.setCount(cat.getCount());
+			eqc.setCount(cat.getNumberOfProducts());
 			eqcs.add(eqc);
 		}
 		aEqcList.setEqcs(eqcs);
@@ -477,9 +477,9 @@ public class SearchController
 	@RequestMapping(value = "/searchRankedFeaturesProducts", method = RequestMethod.POST)  
 	public String searchRankedFeaturesProducts(@ModelAttribute("eqc") EqcVO eqc)
 	{  
-	    List<Category> categoryList = aCategorySearch.queryCategories(aMainQuery.getQuery());
-	    Category target = null;
-	    for (Category cat: categoryList)
+	    List<Category2> categoryList = aCategorySearch.queryCategories(aMainQuery.getQuery());
+	    Category2 target = null;
+	    for (Category2 cat: categoryList)
 	    {
 	    	if (cat.getId().equals(eqc.getId()))
 	    	{

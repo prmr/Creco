@@ -13,6 +13,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+//import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import weka.attributeSelection.AttributeSelection;
 //import weka.attributeSelection.CfsSubsetEval;
 //import weka.attributeSelection.GreedyStepwise;
@@ -27,15 +31,13 @@ import weka.core.Instance;
 import weka.core.Instances;
 import ca.mcgill.cs.creco.data.AttributeStat;
 import ca.mcgill.cs.creco.data.Category;
+import ca.mcgill.cs.creco.data.Category2;
 import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.data.TypedValue.Type;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
 
 import com.google.common.collect.Lists;
-//import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 
@@ -44,7 +46,6 @@ import org.slf4j.LoggerFactory;
  * with respect to a product list.
  * 
  * @see ProductList
- * @see Category
  * @see Attribute
  */
 public class AttributeExtractor
@@ -54,7 +55,7 @@ public class AttributeExtractor
 	private static final double DEFAULT_MIN = 10000000;
 	private static final double DEFAULT_MAX = -10000000;
 	private List<Product> aProductList;
-	private Category aEquivalenceClass;
+	private Category2 aEquivalenceClass;
 	private Iterable<AttributeStat> aSpecList;
 	private Iterable<AttributeStat> aRatingList;
 	private ArrayList<ScoredAttribute> aScoredSpecList;
@@ -64,7 +65,7 @@ public class AttributeExtractor
 	 * @param pProductSearchResult a lucene result
 	 * @param pEquivalenceClass the whole space of interesting products
 	 */
-	public AttributeExtractor(List<ScoredProduct> pProductSearchResult, Category pEquivalenceClass)
+	public AttributeExtractor(List<ScoredProduct> pProductSearchResult, Category2 pEquivalenceClass)
 	{
 		aProductList = new ArrayList<Product>();
 		for (ScoredProduct scoredProduct : pProductSearchResult)
@@ -83,7 +84,7 @@ public class AttributeExtractor
 	 * @param pProductList subset of interesting products
 	 * @param pEquivalenceClass the whole space of interesting products
 	 */
-	public AttributeExtractor(Set<Product> pProductList, Category pEquivalenceClass)
+	public AttributeExtractor(Set<Product> pProductList, Category2 pEquivalenceClass)
 	{
 		aProductList = Lists.newArrayList(pProductList);
 		aEquivalenceClass = pEquivalenceClass;
@@ -615,7 +616,7 @@ public class AttributeExtractor
 	/**
 	 * @return The equivalence class used by the extractor
 	 */
-	public Category getEquivalenceClass() 
+	public Category2 getEquivalenceClass() 
 	{
 		return aEquivalenceClass;
 	}
@@ -623,9 +624,9 @@ public class AttributeExtractor
 	/**
 	 * @param pEquivalenceClass The equivalence class to be used by the extractor
 	 */
-	public void setEquivalenceClass(Category pEquivalenceClass) 
+	public void setEquivalenceClass(Category2 pEquivalenceClass) 
 	{
-		this.aEquivalenceClass = pEquivalenceClass;
+		aEquivalenceClass = pEquivalenceClass;
 	}
 
 	/**

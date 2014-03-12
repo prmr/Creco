@@ -99,6 +99,7 @@ public final class CRData implements IDataCollector, IDataStore
 	 * @return The category corresponding to pIndex.
 	 */
 	@Override
+	@Deprecated
 	public Category getCategory(String pIndex) 
 	{
 		return aCategoryIndex.get(pIndex);
