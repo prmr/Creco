@@ -16,6 +16,8 @@
 package ca.mcgill.cs.creco.util;
 
 import static org.junit.Assert.assertEquals;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,18 +33,22 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.Category;
+import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.data.IDataStore;
+import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.logic.AttributeExtractor;
-import ca.mcgill.cs.creco.logic.AttributeValue;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.search.ICategorySearch;
 import ca.mcgill.cs.creco.logic.search.IProductSearch;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
+import ca.mcgill.cs.creco.web.controller.SearchController;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/META-INF/test-context.xml"})
 public class TestFiltering {
 
+	private static final Logger LOG = LoggerFactory.getLogger(SearchController.class);
+	
 	@Autowired
 	IDataStore aDataStore;
 	
@@ -113,13 +119,13 @@ public class TestFiltering {
 		    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(ratingList, specList, prodSearch);
 		    List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
 			Attribute test= new Attribute( "doesnt matter", "Manual controls", "doesn't matter", true );
-		  ScoredAttribute test_score = new ScoredAttribute(test);
-		  AttributeValue temporary = new AttributeValue(false);
+		  ScoredAttribute test_score = new ScoredAttribute(test,new Category("test", "test", null));
+		  TypedValue temporary = new TypedValue(false);
 		  test_score.setAttributeMean(temporary); 
 		  userScoredFeaturesSpecs.add(test_score);
 			RankedFeaturesProducts Products = new RankedFeaturesProducts();
 			List<ScoredProduct> productsToDisplay = Products.FilterandReturn(userScoredFeaturesSpecs);
-		System.out.println(productsToDisplay.size());
+		LOG.debug(new Integer(productsToDisplay.size()).toString());
 			assertEquals(60, productsToDisplay.size());
 	}
 	@Test
@@ -141,13 +147,14 @@ public class TestFiltering {
 		    List<ScoredProduct> scoredProducts = rankedProducts.getaProductSearchResult();
 		    List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
 			Attribute test= new Attribute( "doesnt matter", "Multiple recline positions", "doesn't matter", true );
-		  ScoredAttribute test_score = new ScoredAttribute(test);
-		  AttributeValue temporary = new AttributeValue("NA");
+		  ScoredAttribute test_score = new ScoredAttribute(test,new Category("test", "test", null));
+
+		  TypedValue temporary = new TypedValue("NA");
 		  test_score.setAttributeMean(temporary); 
 		  userScoredFeaturesSpecs.add(test_score);
 			RankedFeaturesProducts Products = new RankedFeaturesProducts();
 			List<ScoredProduct> productsToDisplay = Products.FilterandReturn(userScoredFeaturesSpecs);
-		System.out.println(productsToDisplay.size());
+		LOG.debug(new Integer(productsToDisplay.size()).toString());
 			assertEquals(scoredProducts.size(), productsToDisplay.size());
 	}
 }

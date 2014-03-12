@@ -15,8 +15,12 @@
  */
 package ca.mcgill.cs.creco.data;
 
+import java.util.List;
+
 /**
  * Represents an immutable value object from which a type has been inferred.
+ * Presently stores min and max or possible string values if necessary.
+ * Should probably be handled somewhere else.
  */
 public class TypedValue 
 {
@@ -24,12 +28,45 @@ public class TypedValue
 	private Object aValue;
 	private final Object aOriginalValue;
 	
+	private double aMin;
+	private double aMax;
+	private List<String> aDict;
+	
+	private boolean aBooleanValue;
+	private String aNominalValue;
+	private double aNumericValue;
+	
 	/**
 	 * The different types a typed value can take.
 	 */
 	public enum Type 
 	{ NULL, INTEGER, DOUBLE, BOOLEAN, STRING, UNKNOWN }
 	
+	/**
+	 * Creates a new value object an infers its type. Also stores min and max
+	 * values found in data
+	 * @param pValue The value.
+	 * @param pMin minimum value the attribute takes in data
+	 * @param pMax maximum value the attribute takes in data
+	 */
+	public TypedValue(Object pValue, double pMin, double pMax)
+	{
+		this(pValue);
+		aMin = pMin;
+		aMax = pMax;
+		
+	}
+	/**
+	 * Creates a new value object an infers its type. Also stores 
+	 * possible values for this item
+	 * @param pValue The value.
+	 * @param pDict list of values found in data
+	 */
+	public TypedValue(Object pValue, List<String> pDict)
+	{
+		this(pValue);
+		aDict = pDict;		
+	}
 	/**
 	 * Creates a new value object an infers its type.
 	 * @param pValue The value.
@@ -46,14 +83,22 @@ public class TypedValue
 		else if(pValue instanceof Integer)
 		{
 			aType = Type.INTEGER;
+			aNumericValue = ((Integer) pValue).doubleValue();
 		}
-		else if(pValue instanceof Double || pValue instanceof Float)
+		else if(pValue instanceof Double )
 		{
 			aType = Type.DOUBLE;
+			aNumericValue = (Double) pValue;
+		}
+		else if( pValue instanceof Float)
+		{
+			aType = Type.DOUBLE;
+			aNumericValue = ((Float) pValue).doubleValue();
 		}
 		else if(pValue instanceof Boolean)
 		{
 			aType = Type.BOOLEAN;
+			aBooleanValue = (Boolean) pValue;
 		}
 		else if(pValue instanceof String)
 		{
@@ -62,28 +107,38 @@ public class TypedValue
 			if(theString.matches("-?\\d+"))
 			{
 				aType = Type.INTEGER;
-				aValue = Integer.parseInt(theString);
+				aValue = Double.parseDouble(theString);
+				aNumericValue = Double.parseDouble(theString);
+
 			}
 			//match a number with optional '-' and decimal.
 			else if(theString.matches("-?\\d+(\\.\\d+)?"))  
 			{
 				aType = Type.DOUBLE;
+				aNumericValue = Double.parseDouble(theString);
 				aValue = Double.parseDouble(theString);
+				aNumericValue = Double.parseDouble(theString);
 			}
 			else if(theString.matches("(y|Y)es"))
 			{
 				aType = Type.BOOLEAN;
+				aBooleanValue = true;
 				aValue = true;
+				aBooleanValue = true;
 			}
 			else if(theString.matches("(n|N)o"))
 			{
 				aType = Type.BOOLEAN;
+				aBooleanValue = false;
 				aValue = false;
+				aBooleanValue = false;
 			}
 			else
 			{
 				aType = Type.STRING;
+				aNominalValue = theString;
 				aValue = theString;
+				aNominalValue = theString;
 			}
 		}
 		else
@@ -101,11 +156,33 @@ public class TypedValue
 	}
 	
 	/**
+	 * @Deprecated use method for specific type instead.
 	 * @return The value after type inference.
 	 */
 	public Object getValue()
 	{
 		return aValue;
+	}
+	/**
+	 * @return The numeric value after type inference.
+	 */
+	public double getNumericValue()
+	{
+		return aNumericValue;
+	}
+	/**
+	 * @return The boolean value after type inference.
+	 */
+	public boolean getBooleanValue()
+	{
+		return aBooleanValue;
+	}
+	/**
+	 * @return The nominal value after type inference.
+	 */
+	public String getNominalValue()
+	{
+		return aNominalValue;
 	}
 	
 	/**
@@ -114,6 +191,22 @@ public class TypedValue
 	public Object getOriginalValue()
 	{
 		return aOriginalValue;
-	}	
+	}
+
+	@Override
+	@Deprecated
+	public String toString()
+	{
+		if(aType == Type.BOOLEAN)
+		{
+			return aBooleanValue +"";
+		}
+		if(aType == Type.DOUBLE || aType == Type.INTEGER)
+		{
+			return aNumericValue +"";
+		}
+		return aNominalValue;
+	}
+
 }
 

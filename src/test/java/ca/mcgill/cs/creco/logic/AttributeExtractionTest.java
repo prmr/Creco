@@ -64,7 +64,7 @@ public class AttributeExtractionTest
 		ArrayList<ScoredAttribute> sal = new ArrayList<ScoredAttribute>();
 		for(int i = 0; i < 10; i++)
 		{
-			ScoredAttribute sa = new ScoredAttribute(new Attribute(i+ "", i+ "", i+ "", null));
+			ScoredAttribute sa = new ScoredAttribute(new Attribute(i+ "", i+ "", i+ "", null), new Category("test", "test", null));
 			sa.setAttributeScore(i);
 			sal.add(sa);
 		}
@@ -115,6 +115,7 @@ public class AttributeExtractionTest
 			
 		}
 		String answer = "mode";
+		System.out.println(AttributeExtractor.extractMean( pal , "test").getNominalValue());
 		assertTrue(answer.equals(AttributeExtractor.extractMean( pal , "test").getNominalValue()));
 		
 	}
@@ -138,7 +139,7 @@ public class AttributeExtractionTest
 			pal.add(p);
 			
 		}
-		assertTrue(AttributeExtractor.extractMean( pal , "test").getBoolValue());
+		assertTrue(AttributeExtractor.extractMean( pal , "test").getBooleanValue());
 	}
 	
 	@Test

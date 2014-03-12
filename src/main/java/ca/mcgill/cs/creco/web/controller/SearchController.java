@@ -15,7 +15,7 @@
  */
 package ca.mcgill.cs.creco.web.controller;
 
-import java.io.IOException;
+//import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,12 +35,16 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.gson.Gson;
 
-import ca.mcgill.cs.creco.data.Attribute;
+//import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.Category;
+import ca.mcgill.cs.creco.data.TypedValue;
+import ca.mcgill.cs.creco.data.TypedValue.Type;
+
 import ca.mcgill.cs.creco.data.IDataStore;
-import ca.mcgill.cs.creco.data.Product;
+//import ca.mcgill.cs.creco.data.Product;
+//import ca.mcgill.cs.creco.data.TypedValue;
+//import ca.mcgill.cs.creco.data.TypedValue.Type;
 import ca.mcgill.cs.creco.logic.AttributeExtractor;
-import ca.mcgill.cs.creco.logic.AttributeValue;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.search.ICategorySearch;
 import ca.mcgill.cs.creco.logic.search.IProductSearch;
@@ -56,38 +60,37 @@ import ca.mcgill.cs.creco.web.model.ProductVO;
 import ca.mcgill.cs.creco.web.model.UserFeatureModel;
 
 @Controller
-//@RequestMapping("/")
 public class SearchController
 {
 	private static final Logger LOG = LoggerFactory.getLogger(SearchController.class);
 	
 	
-	private List<ScoredAttribute> scoredRatings; 
-	private List<ScoredAttribute> scoredSpecs; 
-	List<ScoredProduct> scoredProducts;
+	private List<ScoredAttribute> aScoredRatings; 
+	private List<ScoredAttribute> aScoredSpecs; 
+	private List<ScoredProduct> aScoredProducts;
 	
 	@Autowired
-	private ProductListVO productList;
+	private ProductListVO aProductList;
 	
 	@Autowired
-	private EqcListVO eqcList;
+	private EqcListVO aEqcList;
 	
 	@Autowired
-	private MainQueryVO mainQuery;
+	private MainQueryVO aMainQuery;
 
 	@Autowired
-	private FeatureListVO userList;
+	private FeatureListVO aUserList;
 	@Autowired
-	private FeatureListVO specFeatureList;
+	private FeatureListVO aSpecFeatureList;
 
 	@Autowired
-	private FeatureListVO rateFeatureList;
+	private FeatureListVO aRateFeatureList;
 
 	@Autowired
-	private FeatureListVO featureList;
+	private FeatureListVO aFeatureList;
 
 	@Autowired
-	private FeatureVO userSpecFeatures;
+	private FeatureVO aUserSpecFeatures;
 	
 	@Autowired
 	private IDataStore aDataStore;
@@ -99,109 +102,148 @@ public class SearchController
 	private IProductSearch aProductSearch;
 	
 	@ModelAttribute("mainQuery")
-	private MainQueryVO getMainQuery() {
+	private MainQueryVO getMainQuery() 
+	{
 		return new MainQueryVO();
 	}
 	
 	@ModelAttribute("userList")
-	private FeatureListVO getUserList() {
+	private FeatureListVO getUserList() 
+	{
 		return new FeatureListVO();
 	}
 
 	@ModelAttribute("eqcList")
-	private EqcListVO getEqcList() {
-		return eqcList;
+	private EqcListVO getEqcList() 
+	{
+		return aEqcList;
 	}
 	
 	@ModelAttribute("productList")
-	private ProductListVO getProductList() {
-		return productList;
+	private ProductListVO getProductList() 
+	{
+		return aProductList;
 	}
 	@ModelAttribute("featureList")
-	private FeatureListVO getFeatureList() {
-		return featureList;
+	private FeatureListVO getFeatureList() 
+	{
+		return aFeatureList;
 	}
 	
 	@ModelAttribute("specFeatureList")
-	private FeatureListVO getSpecFeatureList() {
-		return specFeatureList;
+	private FeatureListVO getSpecFeatureList() 
+	{
+		return aSpecFeatureList;
 	}
 	
 	@ModelAttribute("userSpecFeatures")
-	private FeatureVO getUserSpecFeatures() {
-		return userSpecFeatures;
+	private FeatureVO getUserSpecFeatures()
+	{
+		return aUserSpecFeatures;
 	}
 	
 	@ModelAttribute("rateFeatureList")
-	private FeatureListVO getRateFeatureList() {
-		return rateFeatureList;
+	private FeatureListVO getRateFeatureList()
+	{
+		return aRateFeatureList;
 	}
 	
-	
+	/**
+	 * 
+	 * @param pScoredRatings list of scored rating Attributes
+	 */
 	public void setScoredRatings(List<ScoredAttribute> pScoredRatings)
 	{
-		System.out.println("in setscoredRatings " + pScoredRatings.toString());
-		this.scoredRatings=pScoredRatings;	
+
+		LOG.debug("in setscoredRatings " + pScoredRatings.toString());
+		this.aScoredRatings = pScoredRatings;	
+
 		
 	}
+	/**
+	 * 
+	 * @param pScoredSpecs list of scored spec Attributes
+	 */
 	public void setScoredSpecs(List<ScoredAttribute> pScoredSpecs)
 	{
-		System.out.println("in setscoredSpecs"+ pScoredSpecs.toString());
+
+		LOG.debug("in setscoredSpecs"+ pScoredSpecs.toString());
 		
-		this.scoredSpecs=pScoredSpecs;	
+		this.aScoredSpecs = pScoredSpecs;	
 		
 	}
 
+	/**
+	 * 
+	 * @return list of scored spec Attributes
+	 */
 	public List<ScoredAttribute> getScoredSpecs()
 	{
-		return this.scoredSpecs;
+		return this.aScoredSpecs;
 		
 	}	
 	
+	/**
+	 * 
+	 * @return list of scored rating Attributes
+	 */
 	public List<ScoredAttribute> getScoredRatings()
 	{
-		return this.scoredRatings;
+		return this.aScoredRatings;
 		
 	}	
 	
-
+	/**
+	 * 
+	 * @param pS0
+	 * @param pS1
+	 * @return the distance between strings
+	 */
 	// Levenshtein Distance used to calculate distance between two strings. 
-	public int LevenshteinDistance (String s0, String s1) {
-		int len0 = s0.length()+1;
-		int len1 = s1.length()+1;
+	public int LevenshteinDistance (String pS0, String pS1)
+	{
+		int len0 = pS0.length()+1;
+		int len1 = pS1.length()+1;
 	 
 		// the array of distances
 		int[] cost = new int[len0];
 		int[] newcost = new int[len0];
 	 
 		// initial cost of skipping prefix in String s0
-		for(int i=0;i<len0;i++) cost[i]=i;
+		for(int i = 0; i<len0; i++) 
+			{
+				cost[i] = i;
+			}
 	 
 		// dynamicaly computing the array of distances
 	 
 		// transformation cost for each letter in s1
-		for(int j=1;j<len1;j++) {
+		for(int j = 1; j<len1; j++) 
+		{
 	 
 			// initial cost of skipping prefix in String s1
-			newcost[0]=j-1;
+			newcost[0] = j-1;
 	 
 			// transformation cost for each letter in s0
-			for(int i=1;i<len0;i++) {
+			for(int i = 1; i<len0; i++)
+			{
 	 
 				// matching current letters in both strings
-				int match = (s0.charAt(i-1)==s1.charAt(j-1))?0:1;
+				int match = (pS0.charAt(i-1)==pS1.charAt(j-1)) ? 0 : 1;
 	 
 				// computing cost for each transformation
-				int cost_replace = cost[i-1]+match;
-				int cost_insert  = cost[i]+1;
-				int cost_delete  = newcost[i-1]+1;
+				int costReplace = cost[i-1] + match;
+				int costInsert  = cost[i] + 1 ;
+				int costDelete  = newcost[i-1] + 1;
 	 
 				// keep minimum cost
-				newcost[i] = Math.min(Math.min(cost_insert, cost_delete),cost_replace );
+				newcost[i] = Math.min(Math.min(costInsert, costDelete), costReplace);
 			}
 	 
 			// swap cost/newcost arrays
-			int[] swap=cost; cost=newcost; newcost=swap;
+			int[] swap = cost;
+			cost = newcost;
+			newcost = swap;
 		}
 	 
 		// the distance is the cost for transforming all letters in both strings
@@ -209,135 +251,168 @@ public class SearchController
 	}
 	
 	
-	
+	/**
+	 * 
+	 * @param abcd
+	 * @return
+	 */
 	public String returnfournearest(String abcd)
 	{
-		 String ajax_return=new String();
-		   int min1=200;
-		   int min2=200;
-		   int min3=200;
-		   int min4=200;
-		   Category min1_s=null;
-		   Category min2_s=null;
-		   Category min3_s=null;
-		   Category min4_s=null;
+		 String ajaxReturn = new String();
+		   int min1 = 200;
+		   int min2 = 200;
+		   int min3 = 200;
+		   int min4 = 200;
+		   Category min1S = null;
+		   Category min2S = null;
+		   Category min3S = null;
+		   Category min4S = null;
 		 
 		   for (Category category123 : aDataStore.getEquivalenceClasses()) 
 			{
-			   if(category123.getCount()==0)
+			   if(category123.getCount() == 0)
+			   {
 				   continue; 
+			   
+			   }
 			   int value;
 			   if(category123.getName().toLowerCase().contains(abcd.toLowerCase()))
-				   value=0;
+			   {
+				   value = 0;
+			   }
 			   else
-		  value= LevenshteinDistance(abcd.toLowerCase(),category123.getName().toLowerCase());
+			   {
+				   value = LevenshteinDistance(abcd.toLowerCase(), category123.getName().toLowerCase());
+			   }
+
 		  if(value<=min1)
 		  {
-			 min4=min3;
-			 min3=min2;
-			 min2=min1;
-			 min1=value;
-			 min4_s=min3_s;
-			 min3_s=min2_s;
-			 min2_s=min1_s;
-			 min1_s=category123;
+			 min4 = min3;
+			 min3 = min2;
+			 min2 = min1;
+			 min1 = value;
+			 min4S = min3S;
+			 min3S = min2S;
+			 min2S = min1S;
+			 min1S = category123;
 		  }
 		  else if(value<=min2)
 		  {
-			  min4=min3;
-				 min3=min2;
-				 min2=value;
-				 min4_s=min3_s;
-				 min3_s=min2_s;
-				 min2_s=category123;
+			  	 min4 = min3;
+				 min3 = min2;
+				 min2 = value;
+				 min4S = min3S;
+				 min3S = min2S;
+				 min2S = category123;
 		  }
 		  else if(value<=min3)
 		  {
-			  min4=min3;
-				 min3=value;
-				 min4_s=min3_s;
-				 min3_s=category123;
+			  	min4 = min3;
+				 min3 = value;
+				 min4S = min3S;
+				 min3S = category123;
 		  }
 		  else if(value<=min4)
 		  {
-			  min4=value;
-			  min4_s=category123;
+			  min4 = value;
+			  min4S = category123;
 			}
 			}
-		   ajax_return = "";
+		   ajaxReturn = "";
 
-		ajax_return=ajax_return.concat("<form action=\"/searchRankedFeaturesProducts\" method=\"POST\">");
-		ajax_return=ajax_return.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min1_s.getName()+"></input>");
-		   ajax_return=ajax_return.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min1_s.getName()+"></input>");
-		   ajax_return=ajax_return.concat("<input type=\"submit\" value=\""+min1_s.getName()+"\"></input>") ;
-		   ajax_return=ajax_return.concat("	<span class=\"badge\">"+min1_s.getCount()+"</span>");
-		   ajax_return=ajax_return.concat( "</form>");
-		ajax_return=ajax_return.concat("<form action=\"/searchRankedFeaturesProducts\" method=\"POST\">");
-		ajax_return=ajax_return.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min2_s.getName()+"></input>");
-		   ajax_return=ajax_return.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min2_s.getName()+"></input>");
-		   ajax_return=ajax_return.concat("<input type=\"submit\" value=\""+min2_s.getName()+"\"></input>") ;
-		   ajax_return=ajax_return.concat("	<span class=\"badge\">"+min2_s.getCount()+"</span>");
-		   ajax_return=ajax_return.concat( "</form>");
-		ajax_return=ajax_return.concat("<form action=\"/searchRankedFeaturesProducts\" method=\"POST\">");
-		ajax_return=ajax_return.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min3_s.getName()+"></input>");
-		   ajax_return=ajax_return.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min3_s.getName()+"></input>");
-		   ajax_return=ajax_return.concat("<input type=\"submit\" value=\""+min3_s.getName()+"\"></input>") ;
-		   ajax_return=ajax_return.concat("	<span class=\"badge\">"+min3_s.getCount()+"</span>");
-		   ajax_return=ajax_return.concat( "</form>");
-		ajax_return=ajax_return.concat("<form action=\"/searchRankedFeaturesProducts\" method=\"POST\">");
-		ajax_return=ajax_return.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min4_s.getName()+"></input>");
-		   ajax_return=ajax_return.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min4_s.getName()+"></input>");
-		   ajax_return=ajax_return.concat("<input type=\"submit\" value=\""+min4_s.getName()+"\"></input>") ;
-		   ajax_return=ajax_return.concat("	<span class=\"badge\">"+min4_s.getCount()+"</span>");
-		   ajax_return=ajax_return.concat( "</form>");
-		   return (ajax_return);  
+		ajaxReturn = ajaxReturn.concat("<form action=\"/searchRankedFeaturesProducts\" method=\"POST\">");
+		ajaxReturn = ajaxReturn.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min1S.getName()+"></input>");
+		   ajaxReturn = ajaxReturn.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min1S.getName()+"></input>");
+		   ajaxReturn = ajaxReturn.concat("<input type=\"submit\" value=\""+min1S.getName()+"\"></input>") ;
+		   ajaxReturn = ajaxReturn.concat("	<span class=\"badge\">"+min1S.getCount()+"</span>");
+		   ajaxReturn = ajaxReturn.concat( "</form>");
+		ajaxReturn = ajaxReturn.concat("<form action=\"/searchRankedFeaturesProducts\" method=\"POST\">");
+		ajaxReturn = ajaxReturn.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min2S.getName()+"></input>");
+		   ajaxReturn = ajaxReturn.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min2S.getName()+"></input>");
+		   ajaxReturn = ajaxReturn.concat("<input type=\"submit\" value=\""+min2S.getName()+"\"></input>") ;
+		   ajaxReturn = ajaxReturn.concat("	<span class=\"badge\">"+min2S.getCount()+"</span>");
+		   ajaxReturn = ajaxReturn.concat( "</form>");
+		ajaxReturn = ajaxReturn.concat("<form action=\"/searchRankedFeaturesProducts\" method=\"POST\">");
+		ajaxReturn = ajaxReturn.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min3S.getName()+"></input>");
+		   ajaxReturn = ajaxReturn.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min3S.getName()+"></input>");
+		   ajaxReturn = ajaxReturn.concat("<input type=\"submit\" value=\""+min3S.getName()+"\"></input>") ;
+		   ajaxReturn = ajaxReturn.concat("	<span class=\"badge\">"+min3S.getCount()+"</span>");
+		   ajaxReturn = ajaxReturn.concat( "</form>");
+		ajaxReturn = ajaxReturn.concat("<form action=\"/searchRankedFeaturesProducts\" method=\"POST\">");
+		ajaxReturn = ajaxReturn.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min4S.getName()+"></input>");
+		   ajaxReturn = ajaxReturn.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+min4S.getName()+"></input>");
+		   ajaxReturn = ajaxReturn.concat("<input type=\"submit\" value=\""+min4S.getName()+"\"></input>") ;
+		   ajaxReturn = ajaxReturn.concat("	<span class=\"badge\">"+min4S.getCount()+"</span>");
+		   ajaxReturn = ajaxReturn.concat( "</form>");
+		   return ajaxReturn;
 	}
 	
 	
-	
-	   @RequestMapping(value="/ajax", method=RequestMethod.POST )  
+	/**
+	 * 
+	 * @param typedString
+	 * @return 
+	 */
+	   @RequestMapping(value = "/ajax", method = RequestMethod.POST )  
  @ResponseBody  
- public String createSmartphone(@RequestBody String typedString) {  
+ public String createSmartphone(@RequestBody String typedString)
+	   {  
 		   List<Category> categoryList = aCategorySearch.queryCategories(typedString);		
 
-		   int count=0;
-		   String ajax_code=new String();
+		   int count = 0;
+		   String ajaxCode = new String();
 			ArrayList<EqcVO> eqcs = new ArrayList<EqcVO>();		
-			for (Category cat: categoryList) {
-				if(cat.getCount()==0)
+			for (Category cat: categoryList) 
+			{
+				if(cat.getCount() == 0)
+				{
 					continue; 
+				}
 				count++;
 				EqcVO eqc = new EqcVO();
-				   ajax_code=ajax_code.concat("<form action=\"/searchRankedFeaturesProducts\" method=\"POST\">");
+				   ajaxCode = ajaxCode.concat("<form action=\"/searchRankedFeaturesProducts\" method=\"POST\">");
 				   String s = new String("<input id=\"id\" name=\"id\" type=\"hidden\" value="+cat.getName()+"></input>");
 				   s = s.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+cat.getName()+"></input>");
 				   s = s.concat("<input type=\"submit\" value=\""+cat.getName()+"\"></input>" );
 				   s = s.concat("	<span class=\"badge\">"+cat.getCount()+"</span>");
 				   s = s.concat("</form>");
-				   ajax_code=ajax_code.concat(s);
+				   ajaxCode = ajaxCode.concat(s);
 				eqc.setId(cat.getId());
 				eqc.setName(cat.getName());
 				eqc.setCount(cat.getCount());
 				eqcs.add(eqc);
 			}
-			eqcList.setEqcs(eqcs);
-			if(count==0)
-				return(returnfournearest(typedString));
-			else		
-	  return(ajax_code);
+			aEqcList.setEqcs(eqcs);
+			if(count == 0)
+			{
+				return returnfournearest(typedString);
+			}
+			else
+			{
+				return ajaxCode;
+			}
  }  
-	   
+	   /**
+	    * 
+	    * @param model
+	    * @return string to redirect browser to index.html
+	    */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String init(Model model)
 	{
 		 UserFeatureModel form = new UserFeatureModel();
 		 model.addAttribute("myForm", form);
-		 specFeatureList = new FeatureListVO ();
-		 rateFeatureList = new FeatureListVO ();
-
-		return "/index";
+		 aSpecFeatureList = new FeatureListVO();
+		 aRateFeatureList = new FeatureListVO();
+		 aProductList = new ProductListVO();
+		 return "/index";								
 	}
 	
+	/**
+	 * 
+	 * @param model
+	 * @return string to redirect browser to experiment.html
+	 */
 	@RequestMapping(value = "/experiment", method = RequestMethod.GET)
 	public String init2(Model model)
 	{
@@ -346,75 +421,98 @@ public class SearchController
 
 		return "/experiment";
 	}
-	
+	/**
+	 * 
+	 * @param pMainQuery
+	 * @param result
+	 * @param redirectAttrs
+	 * @return string to redirect browser to eqclass.html
+	 */
 	@RequestMapping(value = "/searchEqClass", method = RequestMethod.POST)
 	public String searchEqClass(@ModelAttribute("mainQuery") MainQueryVO pMainQuery, BindingResult result, RedirectAttributes redirectAttrs) {
-		mainQuery = pMainQuery;
-		List<Category> categoryList = aCategorySearch.queryCategories(mainQuery.getQuery());	
+		aMainQuery = pMainQuery;
+		List<Category> categoryList = aCategorySearch.queryCategories(aMainQuery.getQuery());	
 		
 		
 		//Nishanth code 
-		String main_string = "";
+		String mainString = "";
 		for (Category category123 : aDataStore.getEquivalenceClasses()) 
 		{
-		   if(category123.getCount()==0)
+		   if(category123.getCount() == 0)
+		   {
 			   continue;
-		 main_string=main_string.concat("\"");
-		 main_string=main_string.concat(category123.getName());
-		 main_string=main_string.concat("\"");
-		 main_string=main_string.concat(",");
-		 main_string=main_string.concat("\n");
+		   }
+		 mainString = mainString.concat("\"");
+		 mainString = mainString.concat(category123.getName());
+		 mainString = mainString.concat("\"");
+		 mainString = mainString.concat(",");
+		 mainString = mainString.concat("\n");
 		}
-		System.out.println(main_string);
+
+		LOG.debug(mainString);
+
 		// Nishanth code
 		//Converting
 		ArrayList<EqcVO> eqcs = new ArrayList<EqcVO>();		
-		for (Category cat: categoryList) {
-			if(cat.getCount()==0)
+		for (Category cat: categoryList)
+		{
+			if(cat.getCount() == 0)
+			{
 				continue;
+			}
 			EqcVO eqc = new EqcVO();
 			eqc.setId(cat.getId());
 			eqc.setName(cat.getName());
 			eqc.setCount(cat.getCount());
 			eqcs.add(eqc);
 		}
-		eqcList.setEqcs(eqcs);
+		aEqcList.setEqcs(eqcs);
 		return "/eqclass";
 	}
-			
+	/**
+	 * 		
+	 * @param eqc
+	 * @return
+	 */
 	@RequestMapping(value = "/searchRankedFeaturesProducts", method = RequestMethod.POST)  
-	public String searchRankedFeaturesProducts(@ModelAttribute("eqc") EqcVO eqc) {  
-	    List<Category> categoryList = aCategorySearch.queryCategories(mainQuery.getQuery());
+	public String searchRankedFeaturesProducts(@ModelAttribute("eqc") EqcVO eqc)
+	{  
+	    List<Category> categoryList = aCategorySearch.queryCategories(aMainQuery.getQuery());
 	    Category target = null;
-	    for (Category cat: categoryList) {
-	    	if (cat.getId().equals(eqc.getId())) {
+	    for (Category cat: categoryList)
+	    {
+	    	if (cat.getId().equals(eqc.getId()))
+	    	{
 	    		target = cat;
 	    	}
 	    }
 	    
-		List<ScoredProduct> prodSearch = aProductSearch.queryProductsReturnAll(mainQuery.getQuery(), target.getId());
+		List<ScoredProduct> prodSearch = aProductSearch.queryProductsReturnAll(aMainQuery.getQuery(), target.getId());
 		AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
 		List<ScoredAttribute> ratingList = ae.getScoredRatingList();
 		List<ScoredAttribute> specList = ae.getScoredSpecList();
-	    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(ratingList, specList, prodSearch);
-	    scoredProducts = rankedProducts.getaProductSearchResult();
+	    RankedFeaturesProducts rankedProducts = new RankedFeaturesProducts(ratingList, specList, prodSearch);
+	    aScoredProducts = rankedProducts.getaProductSearchResult();
 	    
-	    scoredRatings = rankedProducts.getaRatingList();
-	    scoredSpecs = rankedProducts.getaSpecList();
+	    aScoredRatings = rankedProducts.getaRatingList();
+	    aScoredSpecs = rankedProducts.getaSpecList();
 	    	   
 	    // Converting
 		ArrayList<ProductVO> products = new ArrayList<ProductVO>();		
-	    for (ScoredProduct sp: scoredProducts) 
+	    for (ScoredProduct sp: aScoredProducts) 
 	    {
 			ProductVO p = new ProductVO();
 			p.setName(sp.getProduct().getName());
 			p.setId(sp.getProduct().getId());
 			products.add(p);
 	    }
-		productList.setProducts(products);	
+		aProductList.setProducts(products);	
 		return getCurrentFeatureList();
 	}
-	
+	/**
+	 * 
+	 * @return string to redirect the browser to feature selection page
+	 */
 	public String getCurrentFeatureList()
 	{		
 		LOG.debug("Get Current Features");
@@ -425,7 +523,7 @@ public class SearchController
 
 		//For now will get top 10 scores
 		int featureNumToDisplay = 10;
-		for (int i = 0 ; i < scoredSpecs.size() ; i++)
+		for (int i = 0 ; i < aScoredSpecs.size() ; i++)
 		{
 
 			if(i>featureNumToDisplay)
@@ -435,50 +533,60 @@ public class SearchController
 
 			values = new ArrayList<String>();
 			FeatureVO f = new FeatureVO();
-			f.setId(scoredSpecs.get(i).getAttributeID());
-			f.setName(scoredSpecs.get(i).getAttributeName());
+			f.setId(aScoredSpecs.get(i).getAttributeID());
+			f.setName(aScoredSpecs.get(i).getAttributeName());
 			f.setSpec(true);
 			f.setRate(false);			
 			f.setVisible(true);
 
-			AttributeValue val = scoredSpecs.get(i).getAttributeMean();			
+			f.setDesc(aScoredSpecs.get(i).getaAttributeDesc());
 
-			if(val.isBool() && val!=null)
+
+			TypedValue val = aScoredSpecs.get(i).getAttributeMean();			
+
+			if(val.getType() == Type.BOOLEAN && val!=null)
 			{	
 				f.setType("Bool");								
-				values.add(val.getBoolValue()+"");
+				values.add(val.getBooleanValue()+"");
 				f.setValue((ArrayList<String>) values);
 			}
 			else
 			{
-				if(val.isNumeric() && val!=null)
+
+				if((val.getType() == Type.DOUBLE || val.getType() == Type.INTEGER ) && val!=null)
+
 					{
 						f.setType("Numeric");
-						f.setMinValue(val.getMin());
-						f.setMaxValue(val.getMax());										
+						f.setMinValue(aScoredSpecs.get(i).getMin().getNumericValue());
+						f.setMaxValue(aScoredSpecs.get(i).getMax().getNumericValue());										
 						values.add(val.getNumericValue()+"");
-						f.setValue((ArrayList<String>)values);										
+						f.setValue((ArrayList<String>)values);	
+												
 					}
 				else
 				{
-					if(val.isNominal() && val!=null)
+					if(val.getType() == Type.STRING  && val!=null)
 					{
 						if(val.getNominalValue().equalsIgnoreCase("true") || val.getNominalValue().equalsIgnoreCase("false")) 
 						{
+
 								f.setType("Bool");
 						}
 						else 
 						{
+							
 								f.setType("Nominal");
 						}
 
 							if(val.getNominalValue().equals("N/A"))
 							{
+
 								values.add("N/A");
 							}
 							else
 							{
-								values= val.getDict();								
+								values = aScoredSpecs.get(i).getDict();								
+
 							}
 							f.setValue((ArrayList<String>)values);										
 						}
@@ -487,7 +595,7 @@ public class SearchController
 				specFeatures.add(f);	
 		}		
 
-		for (int i = 0; i < scoredRatings.size() ; i++)
+		for (int i = 0; i < aScoredRatings.size() ; i++)
 		{
 			if(i > featureNumToDisplay)
 			{
@@ -495,35 +603,40 @@ public class SearchController
 			}
 			values = new ArrayList <String>() ;
 			FeatureVO f = new FeatureVO();
-			f.setId(scoredRatings.get(i).getAttributeID());
-			f.setName(scoredRatings.get(i).getAttributeName());
-			System.out.println("***********Rate Name ********* "+ f.getName());
 
+			f.setId(aScoredRatings.get(i).getAttributeID());
+			f.setName(aScoredRatings.get(i).getAttributeName());
+
+			LOG.debug("***********Rate Name ********* "+ f.getName());
+
+			f.setDesc(aScoredRatings.get(i).getaAttributeDesc());
 			f.setRate(true);
 			f.setSpec(false);			
 			f.setVisible(true);
 
-			AttributeValue val = scoredRatings.get(i).getAttributeMean();	
 
-			if(val.isBool() && val!=null)
+			TypedValue val = aScoredRatings.get(i).getAttributeMean();	
+
+			if(val.getType() == Type.BOOLEAN && val!=null)
 			{
 				f.setType("Bool");								
-				values.add(val.getBoolValue()+"");
+				values.add(val.getBooleanValue()+"");
 				f.setValue((ArrayList<String>)values);
+
 			}
 			else
 			{
-				if(val.isNumeric() && val!=null)
+				if((val.getType() == Type.DOUBLE || val.getType() == Type.INTEGER ) && val!=null)
 				{
 					f.setType("Numeric");
-					f.setMinValue(val.getMin());
-					f.setMaxValue(val.getMax());					
+					f.setMinValue(aScoredRatings.get(i).getMin().getNumericValue());
+					f.setMaxValue(aScoredRatings.get(i).getMax().getNumericValue());					
 					values.add(val.getNumericValue()+"");
 					f.setValue((ArrayList<String>)values);										
 				}
 				else
 				{
-					if(val.isNominal() && val!=null)
+					if(val.getType() == Type.STRING && val!=null)
 					{
 						if(val.getNominalValue().equalsIgnoreCase("true") || val.getNominalValue().equalsIgnoreCase("false")) 
 						{
@@ -540,7 +653,7 @@ public class SearchController
 						}
 						else
 						{
-							values=val.getDict();					
+							values = aScoredRatings.get(i).getDict();					
 						}
 						f.setValue((ArrayList<String>)values);										
 					}
@@ -548,74 +661,102 @@ public class SearchController
 			}
 			rateFeatures.add(f);								
 		}
-		rateFeatureList.setFeatures(rateFeatures);
+		aRateFeatureList.setFeatures(rateFeatures);
 	
-		specFeatureList.setFeatures(specFeatures);	
+		aSpecFeatureList.setFeatures(specFeatures);	
 
 		return "/rankedproducts";
 						
 	}
-	
-	@RequestMapping(value="/popupFeature", method = RequestMethod.GET)
+	/**
+	 * 
+	 * @return name of file to redirect the browser to popupFeature.html
+	 */
+	@RequestMapping(value = "/popupFeature", method = RequestMethod.GET)
 	public String getPopUp() 
 	{
 		return "/popupFeature";
 	}
 	
-	@RequestMapping(value="/searchRankedFeaturesProducts", method = RequestMethod.GET)
+	/**
+	 * 
+	 * @return name of file to redirect the browser to rankedproducts.html
+	 */
+	@RequestMapping(value = "/searchRankedFeaturesProducts", method = RequestMethod.GET)
 	public String getRankedProducts() 
 	{
 		return "/rankedproducts";
 	}
 	
-	@RequestMapping(value="/sendFeatures", method = RequestMethod.POST)	
+	/**
+	 * 
+	 * @return name of file to redirect the browser to rankedproducts.html
+	 */
+	@RequestMapping(value = "/rankedproducts", method = RequestMethod.GET)
+	public String getRankedProducts2() 
+	{
+		return "/rankedproducts";
+	}
+	
+	/**
+	 * 
+	 * @param dataSpec
+	 * @param dataRate
+	 * @return name of file to redirect the browser to rankedproducts.html
+	 */
+	@RequestMapping(value = "/sendFeatures", method = RequestMethod.POST)	
 	public String sendCurrentFeatureList(@RequestParam String dataSpec, @RequestParam String dataRate)
 	{
-		System.out.println(" data is  " + dataSpec);
 
-		System.out.println(" data is  " + dataRate);
+		LOG.debug(" data is  " + dataSpec);
+		LOG.debug(" data is  " + dataRate);
 
 		Gson gson = new Gson();
 		UserFeatureModel userFMSpec = gson.fromJson(dataSpec, UserFeatureModel.class);
 		UserFeatureModel userFMRate = gson.fromJson(dataRate, UserFeatureModel.class);
 
+		List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
+		List<ScoredAttribute> userScoredFeaturesRates = new ArrayList<ScoredAttribute>();
+			
 		for(int i = 0 ; i < userFMSpec.getNames().size() ; i++)
 		{
 			String tempName = userFMSpec.getNames().get(i);
-			int indx = locateFeatureScoredAttribute(scoredSpecs, tempName);
-			AttributeValue av = new AttributeValue(userFMSpec.getValues().get(i));				
-			if(indx != -1){
-				scoredSpecs.get(indx).setAttributeMean(av);
-			}
+			ScoredAttribute sa = locateFeatureScoredAttribute(aScoredSpecs, tempName);
+			if ( sa != null)
+			{
+				TypedValue av = new TypedValue(userFMSpec.getValues().get(i));				
+				sa.setAttributeMean(av);
+				userScoredFeaturesSpecs.add(sa);				
+			}			
 
 		}
-
+		
 		for(int i = 0 ; i < userFMRate.getNames().size() ; i++)
 		{
-			String tempName2 = userFMRate.getNames().get(i);
-			System.out.println(" tempName2 " + tempName2);			
+			String tempName = userFMRate.getNames().get(i);
+			ScoredAttribute sa = locateFeatureScoredAttribute(aScoredSpecs, tempName);			
+			if ( sa != null)
+			{
+				TypedValue av = new TypedValue(userFMRate.getValues().get(i));				
+				sa.setAttributeMean(av);
+				userScoredFeaturesRates.add(sa);				
 
-			int indx2 = locateFeatureScoredAttribute(scoredRatings, tempName2);
-			AttributeValue av = new AttributeValue(userFMRate.getValues().get(i));							
-			if(indx2 != -1){
-				scoredRatings.get(indx2).setAttributeMean(av);
 			}
 		}
 
-		System.out.println(" Done ");
+		LOG.debug(" Done ");
 
-		System.out.println(" specs " + scoredSpecs.toString());
-		System.out.println(" old products "+ scoredProducts.toString());
-
-		for(ScoredProduct sa : scoredProducts)
+		LOG.debug(" specs " + aScoredSpecs.toString());
+		LOG.debug(" old products "+ aScoredProducts.toString());
+		
+		for(ScoredProduct sa : aScoredProducts)
 		{
-			System.out.println("old "+ sa.getProduct().getName());	
-			break;
-
+			LOG.debug(sa.toString());					
 		}
-		RankedFeaturesProducts Products = new RankedFeaturesProducts();
-		List<ScoredProduct> productsToDisplay = Products.FilterandReturn(scoredSpecs);
 	
+		RankedFeaturesProducts tempProducts = new RankedFeaturesProducts();
+		List<ScoredProduct> productsToDisplay = tempProducts.FilterandReturn(userScoredFeaturesSpecs);
+
 			// Converting
 			ArrayList<ProductVO> products = new ArrayList<ProductVO>();		
 		    for (ScoredProduct sp: productsToDisplay)
@@ -625,35 +766,35 @@ public class SearchController
 				p.setId(sp.getProduct().getId());
 				products.add(p);
 			 }
-			productList.setProducts(products);	
-			System.out.println(" new products "+ products.toString());
+			aProductList.setProducts(products);	
+			LOG.debug(" new products "+ products.toString());
 			for(ProductVO sa : products)
 			{
-				System.out.println("new "+ sa.getName());			
-//				break;
+				LOG.debug("new "+ sa.getName());			
 			}
 
-			return "/rankedproducts";		
+			return "/rankedproducts";	
+		
 	}	
 
-	/**********************************************************************/
 	/**
 	 * 
 	 * @param pFeatureList : feature list, either specs or ratings
 	 * @param pName   : Name of feature to locate
-	 * @return ScoredAttribute matching the pName
+	 * @return ScoredAttribute matched object
 	 */
-	public int locateFeatureScoredAttribute(List<ScoredAttribute> pFeatureList, String pName)
+	public ScoredAttribute locateFeatureScoredAttribute(List<ScoredAttribute> pFeatureList, String pName)
 	{
 		for (int i = 0 ; i< pFeatureList.size() ; i++)
 		{
 			ScoredAttribute temp = pFeatureList.get(i);
 			if(temp.getAttributeName().equals(pName))
 			{
-				System.out.println("old mean value is " + pFeatureList.get(i).getAttributeMean());
-				return i;
+				LOG.debug("old mean value is " + pFeatureList.get(i).getAttributeMean());
+				return temp;
+
 			}
 		}
-		return -1;
+		return null;
 	}
 }
