@@ -21,8 +21,6 @@ public class TestTypedValue
 		TypedValue value = new TypedValue(null);
 		assertNull(value.getOriginalValue());
 		assertNull(value.getValue());
-		assertNull(value.getBooleanValue());
-		assertNull(value.getNumericValue());
 		assertNull(value.getNominalValue());
 		assertEquals(Type.NULL, value.getType());
 	}
