@@ -78,13 +78,61 @@ public class TestCRData
 	}
 	
 	 // Categories that are not eq classes do not exist.
-	@Test
-	public void testCategories1()
+	@Test public void testNonExistentCategories()
 	{
 		assertNull(aDataStore.getCategory2("28934"));
 		assertNull(aDataStore.getCategory2("28935"));
 		assertNull(aDataStore.getCategory2("33191"));
 		assertNull(aDataStore.getCategory2("28713"));
 		assertNull(aDataStore.getCategory2("28985"));
+	}
+	
+	// Recognized categories
+	@Test public void testgetBasicFields()
+	{
+		Category2 category = aDataStore.getCategory2("34667");
+		assertEquals("34667", category.getId());
+		assertEquals("Car", category.getFranchise());
+		assertEquals("Headlight restoration kits", category.getName());
+		
+		category = aDataStore.getCategory2("31103");
+		assertEquals("31103", category.getId());
+		assertEquals("Car", category.getFranchise());
+		assertEquals("Performance all season tire", category.getName());
+		
+		category = aDataStore.getCategory2("32963");
+		assertEquals("32963", category.getId());
+		assertEquals("Baby & kid", category.getFranchise());
+		assertEquals("Toy", category.getName());
+		
+		category = aDataStore.getCategory2("34784");
+		assertEquals("34784", category.getId());
+		assertEquals("Food", category.getFranchise());
+		assertEquals("Bagel", category.getName());
+		
+		category = aDataStore.getCategory2("34605");
+		assertEquals("34605", category.getId());
+		assertEquals("Electronic & Computer", category.getFranchise());
+		assertEquals("Bluetooth headset", category.getName());
+		
+		category = aDataStore.getCategory2("34815");
+		assertEquals("34815", category.getId());
+		assertEquals("Money", category.getFranchise());
+		assertEquals("Credit card", category.getName());
+		
+		category = aDataStore.getCategory2("28666");
+		assertEquals("28666", category.getId());
+		assertEquals("Appliance", category.getFranchise());
+		assertEquals("Air conditioner", category.getName());
+		
+		category = aDataStore.getCategory2("28735");
+		assertEquals("28735", category.getId());
+		assertEquals("Health", category.getFranchise());
+		assertEquals("Treadmill", category.getName());
+		
+		category = aDataStore.getCategory2("33008");
+		assertEquals("33008", category.getId());
+		assertEquals("Home & garden", category.getFranchise());
+		assertEquals("Chain saw", category.getName());
 	}
 }
