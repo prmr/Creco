@@ -36,7 +36,7 @@ public class AttributeStat
 	 * Creates an empty statistics object for this attribute.
 	 * @param pAttribute The attribute about which statistics are collected.
 	 */
-	public AttributeStat(Attribute pAttribute) 
+	AttributeStat(Attribute pAttribute) 
 	{
 		aAttribute = pAttribute;
 	}
@@ -45,7 +45,7 @@ public class AttributeStat
 	 * Copy constructor.
 	 * @param pStats The stats to copy.
 	 */
-	public AttributeStat(AttributeStat pStats) 
+	AttributeStat(AttributeStat pStats) 
 	{
 		aAttribute = pStats.getAttribute();
 		aValueEnum.addAll(pStats.getValueEnum());
@@ -59,7 +59,7 @@ public class AttributeStat
 	 * values in pStat.
 	 * @param pStatistics The statistics to integrate into this object.
 	 */
-	public void update(AttributeStat pStatistics)
+	void update(AttributeStat pStatistics)
 	{
 		increment(pStatistics.getCount());
 		aValueEnum.addAll(pStatistics.getValueEnum());
@@ -72,7 +72,7 @@ public class AttributeStat
 	 * the values from a single attribute.
 	 * @param pAttribute The attribute to consider.
 	 */
-	public void update(Attribute pAttribute)
+	void update(Attribute pAttribute)
 	{
 		increment(1);
 		updateRange(pAttribute.getTypedValue());
@@ -91,7 +91,7 @@ public class AttributeStat
 	 * by pAmount.
 	 * @param pAmount The amount to increment by.
 	 */
-	public void increment(int pAmount)
+	void increment(int pAmount)
 	{
 		aCount += pAmount;
 	}
