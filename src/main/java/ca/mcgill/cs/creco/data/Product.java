@@ -34,7 +34,7 @@ public class Product
 	private HashMap<String, Attribute> aRatings = new HashMap<String, Attribute>();
 	private HashMap<String, Attribute> aSpecs = new HashMap<String, Attribute>();
 	private String aCategoryId;
-	private Category aCategory;
+	private CategoryBuilder aCategory;
 	
 	
 	/**
@@ -75,7 +75,7 @@ public class Product
 		aRatings.put(pAttribute.getId(), pAttribute);
 	}
 	
-	void setCategory(Category pCategory)
+	void setCategory(CategoryBuilder pCategory)
 	{
 		aCategory = pCategory;
 	}
@@ -125,7 +125,7 @@ public class Product
 	/**
 	 * @return The product's category.
 	 */
-	public Category2 getCategory() 
+	public Category getCategory() 
 	{ return aCategory.getCategory(); }
 
 	/**

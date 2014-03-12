@@ -43,8 +43,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import ca.mcgill.cs.creco.data.CategoryBuilder;
 import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.data.Category2;
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
 
@@ -94,7 +94,7 @@ public class ProductSearch implements IProductSearch
 		Analyzer analyzer = new EnglishAnalyzer(VERSION);
 		IndexWriter writer = new IndexWriter(aDirectory,
 				new IndexWriterConfig(VERSION, analyzer));
-		for (Category2 category : aDataStore.getCategories())
+		for (Category category : aDataStore.getCategories())
 		{
 			for (Product product : category.getProducts()) 
 			{
@@ -117,7 +117,7 @@ public class ProductSearch implements IProductSearch
 	@Override
 	public List<ScoredProduct> queryProducts(String pQueryString, String pCategoryID)
 	{
-		Category2 category = aDataStore.getCategory2(pCategoryID);
+		Category category = aDataStore.getCategory2(pCategoryID);
 		if (category == null)
 		{
 			LOG.error("Invalid category ID: " + pCategoryID);
@@ -177,7 +177,7 @@ public class ProductSearch implements IProductSearch
 		}
 		
 		// Add remaining products from the category, even if they didn't match the query
-		Category2 category = aDataStore.getCategory2(pCategoryId);
+		Category category = aDataStore.getCategory2(pCategoryId);
 		for (Product product : category.getProducts())
 		{
 			if (!matchingProducts.contains(product))

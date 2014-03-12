@@ -41,8 +41,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import ca.mcgill.cs.creco.data.CategoryBuilder;
 import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.data.Category2;
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
 
@@ -84,7 +84,7 @@ public class CategorySearch implements ICategorySearch
 	private void buildCategoryIndex() throws IOException
 	{
 		IndexWriter writer = new IndexWriter(aDirectory, new IndexWriterConfig(VERSION, aAnalyzer));
-		for (Category2 category : aDataStore.getCategories()) 
+		for (Category category : aDataStore.getCategories()) 
 		{
 			String flattenedText = category.getName();
 			for (Product product : category.getProducts())
@@ -101,9 +101,9 @@ public class CategorySearch implements ICategorySearch
 	}
 	
 	@Override
-	public List<Category2> queryCategories(String pQueryString) 
+	public List<Category> queryCategories(String pQueryString) 
 	{
-		List<Category2> equivalenceClassResults = new ArrayList<Category2>();
+		List<Category> equivalenceClassResults = new ArrayList<Category>();
 		try 
 		{
 			DirectoryReader reader = DirectoryReader.open(aDirectory);
@@ -121,7 +121,7 @@ public class CategorySearch implements ICategorySearch
 			for(ScoreDoc scoredResult : results.topDocs().scoreDocs) 
 			{
 			    Document doc = searcher.doc(scoredResult.doc);
-			    Category2 resultCategory = aDataStore.getCategory2(doc.get(CATEGORY_ID));
+			    Category resultCategory = aDataStore.getCategory2(doc.get(CATEGORY_ID));
 
 			    if (!equivalenceClassResults.contains(resultCategory))
 			    {

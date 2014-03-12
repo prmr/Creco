@@ -30,8 +30,8 @@ import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import ca.mcgill.cs.creco.data.AttributeStat;
+import ca.mcgill.cs.creco.data.CategoryBuilder;
 import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.data.Category2;
 import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.data.TypedValue.Type;
@@ -55,7 +55,7 @@ public class AttributeExtractor
 	private static final double DEFAULT_MIN = 10000000;
 	private static final double DEFAULT_MAX = -10000000;
 	private List<Product> aProductList;
-	private Category2 aEquivalenceClass;
+	private Category aEquivalenceClass;
 	private Iterable<AttributeStat> aSpecList;
 	private Iterable<AttributeStat> aRatingList;
 	private ArrayList<ScoredAttribute> aScoredSpecList;
@@ -65,7 +65,7 @@ public class AttributeExtractor
 	 * @param pProductSearchResult a lucene result
 	 * @param pEquivalenceClass the whole space of interesting products
 	 */
-	public AttributeExtractor(List<ScoredProduct> pProductSearchResult, Category2 pEquivalenceClass)
+	public AttributeExtractor(List<ScoredProduct> pProductSearchResult, Category pEquivalenceClass)
 	{
 		aProductList = new ArrayList<Product>();
 		for (ScoredProduct scoredProduct : pProductSearchResult)
@@ -84,7 +84,7 @@ public class AttributeExtractor
 	 * @param pProductList subset of interesting products
 	 * @param pEquivalenceClass the whole space of interesting products
 	 */
-	public AttributeExtractor(Set<Product> pProductList, Category2 pEquivalenceClass)
+	public AttributeExtractor(Set<Product> pProductList, Category pEquivalenceClass)
 	{
 		aProductList = Lists.newArrayList(pProductList);
 		aEquivalenceClass = pEquivalenceClass;
@@ -616,7 +616,7 @@ public class AttributeExtractor
 	/**
 	 * @return The equivalence class used by the extractor
 	 */
-	public Category2 getEquivalenceClass() 
+	public Category getEquivalenceClass() 
 	{
 		return aEquivalenceClass;
 	}
@@ -624,7 +624,7 @@ public class AttributeExtractor
 	/**
 	 * @param pEquivalenceClass The equivalence class to be used by the extractor
 	 */
-	public void setEquivalenceClass(Category2 pEquivalenceClass) 
+	public void setEquivalenceClass(Category pEquivalenceClass) 
 	{
 		aEquivalenceClass = pEquivalenceClass;
 	}

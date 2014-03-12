@@ -53,11 +53,11 @@ public final class CRData implements IDataCollector, IDataStore
 	
 	private HashMap<String, Product> aProducts = new HashMap<String, Product>();
 	
-	private Hashtable<String, Category> aCategoryIndex = new Hashtable<String, Category>();
-	private ArrayList<Category> aRootCategories = new ArrayList<Category>();					// Top-level categories
-	private ArrayList<Category> aEquivalenceClasses = new ArrayList<Category>();
-	private ArrayList<Category> aSubEquivalenceClasses = new ArrayList<Category>();
-	private HashMap<String, Category2> aCategory2Index = new HashMap<String, Category2>();
+	private Hashtable<String, CategoryBuilder> aCategoryIndex = new Hashtable<String, CategoryBuilder>();
+	private ArrayList<CategoryBuilder> aRootCategories = new ArrayList<CategoryBuilder>();					// Top-level categories
+	private ArrayList<CategoryBuilder> aEquivalenceClasses = new ArrayList<CategoryBuilder>();
+	private ArrayList<CategoryBuilder> aSubEquivalenceClasses = new ArrayList<CategoryBuilder>();
+	private HashMap<String, Category> aCategory2Index = new HashMap<String, Category>();
 	
 	private CRData() throws IOException
 	{
@@ -71,7 +71,7 @@ public final class CRData implements IDataCollector, IDataStore
 		loadingService.loadCategories(this);
 		
 		// Build an index of all categories.
-		for(Category category : aRootCategories)
+		for(CategoryBuilder category : aRootCategories)
 		{
 			index(category);
 			eliminateSingletons(category);
@@ -86,7 +86,7 @@ public final class CRData implements IDataCollector, IDataStore
 		refresh();
 		findEquivalenceClasses();
 		
-		for( Category c : getEquivalenceClasses())
+		for( CategoryBuilder c : getEquivalenceClasses())
 		{
 			aCategory2Index.put(c.getId(), c.getCategory());
 		}
@@ -100,7 +100,7 @@ public final class CRData implements IDataCollector, IDataStore
 	 */
 	@Override
 	@Deprecated
-	public Category getCategory(String pIndex) 
+	public CategoryBuilder getCategory(String pIndex) 
 	{
 		return aCategoryIndex.get(pIndex);
 	}
@@ -109,13 +109,13 @@ public final class CRData implements IDataCollector, IDataStore
 	 * @param pIndex The requested index.
 	 * @return The category corresponding to pIndex.
 	 */
-	public Category2 getCategory2(String pIndex)
+	public Category getCategory2(String pIndex)
 	{
 		return aCategory2Index.get(pIndex);
 	}
 	
 	@Override
-	public void addCategory(Category pCategory)
+	public void addCategory(CategoryBuilder pCategory)
 	{
 		aRootCategories.add(pCategory);
 	}
@@ -132,13 +132,13 @@ public final class CRData implements IDataCollector, IDataStore
 	 */
 	@Override
 	@Deprecated
-	public Iterable<Category> getEquivalenceClasses()
+	public Iterable<CategoryBuilder> getEquivalenceClasses()
 	{
 		return Collections.unmodifiableCollection(aEquivalenceClasses);
 	}
 	
 	@Override
-	public Collection<Category2> getCategories()
+	public Collection<Category> getCategories()
 	{
 		return Collections.unmodifiableCollection(aCategory2Index.values());
 	}
@@ -156,21 +156,21 @@ public final class CRData implements IDataCollector, IDataStore
 	
 	private void findEquivalenceClasses() 
 	{
-		for(Category franchise : aRootCategories)
+		for(CategoryBuilder franchise : aRootCategories)
 		{
 			recurseFindEquivalenceClasses(franchise, 0);
 		}
 	}
 	
-	private void recurseFindEquivalenceClasses(Category pCategory, int pMode)
+	private void recurseFindEquivalenceClasses(CategoryBuilder pCategory, int pMode)
 	{
-		Iterable<Category> children = pCategory.getChildren();
+		Iterable<CategoryBuilder> children = pCategory.getChildren();
 		int numChildren = pCategory.getNumberOfChildren();
 		
 		if(pMode == 1)
 		{
 			aSubEquivalenceClasses.add(pCategory);
-			for(Category child : children)
+			for(CategoryBuilder child : children)
 			{
 				recurseFindEquivalenceClasses(child, 1);
 			}
@@ -189,7 +189,7 @@ public final class CRData implements IDataCollector, IDataStore
 				Double jaccard = pCategory.getJaccardIndex();
 				if(jaccard == null || jaccard < JACCARD_THRESHOLD)
 				{
-					for(Category child : children)
+					for(CategoryBuilder child : children)
 					{
 						recurseFindEquivalenceClasses(child, 0);
 					}
@@ -198,7 +198,7 @@ public final class CRData implements IDataCollector, IDataStore
 				else
 				{
 					aEquivalenceClasses.add(pCategory);
-					for(Category child : children)
+					for(CategoryBuilder child : children)
 					{
 						recurseFindEquivalenceClasses(child, 1);
 					}
@@ -208,15 +208,15 @@ public final class CRData implements IDataCollector, IDataStore
 		}
 	}
 	
-	private Iterator<Category> iterator()
+	private Iterator<CategoryBuilder> iterator()
 	{
 		return Collections.unmodifiableCollection(aCategoryIndex.values()).iterator();
 	}
 	
-	private void index(Category pCategory)
+	private void index(CategoryBuilder pCategory)
 	{
 		aCategoryIndex.put(pCategory.getId(), pCategory);
-		for(Category child : pCategory.getChildren())
+		for(CategoryBuilder child : pCategory.getChildren())
 		{
 			index(child);
 		}
@@ -225,15 +225,15 @@ public final class CRData implements IDataCollector, IDataStore
 	private void refresh() 
 	{			
 		// Now recursively refresh the category list
-		for(Category franchise : aRootCategories)
+		for(CategoryBuilder franchise : aRootCategories)
 		{
 			recursiveRefresh(franchise, 0);
 		}
 	}
 	
-	private void recursiveRefresh(Category pCategory, int pDepth)
+	private void recursiveRefresh(CategoryBuilder pCategory, int pDepth)
 	{
-		for(Category child : pCategory.getChildren()) 
+		for(CategoryBuilder child : pCategory.getChildren()) 
 		{
 			recursiveRefresh(child, pDepth + 1);
 		}
@@ -252,7 +252,7 @@ public final class CRData implements IDataCollector, IDataStore
 		}
 	
 		// Roll up counts and collections
-		for(Category child : pCategory.getChildren())
+		for(CategoryBuilder child : pCategory.getChildren())
 		{
 			// aggregate children's collections
 			pCategory.mergeRatings(child.getRatings());
@@ -278,7 +278,7 @@ public final class CRData implements IDataCollector, IDataStore
 		while( pProducts.hasNext())
 		{
 			Product product = pProducts.next();
-			Category category = getCategory(product.getCategoryId());
+			CategoryBuilder category = getCategory(product.getCategoryId());
 			
 			// Create two way link between category and product
 			category.addProduct(product);
@@ -301,13 +301,13 @@ public final class CRData implements IDataCollector, IDataStore
 		}
 	}
 	
-	private void eliminateSingletons(Category pCategory)
+	private void eliminateSingletons(CategoryBuilder pCategory)
 	{
 		// detect if this is a singleton, if so, splice it out of the hierarchy
 		if(pCategory.getNumberOfChildren() == 1)
 		{
-			Category child = pCategory.getChildren().iterator().next();
-			Category parent = pCategory.getParent();
+			CategoryBuilder child = pCategory.getChildren().iterator().next();
+			CategoryBuilder parent = pCategory.getParent();
 			child.setParent(parent);
 			parent.removeChild(pCategory);
 			parent.addSubcategory(child);
@@ -316,7 +316,7 @@ public final class CRData implements IDataCollector, IDataStore
 		}
 		else
 		{
-			for(Category child : pCategory.getChildren())
+			for(CategoryBuilder child : pCategory.getChildren())
 			{
 				eliminateSingletons(child);
 			}

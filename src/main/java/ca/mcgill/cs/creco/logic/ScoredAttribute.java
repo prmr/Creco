@@ -23,8 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.AttributeStat;
+import ca.mcgill.cs.creco.data.CategoryBuilder;
 import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.data.Category2;
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.TypedValue;
 
@@ -82,7 +82,7 @@ public class ScoredAttribute
 	 * @param pAttribute attribute to build score for.
 	 * @param Category in which the attribute is present
 	 */
-	public ScoredAttribute(Attribute pAttribute, Category2 pCat)
+	public ScoredAttribute(Attribute pAttribute, Category pCat)
 	{
 		aIsCat = false;
 		aAttributeID = pAttribute.getId();
@@ -93,20 +93,7 @@ public class ScoredAttribute
 		aAttributeDesc = pAttribute.getDescription();
 
 	}
-	/** Constructor from a Category.
-	 * @param pCat category to treat as attribute
-	 */
-	public ScoredAttribute(Category pCat)
-	{
-		aIsCat = true;
-		aAttributeID = pCat.getId();
-		aAttributeScore = 0.0;
-		aAttributeName = pCat.getName();
-		aCategoryID = pCat.getId();
-		aAttributeDesc = pCat.getName();
-
-	}
-	
+		
 	/**
 	 * @return attribute or category ID check first
 	 * @see isCat()

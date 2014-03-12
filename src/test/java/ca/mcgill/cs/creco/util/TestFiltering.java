@@ -31,8 +31,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.AttributeStat;
+import ca.mcgill.cs.creco.data.CategoryBuilder;
 import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.data.Category2;
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.data.TypedValue;
@@ -64,9 +64,9 @@ public class TestFiltering {
 	@Test
 	public void testFunction_initialreturn() throws IOException
 	{
-		 List<Category2> categoryList = aCategorySearch.queryCategories("Toaster");
-		    Category2 target = null;
-		    for (Category2 cat: categoryList) {
+		 List<Category> categoryList = aCategorySearch.queryCategories("Toaster");
+		    Category target = null;
+		    for (Category cat: categoryList) {
 		    	if (cat.getName().equals("Toaster")) {
 		    		target = cat;
 		    	}
@@ -84,9 +84,9 @@ public class TestFiltering {
 	@Test
 	public void testFunction_intialreturn2() throws IOException
 	{
-		 List<Category2> categoryList = aCategorySearch.queryCategories("Digital SLR camera");
-		    Category2 target = null;
-		    for (Category2 cat: categoryList) {
+		 List<Category> categoryList = aCategorySearch.queryCategories("Digital SLR camera");
+		    Category target = null;
+		    for (Category cat: categoryList) {
 		    	if (cat.getName().equals("Digital SLR camera")) {
 		    		target = cat;
 		    	}
@@ -104,9 +104,9 @@ public class TestFiltering {
 	@Test
 	public void testFunction_product_with_selected_feature() throws IOException
 	{
-		 List<Category2> categoryList = aCategorySearch.queryCategories("Point & shoot digital camera");
-		    Category2 target = null;
-		    for (Category2 cat: categoryList) {
+		 List<Category> categoryList = aCategorySearch.queryCategories("Point & shoot digital camera");
+		    Category target = null;
+		    for (Category cat: categoryList) {
 		    	if (cat.getName().equals("Point & shoot digital camera")) {
 		    		target = cat;
 		    	}
@@ -119,7 +119,7 @@ public class TestFiltering {
 		    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(ratingList, specList, prodSearch);
 		    List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
 			Attribute test= new Attribute( "doesnt matter", "Manual controls", "doesn't matter", true );
-		  ScoredAttribute test_score = new ScoredAttribute(test,new Category2("empty", "test", "test", new ArrayList<Product>(), 
+		  ScoredAttribute test_score = new ScoredAttribute(test,new Category("empty", "test", "test", new ArrayList<Product>(), 
 					new ArrayList<AttributeStat>(), new ArrayList<AttributeStat>()));
 		  TypedValue temporary = new TypedValue(false);
 		  test_score.setAttributeMean(temporary); 
@@ -132,9 +132,9 @@ public class TestFiltering {
 	@Test
 	public void testFunction_feature_setas_NA() throws IOException
 	{
-		 List<Category2> categoryList = aCategorySearch.queryCategories("Convertible car seat");
-		    Category2 target = null;
-		    for (Category2 cat: categoryList) {
+		 List<Category> categoryList = aCategorySearch.queryCategories("Convertible car seat");
+		    Category target = null;
+		    for (Category cat: categoryList) {
 		    	if (cat.getName().equals("Convertible car seat")) {
 		    		target = cat;
 		    	}
@@ -148,7 +148,7 @@ public class TestFiltering {
 		    List<ScoredProduct> scoredProducts = rankedProducts.getaProductSearchResult();
 		    List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
 			Attribute test= new Attribute( "doesnt matter", "Multiple recline positions", "doesn't matter", true );
-		  ScoredAttribute test_score = new ScoredAttribute(test,new Category2("empty", "test", "test", new ArrayList<Product>(), 
+		  ScoredAttribute test_score = new ScoredAttribute(test,new Category("empty", "test", "test", new ArrayList<Product>(), 
 					new ArrayList<AttributeStat>(), new ArrayList<AttributeStat>()));
 
 		  TypedValue temporary = new TypedValue("NA");

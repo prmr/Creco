@@ -28,8 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import ca.mcgill.cs.creco.data.CategoryBuilder;
 import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.data.Category2;
 import ca.mcgill.cs.creco.data.IDataStore;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -46,7 +46,7 @@ public class TestCategorySearch {
 	@Test
 	public void testExactStringMatch() throws IOException
 	{
-		List<Category2> categories = aCategorySearch.queryCategories("Smart phone");
+		List<Category> categories = aCategorySearch.queryCategories("Smart phone");
 		
 		assertEquals("Smart phone",categories.get(0).getName());
 	}
@@ -54,7 +54,7 @@ public class TestCategorySearch {
 	@Test
 	public void testTypoStringMatch() throws IOException
 	{
-		List<Category2> categories = aCategorySearch.queryCategories("Smart phoneZ");
+		List<Category> categories = aCategorySearch.queryCategories("Smart phoneZ");
 		
 		assertEquals("Smart phone",categories.get(0).getName());
 	}
@@ -62,7 +62,7 @@ public class TestCategorySearch {
 	@Test
 	public void testExactProductMatch() throws IOException
 	{
-		List<Category2> categories = aCategorySearch.queryCategories("iPhone 5");
+		List<Category> categories = aCategorySearch.queryCategories("iPhone 5");
 		
 		assertEquals("Smart phone",categories.get(0).getName());
 	}
@@ -70,9 +70,9 @@ public class TestCategorySearch {
 	@Test
 	public void testNoDuplicateCategories() throws IOException
 	{
-		List<Category2> categories = aCategorySearch.queryCategories("Toaster oven");
+		List<Category> categories = aCategorySearch.queryCategories("Toaster oven");
 		
-		Set<Category2> categoriesNoDuplicates = new HashSet<Category2>(categories);
+		Set<Category> categoriesNoDuplicates = new HashSet<Category>(categories);
 		
 		assertEquals(categories.size(), categoriesNoDuplicates.size());
 	}

@@ -34,8 +34,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 //import ca.mcgill.cs.creco.data.Attribute;
+import ca.mcgill.cs.creco.data.CategoryBuilder;
 import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.data.Category2;
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.data.TypedValue.Type;
@@ -263,12 +263,12 @@ public class SearchController
 		   int min2 = 200;
 		   int min3 = 200;
 		   int min4 = 200;
-		   Category2 min1S = null;
-		   Category2 min2S = null;
-		   Category2 min3S = null;
-		   Category2 min4S = null;
+		   Category min1S = null;
+		   Category min2S = null;
+		   Category min3S = null;
+		   Category min4S = null;
 		 
-		   for (Category2 category123 : aDataStore.getCategories()) 
+		   for (Category category123 : aDataStore.getCategories()) 
 			{
 			   if(category123.getNumberOfProducts() == 0)
 			   {
@@ -357,12 +357,12 @@ public class SearchController
  @ResponseBody  
  public String createSmartphone(@RequestBody String typedString)
 	   {  
-		   List<Category2> categoryList = aCategorySearch.queryCategories(typedString);		
+		   List<Category> categoryList = aCategorySearch.queryCategories(typedString);		
 
 		   int count = 0;
 		   String ajaxCode = new String();
 			ArrayList<EqcVO> eqcs = new ArrayList<EqcVO>();		
-			for (Category2 cat: categoryList) 
+			for (Category cat: categoryList) 
 			{
 				if(cat.getNumberOfProducts() == 0)
 				{
@@ -431,12 +431,12 @@ public class SearchController
 	@RequestMapping(value = "/searchEqClass", method = RequestMethod.POST)
 	public String searchEqClass(@ModelAttribute("mainQuery") MainQueryVO pMainQuery, BindingResult result, RedirectAttributes redirectAttrs) {
 		aMainQuery = pMainQuery;
-		List<Category2> categoryList = aCategorySearch.queryCategories(aMainQuery.getQuery());	
+		List<Category> categoryList = aCategorySearch.queryCategories(aMainQuery.getQuery());	
 		
 		
 		//Nishanth code 
 		String mainString = "";
-		for (Category2 category123 : aDataStore.getCategories()) 
+		for (Category category123 : aDataStore.getCategories()) 
 		{
 		   if(category123.getNumberOfProducts() == 0)
 		   {
@@ -454,7 +454,7 @@ public class SearchController
 		// Nishanth code
 		//Converting
 		ArrayList<EqcVO> eqcs = new ArrayList<EqcVO>();		
-		for (Category2 cat: categoryList)
+		for (Category cat: categoryList)
 		{
 			if(cat.getNumberOfProducts() == 0)
 			{
@@ -477,9 +477,9 @@ public class SearchController
 	@RequestMapping(value = "/searchRankedFeaturesProducts", method = RequestMethod.POST)  
 	public String searchRankedFeaturesProducts(@ModelAttribute("eqc") EqcVO eqc)
 	{  
-	    List<Category2> categoryList = aCategorySearch.queryCategories(aMainQuery.getQuery());
-	    Category2 target = null;
-	    for (Category2 cat: categoryList)
+	    List<Category> categoryList = aCategorySearch.queryCategories(aMainQuery.getQuery());
+	    Category target = null;
+	    for (Category cat: categoryList)
 	    {
 	    	if (cat.getId().equals(eqc.getId()))
 	    	{

@@ -14,26 +14,26 @@ public interface IDataStore
 	 * @param pIndex The category's ID.
 	 * @return The category object.
 	 */
-	Category getCategory(String pIndex);
+	CategoryBuilder getCategory(String pIndex);
 	
 	/**
 	 * Gets a category from the database.
 	 * @param pIndex The category's ID.
 	 * @return The category object.
 	 */
-	Category2 getCategory2(String pIndex);
+	Category getCategory2(String pIndex);
 	
 	/**
 	 * Gets the set of all equivalence classes in the database.
 	 * @return An iterable set of all the equivalence classes.
 	 */
-	Iterable<Category> getEquivalenceClasses();
+	Iterable<CategoryBuilder> getEquivalenceClasses();
 	
 	/**
 	 * Gets all categories from the database.
 	 * @return An iterable set of all the categories.
 	 */
-	Collection<Category2> getCategories();
+	Collection<Category> getCategories();
 	
 	/**
 	 * Gets all products from the database.

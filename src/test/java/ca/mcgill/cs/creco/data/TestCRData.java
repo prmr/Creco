@@ -32,7 +32,7 @@ public class TestCRData
 	// Recognized categories
 	@Test public void testgetBasicFields()
 	{
-		Category2 category = aDataStore.getCategory2("34667");
+		Category category = aDataStore.getCategory2("34667");
 		assertEquals("34667", category.getId());
 		assertEquals("Car", category.getFranchise());
 		assertEquals("Headlight restoration kits", category.getName());
