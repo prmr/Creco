@@ -144,11 +144,16 @@ public class SearchController
 	
 	public void setScoredRatings(List<ScoredAttribute> pScoredRatings)
 	{
+
+		LOG.debug("in setscoredRatings " + pScoredRatings.toString());
 		this.aScoredRatings=pScoredRatings;	
+
 		
 	}
 	public void setScoredSpecs(List<ScoredAttribute> pScoredSpecs)
 	{
+
+		LOG.debug("in setscoredSpecs"+ pScoredSpecs.toString());
 		
 		this.aScoredSpecs=pScoredSpecs;	
 		
@@ -367,6 +372,9 @@ public class SearchController
 		 main_string=main_string.concat(",");
 		 main_string=main_string.concat("\n");
 		}
+
+		LOG.debug(main_string);
+
 		// Nishanth code
 		//Converting
 		ArrayList<EqcVO> eqcs = new ArrayList<EqcVO>();		
@@ -506,8 +514,10 @@ public class SearchController
 			}
 			values = new ArrayList <String>() ;
 			FeatureVO f = new FeatureVO();
+
 			f.setId(aScoredRatings.get(i).getAttributeID());
 			f.setName(aScoredRatings.get(i).getAttributeName());
+
 			LOG.debug("***********Rate Name ********* "+ f.getName());
 
 			f.setDesc(aScoredRatings.get(i).getaAttributeDesc());
@@ -595,6 +605,7 @@ public class SearchController
 
 		LOG.debug(" data is  " + dataSpec);
 		LOG.debug(" data is  " + dataRate);
+
 		Gson gson = new Gson();
 		UserFeatureModel userFMSpec = gson.fromJson(dataSpec, UserFeatureModel.class);
 		UserFeatureModel userFMRate = gson.fromJson(dataRate, UserFeatureModel.class);
@@ -624,8 +635,15 @@ public class SearchController
 				TypedValue av = new TypedValue(userFMRate.getValues().get(i));				
 				sa.setAttributeMean(av);
 				userScoredFeaturesRates.add(sa);				
+
 			}
 		}
+
+		LOG.debug(" Done ");
+
+		LOG.debug(" specs " + aScoredSpecs.toString());
+		LOG.debug(" old products "+ aScoredProducts.toString());
+		
 		for(ScoredProduct sa : aScoredProducts)
 		{
 			LOG.debug(sa.toString());					
@@ -669,6 +687,7 @@ public class SearchController
 			{
 				LOG.debug("old mean value is " + pFeatureList.get(i).getAttributeMean());
 				return temp;
+
 			}
 		}
 		return null;
