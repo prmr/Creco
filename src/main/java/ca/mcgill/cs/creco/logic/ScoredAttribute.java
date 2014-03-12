@@ -164,13 +164,13 @@ public class ScoredAttribute
 		AttributeStat a = null;
 		try
 		{
-			a = aDataStore.getCategory2(aCategoryID).getSpecification(aAttributeID);
+			a = aDataStore.getCategory(aCategoryID).getSpecification(aAttributeID);
 		}
 		catch(NullPointerException npe)
 		{
 			try
 			{
-			a = aDataStore.getCategory2(aCategoryID).getRating(aAttributeID);
+			a = aDataStore.getCategory(aCategoryID).getRating(aAttributeID);
 			}
 			catch(NullPointerException npe2)
 			{
@@ -188,13 +188,13 @@ public class ScoredAttribute
 	{
 		AttributeStat a = null;
 		try{
-			a = aDataStore.getCategory2(aCategoryID).getSpecification(aAttributeID);
+			a = aDataStore.getCategory(aCategoryID).getSpecification(aAttributeID);
 		}
 		catch(NullPointerException npe)
 		{
 			try
 			{
-			a = aDataStore.getCategory2(aCategoryID).getRating(aAttributeID);
+			a = aDataStore.getCategory(aCategoryID).getRating(aAttributeID);
 			}
 			catch(NullPointerException npe2)
 			{
@@ -213,13 +213,13 @@ public class ScoredAttribute
 		AttributeStat a = null;
 		try
 		{
-			a = aDataStore.getCategory2(aCategoryID).getSpecification(aAttributeID);
+			a = aDataStore.getCategory(aCategoryID).getSpecification(aAttributeID);
 		}
 		catch(NullPointerException npe)
 		{
 			try
 			{
-			a = aDataStore.getCategory2(aCategoryID).getRating(aAttributeID);
+			a = aDataStore.getCategory(aCategoryID).getRating(aAttributeID);
 			}
 			catch(NullPointerException npe2)
 			{

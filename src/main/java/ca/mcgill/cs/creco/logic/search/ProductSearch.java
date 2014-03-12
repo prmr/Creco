@@ -117,7 +117,7 @@ public class ProductSearch implements IProductSearch
 	@Override
 	public List<ScoredProduct> queryProducts(String pQueryString, String pCategoryID)
 	{
-		Category category = aDataStore.getCategory2(pCategoryID);
+		Category category = aDataStore.getCategory(pCategoryID);
 		if (category == null)
 		{
 			LOG.error("Invalid category ID: " + pCategoryID);
@@ -177,7 +177,7 @@ public class ProductSearch implements IProductSearch
 		}
 		
 		// Add remaining products from the category, even if they didn't match the query
-		Category category = aDataStore.getCategory2(pCategoryId);
+		Category category = aDataStore.getCategory(pCategoryId);
 		for (Product product : category.getProducts())
 		{
 			if (!matchingProducts.contains(product))

@@ -121,7 +121,7 @@ public class CategorySearch implements ICategorySearch
 			for(ScoreDoc scoredResult : results.topDocs().scoreDocs) 
 			{
 			    Document doc = searcher.doc(scoredResult.doc);
-			    Category resultCategory = aDataStore.getCategory2(doc.get(CATEGORY_ID));
+			    Category resultCategory = aDataStore.getCategory(doc.get(CATEGORY_ID));
 
 			    if (!equivalenceClassResults.contains(resultCategory))
 			    {

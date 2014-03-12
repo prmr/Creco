@@ -80,36 +80,23 @@ public final class CRData implements IDataCollector, IDataStore
 		loadingService.loadProducts(this);
 		
 		// Put links from products to categories and vice-versa
-		associateProducts(getProducts()); 
+		associateProducts(getProducts().iterator()); 
 		
 		// Roll up useful pre-processed statistics and find equivalence classes
 		refresh();
 		findEquivalenceClasses();
 		
-		for( CategoryBuilder c : getEquivalenceClasses())
+		for( CategoryBuilder c : aEquivalenceClasses)
 		{
 			aCategory2Index.put(c.getId(), c.getCategory());
 		}
 	}
 	
-	
-	/**
-	 * Get a category object based on its index.
-	 * @param pIndex The requested index.
-	 * @return The category corresponding to pIndex.
-	 */
-	@Override
-	@Deprecated
-	public CategoryBuilder getCategory(String pIndex) 
-	{
-		return aCategoryIndex.get(pIndex);
-	}
-	
 	/**
 	 * @param pIndex The requested index.
 	 * @return The category corresponding to pIndex.
 	 */
-	public Category getCategory2(String pIndex)
+	public Category getCategory(String pIndex)
 	{
 		return aCategory2Index.get(pIndex);
 	}
@@ -126,17 +113,6 @@ public final class CRData implements IDataCollector, IDataStore
 		aProducts.put(pProduct.getId(), pProduct);
 	}
 	
-	/**
-	 * @return The equivalence classes.
-	 * @deprecated use getCategories instead.
-	 */
-	@Override
-	@Deprecated
-	public Iterable<CategoryBuilder> getEquivalenceClasses()
-	{
-		return Collections.unmodifiableCollection(aEquivalenceClasses);
-	}
-	
 	@Override
 	public Collection<Category> getCategories()
 	{
@@ -147,9 +123,9 @@ public final class CRData implements IDataCollector, IDataStore
 	 * @return An iterator on the product list.
 	 */
 	@Override
-	public Iterator<Product> getProducts() 
+	public Collection<Product> getProducts() 
 	{
-		return Collections.unmodifiableCollection(aProducts.values()).iterator();
+		return Collections.unmodifiableCollection(aProducts.values());
 	}
 	
 	// ----- ***** ----- ***** PRIVATE METHODS ***** ----- ***** -----
@@ -206,11 +182,6 @@ public final class CRData implements IDataCollector, IDataStore
 				}
 			}
 		}
-	}
-	
-	private Iterator<CategoryBuilder> iterator()
-	{
-		return Collections.unmodifiableCollection(aCategoryIndex.values()).iterator();
 	}
 	
 	private void index(CategoryBuilder pCategory)
@@ -278,7 +249,7 @@ public final class CRData implements IDataCollector, IDataStore
 		while( pProducts.hasNext())
 		{
 			Product product = pProducts.next();
-			CategoryBuilder category = getCategory(product.getCategoryId());
+			CategoryBuilder category = aCategoryIndex.get(product.getCategoryId());
 			
 			// Create two way link between category and product
 			category.addProduct(product);
