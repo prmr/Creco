@@ -144,7 +144,7 @@ public class TestFiltering {
 			Attribute test= new Attribute( "doesnt matter", "Multiple recline positions", "doesn't matter", true );
 		  ScoredAttribute test_score = new ScoredAttribute(test,new Category("test", "test", null));
 
-		  TypedValue temporary = new TypedValue("N/A");
+		  TypedValue temporary = new TypedValue("NA");
 		  test_score.setAttributeMean(temporary); 
 		  userScoredFeaturesSpecs.add(test_score);
 			RankedFeaturesProducts Products = new RankedFeaturesProducts();

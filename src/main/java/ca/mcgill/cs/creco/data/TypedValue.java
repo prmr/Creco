@@ -193,7 +193,20 @@ public class TypedValue
 		return aOriginalValue;
 	}
 
-
+	@Override
+	@Deprecated
+	public String toString()
+	{
+		if(aType == Type.BOOLEAN)
+		{
+			return aBooleanValue +"";
+		}
+		if(aType == Type.DOUBLE || aType == Type.INTEGER)
+		{
+			return aNumericValue +"";
+		}
+		return aNominalValue;
+	}
 
 }
 
