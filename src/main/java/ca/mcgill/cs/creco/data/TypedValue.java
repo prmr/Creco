@@ -15,12 +15,9 @@
  */
 package ca.mcgill.cs.creco.data;
 
-import java.util.List;
 
 /**
  * Represents an immutable value object from which a type has been inferred.
- * Presently stores min and max or possible string values if necessary.
- * Should probably be handled somewhere else.
  */
 public class TypedValue 
 {
@@ -29,10 +26,6 @@ public class TypedValue
 	private final Type aType;
 	private Object aValue;
 	private final Object aOriginalValue;
-	
-	private double aMin;
-	private double aMax;
-	private List<String> aDict;
 	
 	private boolean aBooleanValue;
 	private String aNominalValue;
@@ -45,22 +38,6 @@ public class TypedValue
 	{ NULL, INTEGER, DOUBLE, BOOLEAN, STRING, NA, UNKNOWN }
 	
 	/**
-	 * Creates a new value object an infers its type. Also stores min and max
-	 * values found in data
-	 * @param pValue The value.
-	 * @param pMin minimum value the attribute takes in data
-	 * @param pMax maximum value the attribute takes in data
-	 */
-	@Deprecated
-	public TypedValue(Object pValue, double pMin, double pMax)
-	{
-		this(pValue);
-		aMin = pMin;
-		aMax = pMax;
-		
-	}
-	
-	/**
 	 * Creates a value of type "NA", meaning that the object
 	 * will represent an unavailable value. getType() will return 
 	 * Type.NA, and getValue() will return "NA".
@@ -70,27 +47,6 @@ public class TypedValue
 		this("NA");
 	}
 	
-	/**
-	 * @return True if and only if this object represents
-	 * a value of type Type.NA.
-	 */
-	public boolean isNA()
-	{
-		return aType == Type.NA;
-	}
-	
-	/**
-	 * Creates a new value object an infers its type. Also stores 
-	 * possible values for this item
-	 * @param pValue The value.
-	 * @param pDict list of values found in data
-	 */
-	@Deprecated
-	public TypedValue(Object pValue, List<String> pDict)
-	{
-		this(pValue);
-		aDict = pDict;		
-	}
 	/**
 	 * Creates a new value object an infers its type.
 	 * @param pValue The value.
@@ -178,6 +134,15 @@ public class TypedValue
 			aType = Type.UNKNOWN;
 		}
 	}	
+	
+	/**
+	 * @return True if and only if this object represents
+	 * a value of type Type.NA.
+	 */
+	public boolean isNA()
+	{
+		return aType == Type.NA;
+	}
 	
 	/**
 	 * @return The inferred type of this value.
