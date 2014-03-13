@@ -148,5 +148,39 @@ public class TestTypedValue
 		assertEquals(Type.UNKNOWN, value.getType());
 	}
 	
+	@Test
+	public void testNA()
+	{
+		TypedValue value = new TypedValue("NA");
+		assertEquals(TypedValue.Type.NA, value.getType());
+		assertEquals("NA", value.getOriginalValue());
+		assertEquals("NA", value.getValue());
+		assertTrue(value.getNumericValue() == 0.0);
+		
+		value = new TypedValue("N/A");
+		assertEquals(TypedValue.Type.NA, value.getType());
+		assertEquals("N/A", value.getOriginalValue());
+		assertEquals("NA", value.getValue());
+		assertTrue(value.getNumericValue() == 0.0);
+		
+		value = new TypedValue("NNA");
+		assertEquals(TypedValue.Type.STRING, value.getType());
+		assertEquals("NNA", value.getOriginalValue());
+		assertEquals("NNA", value.getValue());
+		assertTrue(value.getNumericValue() == 0.0);
+		
+		value = new TypedValue("na");
+		assertEquals(TypedValue.Type.NA, value.getType());
+		assertEquals("na", value.getOriginalValue());
+		assertEquals("NA", value.getValue());
+		assertTrue(value.getNumericValue() == 0.0);
+		
+		value = new TypedValue("Na");
+		assertEquals(TypedValue.Type.NA, value.getType());
+		assertEquals("Na", value.getOriginalValue());
+		assertEquals("NA", value.getValue());
+		assertTrue(value.getNumericValue() == 0.0);
+	}
+	
 	
 }

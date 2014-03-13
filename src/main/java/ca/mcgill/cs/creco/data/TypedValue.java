@@ -24,6 +24,8 @@ import java.util.List;
  */
 public class TypedValue 
 {
+	private static final String TOKEN_NA = "NA";
+	
 	private final Type aType;
 	private Object aValue;
 	private final Object aOriginalValue;
@@ -40,7 +42,7 @@ public class TypedValue
 	 * The different types a typed value can take.
 	 */
 	public enum Type 
-	{ NULL, INTEGER, DOUBLE, BOOLEAN, STRING, UNKNOWN }
+	{ NULL, INTEGER, DOUBLE, BOOLEAN, STRING, NA, UNKNOWN }
 	
 	/**
 	 * Creates a new value object an infers its type. Also stores min and max
@@ -49,6 +51,7 @@ public class TypedValue
 	 * @param pMin minimum value the attribute takes in data
 	 * @param pMax maximum value the attribute takes in data
 	 */
+	@Deprecated
 	public TypedValue(Object pValue, double pMin, double pMax)
 	{
 		this(pValue);
@@ -62,6 +65,7 @@ public class TypedValue
 	 * @param pValue The value.
 	 * @param pDict list of values found in data
 	 */
+	@Deprecated
 	public TypedValue(Object pValue, List<String> pDict)
 	{
 		this(pValue);
@@ -110,6 +114,14 @@ public class TypedValue
 				aValue = Double.parseDouble(theString);
 				aNumericValue = Double.parseDouble(theString);
 
+			}
+			else if(theString.matches("^(n|N)/?(a|A)$"))
+			{
+				// Matches an not available indicator
+				aType = Type.NA;
+				aValue = TOKEN_NA;
+				aNominalValue = TOKEN_NA;
+				
 			}
 			//match a number with optional '-' and decimal.
 			else if(theString.matches("-?\\d+(\\.\\d+)?"))  
