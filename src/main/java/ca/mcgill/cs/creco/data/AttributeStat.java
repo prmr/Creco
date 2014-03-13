@@ -134,7 +134,7 @@ public class AttributeStat
 	{
 		if( pTypedValue.isNumeric() )
 		{
-			double number = pTypedValue.getNumericValue();
+			double number = pTypedValue.getNumeric();
 			if( number < aValueMin )
 			{
 				aValueMin = number;
@@ -147,11 +147,11 @@ public class AttributeStat
 		}
 		else if( pTypedValue.isString() )
 		{
-			aValueEnum.add(pTypedValue.getNominalValue());
+			aValueEnum.add(pTypedValue.getString());
 		}	
 		else if(pTypedValue.isBoolean())
 		{
-			aValueEnum.add(new Boolean(pTypedValue.getBooleanValue()).toString());
+			aValueEnum.add(new Boolean(pTypedValue.getBoolean()).toString());
 		}	
 	}
 }

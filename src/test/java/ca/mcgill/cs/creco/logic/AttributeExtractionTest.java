@@ -89,7 +89,7 @@ public class AttributeExtractionTest
 			
 		}
 		
-		assertTrue(4.5 == AttributeExtractor.extractMean( pal , "test").getNumericValue());
+		assertTrue(4.5 == AttributeExtractor.extractMean( pal , "test").getNumeric());
 		
 	}
 	
@@ -113,8 +113,8 @@ public class AttributeExtractionTest
 			
 		}
 		String answer = "mode";
-		System.out.println(AttributeExtractor.extractMean( pal , "test").getNominalValue());
-		assertTrue(answer.equals(AttributeExtractor.extractMean( pal , "test").getNominalValue()));
+		System.out.println(AttributeExtractor.extractMean( pal , "test").getString());
+		assertTrue(answer.equals(AttributeExtractor.extractMean( pal , "test").getString()));
 		
 	}
 	
@@ -137,7 +137,7 @@ public class AttributeExtractionTest
 			pal.add(p);
 			
 		}
-		assertTrue(AttributeExtractor.extractMean( pal , "test").getBooleanValue());
+		assertTrue(AttributeExtractor.extractMean( pal , "test").getBoolean());
 	}
 	
 	@Test
@@ -163,7 +163,7 @@ public class AttributeExtractionTest
 			
 		}
 		String answer = "string";
-		assertTrue(answer.equals(AttributeExtractor.extractMean( pal , "test").getNominalValue()));
+		assertTrue(answer.equals(AttributeExtractor.extractMean( pal , "test").getString()));
 		
 	}
 	

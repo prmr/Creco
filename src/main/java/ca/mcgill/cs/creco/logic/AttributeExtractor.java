@@ -118,7 +118,7 @@ public class AttributeExtractor
 				//String specString = s.getValue().toString();
 				if(tv.isNumeric() )
 				{
-					double val = tv.getNumericValue();
+					double val = tv.getNumeric();
 					if(val > max)
 					{
 						max = val;
@@ -128,11 +128,11 @@ public class AttributeExtractor
 						min  = val;
 					}
 					numericCount ++;
-					numericSum += tv.getNumericValue();					
+					numericSum += tv.getNumeric();					
 				}
 				else if (tv.isBoolean())
 				{
-					if(tv.getBooleanValue())
+					if(tv.getBoolean())
 					{
 						trueCount ++;
 					}
@@ -144,15 +144,15 @@ public class AttributeExtractor
 				else
 				{
 					int count;
-					if (nominalCounts.containsKey(tv.getNominalValue()))
+					if (nominalCounts.containsKey(tv.getString()))
 					{
-						count = nominalCounts.get(tv.getNominalValue());
+						count = nominalCounts.get(tv.getString());
 					}
 					else
 					{
 						count = 0;
 					}
-					nominalCounts.put(tv.getNominalValue(), count + 1);
+					nominalCounts.put(tv.getString(), count + 1);
 				}
 			}
 			
@@ -272,15 +272,15 @@ public class AttributeExtractor
 				
 				if( newValue.isNumeric() )
 				{
-					inst.setValue(wekaAtt, newValue.getNumericValue());
+					inst.setValue(wekaAtt, newValue.getNumeric());
 				}
 				else if( newValue.isString() )
 				{
-					inst.setValue(wekaAtt, newValue.getNominalValue());
+					inst.setValue(wekaAtt, newValue.getString());
 				}
 				else if( newValue.isBoolean())
 				{
-					inst.setValue(wekaAtt, new Boolean(newValue.getBooleanValue()).toString());
+					inst.setValue(wekaAtt, new Boolean(newValue.getBoolean()).toString());
 				}
 				else if( newValue.isNA())
 				{
@@ -416,15 +416,15 @@ public class AttributeExtractor
 				
 				if( newValue.isNumeric() )
 				{
-					inst.setValue(wekaAtt, newValue.getNumericValue());
+					inst.setValue(wekaAtt, newValue.getNumeric());
 				}
 				else if( newValue.isString() )
 				{
-					inst.setValue(wekaAtt, newValue.getNominalValue());
+					inst.setValue(wekaAtt, newValue.getString());
 				}	
 				else if( newValue.isBoolean())
 				{
-					inst.setValue(wekaAtt, new Boolean(newValue.getBooleanValue()).toString());
+					inst.setValue(wekaAtt, new Boolean(newValue.getBoolean()).toString());
 				}
 				else if( newValue.isNA())
 				{

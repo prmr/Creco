@@ -545,7 +545,7 @@ public class SearchController
 			if( val != null && val.isBoolean() )
 			{	
 				f.setType("Bool");								
-				values.add(val.getBooleanValue()+"");
+				values.add(val.getBoolean()+"");
 				f.setValue((ArrayList<String>) values);
 			}
 			else
@@ -555,9 +555,9 @@ public class SearchController
 
 					{
 						f.setType("Numeric");
-						f.setMinValue(aScoredSpecs.get(i).getMin().getNumericValue());
-						f.setMaxValue(aScoredSpecs.get(i).getMax().getNumericValue());										
-						values.add(val.getNumericValue()+"");
+						f.setMinValue(aScoredSpecs.get(i).getMin().getNumeric());
+						f.setMaxValue(aScoredSpecs.get(i).getMax().getNumeric());										
+						values.add(val.getNumeric()+"");
 						f.setValue((ArrayList<String>)values);	
 												
 					}
@@ -565,7 +565,7 @@ public class SearchController
 				{
 					if( val != null && val.isString())
 					{
-						if(val.getNominalValue().equalsIgnoreCase("true") || val.getNominalValue().equalsIgnoreCase("false")) 
+						if(val.getString().equalsIgnoreCase("true") || val.getString().equalsIgnoreCase("false")) 
 						{
 
 								f.setType("Bool");
@@ -576,7 +576,7 @@ public class SearchController
 								f.setType("Nominal");
 						}
 
-							if(val.getNominalValue().equals("N/A"))
+							if(val.getString().equals("N/A"))
 							{
 
 								values.add("N/A");
@@ -618,7 +618,7 @@ public class SearchController
 			if( val !=null && val.isBoolean() )
 			{
 				f.setType("Bool");								
-				values.add(val.getBooleanValue()+"");
+				values.add(val.getBoolean()+"");
 				f.setValue((ArrayList<String>)values);
 
 			}
@@ -627,16 +627,16 @@ public class SearchController
 				if( val != null && val.isNumeric() )
 				{
 					f.setType("Numeric");
-					f.setMinValue(aScoredRatings.get(i).getMin().getNumericValue());
-					f.setMaxValue(aScoredRatings.get(i).getMax().getNumericValue());					
-					values.add(val.getNumericValue()+"");
+					f.setMinValue(aScoredRatings.get(i).getMin().getNumeric());
+					f.setMaxValue(aScoredRatings.get(i).getMax().getNumeric());					
+					values.add(val.getNumeric()+"");
 					f.setValue((ArrayList<String>)values);										
 				}
 				else
 				{
 					if( val != null && val.isString() )
 					{
-						if(val.getNominalValue().equalsIgnoreCase("true") || val.getNominalValue().equalsIgnoreCase("false")) 
+						if(val.getString().equalsIgnoreCase("true") || val.getString().equalsIgnoreCase("false")) 
 						{
 							f.setType("Bool");
 						} 
@@ -645,7 +645,7 @@ public class SearchController
 							f.setType("Nominal");
 						}
 
-						if(val.getNominalValue().equals("N/A"))
+						if(val.getString().equals("N/A"))
 						{
 							values.add("N/A");
 						}

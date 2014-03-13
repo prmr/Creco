@@ -181,23 +181,44 @@ public class TypedValue
 	/**
 	 * @return The numeric value after type inference.
 	 */
-	public double getNumericValue()
+	public double getNumeric()
 	{
-		return aNumericValue;
+		if( aType == Type.NUMERIC )
+		{
+			return aNumericValue;
+		}
+		else
+		{
+			throw new TypedValueException("Attempting to obtain a numeric value from a non-numeric type");
+		}
 	}
 	/**
 	 * @return The boolean value after type inference.
 	 */
-	public boolean getBooleanValue()
+	public boolean getBoolean()
 	{
-		return aBooleanValue;
+		if( aType == Type.BOOLEAN )
+		{
+			return aBooleanValue;
+		}
+		else
+		{
+			throw new TypedValueException("Attempting to obtain a boolean value from a non-boolean type");
+		}
 	}
 	/**
 	 * @return The nominal value after type inference.
 	 */
-	public String getNominalValue()
+	public String getString()
 	{
-		return aStringValue;
+		if( aType == Type.STRING )
+		{
+			return aStringValue;
+		}
+		else
+		{
+			throw new TypedValueException("Attempting to obtain a string value from a non-string type");
+		}
 	}
 	
 	/**

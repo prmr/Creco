@@ -25,11 +25,11 @@ public class TestTypedValue
 	{
 		TypedValue value = new TypedValue(new Integer(28));
 		assertTrue(value.isNumeric());
-		assertEquals( 28.0, value.getNumericValue(), 0);
+		assertEquals( 28.0, value.getNumeric(), 0);
 		
 		value = new TypedValue(new Integer(-28));
 		assertTrue(value.isNumeric());
-		assertEquals( -28.0, value.getNumericValue(), 0);
+		assertEquals( -28.0, value.getNumeric(), 0);
 	}
 	
 	@Test
@@ -37,19 +37,19 @@ public class TestTypedValue
 	{
 		TypedValue value = new TypedValue(new Double(28));
 		assertTrue(value.isNumeric());
-		assertEquals( 28.0, value.getNumericValue(), 0);
+		assertEquals( 28.0, value.getNumeric(), 0);
 		
 		value = new TypedValue(new Double(-28));
 		assertTrue(value.isNumeric());
-		assertEquals( -28.0, value.getNumericValue(), 0);
+		assertEquals( -28.0, value.getNumeric(), 0);
 		
 		value = new TypedValue(new Double(-28.244));
 		assertTrue(value.isNumeric());
-		assertEquals( -28.244, value.getNumericValue(), 0);
+		assertEquals( -28.244, value.getNumeric(), 0);
 		
 		value = new TypedValue(new Float(-28.244));
 		assertTrue(value.isNumeric());
-		assertEquals( -28.244, value.getNumericValue(), 0.01);
+		assertEquals( -28.244, value.getNumeric(), 0.01);
 	}
 	
 	@Test
@@ -57,11 +57,11 @@ public class TestTypedValue
 	{
 		TypedValue value = new TypedValue(new Boolean(true));
 		assertTrue(value.isBoolean());
-		assertEquals(true, value.getBooleanValue());
+		assertEquals(true, value.getBoolean());
 				
 		value = new TypedValue(new Boolean(false));
 		assertTrue(value.isBoolean());
-		assertEquals(false, value.getBooleanValue());
+		assertEquals(false, value.getBoolean());
 	}
 	
 	@Test
@@ -69,11 +69,11 @@ public class TestTypedValue
 	{
 		TypedValue value = new TypedValue("28");
 		assertTrue(value.isNumeric());
-		assertEquals( 28.0, value.getNumericValue(), 0);
+		assertEquals( 28.0, value.getNumeric(), 0);
 		
 		value = new TypedValue("-28");
 		assertTrue(value.isNumeric());
-		assertEquals( -28.0, value.getNumericValue(), 0);
+		assertEquals( -28.0, value.getNumeric(), 0);
 	}
 	
 	@Test
@@ -81,11 +81,11 @@ public class TestTypedValue
 	{
 		TypedValue value = new TypedValue("28.123");
 		assertTrue(value.isNumeric());
-		assertEquals( 28.123, value.getNumericValue(), 0);
+		assertEquals( 28.123, value.getNumeric(), 0);
 		
 		value = new TypedValue("-28.123");
 		assertTrue(value.isNumeric());
-		assertEquals( -28.123, value.getNumericValue(), 0);
+		assertEquals( -28.123, value.getNumeric(), 0);
 	}
 	
 	@Test
@@ -93,19 +93,19 @@ public class TestTypedValue
 	{
 		TypedValue value = new TypedValue("Yes");
 		assertTrue(value.isBoolean());
-		assertEquals(true, value.getBooleanValue());
+		assertEquals(true, value.getBoolean());
 		
 		value = new TypedValue("yes");
 		assertTrue(value.isBoolean());
-		assertEquals(true, value.getBooleanValue());
+		assertEquals(true, value.getBoolean());
 		
 		value = new TypedValue("No");
 		assertTrue(value.isBoolean());
-		assertEquals(false, value.getBooleanValue());
+		assertEquals(false, value.getBoolean());
 		
 		value = new TypedValue("no");
 		assertTrue(value.isBoolean());
-		assertEquals(false, value.getBooleanValue());
+		assertEquals(false, value.getBoolean());
 	}
 	
 	@Test
@@ -113,7 +113,7 @@ public class TestTypedValue
 	{
 		TypedValue value = new TypedValue("Fuzzy Wuzzy was a woman?");
 		assertTrue( value.isString() );
-		assertEquals("Fuzzy Wuzzy was a woman?", value.getNominalValue());
+		assertEquals("Fuzzy Wuzzy was a woman?", value.getString());
 	}
 	
 	@Test(expected=TypedValueException.class)
