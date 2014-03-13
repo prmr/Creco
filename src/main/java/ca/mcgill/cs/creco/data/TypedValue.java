@@ -25,7 +25,6 @@ public class TypedValue
 	
 	private final Type aType;
 	private Object aValue;
-	private final Object aOriginalValue;
 	
 	private boolean aBooleanValue;
 	private String aNominalValue;
@@ -53,7 +52,6 @@ public class TypedValue
 	 */
 	public TypedValue(Object pValue)
 	{
-		aOriginalValue = pValue;
 		aValue = pValue;
 		
 		if(pValue == null)
@@ -182,14 +180,6 @@ public class TypedValue
 		return aNominalValue;
 	}
 	
-	/**
-	 * @return The value before type inference.
-	 */
-	public Object getOriginalValue()
-	{
-		return aOriginalValue;
-	}
-
 	@Override
 	@Deprecated
 	public String toString()
