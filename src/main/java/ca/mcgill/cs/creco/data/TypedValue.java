@@ -221,6 +221,46 @@ public class TypedValue
 		}
 	}
 	
+	@Override
+	public boolean equals(Object pObject)
+	{
+		if( pObject == null )
+		{ return false; }
+		if( pObject == this ) 
+		{ return true; }
+		if( pObject.getClass() != getClass() ) 
+		{ return false; }
+		
+		TypedValue value = (TypedValue) pObject;
+		return (value.aType == aType) && (value.aNumericValue == aNumericValue) && 
+			   (value.aBooleanValue == aBooleanValue) && (value.aStringValue == aStringValue);
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		if( aType == Type.NULL && aType == Type.NA )
+		{
+			return aType.hashCode();
+		}
+		else if( aType == Type.BOOLEAN)
+		{
+			return new Boolean(getBoolean()).hashCode();
+		}
+		else if( aType == Type.NUMERIC)
+		{
+			return new Double(getNumeric()).hashCode();
+		}
+		else if( aType == Type.STRING)
+		{
+			return getString().hashCode();
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	
 	/**
 	 * @return A string representation of this object that includes the type and its value.
 	 * @see java.lang.Object#toString()
