@@ -2,6 +2,7 @@ package ca.mcgill.cs.creco.data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -98,15 +99,12 @@ public class TestCRData
 	@Test public void testNAValues()
 	{
 		Attribute attribute = aDataStore.getProduct("220271").getRating("4512");
-		assertEquals("NA", attribute.getValue());
-		assertEquals(TypedValue.Type.NA, attribute.getType());
-		
+		assertTrue(attribute.getTypedValue().isNA());
+				
 		attribute = aDataStore.getProduct("203938").getSpec("979");
-		assertEquals("NA", attribute.getValue());
-		assertEquals(TypedValue.Type.NA, attribute.getType());
+		assertTrue(attribute.getTypedValue().isNA());
 		
 		attribute = aDataStore.getProduct("229028").getSpec("4188");
-		assertEquals("NA", attribute.getValue());
-		assertEquals(TypedValue.Type.NA, attribute.getType());
+		assertTrue(attribute.getTypedValue().isNA());
 	}
 }

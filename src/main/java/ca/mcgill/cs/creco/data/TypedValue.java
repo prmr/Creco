@@ -18,23 +18,37 @@ package ca.mcgill.cs.creco.data;
 
 /**
  * Represents an immutable value object from which a type has been inferred.
+ * The value is inferred to be of one of the following types is inferred:
+ * <ul>
+ * <li>NULL: The null type represents null objects.</li>
+ * <li>NUMERIC: Including integers and floating-point types.</li>
+ * <li>BOOLEAN: Represents any binomial type of value, including true and false and yes/no.</li>
+ * <li>NA: Represents a missing value.
+ * <li>STRING: Any kind of string.
+ * </ul>
+ * 
+ * The value wrapped by this type can only be accessed by the proper specialized accessor. For example,
+ * it is only possible to access a numeric value using asNumeric(). Calling an as... method on
+ * a value of the wrong type will raise an exception. For example, calling asString() on a value of type
+ * numeric is not possible. To convert numeric values to string, use a formatter or a Double object.
+ * 
+ * For this reason, calls to obtain a value should always be preceded by calls to get... methods.
+ * 
+ * Note that the NULL and NA types do not have a corresponding value.
  */
 public class TypedValue 
 {
-	private static final String TOKEN_NA = "NA";
-	
 	private final Type aType;
-	private Object aValue;
 	
 	private boolean aBooleanValue;
-	private String aNominalValue;
+	private String aStringValue;
 	private double aNumericValue;
 	
 	/**
 	 * The different types a typed value can take.
 	 */
-	public enum Type 
-	{ NULL, INTEGER, DOUBLE, BOOLEAN, STRING, NA, UNKNOWN }
+	private enum Type 
+	{ NULL, NA, BOOLEAN, NUMERIC, STRING }
 	
 	/**
 	 * Creates a value of type "NA", meaning that the object
@@ -52,31 +66,29 @@ public class TypedValue
 	 */
 	public TypedValue(Object pValue)
 	{
-		aValue = pValue;
-		
 		if(pValue == null)
 		{
 			aType = Type.NULL;
 		}
 		else if(pValue instanceof Integer)
 		{
-			aType = Type.INTEGER;
+			aType = Type.NUMERIC;
 			aNumericValue = ((Integer) pValue).doubleValue();
 		}
 		else if(pValue instanceof Double )
 		{
-			aType = Type.DOUBLE;
-			aNumericValue = (Double) pValue;
+			aType = Type.NUMERIC;
+			aNumericValue = ((Double) pValue).doubleValue();
 		}
 		else if( pValue instanceof Float)
 		{
-			aType = Type.DOUBLE;
+			aType = Type.NUMERIC;
 			aNumericValue = ((Float) pValue).doubleValue();
 		}
 		else if(pValue instanceof Boolean)
 		{
 			aType = Type.BOOLEAN;
-			aBooleanValue = (Boolean) pValue;
+			aBooleanValue = ((Boolean) pValue).booleanValue();
 		}
 		else if(pValue instanceof String)
 		{
@@ -84,8 +96,7 @@ public class TypedValue
 			// match int with optional '-' and decimal.
 			if(theString.matches("-?\\d+"))
 			{
-				aType = Type.INTEGER;
-				aValue = Double.parseDouble(theString);
+				aType = Type.NUMERIC;
 				aNumericValue = Double.parseDouble(theString);
 
 			}
@@ -93,49 +104,38 @@ public class TypedValue
 			{
 				// Matches an not available indicator
 				aType = Type.NA;
-				aValue = TOKEN_NA;
-				aNominalValue = TOKEN_NA;
-				
 			}
 			//match a number with optional '-' and decimal.
 			else if(theString.matches("-?\\d+(\\.\\d+)?"))  
 			{
-				aType = Type.DOUBLE;
-				aNumericValue = Double.parseDouble(theString);
-				aValue = Double.parseDouble(theString);
+				aType = Type.NUMERIC;
 				aNumericValue = Double.parseDouble(theString);
 			}
 			else if(theString.matches("(y|Y)es"))
 			{
 				aType = Type.BOOLEAN;
 				aBooleanValue = true;
-				aValue = true;
-				aBooleanValue = true;
 			}
 			else if(theString.matches("(n|N)o"))
 			{
 				aType = Type.BOOLEAN;
 				aBooleanValue = false;
-				aValue = false;
-				aBooleanValue = false;
 			}
 			else
 			{
 				aType = Type.STRING;
-				aNominalValue = theString;
-				aValue = theString;
-				aNominalValue = theString;
+				aStringValue = theString;
 			}
 		}
 		else
 		{
-			aType = Type.UNKNOWN;
+			throw new TypedValueException("Cannot infer type from object of class " + pValue.getClass().getName() + ": " + pValue.toString());
 		}
 	}	
 	
 	/**
 	 * @return True if and only if this object represents
-	 * a value of type Type.NA.
+	 * a non-available value.
 	 */
 	public boolean isNA()
 	{
@@ -143,21 +143,41 @@ public class TypedValue
 	}
 	
 	/**
-	 * @return The inferred type of this value.
+	 * @return True if and only if this object represents
+	 * a null value.
 	 */
-	public Type getType() 
+	public boolean isNull()
 	{
-		return aType;
+		return aType == Type.NULL;
 	}
 	
 	/**
-	 * @Deprecated use method for specific type instead.
-	 * @return The value after type inference.
+	 * @return True if and only if this object represents
+	 * a boolean value.
 	 */
-	public Object getValue()
+	public boolean isBoolean()
 	{
-		return aValue;
+		return aType == Type.BOOLEAN;
 	}
+	
+	/**
+	 * @return True if and only if this object represents
+	 * a numeric.
+	 */
+	public boolean isNumeric()
+	{
+		return aType == Type.NUMERIC;
+	}
+	
+	/**
+	 * @return True if and only if this object represents
+	 * a string value.
+	 */
+	public boolean isString()
+	{
+		return aType == Type.STRING;
+	}
+	
 	/**
 	 * @return The numeric value after type inference.
 	 */
@@ -177,9 +197,13 @@ public class TypedValue
 	 */
 	public String getNominalValue()
 	{
-		return aNominalValue;
+		return aStringValue;
 	}
 	
+	/**
+	 * @return A string representation of this object that includes the type and its value.
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	@Deprecated
 	public String toString()
@@ -188,12 +212,11 @@ public class TypedValue
 		{
 			return aBooleanValue +"";
 		}
-		if(aType == Type.DOUBLE || aType == Type.INTEGER)
+		if(aType == Type.NUMERIC)
 		{
 			return aNumericValue +"";
 		}
-		return aNominalValue;
+		return aStringValue;
 	}
-
 }
 

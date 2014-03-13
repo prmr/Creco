@@ -33,12 +33,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-//import ca.mcgill.cs.creco.data.Attribute;
-import ca.mcgill.cs.creco.data.CategoryBuilder;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.TypedValue;
-import ca.mcgill.cs.creco.data.TypedValue.Type;
 //import ca.mcgill.cs.creco.data.Product;
 //import ca.mcgill.cs.creco.data.TypedValue;
 //import ca.mcgill.cs.creco.data.TypedValue.Type;
@@ -58,6 +55,7 @@ import ca.mcgill.cs.creco.web.model.ProductVO;
 import ca.mcgill.cs.creco.web.model.UserFeatureModel;
 
 import com.google.gson.Gson;
+//import ca.mcgill.cs.creco.data.Attribute;
 
 @Controller
 public class SearchController
@@ -542,9 +540,9 @@ public class SearchController
 			f.setDesc(aScoredSpecs.get(i).getaAttributeDesc());
 
 
-			TypedValue val = aScoredSpecs.get(i).getAttributeMean();			
+			TypedValue val = aScoredSpecs.get(i).getAttributeMean();		
 
-			if(val.getType() == Type.BOOLEAN && val!=null)
+			if( val != null && val.isBoolean() )
 			{	
 				f.setType("Bool");								
 				values.add(val.getBooleanValue()+"");
@@ -553,7 +551,7 @@ public class SearchController
 			else
 			{
 
-				if((val.getType() == Type.DOUBLE || val.getType() == Type.INTEGER ) && val!=null)
+				if( val!= null && val.isNumeric() )
 
 					{
 						f.setType("Numeric");
@@ -565,7 +563,7 @@ public class SearchController
 					}
 				else
 				{
-					if(val.getType() == Type.STRING  && val!=null)
+					if( val != null && val.isString())
 					{
 						if(val.getNominalValue().equalsIgnoreCase("true") || val.getNominalValue().equalsIgnoreCase("false")) 
 						{
@@ -617,7 +615,7 @@ public class SearchController
 
 			TypedValue val = aScoredRatings.get(i).getAttributeMean();	
 
-			if(val.getType() == Type.BOOLEAN && val!=null)
+			if( val !=null && val.isBoolean() )
 			{
 				f.setType("Bool");								
 				values.add(val.getBooleanValue()+"");
@@ -626,7 +624,7 @@ public class SearchController
 			}
 			else
 			{
-				if((val.getType() == Type.DOUBLE || val.getType() == Type.INTEGER ) && val!=null)
+				if( val != null && val.isNumeric() )
 				{
 					f.setType("Numeric");
 					f.setMinValue(aScoredRatings.get(i).getMin().getNumericValue());
@@ -636,7 +634,7 @@ public class SearchController
 				}
 				else
 				{
-					if(val.getType() == Type.STRING && val!=null)
+					if( val != null && val.isString() )
 					{
 						if(val.getNominalValue().equalsIgnoreCase("true") || val.getNominalValue().equalsIgnoreCase("false")) 
 						{

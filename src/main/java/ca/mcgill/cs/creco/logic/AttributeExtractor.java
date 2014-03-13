@@ -30,11 +30,9 @@ import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import ca.mcgill.cs.creco.data.AttributeStat;
-import ca.mcgill.cs.creco.data.CategoryBuilder;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.data.TypedValue;
-import ca.mcgill.cs.creco.data.TypedValue.Type;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
 
 import com.google.common.collect.Lists;
@@ -118,7 +116,7 @@ public class AttributeExtractor
 				TypedValue tv = s.getTypedValue();
 //				MODIFY WHEN ADDING CLASSES
 				//String specString = s.getValue().toString();
-				if(tv.getType() == Type.INTEGER || tv.getType() == Type.DOUBLE )
+				if(tv.isNumeric() )
 				{
 					double val = tv.getNumericValue();
 					if(val > max)
@@ -132,7 +130,7 @@ public class AttributeExtractor
 					numericCount ++;
 					numericSum += tv.getNumericValue();					
 				}
-				else if (tv.getType() == Type.BOOLEAN)
+				else if (tv.isBoolean())
 				{
 					if(tv.getBooleanValue())
 					{
@@ -244,19 +242,16 @@ public class AttributeExtractor
 				String indexName = ahm.getHashValue(scoredAttributes.get(i).getAttributeName());
 				Attribute wekaAtt = dataset.attribute(indexName);
 				
-				TypedValue.Type type = null;
-				String value = "";
+				TypedValue newValue = null;
 				try
 				{
 					if(!scoredAttributes.get(i).isCat())
 					{
-						type = p.getSpec(scoredAttributes.get(i).getAttributeID()).getType();
-						value = p.getSpec(scoredAttributes.get(i).getAttributeID()).getValue().toString();
+						newValue = p.getSpec(scoredAttributes.get(i).getAttributeID()).getTypedValue();
 					}
 					else
 					{
-						type = Type.STRING;
-						value = p.getCategory().getName();
+						newValue = new TypedValue(p.getCategory().getName());
 					}
 					
 				}
@@ -264,28 +259,33 @@ public class AttributeExtractor
 				{
 					if(wekaAtt.isNominal())
 					{
-
-						type = Type.STRING;
+						newValue = new TypedValue(wekaAtt.value(0));
 //						entry zero should be N/A
-						value = wekaAtt.value(0);
 					}
 					else
 					{
 //						default no value for now 
-						type = Type.INTEGER;
-						value = "-127";
+						newValue = new TypedValue("-127");
 					}
 				}
 				
 				
-				if(type == Type.INTEGER || type == Type.DOUBLE )
+				if( newValue.isNumeric() )
 				{
-					inst.setValue(wekaAtt, Double.parseDouble(value));
+					inst.setValue(wekaAtt, newValue.getNumericValue());
 				}
-				else
+				else if( newValue.isString() )
 				{
-					inst.setValue(wekaAtt, value);
-				}	
+					inst.setValue(wekaAtt, newValue.getNominalValue());
+				}
+				else if( newValue.isBoolean())
+				{
+					inst.setValue(wekaAtt, new Boolean(newValue.getBooleanValue()).toString());
+				}
+				else if( newValue.isNA())
+				{
+					inst.setValue(wekaAtt, "NA" );
+				}
 			}
 			inst.setDataset(dataset); 
 			dataset.add(inst);
@@ -385,19 +385,16 @@ public class AttributeExtractor
 				String indexName = ahm.getHashValue(scoredAttributes.get(i).getAttributeName());
 				Attribute wekaAtt = dataset.attribute(indexName);
 				
-				TypedValue.Type type = null;
-				String value = "";
+				TypedValue newValue = null;
 				try
 				{
 					if(!scoredAttributes.get(i).isCat())
 					{
-						type = p.getRating(scoredAttributes.get(i).getAttributeID()).getType();
-						value = p.getRating(scoredAttributes.get(i).getAttributeID()).getValue().toString();
+						newValue = p.getRating(scoredAttributes.get(i).getAttributeID()).getTypedValue();
 					}
 					else
 					{
-						type = Type.STRING;
-						value = p.getCategory().getName();
+						newValue = new TypedValue( p.getCategory().getName());
 					}
 					
 
@@ -407,26 +404,32 @@ public class AttributeExtractor
 					if(wekaAtt.isNominal())
 					{
 //					entry zero should be N/A
-						type = Type.STRING;
-						value = wekaAtt.value(0);
+						newValue = new TypedValue( wekaAtt.value(0) );
 					}
 					else
 					{
 //						default no value for now 
-						type = Type.INTEGER;
-						value = "-127";
+						newValue = new TypedValue("-127" );
 					}
 				}
 				
 				
-				if(type == Type.INTEGER || type == Type.DOUBLE )
+				if( newValue.isNumeric() )
 				{
-					inst.setValue(wekaAtt, Double.parseDouble(value));
+					inst.setValue(wekaAtt, newValue.getNumericValue());
 				}
-				else
+				else if( newValue.isString() )
 				{
-					inst.setValue(wekaAtt, value);
+					inst.setValue(wekaAtt, newValue.getNominalValue());
 				}	
+				else if( newValue.isBoolean())
+				{
+					inst.setValue(wekaAtt, new Boolean(newValue.getBooleanValue()).toString());
+				}
+				else if( newValue.isNA())
+				{
+					inst.setValue(wekaAtt, "NA" );
+				}
 			}
 			inst.setDataset(dataset); 
 			dataset.add(inst);

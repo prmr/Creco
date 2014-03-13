@@ -1,14 +1,12 @@
 package ca.mcgill.cs.creco.data;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.io.IOException;
 
 import org.junit.Test;
-
-import ca.mcgill.cs.creco.data.TypedValue.Type;
 
 /**
  * @author prmr
@@ -19,143 +17,129 @@ public class TestTypedValue
 	public void testNull()
 	{
 		TypedValue value = new TypedValue(null);
-		assertNull(value.getValue());
-		assertNull(value.getNominalValue());
-		assertEquals(Type.NULL, value.getType());
+		assertTrue( value.isNull() );
 	}
 	
 	@Test
 	public void testInteger()
 	{
 		TypedValue value = new TypedValue(new Integer(28));
-		assertEquals(new Integer(28), value.getValue());
-		assertEquals(Type.INTEGER, value.getType());
+		assertTrue(value.isNumeric());
+		assertEquals( 28.0, value.getNumericValue(), 0);
 		
 		value = new TypedValue(new Integer(-28));
-		assertEquals(new Integer(-28), value.getValue());
-		assertEquals(Type.INTEGER, value.getType());
+		assertTrue(value.isNumeric());
+		assertEquals( -28.0, value.getNumericValue(), 0);
 	}
 	
 	@Test
 	public void testDouble()
 	{
 		TypedValue value = new TypedValue(new Double(28));
-		assertEquals(new Double(28), value.getValue());
-		assertEquals(Type.DOUBLE, value.getType());
+		assertTrue(value.isNumeric());
+		assertEquals( 28.0, value.getNumericValue(), 0);
 		
 		value = new TypedValue(new Double(-28));
-		assertEquals(new Double(-28), value.getValue());
-		assertEquals(Type.DOUBLE, value.getType());
+		assertTrue(value.isNumeric());
+		assertEquals( -28.0, value.getNumericValue(), 0);
 		
 		value = new TypedValue(new Double(-28.244));
-		assertEquals(new Double(-28.244), value.getValue());
-		assertEquals(Type.DOUBLE, value.getType());
+		assertTrue(value.isNumeric());
+		assertEquals( -28.244, value.getNumericValue(), 0);
 		
 		value = new TypedValue(new Float(-28.244));
-		assertEquals(new Float(-28.244), value.getValue());
-		assertEquals(Type.DOUBLE, value.getType());
+		assertTrue(value.isNumeric());
+		assertEquals( -28.244, value.getNumericValue(), 0.01);
 	}
 	
 	@Test
 	public void testBoolean()
 	{
 		TypedValue value = new TypedValue(new Boolean(true));
-		assertEquals(new Boolean(true), value.getValue());
-		assertEquals(Type.BOOLEAN, value.getType());
-		
+		assertTrue(value.isBoolean());
+		assertEquals(true, value.getBooleanValue());
+				
 		value = new TypedValue(new Boolean(false));
-		assertEquals(new Boolean(false), value.getValue());
-		assertEquals(Type.BOOLEAN, value.getType());
+		assertTrue(value.isBoolean());
+		assertEquals(false, value.getBooleanValue());
 	}
 	
 	@Test
 	public void testStringInteger()
 	{
 		TypedValue value = new TypedValue("28");
-		assertTrue(28 ==  value.getNumericValue());
-		assertEquals(Type.INTEGER, value.getType());
+		assertTrue(value.isNumeric());
+		assertEquals( 28.0, value.getNumericValue(), 0);
 		
 		value = new TypedValue("-28");
-		assertTrue(-28 == value.getNumericValue());
-		assertEquals(Type.INTEGER, value.getType());
+		assertTrue(value.isNumeric());
+		assertEquals( -28.0, value.getNumericValue(), 0);
 	}
 	
 	@Test
 	public void testStringDouble()
 	{
 		TypedValue value = new TypedValue("28.123");
-		assertEquals(new Double(28.123), value.getValue());
-		assertEquals(Type.DOUBLE, value.getType());
+		assertTrue(value.isNumeric());
+		assertEquals( 28.123, value.getNumericValue(), 0);
 		
 		value = new TypedValue("-28.123");
-		assertEquals(new Double(-28.123), value.getValue());
-		assertEquals(Type.DOUBLE, value.getType());
+		assertTrue(value.isNumeric());
+		assertEquals( -28.123, value.getNumericValue(), 0);
 	}
 	
 	@Test
 	public void testStringYesNo()
 	{
 		TypedValue value = new TypedValue("Yes");
-		assertEquals(new Boolean(true), value.getValue());
-		assertEquals(Type.BOOLEAN, value.getType());
+		assertTrue(value.isBoolean());
+		assertEquals(true, value.getBooleanValue());
 		
 		value = new TypedValue("yes");
-		assertEquals(new Boolean(true), value.getValue());
-		assertEquals(Type.BOOLEAN, value.getType());
+		assertTrue(value.isBoolean());
+		assertEquals(true, value.getBooleanValue());
 		
 		value = new TypedValue("No");
-		assertEquals(new Boolean(false), value.getValue());
-		assertEquals(Type.BOOLEAN, value.getType());
+		assertTrue(value.isBoolean());
+		assertEquals(false, value.getBooleanValue());
 		
 		value = new TypedValue("no");
-		assertEquals(new Boolean(false), value.getValue());
-		assertEquals(Type.BOOLEAN, value.getType());
+		assertTrue(value.isBoolean());
+		assertEquals(false, value.getBooleanValue());
 	}
 	
 	@Test
 	public void testStringPlain()
 	{
 		TypedValue value = new TypedValue("Fuzzy Wuzzy was a woman?");
+		assertTrue( value.isString() );
 		assertEquals("Fuzzy Wuzzy was a woman?", value.getNominalValue());
-		assertEquals(Type.STRING, value.getType());
 	}
 	
-	@Test
+	@Test(expected=TypedValueException.class)
 	public void testUnknown()
 	{
 		IOException testObject = new IOException();
-		TypedValue value = new TypedValue(testObject);
-		assertEquals(testObject, value.getValue());
-		assertEquals(Type.UNKNOWN, value.getType());
+		new TypedValue(testObject);
 	}
 	
 	@Test
 	public void testNA()
 	{
 		TypedValue value = new TypedValue("NA");
-		assertEquals(TypedValue.Type.NA, value.getType());
-		assertEquals("NA", value.getValue());
-		assertTrue(value.getNumericValue() == 0.0);
+		assertTrue(value.isNA());
 		
 		value = new TypedValue("N/A");
-		assertEquals(TypedValue.Type.NA, value.getType());
-		assertEquals("NA", value.getValue());
-		assertTrue(value.getNumericValue() == 0.0);
+		assertTrue(value.isNA());
 		
 		value = new TypedValue("NNA");
-		assertEquals(TypedValue.Type.STRING, value.getType());
-		assertEquals("NNA", value.getValue());
-		assertTrue(value.getNumericValue() == 0.0);
+		assertFalse(value.isNA());
 		
 		value = new TypedValue("na");
-		assertEquals(TypedValue.Type.NA, value.getType());
-		assertEquals("NA", value.getValue());
-		assertTrue(value.getNumericValue() == 0.0);
+		assertTrue(value.isNA());
 		
 		value = new TypedValue("Na");
-		assertEquals(TypedValue.Type.NA, value.getType());
-		assertEquals("NA", value.getValue());
-		assertTrue(value.getNumericValue() == 0.0);
+		assertTrue(value.isNA());
 	}
 	
 	
