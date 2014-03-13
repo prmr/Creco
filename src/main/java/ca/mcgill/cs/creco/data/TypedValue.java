@@ -59,6 +59,26 @@ public class TypedValue
 		aMax = pMax;
 		
 	}
+	
+	/**
+	 * Creates a value of type "NA", meaning that the object
+	 * will represent an unavailable value. getType() will return 
+	 * Type.NA, and getValue() will return "NA".
+	 */
+	public TypedValue()
+	{
+		this("NA");
+	}
+	
+	/**
+	 * @return True if and only if this object represents
+	 * a value of type Type.NA.
+	 */
+	public boolean isNA()
+	{
+		return aType == Type.NA;
+	}
+	
 	/**
 	 * Creates a new value object an infers its type. Also stores 
 	 * possible values for this item
