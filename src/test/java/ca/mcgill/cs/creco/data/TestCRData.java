@@ -77,4 +77,33 @@ public class TestCRData
 		assertEquals("Home & garden", category.getFranchise());
 		assertEquals("Chain saw", category.getName());
 	}
+	
+	@Test public void testGetProduct()
+	{
+		Product product = aDataStore.getProduct("8291");
+		assertEquals("8291", product.getId());
+		
+		product = aDataStore.getProduct("46018");
+		assertEquals("46018", product.getId());
+		
+		product = aDataStore.getProduct("247118");
+		assertEquals("247118", product.getId());
+		
+		product = aDataStore.getProduct("244198");
+		assertEquals("244198", product.getId());
+	}
+	
+	// Ensures that all N/A and NA values receive the string NA and become 
+	// tagged as an NA value. See Issue #0050
+	@Test public void testNAValues()
+	{
+		Attribute attribute = aDataStore.getProduct("220271").getRating("4512");
+		assertEquals("NA", attribute.getValue());
+		
+		attribute = aDataStore.getProduct("203938").getSpec("979");
+		assertEquals("NA", attribute.getValue());
+		
+		attribute = aDataStore.getProduct("229028").getSpec("4188");
+		assertEquals("N/A", attribute.getValue());
+	}
 }
