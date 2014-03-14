@@ -262,22 +262,28 @@ public class TypedValue
 	}
 	
 	/**
+	 * A string representation of this object to be used for debugging purposes.
+	 * Do not use this method to compare values: use equals instead.
 	 * @return A string representation of this object that includes the type and its value.
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	@Deprecated
 	public String toString()
 	{
-		if(aType == Type.BOOLEAN)
+		String lReturn = aType.toString();
+		if( aType == Type.BOOLEAN )
 		{
-			return aBooleanValue +"";
+			lReturn += ": " + aBooleanValue;
 		}
-		if(aType == Type.NUMERIC)
+		else if( aType == Type.NUMERIC )
 		{
-			return aNumericValue +"";
+			lReturn += ": " + aNumericValue;
 		}
-		return aStringValue;
+		else if( aType == Type.STRING )
+		{
+			lReturn += ": " + aStringValue;
+		}
+		return lReturn;
 	}
 }
 

@@ -20,7 +20,7 @@ public class TestTypedValue
 		assertTrue( value.isNull() );
 	}
 	
-	@Test
+	@Test(expected=TypedValueException.class)
 	public void testInteger()
 	{
 		TypedValue value = new TypedValue(new Integer(28));
@@ -30,9 +30,10 @@ public class TestTypedValue
 		value = new TypedValue(new Integer(-28));
 		assertTrue(value.isNumeric());
 		assertEquals( -28.0, value.getNumeric(), 0);
+		value.getBoolean();
 	}
 	
-	@Test
+	@Test(expected=TypedValueException.class)
 	public void testDouble()
 	{
 		TypedValue value = new TypedValue(new Double(28));
@@ -50,9 +51,11 @@ public class TestTypedValue
 		value = new TypedValue(new Float(-28.244));
 		assertTrue(value.isNumeric());
 		assertEquals( -28.244, value.getNumeric(), 0.01);
+		
+		value.getString();
 	}
 	
-	@Test
+	@Test(expected=TypedValueException.class)
 	public void testBoolean()
 	{
 		TypedValue value = new TypedValue(new Boolean(true));
@@ -62,9 +65,11 @@ public class TestTypedValue
 		value = new TypedValue(new Boolean(false));
 		assertTrue(value.isBoolean());
 		assertEquals(false, value.getBoolean());
+		
+		value.getNumeric();
 	}
 	
-	@Test
+	@Test(expected=TypedValueException.class)
 	public void testStringInteger()
 	{
 		TypedValue value = new TypedValue("28");
@@ -74,9 +79,11 @@ public class TestTypedValue
 		value = new TypedValue("-28");
 		assertTrue(value.isNumeric());
 		assertEquals( -28.0, value.getNumeric(), 0);
+		
+		value.getString();
 	}
 	
-	@Test
+	@Test(expected=TypedValueException.class)
 	public void testStringDouble()
 	{
 		TypedValue value = new TypedValue("28.123");
@@ -86,9 +93,11 @@ public class TestTypedValue
 		value = new TypedValue("-28.123");
 		assertTrue(value.isNumeric());
 		assertEquals( -28.123, value.getNumeric(), 0);
+		
+		value.getString();
 	}
 	
-	@Test
+	@Test(expected=TypedValueException.class)
 	public void testStringYesNo()
 	{
 		TypedValue value = new TypedValue("Yes");
@@ -106,14 +115,18 @@ public class TestTypedValue
 		value = new TypedValue("no");
 		assertTrue(value.isBoolean());
 		assertEquals(false, value.getBoolean());
+		
+		value.getString();
 	}
 	
-	@Test
+	@Test(expected=TypedValueException.class)
 	public void testStringPlain()
 	{
 		TypedValue value = new TypedValue("Fuzzy Wuzzy was a woman?");
 		assertTrue( value.isString() );
 		assertEquals("Fuzzy Wuzzy was a woman?", value.getString());
+		
+		value.getBoolean();
 	}
 	
 	@Test(expected=TypedValueException.class)
@@ -151,6 +164,35 @@ public class TestTypedValue
 		value = new TypedValue(false);
 		assertTrue(value.isBoolean());
 		assertFalse(value.getBoolean());
+	}
+	
+	@Test public void testRawInteger()
+	{
+		TypedValue value = new TypedValue(28);
+		assertTrue(value.isNumeric());
+		assertEquals(28.0,value.getNumeric(),0);
+		
+		value = new TypedValue(-28);
+		assertTrue(value.isNumeric());
+		assertEquals(-28.0,value.getNumeric(),0);
+	}
+	
+	@Test public void testToString()
+	{
+		TypedValue value = new TypedValue(28);
+		assertEquals("NUMERIC: 28.0" ,value.toString());
+		
+		value = new TypedValue();
+		assertEquals("NA" ,value.toString());
+		
+		value = new TypedValue(null);
+		assertEquals("NULL" ,value.toString());
+		
+		value = new TypedValue(false);
+		assertEquals("BOOLEAN: false" ,value.toString());
+		
+		value = new TypedValue("Foo");
+		assertEquals("STRING: Foo" ,value.toString());
 	}
 	
 	
