@@ -1,9 +1,13 @@
 package ca.mcgill.cs.creco.logic;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +17,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.AttributeStat;
-import ca.mcgill.cs.creco.data.CategoryBuilder;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
@@ -26,33 +29,28 @@ public class AttributeExtractionTest
 	@Autowired
 	IDataStore aDataStore;
 	
-	// prmr removed because that was the only accessor of getCategories.
-//	@Test
-//	public void testAllCategories() 
-//	{
-//		String catName = "";
-//		try
-//		{
-//			for(Category2 c : aDataStore.getCategories())
-//			{
-//				catName = c.getName();
-//				Set<Product> productSet = new HashSet<Product>();
-//				for(Product product : c.getProducts())
-//				{
-//					productSet.add(product);
-//				}
-//				AttributeExtractor aec = new AttributeExtractor(productSet, c);
-//				ArrayList<ScoredAttribute> ssl = aec.getScoredSpecList();
-//				ArrayList<ScoredAttribute> srl = aec.getScoredRatingList();
-//			}
-//			
-//		}
-//		catch (Exception e)
-//		{
-//			fail("Exception caught " + e);
-//		}
-//		
-//	}
+	@Test
+	public void testAllCategories() 
+	{
+		try
+		{
+			for(Category c : aDataStore.getCategories())
+			{
+				Set<Product> productSet = new HashSet<Product>();
+				for(Product product : c.getProducts())
+				{
+					productSet.add(product);
+				}
+				new AttributeExtractor(productSet, c);
+			}
+			
+		}
+		catch (Exception e)
+		{
+			fail("Exception caught " + e);
+		}
+		
+	}
 	
 	@Test
 	public void testSorting() 

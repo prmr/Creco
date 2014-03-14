@@ -142,5 +142,16 @@ public class TestTypedValue
 		assertTrue(value.isNA());
 	}
 	
+	@Test public void testRawBoolean()
+	{
+		TypedValue value = new TypedValue(true);
+		assertTrue(value.isBoolean());
+		assertTrue(value.getBoolean());
+		
+		value = new TypedValue(false);
+		assertTrue(value.isBoolean());
+		assertFalse(value.getBoolean());
+	}
+	
 	
 }
