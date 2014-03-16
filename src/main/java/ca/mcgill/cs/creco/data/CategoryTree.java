@@ -20,6 +20,7 @@ import java.util.Hashtable;
  */
 public class CategoryTree implements IDataCollector
 {
+	
 	private static final double JACCARD_THRESHOLD = 0.8;
 	private HashMap<String, Product> aProducts = new HashMap<String, Product>();
 	private Hashtable<String, CategoryBuilder> aCategoryIndex = new Hashtable<String, CategoryBuilder>();
