@@ -1,6 +1,7 @@
 package ca.mcgill.cs.creco.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import ca.mcgill.cs.creco.data.*;
@@ -29,6 +30,63 @@ public RankedFeaturesProducts()
 		RankedFeaturesProducts.aSpecList = pSpecList;
 		RankedFeaturesProducts.aRatingList = pRatingList;
 
+	}
+	
+	/**
+	 * Feature Sensitive Ranking Algorithm.
+	 * @param pFeatureList list of user selected features
+	 * @param pCatId category id
+	 * @return ranked list of products
+	 */
+	public List<ScoredProduct> FeatureSensitiveRanking(List <ScoredAttribute> pFeatureList, String pCatId)
+	{
+		int prodSize = main_aProductSearchResult.size();
+		int featSize = pFeatureList.size();
+		ScoredProduct[] rankedList = new ScoredProduct[prodSize];
+		//rankedList = main_aProductSearchResult;
+		Boolean flag = false;
+			
+		if (pFeatureList.isEmpty())
+		{
+			return null;
+		}
+		
+		ScoredProduct [][] matrix = new ScoredProduct[featSize][prodSize]; //row is feature, column is product containing this feature.
+		
+			for(int i = 0 ; i < featSize ; i++) //for each feature
+			{
+				String fID = pFeatureList.get(i).getAttributeID();
+				for(int j = 0 ; j < prodSize ; j++) // for each product in the category
+				{
+					if(!main_aProductSearchResult.get(j).getEqClassId().equals(pCatId))
+					{
+						System.out.println("id "+ main_aProductSearchResult.get(j).getEqClassId());
+						continue;
+					}
+								
+					if(main_aProductSearchResult.get(j).getProduct().getSpec(fID) != null || main_aProductSearchResult.get(j).getProduct().getRating(fID) != null)
+					{
+						matrix[i][j] = main_aProductSearchResult.get(j);
+					}
+					else
+					{
+						flag = true;
+					}							
+				}				
+			}
+			if(matrix.length > 0)
+			{
+				for(int i =0 ;i < featSize; i++)
+				{
+	
+					System.out.println("*********** feature : " + i +" ********");
+					for(int j=0 ; j < matrix[i].length;j++)
+					{
+						System.out.println("product " + j+" : "+ matrix[i][j].getProduct().getId());								
+					}
+				}
+			}
+		return null;		
 	}
 	
 	public List<ScoredProduct> FilterandReturn(List<ScoredAttribute> pSpecList)

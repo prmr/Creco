@@ -66,7 +66,7 @@ public class SearchController
 	private List<ScoredAttribute> aScoredRatings; 
 	private List<ScoredAttribute> aScoredSpecs; 
 	private List<ScoredProduct> aScoredProducts;
-	
+	private String aCategoryID;
 	@Autowired
 	private ProductListVO aProductList;
 	
@@ -482,6 +482,7 @@ public class SearchController
 	    	if (cat.getId().equals(eqc.getId()))
 	    	{
 	    		target = cat;
+	    		aCategoryID = eqc.getId();
 	    	}
 	    }
 	    
@@ -715,7 +716,9 @@ public class SearchController
 		}
 	
 		RankedFeaturesProducts tempProducts = new RankedFeaturesProducts();
-		List<ScoredProduct> productsToDisplay = tempProducts.FilterandReturn(userScoredFeaturesSpecs);
+		//List<ScoredProduct> productsToDisplay = tempProducts.FilterandReturn(userScoredFeaturesSpecs);
+		
+		List<ScoredProduct> productsToDisplay  = tempProducts.FeatureSensitiveRanking(userScoredFeaturesSpecs, aCategoryID);
 
 			// Converting
 			ArrayList<ProductVO> products = new ArrayList<ProductVO>();		
