@@ -32,7 +32,6 @@ public class CategoryTree implements IDataCollector
 	public CategoryTree() 
 	{}
 	
-	
 	/**
 	 * Returns a collection of plain Category objects.  Must be called after 
 	 * findEquivalenceClasses()
@@ -54,7 +53,7 @@ public class CategoryTree implements IDataCollector
 		}
 		return lCategories;
 	}
-
+	
 	/**
 	 * Adds the root categories (categoriBuilders) to the index.  Recursively adds child
 	 * categoryBuilders.
@@ -90,13 +89,18 @@ public class CategoryTree implements IDataCollector
 	}
 
 	/**
-	 * Not sure if this is still needed, maybe delete
+	 * Exposes the products as an unmodifiable collection
+	 * @return a collection list of products
 	 */
 	public Collection<Product> getProducts() 
 	{
 		return Collections.unmodifiableCollection(aProducts.values());
 	}
-
+	
+	/**
+	 * Searches the CategoryTree to find "meaningful categories".  See the description for
+	 * recurseFindEquivalenceClasses for details.
+	 */
 	void findEquivalenceClasses() 
 	{
 		for(CategoryBuilder franchise : aRootCategories)
@@ -106,6 +110,46 @@ public class CategoryTree implements IDataCollector
 		aHasFoundEquivalenceClasses = true;
 	}
 	
+	/**
+	 * Searches the CategoryTree to find "meaningful categories".  These meaningful
+	 * categories, or "equivalence classes" contain collections of products which are in
+	 * some sense substitutes.  This implementation judges whether a given CategoryBuilder
+	 * is an equivalence class by inspecting the Jaccard index of the category, which 
+	 * is one way of measuring the similarity between the products of each of its child
+	 * CategoryBuilders.  As an example, `Humidifier` is an equivalence class, having 
+	 * children `Console Models` and `Tabletop Models`, whose products are similar.
+	 * 
+	 * This method recursively traverses the CategoryTree's tree structure, from roots towards 
+	 * leaves.  As the algorithm
+	 * descends, the first CategoryBuilder encountered within a given lineage that has a 
+	 * Jaccard index above JACCARD_THRESHOLD is considered an "equivalence class", and is 
+	 * added to the aEquivalenceClass ArrayList.
+	 * 
+	 * Note that "lineage" is intended to denote any series of CategoryBuilders which form a 
+	 * that form simple path beginning from a CategryBuilder from aRootCategories.
+	 * 
+	 * After an equivalence class is identified, the recursion continues deeper, but 
+	 * the further recursive calls do not test the Jaccard index, and are simply added 
+	 * the CategoryBuilders to the aSubEquivalenceClass ArrayList.
+	 * 
+	 * If leaf CategoryBuilders are not subsumed under a CategoryBuilder identified as an 
+	 * "equivalence class", then the leaf CategoryBuilder is taken to be an equivalence class
+	 * itself.  Note that leaf CategoryBuilders, which have no children, do not have a 
+	 * meaningful Jaccard index.
+	 *  
+	 * Explaining the role of pMode:  
+	 * This function behaves differently if it is operating on a CategoryBuilder that has an
+	 * ancestor already identified to be an equivalence class than if it operates on one
+	 * has not.  The second parameter, pMode, is used to provide this articulation.
+	 * When pMode is 0, the function behaves as if it has not yet found an equivalence class in
+	 * the ancestry of the CategoryBuilder on which it is operating, and does test for 
+	 * one.  When pMode is 1, the function behaves as if it has already found an equivalence 
+	 * class, and so simply adds subsequent categories to the aSubEquivalenceClasses arrayList
+	 * without testing the Jaccard index. 
+	 * 
+	 * @param pCategory
+	 * @param pMode
+	 */
 	private void recurseFindEquivalenceClasses(CategoryBuilder pCategory, int pMode)
 	{
 		Iterable<CategoryBuilder> children = pCategory.getChildren();
@@ -152,6 +196,12 @@ public class CategoryTree implements IDataCollector
 		}
 	}
 	
+	/**
+	 * Adds the plain-category projection of the passed CategoryBuilder to the local \
+	 * index of plain categories.  This was originally taken from CRData and may not be 
+	 * needed here
+	 * @param pCategory
+	 */
 	private void index(CategoryBuilder pCategory)
 	{
 		aCategoryIndex.put(pCategory.getId(), pCategory);
@@ -161,6 +211,11 @@ public class CategoryTree implements IDataCollector
 		}
 	}
 	
+	/**
+	 * Aggregates information about the ratings and specs for all products under a given
+	 * category, and aggregates the counts of the number of tested products and rated
+	 * products under a given category.  See recursiveRefresh() for more details.
+	 */
 	void refresh() 
 	{			
 		// Now recursively refresh the category list
@@ -170,6 +225,19 @@ public class CategoryTree implements IDataCollector
 		}
 	}
 	
+	/**
+	 * One of the purposes of CategoryTree is to aggregate information about the ratings
+	 * and specs for all the products under a given category.  This is done recursively:
+	 * a non-leaf category aggregates information about the specs and ratings of all its
+	 * children.  Thus, this information must be "rolled up", from leaves to root, which
+	 * is accomplished here recursion.
+	 * 
+	 * This method also "rolls up" the counts of the number of tested products, and the
+	 * number of rated products under a given category.
+	 * 
+	 * @param pCategory
+	 * @param pDepth
+	 */
 	private void recursiveRefresh(CategoryBuilder pCategory, int pDepth)
 	{
 		for(CategoryBuilder child : pCategory.getChildren()) 
@@ -210,7 +278,6 @@ public class CategoryTree implements IDataCollector
 
 	/**
 	 * Associate products with categories and vice-versa.
-	 * @param pProducts The list of products.
 	 */
 	void associateProducts() 
 	{
@@ -239,6 +306,17 @@ public class CategoryTree implements IDataCollector
 		}
 	}
 	
+	/**
+	 * This method removes "singletons" from the category tree structure.
+	 * 
+	 * Within the category tree structure, there are cases where a given category has a 
+	 * single child category.  Such a category, having a single child, is what is being
+	 * called a "singleton" here -- not to be confused with the programmatic design pattern.  
+	 * Singletons are redundant, and interfere with the current implementation of 
+	 * findEquivalenceClasses().
+	 * 
+	 * @param pCategory
+	 */
 	private void eliminateSingletons(CategoryBuilder pCategory)
 	{
 		// detect if this is a singleton, if so, splice it out of the hierarchy
