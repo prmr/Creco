@@ -233,14 +233,10 @@ public class ScoredAttribute
 		return Lists.newArrayList(a.getValueEnum());
 	}
 	
-
-	
-	
-
 	/**
 	 * @return String representing the attribute description
 	 * */	
-	public String getaAttributeDesc() 
+	public String getAttributeDesc() 
 	{
 		return aAttributeDesc;
 	}
@@ -249,7 +245,7 @@ public class ScoredAttribute
 	/**
 	 * @param pAttributeDesc description of this attribute
 	 * ***/	
-	public void setaAttributeDesc(String pAttributeDesc)
+	public void setAttributeDesc(String pAttributeDesc)
 	{
 		this.aAttributeDesc = pAttributeDesc;
 	}

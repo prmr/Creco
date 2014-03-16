@@ -537,7 +537,7 @@ public class SearchController
 			f.setRate(false);			
 			f.setVisible(true);
 
-			f.setDesc(aScoredSpecs.get(i).getaAttributeDesc());
+			f.setDesc(aScoredSpecs.get(i).getAttributeDesc());
 
 
 			TypedValue val = aScoredSpecs.get(i).getAttributeMean();		
@@ -584,7 +584,7 @@ public class SearchController
 			f.setId(aScoredRatings.get(i).getAttributeID());
 			f.setName(aScoredRatings.get(i).getAttributeName());
 
-			f.setDesc(aScoredRatings.get(i).getaAttributeDesc());
+			f.setDesc(aScoredRatings.get(i).getAttributeDesc());
 			f.setRate(true);
 			f.setSpec(false);			
 			f.setVisible(true);
