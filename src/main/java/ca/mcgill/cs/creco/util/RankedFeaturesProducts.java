@@ -28,11 +28,11 @@ public RankedFeaturesProducts()
 		RankedFeaturesProducts.main_aProductSearchResult=pProductSearchResult;
 		RankedFeaturesProducts.aProductSearchResult=pProductSearchResult;
 		RankedFeaturesProducts.aSpecList = pSpecList;
-		RankedFeaturesProducts.aRatingList = pRatingList;
-
+		RankedFeaturesProducts.aRatingList = pRatingList;	
 	}
 
 	/**
+	 * @author MariamN
 	 * Feature Sensitive Ranking Algorithm.
 	 * @param pFeatureList list of user selected features
 	 * @param pCatId category id
@@ -45,53 +45,48 @@ public RankedFeaturesProducts()
 		double score = 0;
 		double[] weight = new double [featSize];			
 		double[] prodScore = new double [prodSize];
+		ScoredProduct [] prodSet = new ScoredProduct [prodSize];
+		
 		List<ScoredProduct> rankedSet = new ArrayList<ScoredProduct>();
 		
+		//row is feature, column is a product, 1 if the product contains the feature and 0 otherwise.
+		int [][] matrix = new int[featSize][prodSize]; 
+		
+		//initialize the weights with 0.33
 		for(int i=0; i < weight.length;i++)
 		{
 			weight[i]= 0.33;
 		}
-//		ScoredProduct[] rankedList = new ScoredProduct[prodSize];
-//		rankedList = main_aProductSearchResult;
-//		Boolean flag = false;
 
 		if (pFeatureList.isEmpty())
 		{
 			return null;
-		}
-
-		int [][] matrix = new int[featSize][prodSize]; //row is feature, column is product containing this feature.
-		
+		}	
 
 			for(int i = 0 ; i < featSize ; i++) //for each feature
 			{
 				String fID = pFeatureList.get(i).getAttributeID();
 				TypedValue val = pFeatureList.get(i).getAttributeMean();
+				
 				for(int j = 0 ; j < prodSize ; j++) // for each product in the category
 				{
 					if(!main_aProductSearchResult.get(j).getEqClassId().equals(pCatId))
 					{
-						System.out.println("id "+ main_aProductSearchResult.get(j).getEqClassId());
+//						System.out.println("id "+ main_aProductSearchResult.get(j).getEqClassId());
 						continue;
 					}
 
-					if(main_aProductSearchResult.get(j).getProduct().getSpec(fID) != null || main_aProductSearchResult.get(j).getProduct().getRating(fID) != null)
+					if(main_aProductSearchResult.get(j).getProduct().getSpec(fID) != null || main_aProductSearchResult.get(j).getProduct().getRating(fID) != null) //Check if feature exist in the product specs/rates
 					{
-						if(main_aProductSearchResult.get(j).getProduct().getSpec(fID).getTypedValue().equals(val))
+						if(main_aProductSearchResult.get(j).getProduct().getSpec(fID).getTypedValue().equals(val)) //check if the values are equal
 						{
-							matrix[i][j] = 1;//main_aProductSearchResult.get(j);
-//							rankedSet.add(main_aProductSearchResult.get(j));
+							matrix[i][j] = 1;
 						}
 						else
 						{
 							matrix[i][j] = 0;
 						}
 					}
-/*					else
-					{
-						flag = true;
-					}							
-*/
 				}				
 			}
 			
@@ -99,31 +94,63 @@ public RankedFeaturesProducts()
 			{
 				for(int i = 0 ; i < prodSize; i++)
 				{
-					System.out.println("*********** product : " + i +" ********");
+//					System.out.println("*********** product : " + i +" ********");
 					for(int j=0 ; j < featSize;j++)
 					{
 						double temp = matrix[j][i]*weight[j];
 						score = score + temp;
-						System.out.println("feature " + j+" : "+ matrix[j][i]);//.getProduct().getId());								
+//						System.out.println("feature " + j+" : "+ matrix[j][i]);//.getProduct().getId());								
 					}
-					System.out.println("Score for Product "+ i+" "+main_aProductSearchResult.get(i).getProduct().getName()+" is "+score);
-					prodScore[i]=score;
-					score=0;
+//					System.out.println("Score for Product "+ i+" "+main_aProductSearchResult.get(i).getProduct().getName()+" is "+score);
+					prodScore[i] = score;
+					prodSet[i] = main_aProductSearchResult.get(i);
+					score = 0;
 				}
-				for (int i=0;i<prodScore.length;i++)
+				
+				prodSet = sortProducts(prodScore,prodSet);
+				
+				for (int i = 0; i<prodScore.length; i++)
 				{
-					if(prodScore[i]>0.0)
+					if(prodScore[i] > 0.0)
 					{
-						rankedSet.add(main_aProductSearchResult.get(i));
+						//rankedSet.add(main_aProductSearchResult.get(i));
+						rankedSet.add(prodSet[i]);
 					}
 					
 				}
-				System.out.println("Scores list "+prodScore.toString());
 				return rankedSet;
 			}
 		return null;		
 	}
+	
+	public ScoredProduct[]  sortProducts(double[] pWeights, ScoredProduct[] pProducts)
+	{
+		int len = pWeights.length;
+		double tmp = 0;
+		ScoredProduct tmpProd = null;
+		
+		for(int i = 0; i<len; i++)
+		{
+			for(int j = (len-1); j >= (i+1); j--)
+			{
+				if(pWeights[j] > pWeights[j-1])
+				{
+					tmp = pWeights[j];
+			        tmpProd = pProducts[j];
+			        
+			        pWeights[j] = pWeights[j-1];
+			        pProducts[j] =  pProducts[j-1];
+			        
+			        pWeights[j-1] = tmp;
+			        pProducts[j-1] = tmpProd;
+				}
+			}
+		}
 
+		return pProducts;		
+	}
+	
+	@Deprecated	
 	public List<ScoredProduct> FilterandReturn(List<ScoredAttribute> pSpecList)
 	{
 		List<ScoredProduct> new_set = new ArrayList<ScoredProduct>();

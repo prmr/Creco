@@ -509,7 +509,7 @@ public class SearchController
 		return getCurrentFeatureList();
 	}
 	/**
-	 * 
+	 * @author MariamN
 	 * @return string to redirect the browser to feature selection page
 	 */
 	public String getCurrentFeatureList()
@@ -539,8 +539,6 @@ public class SearchController
 			f.setVisible(true);
 
 			f.setDesc(aScoredSpecs.get(i).getaAttributeDesc());
-
-
 			TypedValue val = aScoredSpecs.get(i).getAttributeMean();		
 
 			if( val.isBoolean() )
@@ -550,7 +548,7 @@ public class SearchController
 				f.setValue((ArrayList<String>) values);
 			}
 			else if( val.isNumeric() )
-			{
+			{				
 				f.setType("Numeric");
 				f.setMinValue(aScoredSpecs.get(i).getMin().getNumeric());
 				f.setMaxValue(aScoredSpecs.get(i).getMax().getNumeric());										
@@ -558,7 +556,7 @@ public class SearchController
 				f.setValue((ArrayList<String>)values);	
 			}
 			else if( val.isString() || val.isNA() )
-			{
+			{				
 				f.setType("Nominal");
 				if(val.isNA())
 				{
@@ -660,7 +658,7 @@ public class SearchController
 	}
 	
 	/**
-	 * 
+	 * @author MariamN
 	 * @param dataSpec
 	 * @param dataRate
 	 * @return name of file to redirect the browser to rankedproducts.html
@@ -741,7 +739,7 @@ public class SearchController
 	}	
 
 	/**
-	 * 
+	 * @author MariamN
 	 * @param pFeatureList : feature list, either specs or ratings
 	 * @param pName   : Name of feature to locate
 	 * @return ScoredAttribute matched object
