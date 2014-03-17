@@ -17,12 +17,12 @@ public class RankedFeaturesProducts {
 	private static List<ScoredAttribute> aSpecList;
 
 	private static List<ScoredProduct> aProductSearchResult;
-	
+
 public RankedFeaturesProducts()
 {
-	
+
 }
-	
+
 	public RankedFeaturesProducts(List<ScoredAttribute> pRatingList, List<ScoredAttribute> pSpecList, List<ScoredProduct> pProductSearchResult)
 	{
 		RankedFeaturesProducts.main_aProductSearchResult=pProductSearchResult;
@@ -31,7 +31,7 @@ public RankedFeaturesProducts()
 		RankedFeaturesProducts.aRatingList = pRatingList;
 
 	}
-	
+
 	/**
 	 * Feature Sensitive Ranking Algorithm.
 	 * @param pFeatureList list of user selected features
@@ -42,20 +42,31 @@ public RankedFeaturesProducts()
 	{
 		int prodSize = main_aProductSearchResult.size();
 		int featSize = pFeatureList.size();
-		ScoredProduct[] rankedList = new ScoredProduct[prodSize];
-		//rankedList = main_aProductSearchResult;
-		Boolean flag = false;
-			
+		double score = 0;
+		double[] weight = new double [featSize];			
+		double[] prodScore = new double [prodSize];
+		List<ScoredProduct> rankedSet = new ArrayList<ScoredProduct>();
+		
+		for(int i=0; i < weight.length;i++)
+		{
+			weight[i]= 0.33;
+		}
+//		ScoredProduct[] rankedList = new ScoredProduct[prodSize];
+//		rankedList = main_aProductSearchResult;
+//		Boolean flag = false;
+
 		if (pFeatureList.isEmpty())
 		{
 			return null;
 		}
+
+		int [][] matrix = new int[featSize][prodSize]; //row is feature, column is product containing this feature.
 		
-		ScoredProduct [][] matrix = new ScoredProduct[featSize][prodSize]; //row is feature, column is product containing this feature.
-		
+
 			for(int i = 0 ; i < featSize ; i++) //for each feature
 			{
 				String fID = pFeatureList.get(i).getAttributeID();
+				TypedValue val = pFeatureList.get(i).getAttributeMean();
 				for(int j = 0 ; j < prodSize ; j++) // for each product in the category
 				{
 					if(!main_aProductSearchResult.get(j).getEqClassId().equals(pCatId))
@@ -63,32 +74,56 @@ public RankedFeaturesProducts()
 						System.out.println("id "+ main_aProductSearchResult.get(j).getEqClassId());
 						continue;
 					}
-								
+
 					if(main_aProductSearchResult.get(j).getProduct().getSpec(fID) != null || main_aProductSearchResult.get(j).getProduct().getRating(fID) != null)
 					{
-						matrix[i][j] = main_aProductSearchResult.get(j);
+						if(main_aProductSearchResult.get(j).getProduct().getSpec(fID).getTypedValue().equals(val))
+						{
+							matrix[i][j] = 1;//main_aProductSearchResult.get(j);
+//							rankedSet.add(main_aProductSearchResult.get(j));
+						}
+						else
+						{
+							matrix[i][j] = 0;
+						}
 					}
-					else
+/*					else
 					{
 						flag = true;
 					}							
+*/
 				}				
 			}
+			
 			if(matrix.length > 0)
 			{
-				for(int i =0 ;i < featSize; i++)
+				for(int i = 0 ; i < prodSize; i++)
 				{
-	
-					System.out.println("*********** feature : " + i +" ********");
-					for(int j=0 ; j < matrix[i].length;j++)
+					System.out.println("*********** product : " + i +" ********");
+					for(int j=0 ; j < featSize;j++)
 					{
-						System.out.println("product " + j+" : "+ matrix[i][j].getProduct().getId());								
+						double temp = matrix[j][i]*weight[j];
+						score = score + temp;
+						System.out.println("feature " + j+" : "+ matrix[j][i]);//.getProduct().getId());								
 					}
+					System.out.println("Score for Product "+ i+" "+main_aProductSearchResult.get(i).getProduct().getName()+" is "+score);
+					prodScore[i]=score;
+					score=0;
 				}
+				for (int i=0;i<prodScore.length;i++)
+				{
+					if(prodScore[i]>0.0)
+					{
+						rankedSet.add(main_aProductSearchResult.get(i));
+					}
+					
+				}
+				System.out.println("Scores list "+prodScore.toString());
+				return rankedSet;
 			}
 		return null;		
 	}
-	
+
 	public List<ScoredProduct> FilterandReturn(List<ScoredAttribute> pSpecList)
 	{
 		List<ScoredProduct> new_set = new ArrayList<ScoredProduct>();
@@ -129,15 +164,15 @@ public RankedFeaturesProducts()
 	{
 		return aProductSearchResult;
 	}
-	
+
 	public List<ScoredAttribute> getaRatingList()
 	{
 		return aRatingList;
 	}
-	
+
 	public List<ScoredAttribute> getaSpecList()
 	{
 		return aSpecList;
 	}
-	
+
 }
