@@ -32,9 +32,6 @@
 					<input id='search_btn' type="submit" class="btn btn-info" value="Search"></input>	
 				</form>
 			</div>
-			<form action="/reverse" method="POST">
-				<input id="reverse" type="submit" class="btn" value="Reverse"></input>
-			</form>
 			<div id='eq-result'>
 				<div class="eq-result-entry" th:each="eqc : ${eqcList.eqcs}">
 				    <form action="/searchRankedFeaturesProducts" method="POST">
