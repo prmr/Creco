@@ -150,7 +150,7 @@
 			</div><!-- end feature-->	
 			
 			<div id="product-area">
-				<div class="rankedproduct-result-entry" th:each="product : ${productList.products}"  pages:paginate="5">
+				<div class="rankedproduct-result-entry" th:each="product : ${productList.products}">
                     <div class="rankedproduct-result-name" th:text="${product.name}"></div>
 				</div>
 			</div>
