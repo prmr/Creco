@@ -1,67 +1,113 @@
-#search {
-	width: 800px;
-	margin: 50px auto;
+html, body 
+{
+	height: 100%;	
 }
 
-#search_btn{
+
+#search 
+{
+	background: rgb(236, 236, 236);
+	width: 1000px;
+	height: 100%;
+	margin: 0px auto;
+	padding: 20px;
+}
+
+#search_btn 
+{
 	margin: 0 5px;
 }
 
-#main_searchbar {
-	margin-bottom: 20px;	
+#main_searchbar 
+{
+	width: 100%;
+	margin-bottom: 20px;
+	padding-bottom: 20px;
+	border-bottom: 1px solid #ddd;
 }
 
-.advanced-option {
+.advanced-option 
+{
 	float: right;
 	width: 50%;
 	padding: 5px 5px 0 0;
 }
 
-#eq-result {
-
+.eq-result-entry 
+{
+	background: white;
+	border: 1px solid #ddd;
+	display: -webkit-box;
+	line-height: 60px;
+	width: 49%;
+	float: left;
+	margin: 2px;
 }
 
-#feature {
+.eq-button-wrap
+{
+	width: 100%;	
+}
+
+.eq-button 
+{
+    font-family: 'Segoe UI', 'Open Sans', Arial, sans-serif;
+    display: block;
+    text-decoration: none;
+    text-align: center;
+    padding: 10px;
+    width: 100%;
+    font-size: 16px;
+    text-transform: uppercase;
+    background: #FAFAFA;
+    color: rgb(122, 122, 122);
+    border: 0px none;
+    outline: 0px none;
+}
+
+.eq-button:active 
+{
+    background: #DDE5EC;
+}
+
+#product-area
+{	
+	float: left;
+	margin: 0 0 0 20px;
+	height: 600px;
+	overflow: scroll;
+	overflow-x: hidden;
+}
+
+.rankedproduct-result-entry
+{	
+	border: 1px solid #ddd;
+	display: -webkit-box;
+	line-height: 60px;
+	margin: 3px;
+    background: #FAFAFA;
+    color: rgb(122, 122, 122);
+	padding: 15px;
+	width: 550px;
+    font-size: 16px;
+}
+
+#feature 
+{
 	float: left;
 	width: 300px;
 }
 
-#rankedproduct-result{
-	float: left;
-	padding: 0 20px;
-	margin: 0 20px;
-}
-
-.eq-result-entry,
-.rankedproduct-result-entry {
-	background: white;
-	cursor: pointer;
-	display: -webkit-box;
-	line-height: 32px;
-	width: 350px;
-	border: 1px solid rgb(202, 202, 202);
-	border-radius: 4px;
-	margin: 0 0 4px 0;
-}
-
-.eq-result-name,
-.rankedproduct-result-name {
-	padding: 0 12px;
-}
-
-.badge {
-	cursor: pointer;
-}
-
-  
- #main_specs, #main_ratings, #main_cat{
+#main_specs, #main_ratings, #main_cat
+{
   	font-size:small; 
   	left: 0px;  
-  }
+}
   
- .slider-cls{
-  width:50%;
-  }
+.slider-cls
+{
+	width:50%;
+}
 
 #accordion-resizer
 {  

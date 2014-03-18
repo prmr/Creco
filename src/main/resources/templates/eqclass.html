@@ -34,11 +34,10 @@
 			</div>
 			<div id='eq-result'>
 				<div class="eq-result-entry" th:each="eqc : ${eqcList.eqcs}">
-				    <form action="/searchRankedFeaturesProducts" method="POST">
+				   <form class="eq-button-wrap" action="/searchRankedFeaturesProducts" method="POST">
                         <input id="id" name="id" type="hidden" th:value="${eqc.id}"></input>
                         <input id="id" name="name" type="hidden" th:value="${eqc.name}"></input>
-                        <input type="submit" th:value="${eqc.name}"></input>                       
-						<span class="badge" th:text="${eqc.count}"></span>
+                        <input class="eq-button" type="submit" th:value="${eqc.name}"></input>       
                     </form>
 				</div>
 			</div>

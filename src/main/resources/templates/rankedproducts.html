@@ -139,8 +139,7 @@
 											</div> 							
 									</div>
 																				
-								</div>
-							<!-- 	<p><a href="popupFeature.html" class="popup">More</a></p>	-->	  					
+								</div>					
 							</form>
 						</div>	
 						</div>								 																				 					  	   																																										
@@ -148,9 +147,10 @@
 					<button id='submit_btn' type="button" value="Submit" class="btn btn-info" onclick="sendFeatures()">Submit</button>																				
 				
 				</div>	
-			</div><!-- end feature-->		
-			<div id='rankedproduct-result'>
-				<div class="rankedproduct-result-entry" th:each="product : ${productList.products}">
+			</div><!-- end feature-->	
+			
+			<div id="product-area">
+				<div class="rankedproduct-result-entry" th:each="product : ${productList.products}"  pages:paginate="5">
                     <div class="rankedproduct-result-name" th:text="${product.name}"></div>
 				</div>
 			</div>
