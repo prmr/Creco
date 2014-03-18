@@ -21,6 +21,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
@@ -41,7 +43,7 @@ public class ScoredAttribute
 	private static final double CONSIDERATION_THRESHOLD = 0.8;
 	private static final double DEFAULT_MIN = 10000000;
 	private static final double DEFAULT_MAX = -10000000;
-	
+	private final Logger logger = LoggerFactory.getLogger(ScoredAttribute.class);
 	public static final Comparator<ScoredAttribute> SORT_BY_SCORE = 
 	new Comparator<ScoredAttribute>() 
     {
@@ -199,15 +201,25 @@ public class ScoredAttribute
 				if(tv.getNumeric() < min)
 				{
 					min = tv.getNumeric();
+					
 				}
 				if(tv.getNumeric() > max)
 				{
 					max = tv.getNumeric();
+					
 				}
 			}
 		}
-		aMin = new TypedValue(max);
-		aMax = new TypedValue(min);
+		if(Double.isNaN(min))
+		{
+			logger.error("Min value is NaN: " + aAttributeID +", "+ aAttributeName + ", "+ aCategoryID);
+		}
+		if(Double.isNaN(max))
+		{
+			logger.error("Max value is NaN: " + aAttributeID +", "+ aAttributeName + ", "+ aCategoryID);
+		}
+		aMin = new TypedValue(min);
+		aMax = new TypedValue(max);
 		double mean = ss.getGeometricMean();
 		double variance = ss.getStandardDeviation()*ss.getStandardDeviation();
 		
@@ -289,10 +301,10 @@ public class ScoredAttribute
 		{
 			if(tv.isBoolean())
 			{
-				totalCount += 1;
+				totalCount = totalCount + 1;
 				if (tv.getBoolean())
 				{
-					trueCount += 1;
+					trueCount = trueCount + 1;
 				}
 			}
 		}
