@@ -35,6 +35,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.IDataStore;
+import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.data.TypedValue;
 //import ca.mcgill.cs.creco.data.Product;
 //import ca.mcgill.cs.creco.data.TypedValue;
@@ -355,40 +356,27 @@ public class SearchController
  @ResponseBody  
  public String createSmartphone(@RequestBody String typedString)
 	   {  
-		   List<Category> categoryList = aCategorySearch.queryCategories(typedString);		
+		
+		   if(typedString.length()<3)
+			   return "";
+		   String return_this = new String("");
 
-		   int count = 0;
-		   String ajaxCode = new String();
-			ArrayList<EqcVO> eqcs = new ArrayList<EqcVO>();		
-			for (Category cat: categoryList) 
+		   for (Category category123 : aDataStore.getCategories()) 
 			{
-				if(cat.getNumberOfProducts() == 0)
-				{
-					continue; 
-				}
-				count++;
-				EqcVO eqc = new EqcVO();
-				   ajaxCode = ajaxCode.concat("<form action=\"/searchRankedFeaturesProducts\" method=\"POST\">");
-				   String s = new String("<input id=\"id\" name=\"id\" type=\"hidden\" value="+cat.getName()+"></input>");
-				   s = s.concat("<input id=\"id\" name=\"id\" type=\"hidden\" value="+cat.getName()+"></input>");
-				   s = s.concat("<input type=\"submit\" value=\""+cat.getName()+"\"></input>" );
-				   s = s.concat("	<span class=\"badge\">"+cat.getNumberOfProducts()+"</span>");
-				   s = s.concat("</form>");
-				   ajaxCode = ajaxCode.concat(s);
-				eqc.setId(cat.getId());
-				eqc.setName(cat.getName());
-				eqc.setCount(cat.getNumberOfProducts());
-				eqcs.add(eqc);
+			   if(category123.getNumberOfProducts() == 0)
+				   continue;
+			   if(category123.getName().toLowerCase().contains(typedString.toLowerCase()))
+				   	return_this =return_this.concat(category123.getName()+",");
+
 			}
-			aEqcList.setEqcs(eqcs);
-			if(count == 0)
+		   for (Product category1234 : aDataStore.getProducts()) 
 			{
-				return returnfournearest(typedString);
+			   if(category1234.getName().toLowerCase().contains(typedString.toLowerCase()))
+				   	return_this =return_this.concat(category1234.getName()+",");
+
 			}
-			else
-			{
-				return ajaxCode;
-			}
+
+		   return return_this;
  }  
 	   /**
 	    * 
