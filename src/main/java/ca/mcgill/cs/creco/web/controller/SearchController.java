@@ -66,7 +66,7 @@ public class SearchController
 	private List<ScoredAttribute> aScoredRatings; 
 	private List<ScoredAttribute> aScoredSpecs; 
 	private List<ScoredProduct> aScoredProducts;
-	
+	private String aCategoryID;
 	@Autowired
 	private ProductListVO aProductList;
 	
@@ -482,6 +482,7 @@ public class SearchController
 	    	if (cat.getId().equals(eqc.getId()))
 	    	{
 	    		target = cat;
+	    		aCategoryID = eqc.getId();
 	    	}
 	    }
 	    
@@ -489,6 +490,7 @@ public class SearchController
 		AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
 		List<ScoredAttribute> ratingList = ae.getScoredRatingList();
 		List<ScoredAttribute> specList = ae.getScoredSpecList();
+		
 	    RankedFeaturesProducts rankedProducts = new RankedFeaturesProducts(ratingList, specList, prodSearch);
 	    aScoredProducts = rankedProducts.getaProductSearchResult();
 	    
@@ -508,7 +510,7 @@ public class SearchController
 		return getCurrentFeatureList();
 	}
 	/**
-	 * 
+	 * @author MariamN
 	 * @return string to redirect the browser to feature selection page
 	 */
 	public String getCurrentFeatureList()
@@ -537,10 +539,10 @@ public class SearchController
 			f.setRate(false);			
 			f.setVisible(true);
 
-			f.setDesc(aScoredSpecs.get(i).getaAttributeDesc());
 
+			f.setDesc(aScoredSpecs.get(i).getAttributeDesc());
+			TypedValue val = aScoredSpecs.get(i).getAttributeDefault();		
 
-			TypedValue val = aScoredSpecs.get(i).getAttributeMean();		
 
 			if( val.isBoolean() )
 			{	
@@ -549,7 +551,7 @@ public class SearchController
 				f.setValue((ArrayList<String>) values);
 			}
 			else if( val.isNumeric() )
-			{
+			{				
 				f.setType("Numeric");
 				f.setMinValue(aScoredSpecs.get(i).getMin().getNumeric());
 				f.setMaxValue(aScoredSpecs.get(i).getMax().getNumeric());										
@@ -557,7 +559,7 @@ public class SearchController
 				f.setValue((ArrayList<String>)values);	
 			}
 			else if( val.isString() || val.isNA() )
-			{
+			{				
 				f.setType("Nominal");
 				if(val.isNA())
 				{
@@ -565,7 +567,12 @@ public class SearchController
 				}
 				else
 				{
-					values = aScoredSpecs.get(i).getDict();								
+					//comment to change possibly
+					List<TypedValue> tvs = aScoredSpecs.get(i).getDict();	
+					for(TypedValue tv :tvs)
+					{
+						values.add(tv.getString());
+					}					
 				}
 				f.setValue((ArrayList<String>)values);										
 			}
@@ -584,13 +591,13 @@ public class SearchController
 			f.setId(aScoredRatings.get(i).getAttributeID());
 			f.setName(aScoredRatings.get(i).getAttributeName());
 
-			f.setDesc(aScoredRatings.get(i).getaAttributeDesc());
+			f.setDesc(aScoredRatings.get(i).getAttributeDesc());
 			f.setRate(true);
 			f.setSpec(false);			
 			f.setVisible(true);
 
 
-			TypedValue val = aScoredRatings.get(i).getAttributeMean();	
+			TypedValue val = aScoredRatings.get(i).getAttributeDefault();	
 
 			if( val !=null && val.isBoolean() )
 			{
@@ -615,7 +622,12 @@ public class SearchController
 				}
 				else
 				{
-					values = aScoredRatings.get(i).getDict();					
+					//comment to change possibly
+					List<TypedValue> tvs = aScoredSpecs.get(i).getDict();	
+					for(TypedValue tv :tvs)
+					{
+						values.add(tv.getString());
+					}					
 				}
 				f.setValue((ArrayList<String>)values);										
 			}
@@ -659,7 +671,7 @@ public class SearchController
 	}
 	
 	/**
-	 * 
+	 * @author MariamN
 	 * @param dataSpec
 	 * @param dataRate
 	 * @return name of file to redirect the browser to rankedproducts.html
@@ -685,7 +697,7 @@ public class SearchController
 			if ( sa != null)
 			{
 				TypedValue av = new TypedValue(userFMSpec.getValues().get(i));				
-				sa.setAttributeMean(av);
+				sa.setAttributeDefault(av);
 				userScoredFeaturesSpecs.add(sa);				
 			}			
 
@@ -698,7 +710,7 @@ public class SearchController
 			if ( sa != null)
 			{
 				TypedValue av = new TypedValue(userFMRate.getValues().get(i));				
-				sa.setAttributeMean(av);
+				sa.setAttributeDefault(av);
 				userScoredFeaturesRates.add(sa);				
 
 			}
@@ -715,7 +727,9 @@ public class SearchController
 		}
 	
 		RankedFeaturesProducts tempProducts = new RankedFeaturesProducts();
-		List<ScoredProduct> productsToDisplay = tempProducts.FilterandReturn(userScoredFeaturesSpecs);
+		//List<ScoredProduct> productsToDisplay = tempProducts.FilterandReturn(userScoredFeaturesSpecs);
+		
+		List<ScoredProduct> productsToDisplay  = tempProducts.FeatureSensitiveRanking(userScoredFeaturesSpecs, aCategoryID);
 
 			// Converting
 			ArrayList<ProductVO> products = new ArrayList<ProductVO>();		
@@ -738,7 +752,7 @@ public class SearchController
 	}	
 
 	/**
-	 * 
+	 * @author MariamN
 	 * @param pFeatureList : feature list, either specs or ratings
 	 * @param pName   : Name of feature to locate
 	 * @return ScoredAttribute matched object
@@ -750,7 +764,7 @@ public class SearchController
 			ScoredAttribute temp = pFeatureList.get(i);
 			if(temp.getAttributeName().equals(pName))
 			{
-				LOG.debug("old mean value is " + pFeatureList.get(i).getAttributeMean());
+				LOG.debug("old mean value is " + pFeatureList.get(i).getAttributeDefault());
 				return temp;
 
 			}
