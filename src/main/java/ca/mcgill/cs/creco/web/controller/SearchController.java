@@ -33,12 +33,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-//import ca.mcgill.cs.creco.data.Attribute;
-import ca.mcgill.cs.creco.data.CategoryBuilder;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.TypedValue;
-import ca.mcgill.cs.creco.data.TypedValue.Type;
 //import ca.mcgill.cs.creco.data.Product;
 //import ca.mcgill.cs.creco.data.TypedValue;
 //import ca.mcgill.cs.creco.data.TypedValue.Type;
@@ -58,6 +55,7 @@ import ca.mcgill.cs.creco.web.model.ProductVO;
 import ca.mcgill.cs.creco.web.model.UserFeatureModel;
 
 import com.google.gson.Gson;
+//import ca.mcgill.cs.creco.data.Attribute;
 
 @Controller
 public class SearchController
@@ -539,60 +537,44 @@ public class SearchController
 			f.setRate(false);			
 			f.setVisible(true);
 
-			f.setDesc(aScoredSpecs.get(i).getaAttributeDesc());
+			f.setDesc(aScoredSpecs.get(i).getAttributeDesc());
 
 
-			TypedValue val = aScoredSpecs.get(i).getAttributeMean();			
+			TypedValue val = aScoredSpecs.get(i).getAttributeDefault();		
 
-			if(val.getType() == Type.BOOLEAN && val!=null)
+			if( val.isBoolean() )
 			{	
 				f.setType("Bool");								
-				values.add(val.getBooleanValue()+"");
+				values.add(val.getBoolean()+"");
 				f.setValue((ArrayList<String>) values);
 			}
-			else
+			else if( val.isNumeric() )
 			{
-
-				if((val.getType() == Type.DOUBLE || val.getType() == Type.INTEGER ) && val!=null)
-
-					{
-						f.setType("Numeric");
-						f.setMinValue(aScoredSpecs.get(i).getMin().getNumericValue());
-						f.setMaxValue(aScoredSpecs.get(i).getMax().getNumericValue());										
-						values.add(val.getNumericValue()+"");
-						f.setValue((ArrayList<String>)values);	
-												
-					}
+				f.setType("Numeric");
+				f.setMinValue(aScoredSpecs.get(i).getMin().getNumeric());
+				f.setMaxValue(aScoredSpecs.get(i).getMax().getNumeric());										
+				values.add(val.getNumeric()+"");
+				f.setValue((ArrayList<String>)values);	
+			}
+			else if( val.isString() || val.isNA() )
+			{
+				f.setType("Nominal");
+				if(val.isNA())
+				{
+					values.add("N/A");
+				}
 				else
 				{
-					if(val.getType() == Type.STRING  && val!=null)
+					//comment to change possibly
+					List<TypedValue> tvs = aScoredSpecs.get(i).getDict();	
+					for(TypedValue tv :tvs)
 					{
-						if(val.getNominalValue().equalsIgnoreCase("true") || val.getNominalValue().equalsIgnoreCase("false")) 
-						{
-
-								f.setType("Bool");
-						}
-						else 
-						{
-							
-								f.setType("Nominal");
-						}
-
-							if(val.getNominalValue().equals("N/A"))
-							{
-
-								values.add("N/A");
-							}
-							else
-							{
-								values = aScoredSpecs.get(i).getDict();								
-
-							}
-							f.setValue((ArrayList<String>)values);										
-						}
-					}
+						values.add(tv.getString());
+					}					
 				}
-				specFeatures.add(f);	
+				f.setValue((ArrayList<String>)values);										
+			}
+			specFeatures.add(f);	
 		}		
 
 		for (int i = 0; i < aScoredRatings.size() ; i++)
@@ -607,57 +589,45 @@ public class SearchController
 			f.setId(aScoredRatings.get(i).getAttributeID());
 			f.setName(aScoredRatings.get(i).getAttributeName());
 
-			LOG.debug("***********Rate Name ********* "+ f.getName());
-
-			f.setDesc(aScoredRatings.get(i).getaAttributeDesc());
+			f.setDesc(aScoredRatings.get(i).getAttributeDesc());
 			f.setRate(true);
 			f.setSpec(false);			
 			f.setVisible(true);
 
 
-			TypedValue val = aScoredRatings.get(i).getAttributeMean();	
+			TypedValue val = aScoredRatings.get(i).getAttributeDefault();	
 
-			if(val.getType() == Type.BOOLEAN && val!=null)
+			if( val !=null && val.isBoolean() )
 			{
 				f.setType("Bool");								
-				values.add(val.getBooleanValue()+"");
+				values.add(val.getBoolean()+"");
 				f.setValue((ArrayList<String>)values);
-
 			}
-			else
+			else if( val.isNumeric() )
 			{
-				if((val.getType() == Type.DOUBLE || val.getType() == Type.INTEGER ) && val!=null)
+				f.setType("Numeric");
+				f.setMinValue(aScoredRatings.get(i).getMin().getNumeric());
+				f.setMaxValue(aScoredRatings.get(i).getMax().getNumeric());					
+				values.add(val.getNumeric()+"");
+				f.setValue((ArrayList<String>)values);										
+			}
+			else if( val.isString() || val.isNA())
+			{
+				f.setType("Nominal");
+				if(val.isNA())
 				{
-					f.setType("Numeric");
-					f.setMinValue(aScoredRatings.get(i).getMin().getNumericValue());
-					f.setMaxValue(aScoredRatings.get(i).getMax().getNumericValue());					
-					values.add(val.getNumericValue()+"");
-					f.setValue((ArrayList<String>)values);										
+					values.add("N/A");
 				}
 				else
 				{
-					if(val.getType() == Type.STRING && val!=null)
+					//comment to change possibly
+					List<TypedValue> tvs = aScoredSpecs.get(i).getDict();	
+					for(TypedValue tv :tvs)
 					{
-						if(val.getNominalValue().equalsIgnoreCase("true") || val.getNominalValue().equalsIgnoreCase("false")) 
-						{
-							f.setType("Bool");
-						} 
-						else 
-						{
-							f.setType("Nominal");
-						}
-
-						if(val.getNominalValue().equals("N/A"))
-						{
-							values.add("N/A");
-						}
-						else
-						{
-							values = aScoredRatings.get(i).getDict();					
-						}
-						f.setValue((ArrayList<String>)values);										
-					}
+						values.add(tv.getString());
+					}					
 				}
+				f.setValue((ArrayList<String>)values);										
 			}
 			rateFeatures.add(f);								
 		}
@@ -725,7 +695,7 @@ public class SearchController
 			if ( sa != null)
 			{
 				TypedValue av = new TypedValue(userFMSpec.getValues().get(i));				
-				sa.setAttributeMean(av);
+				sa.setAttributeDefault(av);
 				userScoredFeaturesSpecs.add(sa);				
 			}			
 
@@ -738,7 +708,7 @@ public class SearchController
 			if ( sa != null)
 			{
 				TypedValue av = new TypedValue(userFMRate.getValues().get(i));				
-				sa.setAttributeMean(av);
+				sa.setAttributeDefault(av);
 				userScoredFeaturesRates.add(sa);				
 
 			}
@@ -790,7 +760,7 @@ public class SearchController
 			ScoredAttribute temp = pFeatureList.get(i);
 			if(temp.getAttributeName().equals(pName))
 			{
-				LOG.debug("old mean value is " + pFeatureList.get(i).getAttributeMean());
+				LOG.debug("old mean value is " + pFeatureList.get(i).getAttributeDefault());
 				return temp;
 
 			}

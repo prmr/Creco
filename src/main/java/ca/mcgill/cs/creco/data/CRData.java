@@ -102,6 +102,12 @@ public final class CRData implements IDataCollector, IDataStore
 	}
 	
 	@Override
+	public Product getProduct(String pId)
+	{
+		return aProducts.get(pId);
+	}
+	
+	@Override
 	public void addCategory(CategoryBuilder pCategory)
 	{
 		aRootCategories.add(pCategory);

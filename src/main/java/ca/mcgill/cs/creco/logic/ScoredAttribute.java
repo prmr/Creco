@@ -16,16 +16,18 @@
 package ca.mcgill.cs.creco.logic;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import ca.mcgill.cs.creco.data.Attribute;
-import ca.mcgill.cs.creco.data.AttributeStat;
-import ca.mcgill.cs.creco.data.CategoryBuilder;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.IDataStore;
+import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.data.TypedValue;
 
 import com.google.common.collect.Lists;
@@ -33,18 +35,21 @@ import com.google.common.collect.Lists;
 /**
  *
  */
-public class ScoredAttribute 
+public class ScoredAttribute
 {
 	
+	private static final double CONSIDERATION_THRESHOLD = 0.8;
+	private static final double DEFAULT_MIN = 10000000;
+	private static final double DEFAULT_MAX = -10000000;
 	
 	public static final Comparator<ScoredAttribute> SORT_BY_SCORE = 
 	new Comparator<ScoredAttribute>() 
     {
 		
 		/**
-		 * Compare a score placing the highest score first.
-		 * @param pA score A
-		 * @param pB score B
+		 * Compare a scoredAttribute placing the highest score first.
+		 * @param pA scoredAttribute A
+		 * @param pB scoredAttribute B
 		 * @return -1 for A > B, 1 for B > A, 0 if A==B
 		 */
 		@Override
@@ -65,18 +70,58 @@ public class ScoredAttribute
         }
 
      };
-	
+     /**
+		 * Compare a scoredAttribute placing the highest entropy first.
+		 * @param pA scoredAttribute A
+		 * @param pB scoredAttribute B
+		 * @return -1 for A > B, 1 for B > A, 0 if A==B
+		 */
+     public static final Comparator<ScoredAttribute> SORT_BY_ENTROPY = 
+    			new Comparator<ScoredAttribute>() 
+    		    {
+    				
+    				/**
+    				 * Compare a score placing the highest score first.
+    				 * @param pA score A
+    				 * @param pB score B
+    				 * @return -1 for A > B, 1 for B > A, 0 if A==B
+    				 */
+    				@Override
+    		        public int compare(ScoredAttribute pA, ScoredAttribute pB) 
+    		        {
+    		        	if(pA.getEntropy() >  pB.getEntropy())
+    		        	{
+    		        		return -1;
+    		        	}
+    		        	else if(pA.getEntropy() < pB.getEntropy())
+    		        	{
+    		        		return 1;
+    		        	}
+    		        	else
+    		        	{
+    		        		return 0;
+    		        	}
+    		        }
+
+    		     };
  	@Autowired
  	private IDataStore aDataStore;
     private String aAttributeID;
  	private String aAttributeName;
  	private double aAttributeScore;
- 	private TypedValue aAttributeMean;
- 	private boolean aIsCat;
+ 	private TypedValue aDefaultValue;
 
  	private String aCategoryID;
  	private String aAttributeDesc;
+ 	private double aEntropy;
+ 	
+ 	private TypedValue aMin;
+ 	private TypedValue aMax;
+ 	private List<TypedValue> aStringValues;
+
 	   
+ 	private enum Type
+ 	{ NULL, NA, BOOLEAN, NUMERIC, STRING }
 
 	/**Constructor from an attribute.
 	 * @param pAttribute attribute to build score for.
@@ -84,16 +129,225 @@ public class ScoredAttribute
 	 */
 	public ScoredAttribute(Attribute pAttribute, Category pCat)
 	{
-		aIsCat = false;
+
 		aAttributeID = pAttribute.getId();
 		aAttributeScore = 0.0;
 		aAttributeName = pAttribute.getName();
-		aCategoryID = pCat.getId();
-
 		aAttributeDesc = pAttribute.getDescription();
+		aEntropy = 0;
+		if(pCat != null)
+		{
+			Collection<Product> products = pCat.getProducts();
+			setStats(products);
+		}
+		else
+		{
+			aDefaultValue = new TypedValue();
+		}
+		
 
 	}
+	private void setStats(Collection<Product> pProducts)
+	{
+		ArrayList<TypedValue> values = new ArrayList<TypedValue>();
+		for(Product p : pProducts)
+		{
+			
+			//Warning: change after collapse into attribute
+			Attribute a = p.getSpec(aAttributeID);
+			if(a == null)
+			{
+				a = p.getRating(aAttributeID);
+			}
+			if( a != null)
+			{
+				values.add(a.getTypedValue());
+			}
+			
+		}
+		// goes only over the products that had a non null attribute value
+		Type attributeMainType = getMainType(values);
+		if(attributeMainType == Type.NUMERIC)
+		{
+			setNumericStats(values);
+		}
+		else if(attributeMainType == Type.BOOLEAN)
+		{
+			setBooleanStats(values);
+		}
+		else if(attributeMainType == Type.STRING)
+		{
+			setStringStats(values);
+		}
+		else
+		{
+			aEntropy = 0;
+			aDefaultValue = new TypedValue();
+		}
+	}
+	
+	private void setNumericStats(ArrayList<TypedValue> pValues)
+	{
+		SummaryStatistics ss = new SummaryStatistics();
+		double min = DEFAULT_MIN;
+		double max = DEFAULT_MAX;
+		for(TypedValue tv : pValues)
+		{
+			if(tv.isNumeric())
+			{
+				ss.addValue(tv.getNumeric());
+				if(tv.getNumeric() < min)
+				{
+					min = tv.getNumeric();
+				}
+				if(tv.getNumeric() > max)
+				{
+					max = tv.getNumeric();
+				}
+			}
+		}
+		aMin = new TypedValue(max);
+		aMax = new TypedValue(min);
+		double mean = ss.getGeometricMean();
+		double variance = ss.getStandardDeviation()*ss.getStandardDeviation();
 		
+		double entropy = 0;
+		for(TypedValue tv : pValues)
+		{
+			if(tv.isNumeric())
+			{
+				double prob = computeNormalProbability(tv, mean, variance);
+				entropy = entropy + prob * (Math.log(prob));
+			}
+		}
+		aDefaultValue = new TypedValue(mean);
+		aEntropy = entropy;
+	}
+	
+	private void setStringStats(ArrayList<TypedValue> pValues)
+	{
+		HashMap<String, Double> stringCounts = new HashMap<String, Double>();
+		ArrayList<TypedValue> dictionary = new ArrayList<TypedValue>();
+		double count;
+		double totalCount = 0;
+		for(TypedValue tv : pValues)
+		{
+			if(tv.isString())
+			{
+				totalCount += 1;
+				if (stringCounts.containsKey(tv.getString()))
+				{
+					count = stringCounts.get(tv.getString());
+				}
+				else
+				{
+					count = 0;
+				}
+				stringCounts.put(tv.getString(), count + 1);
+			}
+		}
+		double entropy = 0;
+		double maxCount = 0;
+		String mode = "";
+		for(String key : stringCounts.keySet())
+		{
+			dictionary.add(new TypedValue(key));
+			if(stringCounts.get(key) > maxCount)
+			{
+				mode = key;
+				maxCount = stringCounts.get(key);
+			}
+			double probKey = stringCounts.get(key)/totalCount;
+			entropy = entropy + probKey * (Math.log(probKey));
+		}
+		aStringValues = dictionary;
+		aDefaultValue = new TypedValue(mode);
+		aEntropy = entropy;
+	}
+	
+	private void setBooleanStats(ArrayList<TypedValue> pValues)
+	{
+		double trueCount = 0;
+		double totalCount = 0;
+		for(TypedValue tv : pValues)
+		{
+			if(tv.isBoolean())
+			{
+				totalCount += 1;
+				if (tv.getBoolean())
+				{
+					trueCount += 1;
+				}
+			}
+		}
+		double entropy = 0;
+		boolean mode = false;
+		double probTrue= trueCount/totalCount;
+		double probFalse= 1- probTrue;
+		entropy = probTrue * (Math.log(probTrue)) + probFalse * (Math.log(probFalse));
+		if(trueCount >= totalCount/2)
+		{
+			mode = true;
+		}
+		
+		aDefaultValue = new TypedValue(mode);
+		aEntropy = entropy;
+	}
+ 
+	private double computeNormalProbability(TypedValue pValue, double pMean, double pVariance)
+	{
+		if(!pValue.isNumeric())
+		{
+			return 0.0;
+		}
+		double x = pValue.getNumeric();
+		double probability;
+		probability = 1/(Math.sqrt(2*Math.PI*pVariance)) * Math.exp(-((x-pMean)*(x-pMean))/2*pVariance);
+
+		return probability;
+	}
+
+	
+	private Type getMainType(ArrayList<TypedValue> pValues)
+	{
+		float stringCount = 0;
+		float numericCount = 0;
+		float booleanCount = 0;
+		for(TypedValue tv : pValues)
+		{
+			if(tv.isBoolean())
+			{
+				booleanCount += 1;
+			}
+			else if (tv.isNumeric())
+			{
+				numericCount += 1;
+			}
+			else if(tv.isString())
+			{
+				stringCount += 1;
+			}
+		}
+		float totalCount = pValues.size();
+		if((booleanCount/totalCount) >=CONSIDERATION_THRESHOLD)
+		{
+			return Type.BOOLEAN;
+		}
+		else if((numericCount/totalCount) >=CONSIDERATION_THRESHOLD)
+		{
+			return Type.NUMERIC;
+		}
+		else if((stringCount/totalCount) >=CONSIDERATION_THRESHOLD)
+		{
+			return Type.STRING;
+		}
+		else
+		{
+			return Type.NA;
+		}
+	}
+	
+	
 	/**
 	 * @return attribute or category ID check first
 	 * @see isCat()
@@ -113,7 +367,8 @@ public class ScoredAttribute
 	}
 
 	/**
-	 * @param pAttributeScore score to set the attribute to
+
+	 * {@param pAttributeScore score to set the attribute to
 	 */
 	public void setAttributeScore(double pAttributeScore)
 	{
@@ -131,116 +386,57 @@ public class ScoredAttribute
 	@Override
 	public String toString()
 	{
-		return aAttributeName + ", " + aAttributeID + ", "+ aAttributeDesc +": " + aAttributeScore + ", " + aAttributeMean + "||";
+		return aAttributeName + ", " + aAttributeID + ", "+ aAttributeDesc +": " + aAttributeScore + ", " ;
 	}
 
 	/**
 	 * @return mean or mode of this attribute given a product list used to 
 	 * calculate the score
 	 */
-	public TypedValue getAttributeMean() 
+	public TypedValue getAttributeDefault() 
 	{
-		return aAttributeMean;
+		return aDefaultValue;
 	}
-
+	
 	/**
-	 * @param pAttributeMean mean or mode of this attribute given a product list used to 
+	 * @param pDefault mean or mode of this attribute given a product list used to 
 	 * calculate the score
 	 */
-	public void setAttributeMean(TypedValue pAttributeMean) 
+	public void setAttributeDefault(TypedValue pDefault) 
 	{
-		this.aAttributeMean = pAttributeMean;
+		aDefaultValue = pDefault;
 	}
+
+//	/**
+//	 * @param pAttributeMean mean or mode of this attribute given a product list used to 
+//	 * calculate the score
+//	 */
+//	public void setAttributeMean(TypedValue pAttributeMean) 
+//	{
+//		this.aAttributeMean = pAttributeMean;
+//	}
 	/**
 	 * @return true if the attribute was derived from a cat
 	 */
-	public boolean isCat()
-	{
-		return aIsCat;
-	}
-	
 	public TypedValue getMin()
 	{
-		AttributeStat a = null;
-		try
-		{
-			a = aDataStore.getCategory(aCategoryID).getSpecification(aAttributeID);
-		}
-		catch(NullPointerException npe)
-		{
-			try
-			{
-			a = aDataStore.getCategory(aCategoryID).getRating(aAttributeID);
-			}
-			catch(NullPointerException npe2)
-			{
-				
-			}
-		}
-		if(a == null)
-		{
-			return new  TypedValue(0);
-		}
-		return new TypedValue(a.getValueMin());
+		return aMin;
 	}
 	
 	public TypedValue getMax()
 	{
-		AttributeStat a = null;
-		try{
-			a = aDataStore.getCategory(aCategoryID).getSpecification(aAttributeID);
-		}
-		catch(NullPointerException npe)
-		{
-			try
-			{
-			a = aDataStore.getCategory(aCategoryID).getRating(aAttributeID);
-			}
-			catch(NullPointerException npe2)
-			{
-				
-			}
-		}
-		if(a == null)
-		{
-			return new TypedValue(0);
-		}
-		return new TypedValue(a.getValueMax());
+		return aMax;
 	}
 	
-	public List<String> getDict()
+	public List<TypedValue> getDict()
 	{
-		AttributeStat a = null;
-		try
-		{
-			a = aDataStore.getCategory(aCategoryID).getSpecification(aAttributeID);
-		}
-		catch(NullPointerException npe)
-		{
-			try
-			{
-			a = aDataStore.getCategory(aCategoryID).getRating(aAttributeID);
-			}
-			catch(NullPointerException npe2)
-			{
-				
-			}
-		}
-		if(a == null)
-		{
-			return new ArrayList<String>();
-		}
-		return Lists.newArrayList(a.getValueEnum());
+		return aStringValues;
 	}
 	
-
-	
-	
-
 	/**
 	 * @return String representing the attribute description
 	 * */	
-	public String getaAttributeDesc() 
+	public String getAttributeDesc() 
 	{
 		return aAttributeDesc;
 	}
@@ -249,9 +445,15 @@ public class ScoredAttribute
 	/**
 	 * @param pAttributeDesc description of this attribute
 	 * ***/	
-	public void setaAttributeDesc(String pAttributeDesc)
+	public void setAttributeDesc(String pAttributeDesc)
 	{
 		this.aAttributeDesc = pAttributeDesc;
 	}
+
+	public double getEntropy()
+	{
+		return aEntropy;
+	}
+	
 	
 }
