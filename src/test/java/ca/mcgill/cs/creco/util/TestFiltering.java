@@ -124,7 +124,7 @@ public class TestFiltering {
 		ScoredAttribute test_score = new ScoredAttribute(test,new Category("empty", "test", "test", new ArrayList<Product>(), 
 					new ArrayList<AttributeStat>(), new ArrayList<AttributeStat>()));
 		TypedValue temporary = new TypedValue(false);
-		test_score.setAttributeMean(temporary); 
+		test_score.setAttributeDefault(temporary); 
 		userScoredFeaturesSpecs.add(test_score);
 		RankedFeaturesProducts Products = new RankedFeaturesProducts();
 		List<ScoredProduct> productsToDisplay = Products.FilterandReturn(userScoredFeaturesSpecs);
@@ -153,7 +153,7 @@ public class TestFiltering {
 					new ArrayList<AttributeStat>(), new ArrayList<AttributeStat>()));
 
 		  TypedValue temporary = new TypedValue("NA");
-		  test_score.setAttributeMean(temporary); 
+		  test_score.setAttributeDefault(temporary); 
 		  userScoredFeaturesSpecs.add(test_score);
 			RankedFeaturesProducts Products = new RankedFeaturesProducts();
 			List<ScoredProduct> productsToDisplay = Products.FilterandReturn(userScoredFeaturesSpecs);

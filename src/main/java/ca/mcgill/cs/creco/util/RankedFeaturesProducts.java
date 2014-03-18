@@ -45,11 +45,11 @@ public RankedFeaturesProducts()
 				{
 					if(a.getName().equals(b.getAttributeName()))
 					{
-						if( b.getAttributeMean().isNA() || b.getAttributeMean().isNA() )
+						if( b.getAttributeDefault().isNA() || b.getAttributeDefault().isNA() )
 						{
 							continue;
 						}
-						if(!(a.getTypedValue().equals(b.getAttributeMean() ))) // TODO Check this for correctness
+						if(!(a.getTypedValue().equals(b.getAttributeDefault() ))) // TODO Check this for correctness
 								{
 									flag=1;
 								}

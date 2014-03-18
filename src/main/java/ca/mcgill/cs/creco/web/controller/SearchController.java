@@ -540,7 +540,7 @@ public class SearchController
 			f.setDesc(aScoredSpecs.get(i).getAttributeDesc());
 
 
-			TypedValue val = aScoredSpecs.get(i).getAttributeMean();		
+			TypedValue val = aScoredSpecs.get(i).getAttributeDefault();		
 
 			if( val.isBoolean() )
 			{	
@@ -565,7 +565,12 @@ public class SearchController
 				}
 				else
 				{
-					values = aScoredSpecs.get(i).getDict();								
+					//comment to change possibly
+					List<TypedValue> tvs = aScoredSpecs.get(i).getDict();	
+					for(TypedValue tv :tvs)
+					{
+						values.add(tv.getString());
+					}					
 				}
 				f.setValue((ArrayList<String>)values);										
 			}
@@ -590,7 +595,7 @@ public class SearchController
 			f.setVisible(true);
 
 
-			TypedValue val = aScoredRatings.get(i).getAttributeMean();	
+			TypedValue val = aScoredRatings.get(i).getAttributeDefault();	
 
 			if( val !=null && val.isBoolean() )
 			{
@@ -615,7 +620,12 @@ public class SearchController
 				}
 				else
 				{
-					values = aScoredRatings.get(i).getDict();					
+					//comment to change possibly
+					List<TypedValue> tvs = aScoredSpecs.get(i).getDict();	
+					for(TypedValue tv :tvs)
+					{
+						values.add(tv.getString());
+					}					
 				}
 				f.setValue((ArrayList<String>)values);										
 			}
@@ -685,7 +695,7 @@ public class SearchController
 			if ( sa != null)
 			{
 				TypedValue av = new TypedValue(userFMSpec.getValues().get(i));				
-				sa.setAttributeMean(av);
+				sa.setAttributeDefault(av);
 				userScoredFeaturesSpecs.add(sa);				
 			}			
 
@@ -698,7 +708,7 @@ public class SearchController
 			if ( sa != null)
 			{
 				TypedValue av = new TypedValue(userFMRate.getValues().get(i));				
-				sa.setAttributeMean(av);
+				sa.setAttributeDefault(av);
 				userScoredFeaturesRates.add(sa);				
 
 			}
@@ -750,7 +760,7 @@ public class SearchController
 			ScoredAttribute temp = pFeatureList.get(i);
 			if(temp.getAttributeName().equals(pName))
 			{
-				LOG.debug("old mean value is " + pFeatureList.get(i).getAttributeMean());
+				LOG.debug("old mean value is " + pFeatureList.get(i).getAttributeDefault());
 				return temp;
 
 			}
