@@ -72,7 +72,7 @@ public class TestFiltering {
 		    	}
 		    }
 		    
-			List<ScoredProduct> prodSearch = aProductSearch.queryProductsReturnAll("Toaster", target.getId());
+			List<ScoredProduct> prodSearch = aProductSearch.returnProductsAlphabetically("Toaster", target.getId());
 			AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
 			List<ScoredAttribute> ratingList = ae.getScoredRatingList();
 			List<ScoredAttribute> specList = ae.getScoredSpecList();
@@ -92,7 +92,7 @@ public class TestFiltering {
 		    	}
 		    }
 		    
-			List<ScoredProduct> prodSearch = aProductSearch.queryProductsReturnAll("Digital SLR camera", target.getId());
+			List<ScoredProduct> prodSearch = aProductSearch.returnProductsAlphabetically("Digital SLR camera", target.getId());
 			AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
 			List<ScoredAttribute> ratingList = ae.getScoredRatingList();
 			List<ScoredAttribute> specList = ae.getScoredSpecList();
@@ -114,7 +114,7 @@ public class TestFiltering {
 		    }
 		}
 		    
-		List<ScoredProduct> prodSearch = aProductSearch.queryProductsReturnAll("Point & shoot digital camera", target.getId());
+		List<ScoredProduct> prodSearch = aProductSearch.returnProductsAlphabetically("Point & shoot digital camera", target.getId());
 		AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
 		List<ScoredAttribute> ratingList = ae.getScoredRatingList();
 		List<ScoredAttribute> specList = ae.getScoredSpecList();
@@ -141,7 +141,7 @@ public class TestFiltering {
 		    	}
 		    }
 		    
-			List<ScoredProduct> prodSearch = aProductSearch.queryProductsReturnAll("Convertible car seat", target.getId());
+			List<ScoredProduct> prodSearch = aProductSearch.returnProductsAlphabetically("Convertible car seat", target.getId());
 			AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
 			List<ScoredAttribute> ratingList = ae.getScoredRatingList();
 			List<ScoredAttribute> specList = ae.getScoredSpecList();
