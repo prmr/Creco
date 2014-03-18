@@ -17,7 +17,7 @@ package ca.mcgill.cs.creco.data;
 
 
 /**
- * Represents an immutable value object from which a type has been inferred.
+ * Represents an immutable value object from which a type and possibly a unit has been inferred.
  * The value is inferred to be of one of the following types is inferred:
  * <ul>
  * <li>NULL: The null type represents null objects.</li>
@@ -38,11 +38,18 @@ package ca.mcgill.cs.creco.data;
  */
 public class TypedValue 
 {
+	/**
+	 * Possible types of units for a value.
+	 */
+	public enum Unit 
+	{ IN, CM }
+	
 	private final Type aType;
 	
 	private boolean aBooleanValue;
 	private String aStringValue;
 	private double aNumericValue;
+	private Unit aUnit; // Null if no unit is detected.
 	
 	/**
 	 * The different types a typed value can take.
@@ -66,6 +73,7 @@ public class TypedValue
 	 */
 	public TypedValue(Object pValue)
 	{
+		// TODO Add parsing for ranges and units.
 		if(pValue == null)
 		{
 			aType = Type.NULL;
@@ -179,7 +187,16 @@ public class TypedValue
 	}
 	
 	/**
-	 * @return The numeric value after type inference.
+	 * @return True if and only if a unit type has been
+	 * associated with this value.
+	 */
+	public boolean hasUnit()
+	{
+		return aUnit != null;
+	}
+	
+	/**
+	 * @return The numeric value.
 	 */
 	public double getNumeric()
 	{
@@ -193,7 +210,7 @@ public class TypedValue
 		}
 	}
 	/**
-	 * @return The boolean value after type inference.
+	 * @return The boolean value.
 	 */
 	public boolean getBoolean()
 	{
@@ -206,8 +223,9 @@ public class TypedValue
 			throw new TypedValueException("Attempting to obtain a boolean value from a non-boolean type");
 		}
 	}
+	
 	/**
-	 * @return The nominal value after type inference.
+	 * @return The string value.
 	 */
 	public String getString()
 	{
@@ -218,6 +236,21 @@ public class TypedValue
 		else
 		{
 			throw new TypedValueException("Attempting to obtain a string value from a non-string type");
+		}
+	}
+	
+	/**
+	 * @return The unit associated with this value, if available.
+	 */
+	public Unit getUnit()
+	{
+		if( hasUnit() )
+		{
+			return aUnit;
+		}
+		else
+		{
+			throw new TypedValueException("Attempting to obtain a unit for a value without a unit: " + toString());
 		}
 	}
 	
@@ -233,32 +266,14 @@ public class TypedValue
 		
 		TypedValue value = (TypedValue) pObject;
 		return (value.aType == aType) && (value.aNumericValue == aNumericValue) && 
-			   (value.aBooleanValue == aBooleanValue) && (value.aStringValue == aStringValue);
+			   (value.aBooleanValue == aBooleanValue) && (value.aStringValue == aStringValue) && 
+			   (value.aUnit == aUnit);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		if( aType == Type.NULL && aType == Type.NA )
-		{
-			return aType.hashCode();
-		}
-		else if( aType == Type.BOOLEAN)
-		{
-			return new Boolean(getBoolean()).hashCode();
-		}
-		else if( aType == Type.NUMERIC)
-		{
-			return new Double(getNumeric()).hashCode();
-		}
-		else if( aType == Type.STRING)
-		{
-			return getString().hashCode();
-		}
-		else
-		{
-			return 0;
-		}
+		return toString().hashCode();
 	}
 	
 	/**
@@ -282,6 +297,10 @@ public class TypedValue
 		else if( aType == Type.STRING )
 		{
 			lReturn += ": " + aStringValue;
+		}
+		if( hasUnit() )
+		{
+			lReturn += " " + aUnit.toString();
 		}
 		return lReturn;
 	}
