@@ -13,6 +13,8 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
 
+mainClassName = "ca.mcgill.cs.creco.Application"
+
 jar {
     baseName = 'creco'
     version =  '0.1.0'

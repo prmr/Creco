@@ -147,6 +147,7 @@ public class AttributeExtractor
 	 */
 	public ArrayList<ScoredAttribute> getScoredAttributeList() 
 	{
+		sort();
 		return aScoredAttributeList;
 	}
 	
@@ -166,15 +167,15 @@ public class AttributeExtractor
 	}
 	public void sort()
 	{
-		if (aSortMethod == SORT_METHOD.ENTROPY)
-		{
-			Collections.sort(aScoredAttributeList, ScoredAttribute.SORT_BY_ENTROPY);
-		}
-		else if (aSortMethod == SORT_METHOD.SCORE)
-		{
-			Collections.sort(aScoredAttributeList, ScoredAttribute.SORT_BY_SCORE);
-		}
-		
+//		if (aSortMethod == SORT_METHOD.ENTROPY)
+//		{
+//			
+//		}
+//		else if (aSortMethod == SORT_METHOD.SCORE)
+//		{
+//			Collections.sort(aScoredAttributeList, ScoredAttribute.SORT_BY_SCORE);
+//		}
+		Collections.sort(aScoredAttributeList, ScoredAttribute.SORT_BY_ENTROPY);
 		
 	}
 
