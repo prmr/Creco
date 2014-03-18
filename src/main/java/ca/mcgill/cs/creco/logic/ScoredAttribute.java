@@ -217,11 +217,19 @@ public class ScoredAttribute
 			if(tv.isNumeric())
 			{
 				double prob = computeNormalProbability(tv, mean, variance);
-				entropy = entropy + prob * (Math.log(prob));
+				entropy = entropy - prob * (Math.log(prob));
 			}
 		}
 		aDefaultValue = new TypedValue(mean);
-		aEntropy = entropy;
+		if(!Double.isNaN(entropy))
+		{
+			aEntropy = entropy;
+		}
+		else
+		{
+			aEntropy = 0;
+		}
+		
 	}
 	
 	private void setStringStats(ArrayList<TypedValue> pValues)
@@ -258,11 +266,19 @@ public class ScoredAttribute
 				maxCount = stringCounts.get(key);
 			}
 			double probKey = stringCounts.get(key)/totalCount;
-			entropy = entropy + probKey * (Math.log(probKey));
+			entropy = entropy - probKey * (Math.log(probKey));
 		}
 		aStringValues = dictionary;
 		aDefaultValue = new TypedValue(mode);
-		aEntropy = entropy;
+		if(!Double.isNaN(entropy))
+		{
+			aEntropy = entropy;
+		}
+		else
+		{
+			aEntropy = 0;
+		}
+		
 	}
 	
 	private void setBooleanStats(ArrayList<TypedValue> pValues)
@@ -284,14 +300,22 @@ public class ScoredAttribute
 		boolean mode = false;
 		double probTrue= trueCount/totalCount;
 		double probFalse= 1- probTrue;
-		entropy = probTrue * (Math.log(probTrue)) + probFalse * (Math.log(probFalse));
+		entropy = -probTrue * (Math.log(probTrue)) - probFalse * (Math.log(probFalse));
 		if(trueCount >= totalCount/2)
 		{
 			mode = true;
 		}
 		
 		aDefaultValue = new TypedValue(mode);
-		aEntropy = entropy;
+		if(!Double.isNaN(entropy))
+		{
+			aEntropy = entropy;
+		}
+		else
+		{
+			aEntropy = 0;
+		}
+		
 	}
  
 	private double computeNormalProbability(TypedValue pValue, double pMean, double pVariance)
@@ -455,5 +479,23 @@ public class ScoredAttribute
 		return aEntropy;
 	}
 	
+	public boolean isBoolean()
+	{
+		return aDefaultValue.isBoolean();
+	}
+	public boolean isNumeric()
+	{
+		return aDefaultValue.isNumeric();
+	}
+	
+	public boolean isString()
+	{
+		return aDefaultValue.isString();
+	}
+	
+	public boolean isNA()
+	{
+		return aDefaultValue.isNA();
+	}
 	
 }
