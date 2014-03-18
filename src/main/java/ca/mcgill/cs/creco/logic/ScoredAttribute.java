@@ -133,13 +133,20 @@ public class ScoredAttribute
 		aAttributeID = pAttribute.getId();
 		aAttributeScore = 0.0;
 		aAttributeName = pAttribute.getName();
-		aAttributeDesc = pAttribute.getDescription();		
-		Category cat = aDataStore.getCategory(pCat.getId());
-		Collection<Product> products = cat.getProducts();
-		setStats(products);
+		aAttributeDesc = pAttribute.getDescription();
+		aEntropy = 0;
+		if(pCat != null)
+		{
+			Collection<Product> products = pCat.getProducts();
+			setStats(products);
+		}
+		else
+		{
+			aDefaultValue = new TypedValue();
+		}
+		
 
 	}
-		
 	private void setStats(Collection<Product> pProducts)
 	{
 		ArrayList<TypedValue> values = new ArrayList<TypedValue>();
@@ -152,8 +159,13 @@ public class ScoredAttribute
 			{
 				a = p.getRating(aAttributeID);
 			}
-			values.add(a.getTypedValue());
+			if( a != null)
+			{
+				values.add(a.getTypedValue());
+			}
+			
 		}
+		// goes only over the products that had a non null attribute value
 		Type attributeMainType = getMainType(values);
 		if(attributeMainType == Type.NUMERIC)
 		{

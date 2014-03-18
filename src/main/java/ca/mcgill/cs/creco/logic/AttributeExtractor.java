@@ -65,7 +65,10 @@ public class AttributeExtractor
 		aCategory = pCategory;
 		aSortMethod = SORT_METHOD.ENTROPY;
 		Collection<Product> products = pCategory.getProducts();
+		aScoredAttributeList = new ArrayList<ScoredAttribute>();
+		
 		HashMap<String,Attribute> attributes = new HashMap<String,Attribute>();
+		
 		for(Product p : products)
 		{
 			for(Attribute a : p.getRatings())
@@ -74,15 +77,13 @@ public class AttributeExtractor
 			}
 			for(Attribute a : p.getSpecs())
 			{
-				attributes.put(a.getId(),a);
+				attributes.put(a.getId(), a);
 			}
 		}
-		ArrayList<ScoredAttribute> scoredAttributeList = new ArrayList<ScoredAttribute>();
-		for(String a : attributes.keySet())
+		for(String key : attributes.keySet())
 		{
-			aScoredAttributeList.add(new ScoredAttribute(attributes.get(a),aCategory));
+			aScoredAttributeList.add(new ScoredAttribute(attributes.get(key), pCategory));
 		}
-		aScoredAttributeList = scoredAttributeList;
 		sort();
 		
 	}
