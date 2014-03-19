@@ -127,11 +127,11 @@ public class JsonLoadingService implements IDataLoadingService
 		
 		if(pProductStub.brand != null)
 		{
-			 lReturn = new Product(pProductStub.id, pProductStub.displayName, pProductStub.isTested, pProductStub.category.id, pProductStub.brand.displayName);
+			 lReturn = new Product(pProductStub.id, pProductStub.displayName, pProductStub.isTested, pProductStub.category.id, pProductStub.brand.displayName, pProductStub.modelOverviewPageUrl);
 		}
 		else
 		{
-			 lReturn = new Product(pProductStub.id, pProductStub.displayName, pProductStub.isTested, pProductStub.category.id, null);
+			 lReturn = new Product(pProductStub.id, pProductStub.displayName, pProductStub.isTested, pProductStub.category.id, null, pProductStub.modelOverviewPageUrl);
 		}
 		
 		if(pProductStub.specs != null)

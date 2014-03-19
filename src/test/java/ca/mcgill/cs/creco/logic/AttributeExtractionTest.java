@@ -83,7 +83,7 @@ public class AttributeExtractionTest
 		ArrayList<Product> pal = new  ArrayList<Product>();
 		for(int i = 0; i < 10; i++)
 		{
-			Product p = new Product(i+"",i+"", true, "thing","ImaginaryProducts");
+			Product p = new Product(i+"",i+"", true, "thing","ImaginaryProducts", "www.example.com");
 			p.addSpec(new Attribute("test", i+ "", i+ "", i));
 			pal.add(p);
 			
@@ -99,7 +99,7 @@ public class AttributeExtractionTest
 		ArrayList<Product> pal = new  ArrayList<Product>();
 		for(int i = 0; i < 10; i++)
 		{
-			Product p = new Product(i+"",i+"", true, "thing","ImaginaryProducts");
+			Product p = new Product(i+"",i+"", true, "thing","ImaginaryProducts", "www.example.com");
 			if(i < 7)
 			{
 				p.addSpec(new Attribute("test", i+ "", i+ "", "mode"));
@@ -124,7 +124,7 @@ public class AttributeExtractionTest
 		ArrayList<Product> pal = new  ArrayList<Product>();
 		for(int i = 0; i < 10; i++)
 		{
-			Product p = new Product(i+"",i+"", true, "thing","ImaginaryProducts");
+			Product p = new Product(i+"",i+"", true, "thing","ImaginaryProducts", "www.example.com");
 			if(i < 7)
 			{
 				p.addSpec(new Attribute("test", i+ "", i+ "", true));
@@ -146,7 +146,7 @@ public class AttributeExtractionTest
 		ArrayList<Product> pal = new  ArrayList<Product>();
 		for(int i = 0; i < 10; i++)
 		{
-			Product p = new Product(i+"",i+"", true, "thing","ImaginaryProducts");
+			Product p = new Product(i+"",i+"", true, "thing","ImaginaryProducts", "www.example.com");
 			if(i < 3)
 			{
 				p.addSpec(new Attribute("test", i+ "", i+ "", true));
@@ -176,7 +176,7 @@ public class AttributeExtractionTest
 		ArrayList<ScoredProduct> spal = new  ArrayList<ScoredProduct>();
 		for(int i = 0; i < 10; i++)
 		{
-			Product p = new Product(i+"",i+"", true, "thing","ImaginaryProducts");
+			Product p = new Product(i+"",i+"", true, "thing","ImaginaryProducts", "www.example.com");
 			if(i < 7)
 			{
 				p.addSpec(new Attribute("test", i+ "", i+ "", 1));

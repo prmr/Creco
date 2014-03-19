@@ -28,6 +28,7 @@ public class Product
 	private String aDisplayName;
 	private Boolean aIsTested;
 	private String aBrandName;
+	private String aModelOverviewPageUrl;
 	
 		
 	// Derived fields
@@ -45,14 +46,14 @@ public class Product
 	 * @param pCategoryId The ID of the category for this product.
 	 * @param pBrandName The brand name
 	 */
-	public Product(String pId, String pDisplayName, Boolean pIsTested, String pCategoryId, String pBrandName)
+	public Product(String pId, String pDisplayName, Boolean pIsTested, String pCategoryId, String pBrandName, String pModelOverviewPageUrl)
 	{
 		aId = pId;
 		aDisplayName = pDisplayName;
 		aIsTested = pIsTested;
 		aCategoryId = pCategoryId;
 		aBrandName = pBrandName;
-		
+		aModelOverviewPageUrl = pModelOverviewPageUrl;
 	}
 	
 	
@@ -162,5 +163,13 @@ public class Product
 	public Attribute getSpec(String pId)
 	{
 		return this.aSpecs.get(pId);
+	}
+	
+	/**
+	 * Return a url to the CR website page for the product
+	 * @return The url for the product overview page
+	 */
+	public String getUrl() {
+		return aModelOverviewPageUrl;
 	}
 }
