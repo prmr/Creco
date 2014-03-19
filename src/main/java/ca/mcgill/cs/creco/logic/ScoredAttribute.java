@@ -172,20 +172,22 @@ public class ScoredAttribute
 		aAttributeDesc = pAttribute.getDescription();
 		aEntropy = 0;
 		aCorrelation = 0;
+		aDirection = Direction.MORE_IS_BETTER;
 		if(pCat != null)
 		{
 			Collection<Product> products = pCat.getProducts();
 			setStats(products);
 			AttributeCorrelator ac = new AttributeCorrelator(pCat);
-			aCorrelation = ac.computeCorrelation(aAttributeID);
-			aDirection = ac.computeAttributeDirection(aAttributeID);
+			if(pAttribute.getTypedValue().isNumeric())
+			{
+				aCorrelation = ac.computeCorrelation(aAttributeID);
+				aCorrelation = ac.computeCorrelation(aAttributeID);
+			}
 			
 		}
 		else
 		{
 			aDefaultValue = new TypedValue();
-			aCorrelation = 0;
-			aDirection = Direction.MORE_IS_BETTER;
 		}
 		
 
