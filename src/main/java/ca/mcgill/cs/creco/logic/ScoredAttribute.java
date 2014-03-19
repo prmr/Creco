@@ -39,12 +39,43 @@ import com.google.common.collect.Lists;
  */
 public class ScoredAttribute
 {
-	public static enum Direction {MORE_IS_BETTER, LESS_IS_BETTER};
+	
 	
 	private static final double CONSIDERATION_THRESHOLD = 0.8;
 	private static final double DEFAULT_MIN = 10000000;
 	private static final double DEFAULT_MAX = -10000000;
+	public static enum Direction {MORE_IS_BETTER, LESS_IS_BETTER};
 	private final Logger logger = LoggerFactory.getLogger(ScoredAttribute.class);
+
+	
+	public static final Comparator<ScoredAttribute> SORT_BY_CORRELATION = 
+			new Comparator<ScoredAttribute>() 
+		    {
+				
+				/**
+				 * Compare a scoredAttribute placing the highest absolute correlation first.
+				 * @param pA scoredAttribute A
+				 * @param pB scoredAttribute B
+				 * @return -1 for A > B, 1 for B > A, 0 if A==B
+				 */
+				@Override
+		        public int compare(ScoredAttribute pA, ScoredAttribute pB) 
+		        {
+		        	if(Math.abs(pA.getCorrelation()) >  Math.abs(pB.getCorrelation()))
+		        	{
+		        		return -1;
+		        	}
+		        	else if(Math.abs(pA.getCorrelation()) <  Math.abs(pB.getCorrelation()))
+		        	{
+		        		return 1;
+		        	}
+		        	else
+		        	{
+		        		return 0;
+		        	}
+		        }
+
+		     };
 	public static final Comparator<ScoredAttribute> SORT_BY_SCORE = 
 	new Comparator<ScoredAttribute>() 
     {
@@ -117,6 +148,8 @@ public class ScoredAttribute
  	private String aCategoryID;
  	private String aAttributeDesc;
  	private double aEntropy;
+ 	private double aCorrelation;
+ 	private Direction aDirection;
  	
  	private TypedValue aMin;
  	private TypedValue aMax;
@@ -138,14 +171,21 @@ public class ScoredAttribute
 		aAttributeName = pAttribute.getName();
 		aAttributeDesc = pAttribute.getDescription();
 		aEntropy = 0;
+		aCorrelation = 0;
 		if(pCat != null)
 		{
 			Collection<Product> products = pCat.getProducts();
 			setStats(products);
+			AttributeCorrelator ac = new AttributeCorrelator(pCat);
+			aCorrelation = ac.computeCorrelation(aAttributeID);
+			aDirection = ac.computeAttributeDirection(aAttributeID);
+			
 		}
 		else
 		{
 			aDefaultValue = new TypedValue();
+			aCorrelation = 0;
+			aDirection = Direction.MORE_IS_BETTER;
 		}
 		
 
@@ -510,5 +550,26 @@ public class ScoredAttribute
 	{
 		return aDefaultValue.isNA();
 	}
+	public double getCorrelation() {
+		return aCorrelation;
+	}
+	public boolean moreIsBetter() {
+		if(aDirection == Direction.MORE_IS_BETTER)
+		{
+			return true;
+		}
+		return false;
+		
+	}
+	public boolean lessIsBetter() {
+		if(aDirection == Direction.LESS_IS_BETTER)
+		{
+			return true;
+		}
+		return false;
+		
+	}
+	
+	
 	
 }
