@@ -39,6 +39,7 @@ import com.google.common.collect.Lists;
  */
 public class ScoredAttribute
 {
+	public static enum Direction {MORE_IS_BETTER, LESS_IS_BETTER};
 	
 	private static final double CONSIDERATION_THRESHOLD = 0.8;
 	private static final double DEFAULT_MIN = 10000000;
