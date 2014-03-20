@@ -43,46 +43,6 @@ public class TestProductSearch {
 	private static String SMARTPHONE_CATEGORY_ID = "28726";
 	private static String IPHONE_5S_16GB_VERIZON_ID = "231983";
 	
-	@Test
-	public void testExactStringMatch() throws IOException
-	{
-		List<ScoredProduct> scoredProducts = aProductSearch.returnProductsAlphabetically("iPhone 5s (16GB) (Verizon)", SMARTPHONE_CATEGORY_ID);
-		
-		
-		assertEquals(IPHONE_5S_16GB_VERIZON_ID, scoredProducts.get(0).getProduct().getId());
-	}
-	
-	@Test
-	public void testTypoStringMatch() throws IOException
-	{
-		List<ScoredProduct> scoredProducts = aProductSearch.returnProductsAlphabetically("iPhone 5s (16GB) (Veribon)", SMARTPHONE_CATEGORY_ID);
-		
-		assertEquals(IPHONE_5S_16GB_VERIZON_ID, scoredProducts.get(0).getProduct().getId());
-	}
-	
-	@Test
-	public void testFuzzyMatch() throws IOException
-	{
-		List<ScoredProduct> scoredProducts = aProductSearch.returnProductsAlphabetically("verizon iphone 5s 16gb", SMARTPHONE_CATEGORY_ID);
-		
-		assertEquals(IPHONE_5S_16GB_VERIZON_ID, scoredProducts.get(0).getProduct().getId());
-	}
-	
-	@Test
-	public void testReturnAllProducts() throws IOException
-	{
-		List<ScoredProduct> scoredProducts = aProductSearch.returnProductsAlphabetically("query_matches_nothing", SMARTPHONE_CATEGORY_ID);
-		
-		assertEquals(133, scoredProducts.size());
-	}
-	
-	@Test
-	public void testNoDuplicateProducts() throws IOException
-	{
-		List<ScoredProduct> scoredProducts = aProductSearch.returnProductsAlphabetically("iphone", SMARTPHONE_CATEGORY_ID);
-		Set<ScoredProduct> scoredProductsNoDuplicates = new HashSet<ScoredProduct>(scoredProducts);
-		assertEquals(scoredProductsNoDuplicates.size(), scoredProducts.size());
-	}
 	
 	@Test
 	public void testInvalidCategory() throws IOException
