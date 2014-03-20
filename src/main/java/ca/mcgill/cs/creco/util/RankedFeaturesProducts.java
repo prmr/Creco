@@ -5,7 +5,9 @@ import java.util.Collection;
 import java.util.List;
 
 import ca.mcgill.cs.creco.data.*;
+import ca.mcgill.cs.creco.logic.AttributeCorrelator;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
+import ca.mcgill.cs.creco.logic.ScoredAttribute.Direction;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
 
 
@@ -17,11 +19,13 @@ public class RankedFeaturesProducts {
 	private static List<ScoredAttribute> aSpecList;
 
 	private static List<ScoredProduct> aProductSearchResult;
+	private static List<ScoredAttribute> aAttrList;
 
-public RankedFeaturesProducts()
-{
 
-}
+	public RankedFeaturesProducts()
+	{
+	
+	}
 
 	public RankedFeaturesProducts(List<ScoredAttribute> pRatingList, List<ScoredAttribute> pSpecList, List<ScoredProduct> pProductSearchResult)
 	{
@@ -30,15 +34,22 @@ public RankedFeaturesProducts()
 		RankedFeaturesProducts.aSpecList = pSpecList;
 		RankedFeaturesProducts.aRatingList = pRatingList;	
 	}
+	
+	public RankedFeaturesProducts(List<ScoredAttribute> pAttrList, List<ScoredProduct> pProductSearchResult)
+	{
+		RankedFeaturesProducts.main_aProductSearchResult=pProductSearchResult;
+		RankedFeaturesProducts.aProductSearchResult=pProductSearchResult;
+		RankedFeaturesProducts.aAttrList = pAttrList;		
+	}
 
 	/**
 	 * @author MariamN
 	 * Feature Sensitive Ranking Algorithm.
 	 * @param pFeatureList list of user selected features
-	 * @param pCatId category id
+	 * @param pCat category
 	 * @return ranked list of products
 	 */
-	public List<ScoredProduct> FeatureSensitiveRanking(List <ScoredAttribute> pFeatureList, String pCatId)
+	public List<ScoredProduct> FeatureSensitiveRanking(List <ScoredAttribute> pFeatureList, Category pCat)
 	{
 		int prodSize = main_aProductSearchResult.size();
 		int featSize = pFeatureList.size();
@@ -46,16 +57,19 @@ public RankedFeaturesProducts()
 		double[] weight = new double [featSize];			
 		double[] prodScore = new double [prodSize];
 		ScoredProduct [] prodSet = new ScoredProduct [prodSize];
-		
 		List<ScoredProduct> rankedSet = new ArrayList<ScoredProduct>();
+		AttributeCorrelator aCorrelator = null;
+	
+		aCorrelator = new AttributeCorrelator(pCat);
+		
 		
 		//row is feature, column is a product, 1 if the product contains the feature and 0 otherwise.
 		int [][] matrix = new int[featSize][prodSize]; 
 		
-		//initialize the weights with 0.33
-		for(int i=0; i < weight.length;i++)
+		//initialize the weights with the corresponding feature correlation score
+		for(int i = 0; i < weight.length; i++)
 		{
-			weight[i]= 0.33;
+			weight[i] = aCorrelator.computeCorrelation(pFeatureList.get(i).getAttributeID());//0.33;
 		}
 
 		if (pFeatureList.isEmpty())
@@ -66,61 +80,128 @@ public RankedFeaturesProducts()
 			for(int i = 0 ; i < featSize ; i++) //for each feature
 			{
 				String fID = pFeatureList.get(i).getAttributeID();
-				TypedValue val = pFeatureList.get(i).getAttributeDefault();
-				
 				for(int j = 0 ; j < prodSize ; j++) // for each product in the category
 				{
-					if(!main_aProductSearchResult.get(j).getEqClassId().equals(pCatId))
+					Product prod = main_aProductSearchResult.get(j).getProduct();
+					
+					if(prod.getSpec(fID) != null)
 					{
-//						System.out.println("id "+ main_aProductSearchResult.get(j).getEqClassId());
-						continue;
+						matrix[i][j] = 1;
 					}
-
-					if(main_aProductSearchResult.get(j).getProduct().getSpec(fID) != null || main_aProductSearchResult.get(j).getProduct().getRating(fID) != null) //Check if feature exist in the product specs/rates
+					else
 					{
-						if(main_aProductSearchResult.get(j).getProduct().getSpec(fID).getTypedValue().equals(val)) //check if the values are equal
+						if(prod.getRating(fID) != null)
 						{
-							matrix[i][j] = 1;
+							matrix[i][j] = 1;	
 						}
 						else
 						{
 							matrix[i][j] = 0;
 						}
-					}
-				}				
+					}						
+				}
 			}
 			
 			if(matrix.length > 0)
 			{
 				for(int i = 0 ; i < prodSize; i++)
 				{
-//					System.out.println("*********** product : " + i +" ********");
-					for(int j=0 ; j < featSize;j++)
+					for(int j = 0; j < featSize; j++)
 					{
 						double temp = matrix[j][i]*weight[j];
 						score = score + temp;
-//						System.out.println("feature " + j+" : "+ matrix[j][i]);//.getProduct().getId());								
 					}
-//					System.out.println("Score for Product "+ i+" "+main_aProductSearchResult.get(i).getProduct().getName()+" is "+score);
 					prodScore[i] = score;
 					prodSet[i] = main_aProductSearchResult.get(i);
 					score = 0;
 				}
-				
-				prodSet = sortProducts(prodScore,prodSet);
-				
+				prodSet = sortProducts(prodScore, prodSet);
 				for (int i = 0; i<prodScore.length; i++)
 				{
 					if(prodScore[i] > 0.0)
 					{
-						//rankedSet.add(main_aProductSearchResult.get(i));
 						rankedSet.add(prodSet[i]);
 					}
 					
 				}
+
+				for(int j = 0; j < featSize; j++)
+				{
+						Direction direction = aCorrelator.computeAttributeDirection(pFeatureList.get(j).getAttributeID());
+						rankedSet = directionSensitiveProductSort(pFeatureList.get(j).getAttributeID(),rankedSet,direction);					
+				}							
 				return rankedSet;
 			}
-		return null;		
+		return main_aProductSearchResult;		
+	}
+	
+	/**
+	 * 
+	 * @param pAttrId Id of the attribute to calculate it's directions
+	 * @param pProductList list of weighted ranked products
+	 * @param pDirection direction of the attribute
+	 * @return list of ranked products based on attribute direction.
+	 */
+	public List<ScoredProduct> directionSensitiveProductSort(String pAttrId, List<ScoredProduct> pProductList, Direction pDirection)
+	{
+		ScoredProduct tmpProd = null;
+		for(int i = 0 ; i< pProductList.size() ; i++)
+		{
+			for(int j = (pProductList.size()-1); j >= (i+1); j--)
+			{
+				if(pDirection.equals(Direction.MORE_IS_BETTER))
+				{
+					if(pProductList.get(j).getProduct().getRating(pAttrId) != null)
+					{
+						if(pProductList.get(j).getProduct().getRating(pAttrId).getTypedValue().getNumeric() < pProductList.get(j-1).getProduct().getRating(pAttrId).getTypedValue().getNumeric())
+						{
+							tmpProd = pProductList.get(j);
+							pProductList.set(j,pProductList.get(j-1));						
+						}						
+					}
+					else{
+						if(pProductList.get(j).getProduct().getSpec(pAttrId) != null)
+						{
+							if(pProductList.get(j).getProduct().getSpec(pAttrId).getTypedValue().getNumeric() < pProductList.get(j-1).getProduct().getSpec(pAttrId).getTypedValue().getNumeric())
+							{
+								tmpProd = pProductList.get(j);
+								pProductList.set(j,pProductList.get(j-1));						
+							}						
+						}
+						
+					}
+				}
+				else
+				{
+					if(pDirection.equals(Direction.LESS_IS_BETTER))
+					{
+						if(pProductList.get(j).getProduct().getRating(pAttrId) != null)
+						{
+							
+							if(pProductList.get(j).getProduct().getRating(pAttrId).getTypedValue().getNumeric() > pProductList.get(j-1).getProduct().getRating(pAttrId).getTypedValue().getNumeric())
+							{
+								tmpProd = pProductList.get(j);
+								pProductList.set(j,pProductList.get(j-1));							
+							}
+						}
+						else{
+							if(pProductList.get(j).getProduct().getSpec(pAttrId) != null)
+							{
+								if(pProductList.get(j).getProduct().getSpec(pAttrId).getTypedValue().getNumeric() > pProductList.get(j-1).getProduct().getSpec(pAttrId).getTypedValue().getNumeric())
+								{
+									tmpProd = pProductList.get(j);
+									pProductList.set(j,pProductList.get(j-1));						
+								}						
+							}
+							
+						}
+					}
+					
+				}
+			}
+		}
+		
+		return pProductList;	
 	}
 	
 	public ScoredProduct[]  sortProducts(double[] pWeights, ScoredProduct[] pProducts)
@@ -200,6 +281,14 @@ public RankedFeaturesProducts()
 	public List<ScoredAttribute> getaSpecList()
 	{
 		return aSpecList;
+	}
+
+	public  List<ScoredAttribute> getaAttrList() {
+		return aAttrList;
+	}
+
+	public  void setaAttrList(List<ScoredAttribute> aAttrList) {
+		RankedFeaturesProducts.aAttrList = aAttrList;
 	}
 
 }

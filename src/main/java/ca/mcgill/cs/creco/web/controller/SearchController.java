@@ -67,7 +67,7 @@ public class SearchController
 	private List<ScoredAttribute> aScoredRatings; 
 	private List<ScoredAttribute> aScoredSpecs; 
 	private List<ScoredProduct> aScoredProducts;
-	private String aCategoryID;
+	private Category aCategory;
 	@Autowired
 	private ProductListVO aProductList;
 	
@@ -470,20 +470,19 @@ public class SearchController
 	    	if (cat.getId().equals(eqc.getId()))
 	    	{
 	    		target = cat;
-	    		aCategoryID = eqc.getId();
 	    	}
 	    }
 	    
 		List<ScoredProduct> prodSearch = aProductSearch.returnProductsAlphabetically(aMainQuery.getQuery(), target.getId());
-		AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
+		AttributeExtractor ae = new AttributeExtractor(target);
 		List<ScoredAttribute> ratingList = ae.getScoredRatingList();
-		List<ScoredAttribute> specList = ae.getScoredSpecList();
-		
-	    RankedFeaturesProducts rankedProducts = new RankedFeaturesProducts(ratingList, specList, prodSearch);
+		List<ScoredAttribute> specList = ae.getScoredAttributeList();
+		aCategory = ae.getCategory();
+		RankedFeaturesProducts rankedProducts = new RankedFeaturesProducts(specList, prodSearch);
 	    aScoredProducts = rankedProducts.getaProductSearchResult();
 	    
 	    aScoredRatings = rankedProducts.getaRatingList();
-	    aScoredSpecs = rankedProducts.getaSpecList();
+	    aScoredSpecs = rankedProducts.getaAttrList();
 	    	   
 	    // Converting
 		ArrayList<ProductVO> products = new ArrayList<ProductVO>();		
@@ -567,7 +566,7 @@ public class SearchController
 			specFeatures.add(f);	
 		}		
 
-		for (int i = 0; i < aScoredRatings.size() ; i++)
+/*		for (int i = 0; i < aScoredRatings.size() ; i++)
 		{
 			if(i > featureNumToDisplay)
 			{
@@ -622,7 +621,7 @@ public class SearchController
 			rateFeatures.add(f);								
 		}
 		aRateFeatureList.setFeatures(rateFeatures);
-	
+*/	
 		aSpecFeatureList.setFeatures(specFeatures);	
 
 		return "/rankedproducts";
@@ -717,7 +716,7 @@ public class SearchController
 		RankedFeaturesProducts tempProducts = new RankedFeaturesProducts();
 		//List<ScoredProduct> productsToDisplay = tempProducts.FilterandReturn(userScoredFeaturesSpecs);
 		
-		List<ScoredProduct> productsToDisplay  = tempProducts.FeatureSensitiveRanking(userScoredFeaturesSpecs, aCategoryID);
+		List<ScoredProduct> productsToDisplay  = tempProducts.FeatureSensitiveRanking(userScoredFeaturesSpecs, aCategory);
 
 			// Converting
 			ArrayList<ProductVO> products = new ArrayList<ProductVO>();		
