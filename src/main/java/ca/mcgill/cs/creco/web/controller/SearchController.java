@@ -15,7 +15,6 @@
  */
 package ca.mcgill.cs.creco.web.controller;
 
-//import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +55,6 @@ import ca.mcgill.cs.creco.web.model.ProductVO;
 import ca.mcgill.cs.creco.web.model.UserFeatureModel;
 
 import com.google.gson.Gson;
-//import ca.mcgill.cs.creco.data.Attribute;
 
 @Controller
 public class SearchController
@@ -64,10 +62,11 @@ public class SearchController
 	private static final Logger LOG = LoggerFactory.getLogger(SearchController.class);
 	
 	
-	private List<ScoredAttribute> aScoredRatings; 
-	private List<ScoredAttribute> aScoredSpecs; 
+	private List<ScoredAttribute> aScoredAttr; 
+	
 	private List<ScoredProduct> aScoredProducts;
 	private Category aCategory;
+	
 	@Autowired
 	private ProductListVO aProductList;
 	
@@ -79,6 +78,7 @@ public class SearchController
 
 	@Autowired
 	private FeatureListVO aUserList;
+
 	@Autowired
 	private FeatureListVO aSpecFeatureList;
 
@@ -149,18 +149,6 @@ public class SearchController
 	
 	/**
 	 * 
-	 * @param pScoredRatings list of scored rating Attributes
-	 */
-	public void setScoredRatings(List<ScoredAttribute> pScoredRatings)
-	{
-
-		LOG.debug("in setscoredRatings " + pScoredRatings.toString());
-		this.aScoredRatings = pScoredRatings;	
-
-		
-	}
-	/**
-	 * 
 	 * @param pScoredSpecs list of scored spec Attributes
 	 */
 	public void setScoredSpecs(List<ScoredAttribute> pScoredSpecs)
@@ -168,7 +156,7 @@ public class SearchController
 
 		LOG.debug("in setscoredSpecs"+ pScoredSpecs.toString());
 		
-		this.aScoredSpecs = pScoredSpecs;	
+		this.aScoredAttr = pScoredSpecs;	
 		
 	}
 
@@ -178,19 +166,11 @@ public class SearchController
 	 */
 	public List<ScoredAttribute> getScoredSpecs()
 	{
-		return this.aScoredSpecs;
+		return this.aScoredAttr;
 		
 	}	
 	
-	/**
-	 * 
-	 * @return list of scored rating Attributes
-	 */
-	public List<ScoredAttribute> getScoredRatings()
-	{
-		return this.aScoredRatings;
-		
-	}	
+
 	
 	/**
 	 * 
@@ -353,12 +333,14 @@ public class SearchController
 	 * @return 
 	 */
 	   @RequestMapping(value = "/ajax", method = RequestMethod.POST )  
- @ResponseBody  
- public String createSmartphone(@RequestBody String typedString)
+	   @ResponseBody  
+	   public String createSmartphone(@RequestBody String typedString)
 	   {  
 		
 		   if(typedString.length()<3)
+		   {
 			   return "";
+		   }
 		   String return_this = new String("");
 
 		   for (Category category123 : aDataStore.getCategories()) 
@@ -377,7 +359,7 @@ public class SearchController
 			}
 
 		   return return_this;
- }  
+	   }  
 	   /**
 	    * 
 	    * @param model
@@ -407,6 +389,7 @@ public class SearchController
 
 		return "/experiment";
 	}
+	
 	/**
 	 * 
 	 * @param pMainQuery
@@ -418,8 +401,7 @@ public class SearchController
 	public String searchEqClass(@ModelAttribute("mainQuery") MainQueryVO pMainQuery, BindingResult result, RedirectAttributes redirectAttrs) {
 		aMainQuery = pMainQuery;
 		List<Category> categoryList = aCategorySearch.queryCategories(aMainQuery.getQuery());	
-		
-		
+				
 		//Nishanth code 
 		String mainString = "";
 		for (Category category123 : aDataStore.getCategories()) 
@@ -475,15 +457,13 @@ public class SearchController
 	    
 		List<ScoredProduct> prodSearch = aProductSearch.returnProductsAlphabetically(aMainQuery.getQuery(), target.getId());
 		AttributeExtractor ae = new AttributeExtractor(target);
-		List<ScoredAttribute> ratingList = ae.getScoredRatingList();
 		
 		List<ScoredAttribute> specList = ae.getScoredAttributeList();
 		aCategory = ae.getCategory();
 		RankedFeaturesProducts rankedProducts = new RankedFeaturesProducts(specList, prodSearch);
 	    aScoredProducts = rankedProducts.getaProductSearchResult();
 	    
-	    aScoredRatings = rankedProducts.getaRatingList();
-	    aScoredSpecs = rankedProducts.getaAttrList();
+	    aScoredAttr = rankedProducts.getaAttrList();
 	    	   
 	    // Converting
 		ArrayList<ProductVO> products = new ArrayList<ProductVO>();		
@@ -506,12 +486,11 @@ public class SearchController
 		LOG.debug("Get Current Features");
 
 		ArrayList<FeatureVO> specFeatures = new ArrayList<FeatureVO>();	
-		ArrayList<FeatureVO> rateFeatures = new ArrayList<FeatureVO>();
 		List<String> values;
 
-		//For now will get top 10 scores
+		//Display top 10 scored attributes
 		int featureNumToDisplay = 10;
-		for (int i = 0 ; i < aScoredSpecs.size() ; i++)
+		for (int i = 0 ; i < aScoredAttr.size() ; i++)
 		{
 
 			if(i>featureNumToDisplay)
@@ -521,15 +500,15 @@ public class SearchController
 
 			values = new ArrayList<String>();
 			FeatureVO f = new FeatureVO();
-			f.setId(aScoredSpecs.get(i).getAttributeID());
-			f.setName(aScoredSpecs.get(i).getAttributeName());
+			f.setId(aScoredAttr.get(i).getAttributeID());
+			f.setName(aScoredAttr.get(i).getAttributeName());
 			f.setSpec(true);
 			f.setRate(false);			
 			f.setVisible(true);
 
 
-			f.setDesc(aScoredSpecs.get(i).getAttributeDesc());
-			TypedValue val = aScoredSpecs.get(i).getAttributeDefault();		
+			f.setDesc(aScoredAttr.get(i).getAttributeDesc());
+			TypedValue val = aScoredAttr.get(i).getAttributeDefault();		
 
 
 			if( val.isBoolean() )
@@ -541,8 +520,8 @@ public class SearchController
 			else if( val.isNumeric() )
 			{				
 				f.setType("Numeric");
-				f.setMinValue(aScoredSpecs.get(i).getMin().getNumeric());
-				f.setMaxValue(aScoredSpecs.get(i).getMax().getNumeric());										
+				f.setMinValue(aScoredAttr.get(i).getMin().getNumeric());
+				f.setMaxValue(aScoredAttr.get(i).getMax().getNumeric());										
 				values.add(val.getNumeric()+"");
 				f.setValue((ArrayList<String>)values);	
 			}
@@ -556,7 +535,7 @@ public class SearchController
 				else
 				{
 					//comment to change possibly
-					List<TypedValue> tvs = aScoredSpecs.get(i).getDict();	
+					List<TypedValue> tvs = aScoredAttr.get(i).getDict();	
 					for(TypedValue tv :tvs)
 					{
 						values.add(tv.getString());
@@ -566,63 +545,6 @@ public class SearchController
 			}
 			specFeatures.add(f);	
 		}		
-
-/*		for (int i = 0; i < aScoredRatings.size() ; i++)
-		{
-			if(i > featureNumToDisplay)
-			{
-				break;
-			}
-			values = new ArrayList <String>() ;
-			FeatureVO f = new FeatureVO();
-
-			f.setId(aScoredRatings.get(i).getAttributeID());
-			f.setName(aScoredRatings.get(i).getAttributeName());
-
-			f.setDesc(aScoredRatings.get(i).getAttributeDesc());
-			f.setRate(true);
-			f.setSpec(false);			
-			f.setVisible(true);
-
-
-			TypedValue val = aScoredRatings.get(i).getAttributeDefault();	
-
-			if( val !=null && val.isBoolean() )
-			{
-				f.setType("Bool");								
-				values.add(val.getBoolean()+"");
-				f.setValue((ArrayList<String>)values);
-			}
-			else if( val.isNumeric() )
-			{
-				f.setType("Numeric");
-				f.setMinValue(aScoredRatings.get(i).getMin().getNumeric());
-				f.setMaxValue(aScoredRatings.get(i).getMax().getNumeric());					
-				values.add(val.getNumeric()+"");
-				f.setValue((ArrayList<String>)values);										
-			}
-			else if( val.isString() || val.isNA())
-			{
-				f.setType("Nominal");
-				if(val.isNA())
-				{
-					values.add("N/A");
-				}
-				else
-				{
-					//comment to change possibly
-					List<TypedValue> tvs = aScoredSpecs.get(i).getDict();	
-					for(TypedValue tv :tvs)
-					{
-						values.add(tv.getString());
-					}					
-				}
-				f.setValue((ArrayList<String>)values);										
-			}
-			rateFeatures.add(f);								
-		}
-		aRateFeatureList.setFeatures(rateFeatures);
-*/	
 		aSpecFeatureList.setFeatures(specFeatures);	
 
 		return "/rankedproducts";
@@ -668,20 +590,18 @@ public class SearchController
 	public String sendCurrentFeatureList(@RequestParam String dataSpec, @RequestParam String dataRate)
 	{
 
-		LOG.debug(" data is  " + dataSpec);
-		LOG.debug(" data is  " + dataRate);
+		LOG.debug(" spec data is  " + dataSpec);
+		LOG.debug(" rate data is  " + dataRate);
 
 		Gson gson = new Gson();
 		UserFeatureModel userFMSpec = gson.fromJson(dataSpec, UserFeatureModel.class);
-		UserFeatureModel userFMRate = gson.fromJson(dataRate, UserFeatureModel.class);
 
 		List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
-		List<ScoredAttribute> userScoredFeaturesRates = new ArrayList<ScoredAttribute>();
 			
 		for(int i = 0 ; i < userFMSpec.getNames().size() ; i++)
 		{
 			String tempName = userFMSpec.getNames().get(i);
-			ScoredAttribute sa = locateFeatureScoredAttribute(aScoredSpecs, tempName);
+			ScoredAttribute sa = locateFeatureScoredAttribute(aScoredAttr, tempName);
 			if ( sa != null)
 			{
 				TypedValue av = new TypedValue(userFMSpec.getValues().get(i));				
@@ -691,52 +611,25 @@ public class SearchController
 
 		}
 		
-		for(int i = 0 ; i < userFMRate.getNames().size() ; i++)
-		{
-			String tempName = userFMRate.getNames().get(i);
-			ScoredAttribute sa = locateFeatureScoredAttribute(aScoredSpecs, tempName);			
-			if ( sa != null)
-			{
-				TypedValue av = new TypedValue(userFMRate.getValues().get(i));				
-				sa.setAttributeDefault(av);
-				userScoredFeaturesRates.add(sa);				
-
-			}
-		}
-
-		LOG.debug(" Done ");
-
-		LOG.debug(" specs " + aScoredSpecs.toString());
-		LOG.debug(" old products "+ aScoredProducts.toString());
-		
 		for(ScoredProduct sa : aScoredProducts)
 		{
 			LOG.debug(sa.toString());					
 		}
 	
-		RankedFeaturesProducts tempProducts = new RankedFeaturesProducts();
-		//List<ScoredProduct> productsToDisplay = tempProducts.FilterandReturn(userScoredFeaturesSpecs);
-		
+		RankedFeaturesProducts tempProducts = new RankedFeaturesProducts();		
 		List<ScoredProduct> productsToDisplay  = tempProducts.FeatureSensitiveRanking(userScoredFeaturesSpecs, aCategory);
 
-			// Converting
-			ArrayList<ProductVO> products = new ArrayList<ProductVO>();		
-		    for (ScoredProduct sp: productsToDisplay)
-		    {
-				ProductVO p = new ProductVO();
-				p.setName(sp.getProduct().getName());
-				p.setId(sp.getProduct().getId());
-				products.add(p);
-			 }
-			aProductList.setProducts(products);	
-			LOG.debug(" new products "+ products.toString());
-			for(ProductVO sa : products)
-			{
-				LOG.debug("new "+ sa.getName());			
-			}
-
-			return "/rankedproducts";	
-		
+		// Converting to View Object
+		ArrayList<ProductVO> products = new ArrayList<ProductVO>();		
+	    for (ScoredProduct sp: productsToDisplay)
+	    {
+			ProductVO p = new ProductVO();
+			p.setName(sp.getProduct().getName());
+			p.setId(sp.getProduct().getId());
+			products.add(p);
+		 }
+		aProductList.setProducts(products);	
+		return "/rankedproducts";		
 	}	
 
 	/**
