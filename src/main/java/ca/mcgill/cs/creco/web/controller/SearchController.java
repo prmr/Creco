@@ -476,6 +476,7 @@ public class SearchController
 		List<ScoredProduct> prodSearch = aProductSearch.returnProductsAlphabetically(aMainQuery.getQuery(), target.getId());
 		AttributeExtractor ae = new AttributeExtractor(target);
 		List<ScoredAttribute> ratingList = ae.getScoredRatingList();
+		
 		List<ScoredAttribute> specList = ae.getScoredAttributeList();
 		aCategory = ae.getCategory();
 		RankedFeaturesProducts rankedProducts = new RankedFeaturesProducts(specList, prodSearch);

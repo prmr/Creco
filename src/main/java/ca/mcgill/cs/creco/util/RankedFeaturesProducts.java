@@ -26,6 +26,7 @@ public class RankedFeaturesProducts {
 	{
 	
 	}
+	
 
 	public RankedFeaturesProducts(List<ScoredAttribute> pRatingList, List<ScoredAttribute> pSpecList, List<ScoredProduct> pProductSearchResult)
 	{
@@ -136,7 +137,7 @@ public class RankedFeaturesProducts {
 	}
 	
 	/**
-	 * 
+	 * @author MariamN
 	 * @param pAttrId Id of the attribute to calculate it's directions
 	 * @param pProductList list of weighted ranked products
 	 * @param pDirection direction of the attribute
@@ -204,6 +205,12 @@ public class RankedFeaturesProducts {
 		return pProductList;	
 	}
 	
+	/**
+	 * @author MariamN
+	 * @param pWeights attribute correlated weights
+	 * @param pProducts list of the products
+	 * @return sorted product list based on weights
+	 */
 	public ScoredProduct[]  sortProducts(double[] pWeights, ScoredProduct[] pProducts)
 	{
 		int len = pWeights.length;
