@@ -29,6 +29,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ca.mcgill.cs.creco.data.IDataStore;
+import ca.mcgill.cs.creco.data.Product;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/META-INF/test-context.xml"})
@@ -47,7 +48,7 @@ public class TestProductSearch {
 	@Test
 	public void testInvalidCategory() throws IOException
 	{
-		List<ScoredProduct> scoredProducts = aProductSearch.returnProductsAlphabetically("query doesn't matter", "123456789");
+		List<Product> scoredProducts = aProductSearch.returnProductsAlphabetically("query doesn't matter", "123456789");
 		
 		assertEquals(null, scoredProducts);
 	}

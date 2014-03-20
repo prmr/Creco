@@ -93,7 +93,7 @@ public class AttributeExtractor
 	 * @param pCategory the whole space of interesting products
 	 */
 	@Deprecated
-	public AttributeExtractor(List<ScoredProduct> pProductSearchResult, Category pCategory)
+	public AttributeExtractor(List<Product> pProductSearchResult, Category pCategory)
 	{
 		this(pCategory);
 	}

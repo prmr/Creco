@@ -141,7 +141,7 @@ public class TestFiltering {
 		    	}
 		    }
 		    
-			List<ScoredProduct> prodSearch = aProductSearch.returnProductsAlphabetically("Convertible car seat", target.getId());
+			List<Product> prodSearch = aProductSearch.returnProductsAlphabetically("Convertible car seat", target.getId());
 			AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
 			List<ScoredAttribute> ratingList = ae.getScoredRatingList();
 			List<ScoredAttribute> specList = ae.getScoredAttributeList();

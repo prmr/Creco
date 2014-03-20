@@ -71,7 +71,7 @@ public class ProductSearch implements IProductSearch
 	
 
 	@Override
-	public List<ScoredProduct> returnProductsAlphabetically(String pQueryString, String pCategoryID)
+	public List<Product> returnProductsAlphabetically(String pQueryString, String pCategoryID)
 	{
 		// TODO Auto-generated method stub
 		Category category = aDataStore.getCategory(pCategoryID);
@@ -82,7 +82,7 @@ public class ProductSearch implements IProductSearch
 		} 
 		
 	
-		List<ScoredProduct> scoredProducts = new ArrayList<ScoredProduct>();
+		List<Product> scoredProducts = new ArrayList<Product>();
 		Map<String, Product> map = new HashMap<String, Product>();
 		
 		
@@ -96,8 +96,7 @@ public class ProductSearch implements IProductSearch
 		for (Map.Entry entry : treeMap.entrySet()) 
 		{
 			Product p = (Product) entry.getValue();
-			ScoredProduct scoredProduct = new ScoredProduct(p, p.getCategoryId());
-			scoredProducts.add(scoredProduct);
+			scoredProducts.add(p);
 		}
 		
 		return scoredProducts;

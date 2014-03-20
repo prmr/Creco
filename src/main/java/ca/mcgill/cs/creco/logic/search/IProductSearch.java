@@ -1,6 +1,7 @@
 package ca.mcgill.cs.creco.logic.search;
 
 import java.util.List;
+import ca.mcgill.cs.creco.data.Product;
 
 /**
  * Searches the database for products.
@@ -17,7 +18,7 @@ public interface IProductSearch
 	 */
 	
 	
-	List<ScoredProduct> returnProductsAlphabetically(String pQueryString, String pCategoryID);
+	List<Product> returnProductsAlphabetically(String pQueryString, String pCategoryID);
 	
 	
 }
