@@ -64,7 +64,7 @@ public class SearchController
 	
 	private List<ScoredAttribute> aScoredAttr; 
 	
-	private List<ScoredProduct> aScoredProducts;
+	private List<Product> aScoredProducts;
 	private Category aCategory;
 	
 	@Autowired
@@ -455,7 +455,7 @@ public class SearchController
 	    	}
 	    }
 	    
-		List<ScoredProduct> prodSearch = aProductSearch.returnProductsAlphabetically(aMainQuery.getQuery(), target.getId());
+		List<Product> prodSearch = aProductSearch.returnProductsAlphabetically(aMainQuery.getQuery(), target.getId());
 		AttributeExtractor ae = new AttributeExtractor(target);
 		
 		List<ScoredAttribute> specList = ae.getScoredAttributeList();
@@ -467,11 +467,11 @@ public class SearchController
 	    	   
 	    // Converting
 		ArrayList<ProductVO> products = new ArrayList<ProductVO>();		
-	    for (ScoredProduct sp: aScoredProducts) 
+	    for (Product sp: aScoredProducts) 
 	    {
 			ProductVO p = new ProductVO();
-			p.setName(sp.getProduct().getName());
-			p.setId(sp.getProduct().getId());
+			p.setName(sp.getName());
+			p.setId(sp.getId());
 			products.add(p);
 	    }
 		aProductList.setProducts(products);	
@@ -611,21 +611,21 @@ public class SearchController
 
 		}
 		
-		for(ScoredProduct sa : aScoredProducts)
+		for(Product sa : aScoredProducts)
 		{
 			LOG.debug(sa.toString());					
 		}
 	
 		RankedFeaturesProducts tempProducts = new RankedFeaturesProducts();		
-		List<ScoredProduct> productsToDisplay  = tempProducts.FeatureSensitiveRanking(userScoredFeaturesSpecs, aCategory);
+		List<Product> productsToDisplay  = tempProducts.FeatureSensitiveRanking(userScoredFeaturesSpecs, aCategory);
 
 		// Converting to View Object
 		ArrayList<ProductVO> products = new ArrayList<ProductVO>();		
-	    for (ScoredProduct sp: productsToDisplay)
+	    for (Product sp: productsToDisplay)
 	    {
 			ProductVO p = new ProductVO();
-			p.setName(sp.getProduct().getName());
-			p.setId(sp.getProduct().getId());
+			p.setName(sp.getName());
+			p.setId(sp.getId());
 			products.add(p);
 		 }
 		aProductList.setProducts(products);	

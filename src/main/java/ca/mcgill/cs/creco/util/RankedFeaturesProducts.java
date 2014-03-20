@@ -9,16 +9,16 @@ import ca.mcgill.cs.creco.logic.AttributeCorrelator;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.ScoredAttribute.Direction;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
-
+import ca.mcgill.cs.creco.data.Product;
 
 public class RankedFeaturesProducts {
-	private static List<ScoredProduct> main_aProductSearchResult;
+	private static List<Product> main_aProductSearchResult;
 
 	private static List<ScoredAttribute> aRatingList;
 
 	private static List<ScoredAttribute> aSpecList;
 
-	private static List<ScoredProduct> aProductSearchResult;
+	private static List<Product> aProductSearchResult;
 	private static List<ScoredAttribute> aAttrList;
 
 
@@ -28,7 +28,7 @@ public class RankedFeaturesProducts {
 	}
 	
 
-	public RankedFeaturesProducts(List<ScoredAttribute> pRatingList, List<ScoredAttribute> pSpecList, List<ScoredProduct> pProductSearchResult)
+	public RankedFeaturesProducts(List<ScoredAttribute> pRatingList, List<ScoredAttribute> pSpecList, List<Product> pProductSearchResult)
 	{
 		RankedFeaturesProducts.main_aProductSearchResult=pProductSearchResult;
 		RankedFeaturesProducts.aProductSearchResult=pProductSearchResult;
@@ -36,7 +36,7 @@ public class RankedFeaturesProducts {
 		RankedFeaturesProducts.aRatingList = pRatingList;	
 	}
 	
-	public RankedFeaturesProducts(List<ScoredAttribute> pAttrList, List<ScoredProduct> pProductSearchResult)
+	public RankedFeaturesProducts(List<ScoredAttribute> pAttrList, List<Product> pProductSearchResult)
 	{
 		RankedFeaturesProducts.main_aProductSearchResult=pProductSearchResult;
 		RankedFeaturesProducts.aProductSearchResult=pProductSearchResult;
@@ -50,15 +50,15 @@ public class RankedFeaturesProducts {
 	 * @param pCat category
 	 * @return ranked list of products
 	 */
-	public List<ScoredProduct> FeatureSensitiveRanking(List <ScoredAttribute> pFeatureList, Category pCat)
+	public List<Product> FeatureSensitiveRanking(List <ScoredAttribute> pFeatureList, Category pCat)
 	{
 		int prodSize = main_aProductSearchResult.size();
 		int featSize = pFeatureList.size();
 		double score = 0;
 		double[] weight = new double [featSize];			
 		double[] prodScore = new double [prodSize];
-		ScoredProduct [] prodSet = new ScoredProduct [prodSize];
-		List<ScoredProduct> rankedSet = new ArrayList<ScoredProduct>();
+		Product [] prodSet = new Product [prodSize];
+		List<Product> rankedSet = new ArrayList<Product>();
 		AttributeCorrelator aCorrelator = null;
 	
 		aCorrelator = new AttributeCorrelator(pCat);
@@ -83,7 +83,7 @@ public class RankedFeaturesProducts {
 				String fID = pFeatureList.get(i).getAttributeID();
 				for(int j = 0 ; j < prodSize ; j++) // for each product in the category
 				{
-					Product prod = main_aProductSearchResult.get(j).getProduct();
+					Product prod = main_aProductSearchResult.get(j);
 					
 					if(prod.getSpec(fID) != null)
 					{
@@ -143,27 +143,27 @@ public class RankedFeaturesProducts {
 	 * @param pDirection direction of the attribute
 	 * @return list of ranked products based on attribute direction.
 	 */
-	public List<ScoredProduct> directionSensitiveProductSort(String pAttrId, List<ScoredProduct> pProductList, Direction pDirection)
+	public List<Product> directionSensitiveProductSort(String pAttrId, List<Product> pProductList, Direction pDirection)
 	{
-		ScoredProduct tmpProd = null;
+		Product tmpProd = null;
 		for(int i = 0 ; i< pProductList.size() ; i++)
 		{
 			for(int j = (pProductList.size()-1); j >= (i+1); j--)
 			{
 				if(pDirection.equals(Direction.MORE_IS_BETTER))
 				{
-					if(pProductList.get(j).getProduct().getRating(pAttrId) != null)
+					if(pProductList.get(j).getRating(pAttrId) != null)
 					{
-						if(pProductList.get(j).getProduct().getRating(pAttrId).getTypedValue().getNumeric() < pProductList.get(j-1).getProduct().getRating(pAttrId).getTypedValue().getNumeric())
+						if(pProductList.get(j).getRating(pAttrId).getTypedValue().getNumeric() < pProductList.get(j-1).getRating(pAttrId).getTypedValue().getNumeric())
 						{
 							tmpProd = pProductList.get(j);
 							pProductList.set(j,pProductList.get(j-1));						
 						}						
 					}
 					else{
-						if(pProductList.get(j).getProduct().getSpec(pAttrId) != null)
+						if(pProductList.get(j).getSpec(pAttrId) != null)
 						{
-							if(pProductList.get(j).getProduct().getSpec(pAttrId).getTypedValue().getNumeric() < pProductList.get(j-1).getProduct().getSpec(pAttrId).getTypedValue().getNumeric())
+							if(pProductList.get(j).getSpec(pAttrId).getTypedValue().getNumeric() < pProductList.get(j-1).getSpec(pAttrId).getTypedValue().getNumeric())
 							{
 								tmpProd = pProductList.get(j);
 								pProductList.set(j,pProductList.get(j-1));						
@@ -176,19 +176,19 @@ public class RankedFeaturesProducts {
 				{
 					if(pDirection.equals(Direction.LESS_IS_BETTER))
 					{
-						if(pProductList.get(j).getProduct().getRating(pAttrId) != null)
+						if(pProductList.get(j).getRating(pAttrId) != null)
 						{
 							
-							if(pProductList.get(j).getProduct().getRating(pAttrId).getTypedValue().getNumeric() > pProductList.get(j-1).getProduct().getRating(pAttrId).getTypedValue().getNumeric())
+							if(pProductList.get(j).getRating(pAttrId).getTypedValue().getNumeric() > pProductList.get(j-1).getRating(pAttrId).getTypedValue().getNumeric())
 							{
 								tmpProd = pProductList.get(j);
 								pProductList.set(j,pProductList.get(j-1));							
 							}
 						}
 						else{
-							if(pProductList.get(j).getProduct().getSpec(pAttrId) != null)
+							if(pProductList.get(j).getSpec(pAttrId) != null)
 							{
-								if(pProductList.get(j).getProduct().getSpec(pAttrId).getTypedValue().getNumeric() > pProductList.get(j-1).getProduct().getSpec(pAttrId).getTypedValue().getNumeric())
+								if(pProductList.get(j).getSpec(pAttrId).getTypedValue().getNumeric() > pProductList.get(j-1).getSpec(pAttrId).getTypedValue().getNumeric())
 								{
 									tmpProd = pProductList.get(j);
 									pProductList.set(j,pProductList.get(j-1));						
@@ -211,11 +211,11 @@ public class RankedFeaturesProducts {
 	 * @param pProducts list of the products
 	 * @return sorted product list based on weights
 	 */
-	public ScoredProduct[]  sortProducts(double[] pWeights, ScoredProduct[] pProducts)
+	public Product[]  sortProducts(double[] pWeights, Product[] pProducts)
 	{
 		int len = pWeights.length;
 		double tmp = 0;
-		ScoredProduct tmpProd = null;
+		Product tmpProd = null;
 		
 		for(int i = 0; i<len; i++)
 		{
@@ -239,13 +239,12 @@ public class RankedFeaturesProducts {
 	}
 	
 	@Deprecated	
-	public List<ScoredProduct> FilterandReturn(List<ScoredAttribute> pSpecList)
+	public List<Product> FilterandReturn(List<ScoredAttribute> pSpecList)
 	{
-		List<ScoredProduct> new_set = new ArrayList<ScoredProduct>();
-		for(ScoredProduct p: RankedFeaturesProducts.main_aProductSearchResult)
+		List<Product> new_set = new ArrayList<Product>();
+		for(Product product: RankedFeaturesProducts.main_aProductSearchResult)
 		{
 			int flag=0;
-			Product product= p.getProduct();
 			Iterable<Attribute> specs = product.getSpecs();
 			for(Attribute a:specs)
 			{
@@ -267,7 +266,7 @@ public class RankedFeaturesProducts {
 			}
 			if(flag==0)
 			{
-				new_set.add(p);
+				new_set.add(product);
 			}
 		}
 		RankedFeaturesProducts.aProductSearchResult = new_set;
@@ -275,7 +274,7 @@ public class RankedFeaturesProducts {
 	}
 
 
-	public List<ScoredProduct> getaProductSearchResult()
+	public List<Product> getaProductSearchResult()
 	{
 		return aProductSearchResult;
 	}
