@@ -98,7 +98,7 @@ public class SearchController
 	private ICategorySearch aCategorySearch;
 	
 	@Autowired
-	private IProductSearch aProductSearch;
+	private IProductSearch aProductSort;
 	
 	@ModelAttribute("mainQuery")
 	private MainQueryVO getMainQuery() 
@@ -455,7 +455,7 @@ public class SearchController
 	    	}
 	    }
 	    
-		List<Product> prodSearch = aProductSearch.returnProductsAlphabetically(aMainQuery.getQuery(), target.getId());
+		List<Product> prodSearch = aProductSort.returnProductsAlphabetically(target.getId());
 		AttributeExtractor ae = new AttributeExtractor(target);
 		
 		List<ScoredAttribute> specList = ae.getScoredAttributeList();
