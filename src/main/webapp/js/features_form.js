@@ -13,7 +13,7 @@
 			names:[],
 			values:[]			
 	};
-	
+	 
 /**
  * function called on page load.. 
  * Setting the accordion icon and size, 
