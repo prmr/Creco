@@ -13,13 +13,14 @@ import ca.mcgill.cs.creco.data.Product;
 
 public class RankedFeaturesProducts {
 	private static List<Product> main_aProductSearchResult;
+	private static List<ScoredAttribute> aAttrList;
+	private static List<Product> aProductSearchResult;
 
+	@Deprecated
 	private static List<ScoredAttribute> aRatingList;
-
+	@Deprecated
 	private static List<ScoredAttribute> aSpecList;
 
-	private static List<Product> aProductSearchResult;
-	private static List<ScoredAttribute> aAttrList;
 
 
 	public RankedFeaturesProducts()
@@ -27,7 +28,7 @@ public class RankedFeaturesProducts {
 	
 	}
 	
-
+	@Deprecated
 	public RankedFeaturesProducts(List<ScoredAttribute> pRatingList, List<ScoredAttribute> pSpecList, List<Product> pProductSearchResult)
 	{
 		RankedFeaturesProducts.main_aProductSearchResult=pProductSearchResult;
@@ -39,8 +40,9 @@ public class RankedFeaturesProducts {
 	public RankedFeaturesProducts(List<ScoredAttribute> pAttrList, List<Product> pProductSearchResult)
 	{
 		RankedFeaturesProducts.main_aProductSearchResult=pProductSearchResult;
-		RankedFeaturesProducts.aProductSearchResult=pProductSearchResult;
 		RankedFeaturesProducts.aAttrList = pAttrList;		
+		RankedFeaturesProducts.aProductSearchResult=pProductSearchResult;
+		
 	}
 
 	/**
@@ -244,28 +246,30 @@ public class RankedFeaturesProducts {
 		return(RankedFeaturesProducts.aProductSearchResult);
 	}
 
+	public  List<ScoredAttribute> getaAttrList()
+	{
+		return aAttrList;
+	}
+
+	public  void setaAttrList(List<ScoredAttribute> aAttrList) 
+	{
+		RankedFeaturesProducts.aAttrList = aAttrList;
+	}
 
 	public List<Product> getaProductSearchResult()
 	{
 		return aProductSearchResult;
 	}
-
+	@Deprecated
 	public List<ScoredAttribute> getaRatingList()
 	{
 		return aRatingList;
 	}
-
+	@Deprecated
 	public List<ScoredAttribute> getaSpecList()
 	{
 		return aSpecList;
 	}
 
-	public  List<ScoredAttribute> getaAttrList() {
-		return aAttrList;
-	}
-
-	public  void setaAttrList(List<ScoredAttribute> aAttrList) {
-		RankedFeaturesProducts.aAttrList = aAttrList;
-	}
-
+	
 }
