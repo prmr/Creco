@@ -31,13 +31,13 @@ import ca.mcgill.cs.creco.data.Product;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/META-INF/test-context.xml"})
-public class TestProductSort {
+public class TestProductSearch {
 
 	@Autowired
 	IDataStore aDataStore;
 	
 	@Autowired
-	IProductSort aProductSearch;
+	IProductSearch aProductSearch;
 	
 	private static String SMARTPHONE_CATEGORY_ID = "28726";
 	private static String IPHONE_5S_16GB_VERIZON_ID = "231983";
@@ -52,24 +52,5 @@ public class TestProductSort {
 	}
 	
 
-	@Test
 	
-	public void checkIfAlphabetical()
-	{
-		List<Product> sortedProducts = aProductSearch.returnProductsAlphabetically("28726");
-		
-		char previousNameCharacter = sortedProducts.get(0).getName().charAt(0);
-		int previousASCII = (int)previousNameCharacter ;
-	
-		for(int i = 1; i < sortedProducts.size(); i++)
-		{
-			char currentNameCharacter = sortedProducts.get(i).getName().charAt(0);
-			int currentASCII = (int)currentNameCharacter;
-			
-			assertTrue(currentASCII >= previousASCII);
-			
-			previousASCII = currentASCII;
-		}
-		
-	}
 }

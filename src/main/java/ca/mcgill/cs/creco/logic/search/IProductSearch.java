@@ -6,7 +6,7 @@ import ca.mcgill.cs.creco.data.Product;
 /**
  * Searches the database for products.
  */
-public interface IProductSort
+public interface IProductSearch
 {
 	
 	/**

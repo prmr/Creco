@@ -35,10 +35,10 @@ import ca.mcgill.cs.creco.data.Product;
  *Lists products alphabetically after taking a category id
  */
 @Component
-public class ProductSort implements IProductSort
+public class ProductSearch implements IProductSearch
 {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(ProductSort.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ProductSearch.class);
 	
 	
 	private IDataStore aDataStore;
@@ -50,7 +50,7 @@ public class ProductSort implements IProductSort
 	 * @throws IOException If an exception is thrown during the creation of the product index.
 	 */
 	@Autowired
-	public ProductSort(IDataStore pDataStore) throws IOException
+	public ProductSearch(IDataStore pDataStore) throws IOException
 	{
 		aDataStore = pDataStore;
 		
