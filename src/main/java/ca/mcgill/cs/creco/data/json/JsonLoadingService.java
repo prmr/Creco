@@ -145,6 +145,13 @@ public class JsonLoadingService implements IDataLoadingService
 			}
 		}
 		
+		// Add the price is an Attribute
+		if(pProductStub.price != null)
+		{
+			PriceStub price = pProductStub.price;
+			atts.add(Attribute.buildPrice(price.attributeId, price.displayName, price.description, price.value));
+		}
+		
 		String brandName;
 		if(pProductStub.brand != null)
 		{
