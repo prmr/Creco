@@ -19,6 +19,7 @@ public class ProductVO
 {
 	private String id;
 	private String name;
+	private String url;
 
 	public String getId()
 	{
@@ -38,6 +39,16 @@ public class ProductVO
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+
+	public String getUrl()
+	{
+		return url;
+	}
+
+	public void setUrl(String url)
+	{
+		this.url = url;
 	}
 
 }

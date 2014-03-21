@@ -62,7 +62,8 @@
 			
 			<div id="product-area">
 				<div class="rankedproduct-result-entry" th:each="product : ${productList.products}">
-                    <div class="rankedproduct-result-name" th:text="${product.name}"></div>
+                    <a class="rankedproduct-result-name" th:text="${product.name}"
+                   		th:href="@{${product.url}}"></a>
 				</div>
 			</div>
 		</div>
