@@ -15,6 +15,7 @@
  */
 package ca.mcgill.cs.creco.data;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -30,14 +31,12 @@ public class Product
 	private String aBrandName;
 	private String aModelOverviewPageUrl;
 	
-		
 	// Derived fields
-	private HashMap<String, Attribute> aRatings = new HashMap<String, Attribute>();
-	private HashMap<String, Attribute> aSpecs = new HashMap<String, Attribute>();
+	private HashMap<String, Attribute> aAttributes = new HashMap<String, Attribute>();
 	private String aCategoryId;
 	private CategoryBuilder aCategory;
 	
-	
+		
 	/**
 	 * Constructs a new product record.
 	 * @param pId The product id.
@@ -46,7 +45,7 @@ public class Product
 	 * @param pCategoryId The ID of the category for this product.
 	 * @param pBrandName The brand name
 	 */
-	public Product(String pId, String pDisplayName, Boolean pIsTested, String pCategoryId, String pBrandName, String pModelOverviewPageUrl)
+	public Product(String pId, String pDisplayName, Boolean pIsTested, String pCategoryId, String pBrandName, String pModelOverviewPageUrl, Collection<Attribute> Attributes)
 	{
 		aId = pId;
 		aDisplayName = pDisplayName;
@@ -56,24 +55,9 @@ public class Product
 		aModelOverviewPageUrl = pModelOverviewPageUrl;
 	}
 	
-	
-
-	/**
-	 * Adds a spec to this product. 
-	 * @param pAttribute The attribute to add.
-	 */
-	public void addSpec(Attribute pAttribute)
+	public void addAttribute(Attribute pAttribute)
 	{
-		aSpecs.put(pAttribute.getId(), pAttribute);
-	}
-	
-	/**
-	 * Adds a rating to this product. 
-	 * @param pAttribute The attribute to add.
-	 */
-	public void addRating(Attribute pAttribute)
-	{
-		aRatings.put(pAttribute.getId(), pAttribute);
+		aAttributes.put(pAttribute.getId(), pAttribute);
 	}
 	
 	void setCategory(CategoryBuilder pCategory)
@@ -90,8 +74,11 @@ public class Product
 	/**
 	 * @return The number of ratings.
 	 */
+	//TODO: this needs to detect the number of ratings proper (not all attributes)
 	public int getNumRatings() 
-	{ return aRatings.size(); }
+	{ 
+		return aAttributes.size(); 
+	}
 
 	/**
 	 * @return The product ID.
@@ -132,9 +119,27 @@ public class Product
 	/**
 	 * @return A iterator on the ratings for this product.
 	 */
+	@Deprecated
 	public Iterable<Attribute> getRatings()
 	{
-		return Collections.unmodifiableCollection(Product.this.aRatings.values());
+		return getAttributes();
+	}
+
+	/**
+	 * @return A iterator on the specs for this product.
+	 */
+	@Deprecated
+	public Iterable<Attribute> getSpecs() 
+	{	
+		return getAttributes();
+	}
+	
+	/**
+	 * @return A iterator on the specs for this product.
+	 */
+	public Iterable<Attribute> getAttributes() 
+	{	
+		return Collections.unmodifiableCollection(aAttributes.values());
 	}
 	
 	/**
@@ -142,17 +147,10 @@ public class Product
 	 * @param pId The id to look for.
 	 * @return The corresponding rating.
 	 */
+	@Deprecated
 	public Attribute getRating(String pId)
 	{
-		return this.aRatings.get(pId);
-	}
-	
-	/**
-	 * @return A iterator on the specs for this product.
-	 */
-	public Iterable<Attribute> getSpecs() 
-	{	
-		return Collections.unmodifiableCollection(Product.this.aSpecs.values());
+		return getAttribute(pId);
 	}
 	
 	/**
@@ -160,10 +158,22 @@ public class Product
 	 * @param pId The id to look for.
 	 * @return The corresponding rating.
 	 */
+	@Deprecated
 	public Attribute getSpec(String pId)
 	{
-		return this.aSpecs.get(pId);
+		return getAttribute(pId);
 	}
+	
+	/**
+	 * Return the spec for this product with pId.
+	 * @param pId The id to look for.
+	 * @return The corresponding rating.
+	 */
+	public Attribute getAttribute(String pId)
+	{
+		return aAttributes.get(pId);
+	}
+	
 	
 	/**
 	 * Return a url to the CR website page for the product

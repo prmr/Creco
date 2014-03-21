@@ -20,6 +20,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.CategoryBuilder;
@@ -125,31 +126,35 @@ public class JsonLoadingService implements IDataLoadingService
 	{
 		Product lReturn ;
 		
-		if(pProductStub.brand != null)
-		{
-			 lReturn = new Product(pProductStub.id, pProductStub.displayName, pProductStub.isTested, pProductStub.category.id, pProductStub.brand.displayName, pProductStub.modelOverviewPageUrl);
-		}
-		else
-		{
-			 lReturn = new Product(pProductStub.id, pProductStub.displayName, pProductStub.isTested, pProductStub.category.id, null, pProductStub.modelOverviewPageUrl);
-		}
-		
+		// Collect all of the attributes for this product.  Starting with specifications.
+		ArrayList<Attribute> atts = new ArrayList<Attribute>();
 		if(pProductStub.specs != null)
 		{
 			for(SpecStub spec : pProductStub.specs)
 			{
-				lReturn.addSpec(new Attribute(spec.attributeId, spec.displayName, spec.description, spec.value));
+				atts.add(new Attribute(spec.attributeId, spec.displayName, spec.description, spec.value));
 			}
 		}
 		
+		// Collect the ratings as Attributes.
 		if(pProductStub.ratings != null)
 		{
 			for(RatingStub rating : pProductStub.ratings)
 			{
-				lReturn.addRating(new Attribute(rating.attributeId, rating.displayName, rating.description, rating.value));
+				atts.add(new Attribute(rating.attributeId, rating.displayName, rating.description, rating.value));
 			}
 		}
-		return lReturn;
+		
+		String brandName;
+		if(pProductStub.brand != null)
+		{
+			brandName = pProductStub.brand.displayName;
+		}
+		else
+		{
+			brandName = null;
+		}
+		return new Product(pProductStub.id, pProductStub.displayName, pProductStub.isTested, pProductStub.category.id, brandName, pProductStub.modelOverviewPageUrl, atts);
 	}
 
 }
