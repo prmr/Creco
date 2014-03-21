@@ -19,16 +19,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import ca.mcgill.cs.creco.data.TypedValue.Type;
-
 /**
  * Represents statistics about an product attribute.
  */
 public class AttributeStat 
 {
 	private int aCount = 0;
-	private Number aValueMin;
-	private Number aValueMax;
+	private double aValueMin;
+	private double aValueMax;
 	private HashSet<String> aValueEnum = new HashSet<String>();
 	private Attribute aAttribute;
 
@@ -63,8 +61,8 @@ public class AttributeStat
 	{
 		increment(pStatistics.getCount());
 		aValueEnum.addAll(pStatistics.getValueEnum());
-		updateRange(pStatistics.getValueMax());
-		updateRange(pStatistics.getValueMin());
+		updateRange(new TypedValue(pStatistics.getValueMax()));
+		updateRange(new TypedValue(pStatistics.getValueMin()));
 	}
 
 	/**
@@ -132,34 +130,28 @@ public class AttributeStat
 		return null;
 	}
 	
-	private void updateRange(TypedValue pTypedValue)
+	void updateRange(TypedValue pTypedValue)
 	{
-		TypedValue.Type type = pTypedValue.getType();
-		Object value = pTypedValue.getValue();
-		
-		if(type.equals(Type.INTEGER) || type.equals(Type.DOUBLE)) 
+		if( pTypedValue.isNumeric() )
 		{
-			Number number = (Number) value;
-			if(aValueMin == null || number.doubleValue() < aValueMin.doubleValue())
+			double number = pTypedValue.getNumeric();
+			if( number < aValueMin )
 			{
 				aValueMin = number;
 			}
 			
-			if(aValueMax == null || number.doubleValue() > aValueMax.doubleValue())
+			if( number > aValueMax)
 			{
 				aValueMax = number;
 			}
 		}
-		else if(type.equals(Type.STRING) || type.equals(Type.BOOLEAN))
+		else if( pTypedValue.isString() )
 		{
-			aValueEnum.add((String) ""+value);
-		}		
+			aValueEnum.add(pTypedValue.getString());
+		}	
+		else if(pTypedValue.isBoolean())
+		{
+			aValueEnum.add(new Boolean(pTypedValue.getBoolean()).toString());
+		}	
 	}
-	
-	void updateRange(Object pValue)
-	{
-		TypedValue typedValue = new TypedValue(pValue);
-		updateRange(typedValue);
-	}
-	
 }

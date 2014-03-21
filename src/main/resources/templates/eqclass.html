@@ -19,6 +19,7 @@
 	    <title>Creco</title> 
 	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
 	</head>
+ 
 	<body>
     	<div id='search'>			
 			<div>
@@ -28,18 +29,19 @@
 			<div id='main_searchbar' class="input-group">
 				<form action="/searchEqClass" method="POST" th:object="${mainQuery}">
 					<input id='main_search_text' type="text" class="form-control" style="width: 350px" placeholder="Please enter product names, brands, etc."
-					onkeyup="javascript:abcd($('#main_search_text').val())" 	th:field="*{query}"></input>
+					onkeyup="javascript:abcd($('#main_search_text').val())" autocomplete="off" th:field="*{query}"></input>
 					<input id='search_btn' type="submit" class="btn btn-info" value="Search"></input>	
 				</form>
 			</div>
-
 			<div id='eq-result'>
+				<div class="alert">
+					Please select one category according to the search <span class="keyword" th:text="${mainQuery.query}"></span>. 
+				</div>
 				<div class="eq-result-entry" th:each="eqc : ${eqcList.eqcs}">
-				    <form action="/searchRankedFeaturesProducts" method="POST">
+				   <form class="eq-button-wrap" action="/searchRankedFeaturesProducts" method="POST">
                         <input id="id" name="id" type="hidden" th:value="${eqc.id}"></input>
                         <input id="id" name="name" type="hidden" th:value="${eqc.name}"></input>
-                        <input type="submit" th:value="${eqc.name}"></input>                       
-						<span class="badge" th:text="${eqc.count}"></span>
+                        <input class="eq-button" type="submit" th:value="${eqc.name}"></input>       
                     </form>
 				</div>
 			</div>
@@ -53,4 +55,7 @@
 	<link rel='stylesheet' type='text/css' href='lib/bootstrap.min.css'></link>
 	<link rel='stylesheet' type='text/css' href='lib/bootstrap-theme.min.css'></link>
 	<link rel='stylesheet' type='text/css' href='css/search.css' />
+
+	
+	
 </html>

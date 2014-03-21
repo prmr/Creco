@@ -25,13 +25,11 @@ public class ScoredProduct
 {
 	
 	private final Product aProduct;
-	private float aLuceneScore;
 	private String aCategoryID;
 		
-	public ScoredProduct(Product pProduct, float pLuceneScore, String pCategoryID)
+	public ScoredProduct(Product pProduct, String pCategoryID)
 	{
 		this.aProduct = pProduct;
-		this.aLuceneScore = pLuceneScore;
 		this.aCategoryID = pCategoryID;
 	}
 	
@@ -40,10 +38,6 @@ public class ScoredProduct
 		return aProduct;
 	}
 		
-	public float getLuceneScore()
-	{
-		return aLuceneScore;
-	}
 	
 	public String getEqClassId()
 	{

@@ -72,12 +72,12 @@ public class TestFiltering {
 		    	}
 		    }
 		    
-			List<ScoredProduct> prodSearch = aProductSearch.queryProductsReturnAll("Toaster", target.getId());
+			List<Product> prodSearch = aProductSearch.returnProductsAlphabetically("Toaster", target.getId());
 			AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
 			List<ScoredAttribute> ratingList = ae.getScoredRatingList();
-			List<ScoredAttribute> specList = ae.getScoredSpecList();
-		    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(ratingList, specList, prodSearch);
-		    List<ScoredProduct> scoredProducts = rankedProducts.getaProductSearchResult();
+			List<ScoredAttribute> specList = ae.getScoredAttributeList();
+		    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(specList, prodSearch);
+		    List<Product> scoredProducts = rankedProducts.getaProductSearchResult();
 			assertEquals(407, scoredProducts.size());
 	}
 	
@@ -92,42 +92,43 @@ public class TestFiltering {
 		    	}
 		    }
 		    
-			List<ScoredProduct> prodSearch = aProductSearch.queryProductsReturnAll("Digital SLR camera", target.getId());
+			List<Product> prodSearch = aProductSearch.returnProductsAlphabetically("Digital SLR camera", target.getId());
 			AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
 			List<ScoredAttribute> ratingList = ae.getScoredRatingList();
-			List<ScoredAttribute> specList = ae.getScoredSpecList();
-		    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(ratingList, specList, prodSearch);
-		    List<ScoredProduct> scoredProducts = rankedProducts.getaProductSearchResult();
+			List<ScoredAttribute> specList = ae.getScoredAttributeList();
+		    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(specList, prodSearch);
+		    List<Product> scoredProducts = rankedProducts.getaProductSearchResult();
 			assertEquals(111, scoredProducts.size());
 	}
 	
 	@Test
 	public void testFunction_product_with_selected_feature() throws IOException
 	{
-		 List<Category> categoryList = aCategorySearch.queryCategories("Point & shoot digital camera");
-		    Category target = null;
-		    for (Category cat: categoryList) {
-		    	if (cat.getName().equals("Point & shoot digital camera")) {
-		    		target = cat;
-		    	}
+		List<Category> categoryList = aCategorySearch.queryCategories("Point & shoot digital camera");
+		Category target = null;
+		for (Category cat: categoryList) 
+		{
+			if (cat.getName().equals("Point & shoot digital camera"))
+		    {
+		    	target = cat;
 		    }
+		}
 		    
-			List<ScoredProduct> prodSearch = aProductSearch.queryProductsReturnAll("Point & shoot digital camera", target.getId());
-			AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
-			List<ScoredAttribute> ratingList = ae.getScoredRatingList();
-			List<ScoredAttribute> specList = ae.getScoredSpecList();
-		    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(ratingList, specList, prodSearch);
-		    List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
-			Attribute test= new Attribute( "doesnt matter", "Manual controls", "doesn't matter", true );
-		  ScoredAttribute test_score = new ScoredAttribute(test,new Category("empty", "test", "test", new ArrayList<Product>(), 
+		List<Product> prodSearch = aProductSearch.returnProductsAlphabetically("Point & shoot digital camera", target.getId());
+		AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
+		List<ScoredAttribute> ratingList = ae.getScoredRatingList();
+		List<ScoredAttribute> specList = ae.getScoredAttributeList();
+		RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(specList, prodSearch);
+		List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
+		Attribute test= new Attribute( "doesnt matter", "Manual controls", "doesn't matter", true );
+		ScoredAttribute test_score = new ScoredAttribute(test,new Category("empty", "test", "test", new ArrayList<Product>(), 
 					new ArrayList<AttributeStat>(), new ArrayList<AttributeStat>()));
-		  TypedValue temporary = new TypedValue(false);
-		  test_score.setAttributeMean(temporary); 
-		  userScoredFeaturesSpecs.add(test_score);
-			RankedFeaturesProducts Products = new RankedFeaturesProducts();
-			List<ScoredProduct> productsToDisplay = Products.FilterandReturn(userScoredFeaturesSpecs);
-		LOG.debug(new Integer(productsToDisplay.size()).toString());
-			assertEquals(60, productsToDisplay.size());
+		TypedValue temporary = new TypedValue(false);
+		test_score.setAttributeDefault(temporary); 
+		userScoredFeaturesSpecs.add(test_score);
+		RankedFeaturesProducts Products = new RankedFeaturesProducts();
+		List<Product> productsToDisplay = Products.FilterandReturn(userScoredFeaturesSpecs);
+		assertEquals(60, productsToDisplay.size());
 	}
 	@Test
 	public void testFunction_feature_setas_NA() throws IOException
@@ -140,22 +141,22 @@ public class TestFiltering {
 		    	}
 		    }
 		    
-			List<ScoredProduct> prodSearch = aProductSearch.queryProductsReturnAll("Convertible car seat", target.getId());
+			List<Product> prodSearch = aProductSearch.returnProductsAlphabetically("Convertible car seat", target.getId());
 			AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
 			List<ScoredAttribute> ratingList = ae.getScoredRatingList();
-			List<ScoredAttribute> specList = ae.getScoredSpecList();
-		    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(ratingList, specList, prodSearch);
-		    List<ScoredProduct> scoredProducts = rankedProducts.getaProductSearchResult();
+			List<ScoredAttribute> specList = ae.getScoredAttributeList();
+		    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(specList, prodSearch);
+		    List<Product> scoredProducts = rankedProducts.getaProductSearchResult();
 		    List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
 			Attribute test= new Attribute( "doesnt matter", "Multiple recline positions", "doesn't matter", true );
 		  ScoredAttribute test_score = new ScoredAttribute(test,new Category("empty", "test", "test", new ArrayList<Product>(), 
 					new ArrayList<AttributeStat>(), new ArrayList<AttributeStat>()));
 
 		  TypedValue temporary = new TypedValue("NA");
-		  test_score.setAttributeMean(temporary); 
+		  test_score.setAttributeDefault(temporary); 
 		  userScoredFeaturesSpecs.add(test_score);
 			RankedFeaturesProducts Products = new RankedFeaturesProducts();
-			List<ScoredProduct> productsToDisplay = Products.FilterandReturn(userScoredFeaturesSpecs);
+			List<Product> productsToDisplay = Products.FilterandReturn(userScoredFeaturesSpecs);
 		LOG.debug(new Integer(productsToDisplay.size()).toString());
 			assertEquals(scoredProducts.size(), productsToDisplay.size());
 	}

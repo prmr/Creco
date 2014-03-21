@@ -10,10 +10,17 @@ public interface IDataStore
 	
 	/**
 	 * Gets a category from the database.
-	 * @param pIndex The category's ID.
+	 * @param pId The category's ID.
 	 * @return The category object.
 	 */
-	Category getCategory(String pIndex);
+	Category getCategory(String pId);
+	
+	/**
+	 * Returns a product from the database.
+	 * @param pId The id of the product.
+	 * @return The product with id pId
+	 */
+	Product getProduct(String pId);	
 	
 	/**
 	 * Gets all categories from the database.

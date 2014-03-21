@@ -62,8 +62,8 @@ public class Attribute
 	/**
 	 * @return The value for this attribute.
 	 */
-	public Object getValue() 
-	{ return aTypedValue.getValue(); }
+//	public Object getValue() 
+//	{ return aTypedValue.getValue(); }
 	
 	/**
 	 * @return The typed value.
@@ -71,9 +71,9 @@ public class Attribute
 	public TypedValue getTypedValue() 
 	{ return aTypedValue; }
 
-	/**
-	 * @return The type of the value.
-	 */
-	public TypedValue.Type getType() 
-	{ return aTypedValue.getType(); }
+//	/**
+//	 * @return The type of the value.
+//	 */
+//	public TypedValue.Type getType() 
+//	{ return aTypedValue.getType(); }
 }

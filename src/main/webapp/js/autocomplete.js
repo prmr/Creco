@@ -1,239 +1,86 @@
-$(function() {
-	var availableTags = [
-			"Performance all season tire",
-			"Winter truck tire",
-			"Ultra high performance summer tire",
-			"All season tire",
-			"All terrain truck tire",
-			"All season truck tire",
-			"Winter tire",
-			"Ultra high performance all season tire",
-			"Performance winter tire",
-			"Car repair shop",
-			"Car battery",
-			"Car wax",
-			"Wiper blade",
-			"Tire pressure gauge",
-			"4.3-inch screen GPS",
-			"4.7- to 7-inch screen GPS",
-			"3.5-inch screen GPS",
-			"Basic navigators",
-			"Infant car seat",
-			"Convertible car seat",
-			"Booster seat",
-			"Toddler booster seat",
-			"All-in-one car seat",
-			"Double stroller and multiples",
-			"Traditional stroller",
-			"All-terrain stroller",
-			"Jogging stroller",
-			"Play yard",
-			"High chair",
-			"Crib",
-			"Baby monitor",
-			"Thermometer",
-			"Cereal",
-			"Frozen waffle",
-			"Bacon",
-			"Soup",
-			"Broth",
-			"Spiral ham",
-			"Ice cream and frozen yogurt",
-			"Guacamole",
-			"Popcorn",
-			"Restaurant",
-			"Craft beer",
-			"Cell phone store",
-			"Canadian cell phone carrier",
-			"U.S. cell phone carrier",
-			"Cell phone carrier by city",
-			"Smart phone",
-			"Mobile security software",
-			"Cordless phone",
-			"E-book reader",
-			"Manufacturer tech support",
-			"In-store tech support",
-			"Desktop computer",
-			"Laptop",
-			"Snapshot printer",
-			"All in one printer",
-			"Regular printer",
-			"Security software",
-			"Computer monitor",
-			"Tablet ",
-			"Streaming media player",
-			"Streaming movie rental",
-			"Streaming video service",
-			"Noise-canceling headphone",
-			"Stereo headphone",
-			"HD camcorder",
-			"Flash memory models",
-			"Hard disk models",
-			"Standard-definition models",
-			"Pocket camcorder",
-			"Action camcorder",
-			"Wi-Fi and Bluetooth speaker system",
-			"Home theater system and soundbar",
-			"Blu-ray player",
-			"Flash-memory MP3 players (512 MB to 64 GB)",
-			"5-inch screen and less media players",
-			"Music players",
-			"Point and shoot digital camera",
-			"Digital SLR camera",
-			"Interchangeable and SLR lens",
-			"Digital picture frame",
-			"Paper shredder",
-			"AA battery",
-			"Front projection TV",
-			"LCD, LED and plasma TV",
-			"Airline travel",
-			"Homeowners insurance",
-			"Car insurance",
-			"Shopping website",
-			"Sporting goods stores",
-			"Computer store",
-			"MAJOR APPLIANCES",
-			"SMALL APPLIANCES",
-			"Pharmacy",
-			"Electronics store",
-			"Eyeglass store",
-			"Home air purifier",
-			"Portable Purifiers",
-			"Pellet and wood stove",
-			"Thermostat",
-			"Dehumidifier",
-			"Humidifier",
-			"Space heater",
-			"Air conditioner",
-			"Washing machine",
-			"Robotic vacuum",
-			"Upright vacuum cleaner",
-			"Small vacuum",
-			"Canister vacuum cleaner",
-			"Clothes dryer",
-			"Steam mop",
-			"All-purpose cleaner",
-			"Steam iron",
-			"Laundry detergent",
-			"Paper towel",
-			"Wet/dry vacuum",
-			"Carpet stain removers",
-			"Dishwasher detergent",
-			"Carpet cleaner",
-			"Food processor",
-			"Food chopper",
-			"Pro-style range",
-			"Gas range",
-			"Electric range",
-			"Immersion blender",
-			"Blender",
-			"Microwave oven",
-			"Toaster",
-			"Toaster oven",
-			"Electric French-press coffeemaker",
-			"Espresso maker",
-			"Single-serve coffeemakers",
-			"Still Being Tested--Pending taste test",
-			"Drip coffeemaker",
-			"Compact refrigerator",
-			"Top freezer refrigerator",
-			"Bottom freezer refrigerator",
-			"Built-in refrigerator",
-			"Side-by-side refrigerator",
-			"Gas cooktop",
-			"Wall oven",
-			"Electric cooktop",
-			"Hand mixer",
-			"Stand mixer",
-			"Refrigerator thermometer",
-			"Hot plate",
-			"Slow cooker",
-			"Garbage disposer",
-			"Wine chiller",
-			"Juicer",
-			"Meat thermometer",
-			"Dishwasher",
-			"Range hood",
-			"Freezer",
-			"Rowing machines",
-			"Diet plan",
-			"Bike helmet",
-			"Treadmill",
-			"Activity tracker",
-			"Spin bike",
-			"Elliptical",
-			"Pedometers",
-			"Sauvignon blanc",
-			"Shiraz",
-			"Malbec",
-			"Riesling",
-			"Sweet red",
-			"RosÃ©",
-			"Sparkling rosÃ©",
-			"Red zinfandel",
-			"Moscato",
-			"Pinot noir",
-			"Sparkling wine",
-			"Cabernet sauvignon",
-			"Merlot",
-			"Pinot grigio",
-			"Chardonnay",
-			"Red blend",
-			"Frozen pizza",
-			"Coffee pod",
-			"Coffee blend",
-			"Sumatran",
-			"Ethiopian",
-			"Kenyan",
-			"Traditional packaged coffee",
-			"Chicken-flavored rice",
-			"Frozen meal",
-			"Chocolate",
-			"Blood glucose meter",
-			"Heart-rate monitor",
-			"Blood pressure monitor",
-			"Flat iron",
-			"Electric razor",
-			"Sunscreen",
-			"Scale",
-			"Facial tissue",
-			"Hair dryer",
-			"Cordless tool kit",
-			"Cordless drill",
-			"Push mower",
-			"Lawn tractor",
-			"Self propelled mower",
-			"Chain saw",
-			"Leaf blower",
-			"Snow blower",
-			"String trimmer",
-			"Cookware",
-			"Frying pan",
-			"Water filter",
-			"Kitchen knife",
-			"Smoke alarm",
-			"Carbon monoxide alarm",
-			"Semi-gloss exterior paints",
-			"Satin exterior paints",
-			"Flat exterior paints",
-			"Still Being Tested--Completed the equivalent of three to six years exposure",
-			"Interior paint",
-			"Radon test kit",
-			"Lightbulb",
-			"Roofing",
-			"Generator",
-			"Flooring",
-			"Home window",
-			"Decking material",
-			"Siding",
-			"Glue",
-			"Clear Sealers",
-			"Semi-Transparent Stains",
-			"Still being tested: Completed the equivalent of three to six year's exposure",
-			"Solid Stains", "Door lock", "Mattress store", "Mattress brand",
-			"Mattress", "Sheet", "Toilet", "Showerhead", "Toilet paper",
-			"Gas grill" ];
-	$("#main_search_text").autocomplete({
-		source : availableTags
-	});
-});
+function abcd(val) {
+    $.ajax({
+        url: "ajax.html",
+        data: val,
+        type: "POST",
+
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.setRequestHeader("Content-Type", "application/json");
+        },
+        success: function (smartphone) {
+            var mySplitResult;
+            mySplitResult = smartphone.split(",");
+            var index = mySplitResult.length;
+            var availableTags = [];
+            if (index > 9) {
+                availableTags.push(mySplitResult[0]);
+                availableTags.push(mySplitResult[1]);
+                availableTags.push(mySplitResult[2]);
+                availableTags.push(mySplitResult[3]);
+                availableTags.push(mySplitResult[4]);
+                availableTags.push(mySplitResult[5]);
+                availableTags.push(mySplitResult[6]);
+                availableTags.push(mySplitResult[7]);
+                availableTags.push(mySplitResult[8]);
+                availableTags.push(mySplitResult[9]);
+            } else if (index == 2) {
+                availableTags.push(mySplitResult[0]);
+                availableTags.push(mySplitResult[1]);
+            } else if (index == 3) {
+                availableTags.push(mySplitResult[0]);
+                availableTags.push(mySplitResult[1]);
+                availableTags.push(mySplitResult[2]);
+            } else if (index == 4) {
+                availableTags.push(mySplitResult[0]);
+                availableTags.push(mySplitResult[1]);
+                availableTags.push(mySplitResult[2]);
+                availableTags.push(mySplitResult[3]);
+            } else if (index == 5) {
+                availableTags.push(mySplitResult[0]);
+                availableTags.push(mySplitResult[1]);
+                availableTags.push(mySplitResult[2]);
+                availableTags.push(mySplitResult[3]);
+                availableTags.push(mySplitResult[4]);
+            } else if (index == 6) {
+                availableTags.push(mySplitResult[0]);
+                availableTags.push(mySplitResult[1]);
+                availableTags.push(mySplitResult[2]);
+                availableTags.push(mySplitResult[3]);
+                availableTags.push(mySplitResult[4]);
+                availableTags.push(mySplitResult[5]);
+            } else if (index == 7) {
+                availableTags.push(mySplitResult[0]);
+                availableTags.push(mySplitResult[1]);
+                availableTags.push(mySplitResult[2]);
+                availableTags.push(mySplitResult[3]);
+                availableTags.push(mySplitResult[4]);
+                availableTags.push(mySplitResult[5]);
+                availableTags.push(mySplitResult[6]);
+            } else if (index == 8) {
+                availableTags.push(mySplitResult[0]);
+                availableTags.push(mySplitResult[1]);
+                availableTags.push(mySplitResult[2]);
+                availableTags.push(mySplitResult[3]);
+                availableTags.push(mySplitResult[4]);
+                availableTags.push(mySplitResult[5]);
+                availableTags.push(mySplitResult[6]);
+                availableTags.push(mySplitResult[7]);
+            } else if (index == 9) {
+                availableTags.push(mySplitResult[0]);
+                availableTags.push(mySplitResult[1]);
+                availableTags.push(mySplitResult[2]);
+                availableTags.push(mySplitResult[3]);
+                availableTags.push(mySplitResult[4]);
+                availableTags.push(mySplitResult[5]);
+                availableTags.push(mySplitResult[6]);
+                availableTags.push(mySplitResult[7]);
+                availableTags.push(mySplitResult[8]);
+            }
+            $("#main_search_text").autocomplete({
+                source: availableTags
+            });
+        }
+    });
+
+}

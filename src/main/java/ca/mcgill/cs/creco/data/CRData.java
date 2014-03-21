@@ -105,6 +105,12 @@ public final class CRData implements IDataStore
 	{
 		aProducts.put(pProduct.getId(), pProduct);
 	}
+
+	@Override
+	public Product getProduct(String pId)
+	{
+		return aProducts.get(pId);
+	}
 	
 	@Override
 	public Collection<Category> getCategories()

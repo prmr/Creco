@@ -310,13 +310,13 @@ public class CategoryBuilder
 			if(existingRatingStat.getAttribute().getId().equals(ratingId))
 			{
 				existingRatingStat.increment(1);
-				existingRatingStat.updateRange(pRating.getValue());
+				existingRatingStat.updateRange(pRating.getTypedValue());
 				return;
 			}
 		}
 		AttributeStat ratingStat = new AttributeStat(pRating);
 		ratingStat.increment(1);
-		ratingStat.updateRange(pRating.getValue());
+		ratingStat.updateRange(pRating.getTypedValue());
 		aRatings.put(pRating.getId(), ratingStat);
 	}
 	
@@ -390,13 +390,13 @@ public class CategoryBuilder
 			if(existingSpecStat.getAttribute().getId().equals(specId))
 			{
 				existingSpecStat.increment(1);
-				existingSpecStat.updateRange(pSpecification.getValue());
+				existingSpecStat.updateRange(pSpecification.getTypedValue());
 				return;
 			}
 		}
 		AttributeStat specStat = new AttributeStat(pSpecification);
 		specStat.increment(1);
-		specStat.updateRange(pSpecification.getValue());
+		specStat.updateRange(pSpecification.getTypedValue());
 		aSpecifications.put(pSpecification.getId(), specStat);
 	}
 	

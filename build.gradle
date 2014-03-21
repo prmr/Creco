@@ -13,6 +13,8 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
 
+mainClassName = "ca.mcgill.cs.creco.Application"
+
 jar {
     baseName = 'creco'
     version =  '0.1.0'
@@ -35,6 +37,8 @@ dependencies {
 	compile 'org.apache.lucene:lucene-core:4.6.0'
 	compile 'org.apache.lucene:lucene-analyzers-common:4.6.0'
 	compile 'org.apache.lucene:lucene-queryparser:4.6.0'
+	compile 'org.apache.commons:commons-math3:3.0'
+	compile 'org.apache.commons:commons-lang3:3.0'
 }
 
 task wrapper(type: Wrapper) {

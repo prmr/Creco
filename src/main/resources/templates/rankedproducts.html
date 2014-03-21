@@ -19,7 +19,7 @@
 	    <title>Creco</title> 
 	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	</head>
-	<body>
+	<body> 
 	    <div id='search'>			
 			<div>
 				<span class="label label-info">CRECO</span>			
@@ -28,128 +28,33 @@
 			<div id='main_searchbar' class="input-group">
 				<form action="/searchEqClass" method="POST" th:object="${mainQuery}">
 					<input id='main_search_text' type="text" class="form-control" style="width: 350px" placeholder="Please enter product names, brands, etc."
-						th:field="*{query}"></input>
+					onkeyup="javascript:abcd($('#main_search_text').val())" autocomplete="off" th:field="*{query}"></input>
 					<input id='search_btn' type="submit" class="btn btn-info" value="Search"></input>	
 				</form>
 			</div>
 
-			<div id="feature" style="width: 40%;">
-				<!-- Feature stuff here -->
-				<div id="accordion-resizer" class="ui-widget-content">
-				<div id="accordion">				
-					<h3>Specifications</h3>
-					 	<div id='main_specs'>
-						 	<div>
-								<form id="myForm" action="/sendFeatures2" method="POST">							 		 	  	 					    							
-									<div th:each="specFeatures : ${specFeatureList.features}"><!--.sequence(1,2)}"> -->
-		    				 			<div th:if="${specFeatures.visible==true}">
-		    					 			<div th:switch="${specFeatures.type}"> 
-		 					    				<div th:case="'Bool'">						   		 					 	 	 	  			
-		 					 	 					<div class="btn-group">		
-		 					 	 					<p><span th:text="${specFeatures.name}"></span><img src="img/info.ico" alt="Description"  class="img-rounded" align="middle" data-toggle="tooltip" data-placement="right" th:title="${specFeatures.desc}"/></p>								 		 	  				 					 	 						 					 	 						
-							 		 	  				<div class="form-group1">								 		 	  	 			
-							 		 	  	 				 <input type="hidden" name="id" th:value="${specFeatures.id}"/>
-												   		      <input type="hidden" name = "name" th:value="${specFeatures.name}"/>											  																								 										   																			 							    					 				 					 	 					
-							 		 	  	 				  <label>Yes</label>
-							 		 	  	 				  <input type="radio" th:name="${specFeatures.name}"  th:value="true"  onclick="addFeature(this,this.name,this.value)"/>						 		 	  	 				  									  
-															  <label>No</label>
-															  <input type="radio" th:name="${specFeatures.name}" th:value="false" onclick="addFeature(this,this.name,this.value)"/>
-															  <label>Neutral</label>
-															  <input type="radio"  th:name="${specFeatures.name}"  th:value="NA" onclick="addFeature(this,this.name,this.value)"/>															 															
-														</div>																												
-													</div>
-									  			</div>	
-								  			<div th:case="'Numeric'">
-											 	<p><span th:text="${specFeatures.name}"></span><img src="img/info.ico" alt="Description"  align="middle" data-toggle="tooltip" data-placement="right" th:title="${specFeatures.desc}"/></p>
-											 	  <input type="hidden" name="id" th:value="${specFeatures.id}"/>
-												  <input type="hidden" name = "name" th:value="${specFeatures.name}"/>
-												  <input type="hidden" name = "min" th:value="${specFeatures.minValue}"/>
-												  <input type="hidden" name = "max" th:value="${specFeatures.maxValue}"/>
-												 <div th:name="${specFeatures.name}"> 											  																								 										   																			 							    					 				 					 	 					
-							 		 	  	 	  	<div th:id="${specFeatures.name}" class="slider-range" th:max="${specFeatures.maxValue}" th:min="${specFeatures.minValue}"></div>
-							 		 	  	 	 	<input type="text" th:name="${specFeatures.name}" class="slider_value" readonly="readonly"/>							 		 	  	 	 	
-							 		 	  	 	 </div>					 		 	  	 	   		
-							 		 	  	</div>
-							 		 	  	
-											  <div th:case="'Nominal'">
-											  	<div class="btn-group">											  												  
-											  		<p><span th:text="${specFeatures.name}"></span><img src="img/info.ico" alt="Description"  align="middle" data-toggle="tooltip" data-placement="right" th:title="${specFeatures.desc}"/></p>												  	
-												  	 <div class="form-group2" th:each="val : ${specFeatures.value}">
-												  	  	<input type="hidden" name="id" th:value="${specFeatures.id}"/>
-			 									   		<input type="hidden" name = "name" th:value="${specFeatures.name}"/>											  																								 										   																			 							    					 				 					 	 												  	 
-	    												<label th:text="${val}"></label>
-														<input type="checkbox" th:name="${specFeatures.name}" th:value="${val}" onclick="isChecked(this,this.name,this.value)"/>									
-													</div>		 									 																				 
-												</div>						  				   	
-											  </div>						  
-											  <div th:case="*">UnKnown Feature Type</div> 
-											</div> 							
-									</div>																				
+			<div id="feature">
+				<div id="feature_title">Specifications</div>
+				<div id='main_specs'>
+					<form id="myForm" >
+						<div th:each="specFeatures : ${specFeatureList.features}">
+							<!--.sequence(1,2)}"> -->
+							<div th:if="${specFeatures.visible==true}">
+								<div >
+									<input type="checkbox" class="check"  th:title="${specFeatures.desc}" 
+										th:name="${specFeatures.name}"
+										onclick="isChecked(this, this.name)"></input>
+									<label th:text="${specFeatures.name}"></label>
 								</div>
-								<!--<p><a href="popupFeature.html" class="popup">More</a></p>	-->	  					
-							</form>
-						</div>			
-						</div>								
-							<h3>Ratings</h3>
-								<div id='main_ratings'>	
-								<div>				
-								<form id="myForm" action="/sendFeatures2" method="POST">							 		 	  	 					    							
-									<div th:each="rateFeatures : ${rateFeatureList.features}"><!--.sequence(1,2)}"> -->
-		    				 			<div th:if="${rateFeatures.visible==true}">
-		    					 			<div th:switch="${rateFeatures.type}"> 
-		 					    				<div th:case="'Bool'">						   
-		 					 	 					<div class="btn-group">
-		 					 	 						<p><span th:text="${rateFeatures.name}"></span><img src="img/info.ico" alt="Description"  align="middle" data-toggle="tooltip" data-placement="right" th:title="${rateFeatures.desc}"/></p>	
-							 		 	  					<div class="form-group1">								 		 	  	 			
-							 		 	  	 				 <input type="hidden" name="id" th:value="${rateFeatures.id}"/>
-												   		      <input type="hidden" name = "name" th:value="${rateFeatures.name}"/>											  																								 										   																			 							    					 				 					 	 					
-							 		 	  	 				  <label>Yes</label>
-							 		 	  	 				  <input type="radio" th:name="${rateFeatures.name}"  th:value="true"  onclick="addFeature(this,this.name,this.value)"/>						 		 	  	 				  									  
-															  <label>No</label>
-															  <input type="radio" th:name="${rateFeatures.name}" th:value="false" onclick="addFeature(this,this.name,this.value)"/>
-															  <label>Neutral</label>
-															  <input type="radio"  th:name="${rateFeatures.name}"  th:value="NA" onclick="addFeature(this,this.name,this.value)"/>															 															
-														</div>																												
-													</div>
-									  			</div>	
-								  			<div th:case="'Numeric'">
-					 	 						<p><span th:text="${rateFeatures.name}"></span><img src="img/info.ico" alt="Description"  align="middle" data-toggle="tooltip" data-placement="right" th:title="${rateFeatures.desc}"/></p>
-											 	  <input type="hidden" name="id" th:value="${rateFeatures.id}"/>
-												  <input type="hidden" name = "name" th:value="${rateFeatures.name}"/>
-												  <input type="hidden" name = "min" th:value="${rateFeatures.minValue}"/>
-												  <input type="hidden" name = "max" th:value="${rateFeatures.maxValue}"/>
-												  <div th:name="${rateFeatures.name}"> 											  																								 										   																			 							    					 				 					 	 					
-							 		 	  	 	  	<div th:id="${rateFeatures.name}" class="slider-range" th:max="${rateFeatures.maxValue}" th:min="${rateFeatures.minValue}"></div>
-							 		 	  	 	 	<input type="text" th:name="${rateFeatures.name}" class="slider_value" readonly="readonly"/>							 		 	  	 	 	
-							 		 	  	 	 </div>						 	 											 	 						
-					 	 						  <!--  <span  class="max" style="border:0; color:#0DC6E9; font-weight:bold;"></span> -->							 		 	  	 	 
-							 		 	  	</div>
-											  <div th:case="'Nominal'">
-											  	<div class="btn-group">											  												  
-	 					 	 						<p><span th:text="${rateFeatures.name}"></span><img src="img/info.ico" alt="Description"  align="middle" data-toggle="tooltip" data-placement="right" th:title="${rateFeatures.desc}"/></p>
-												  	 <div class="form-group2" th:each="val : ${rateFeatures.value}">
-												  	  	<input type="hidden" name="id" th:value="${rateFeatures.id}"/>
-												   		<input type="hidden" name = "name" th:value="${rateFeatures.name}"/>											  																								 										   																			 							    					 				 					 	 														  	 
-													    <label th:text="${val}"></label>
-													    <input type="checkbox" th:name="${rateFeatures.name}" th:value="${val}" onclick="isChecked(this,this.name,this.value)"/>									
-													</div>		 									 																				 
-												</div>						  				   	
-											  </div>						  
-											  <div th:case="*">UnKnown Feature Type</div> 
-											</div> 							
-									</div>
-																				
-								</div>
-							<!-- 	<p><a href="popupFeature.html" class="popup">More</a></p>	-->	  					
-							</form>
-						</div>	
-						</div>								 																				 					  	   																																										
-					</div><!--  accordion-->									
-					<button id='submit_btn' type="button" value="Submit" class="btn btn-info" onclick="sendFeatures()">Submit</button>																				
-				
-				</div>	
-			</div><!-- end feature-->		
-			<div id='rankedproduct-result'>
+							</div>
+						</div>
+					</form>
+				</div>
+				<button id='submit_btn' type="button" value="Submit"
+					class="btn btn-info" onclick="sendFeatures()">Submit</button>
+			</div>
+			
+			<div id="product-area">
 				<div class="rankedproduct-result-entry" th:each="product : ${productList.products}">
                     <div class="rankedproduct-result-name" th:text="${product.name}"></div>
 				</div>
@@ -165,5 +70,4 @@
 	<link rel='stylesheet' type='text/css' href='lib/bootstrap.min.css'></link>
 	<link rel='stylesheet' type='text/css' href='lib/bootstrap-theme.min.css'></link>
 	<link rel='stylesheet' type='text/css' href='css/search.css' />
-	<link rel="stylesheet" type="text/css" href="css/slider.css" />
 </html>
