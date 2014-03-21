@@ -617,7 +617,9 @@ public class SearchController
 			LOG.debug(sa.toString());					
 		}
 	
-		RankedFeaturesProducts tempProducts = new RankedFeaturesProducts();		
+		RankedFeaturesProducts tempProducts = new RankedFeaturesProducts();	
+		userScoredFeaturesSpecs = sortFeatures(userScoredFeaturesSpecs);
+		
 		List<Product> productsToDisplay  = tempProducts.FeatureSensitiveRanking(userScoredFeaturesSpecs, aCategory);
 
 		// Converting to View Object
@@ -635,6 +637,32 @@ public class SearchController
 		return "/rankedproducts";		
 	}	
 
+	
+	/**
+	 * @author MariamN
+	 * Sort user selected features based on Entropy
+	 * @param pUserFeatures user selected features
+	 * @return list of sorted features
+	 */
+	public List<ScoredAttribute> sortFeatures(List<ScoredAttribute> pUserFeatures)
+	{
+		int len = pUserFeatures.size();
+		ScoredAttribute tmp = null;
+		
+		for(int i = 0; i<len; i++)
+		{
+			for(int j = (len-1); j >= (i+1); j--)
+			{				
+				if(pUserFeatures.get(j).getEntropy() > pUserFeatures.get(j-1).getEntropy())
+				{
+					tmp = pUserFeatures.get(j);			       
+					pUserFeatures.set(j,pUserFeatures.get(j-1));
+					pUserFeatures.set(j-1,tmp);
+				}
+			}
+		}
+		return pUserFeatures;		
+	}
 	/**
 	 * @author MariamN
 	 * @param pFeatureList : feature list, either specs or ratings
