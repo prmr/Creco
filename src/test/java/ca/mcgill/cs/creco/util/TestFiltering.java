@@ -39,7 +39,7 @@ import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.logic.AttributeExtractor;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.search.ICategorySearch;
-import ca.mcgill.cs.creco.logic.search.IProductSearch;
+import ca.mcgill.cs.creco.logic.search.IProductSort;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
 import ca.mcgill.cs.creco.web.controller.SearchController;
 
@@ -53,7 +53,7 @@ public class TestFiltering {
 	IDataStore aDataStore;
 	
 	@Autowired
-	IProductSearch aProductSearch;
+	IProductSort aProductSearch;
 	
 	@Autowired
 	private ICategorySearch aCategorySearch;

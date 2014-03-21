@@ -35,7 +35,7 @@ import ca.mcgill.cs.creco.data.Product;
  *Lists products alphabetically after taking a category id
  */
 @Component
-public class ProductSort implements IProductSearch
+public class ProductSort implements IProductSort
 {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ProductSort.class);

@@ -37,7 +37,7 @@ public class TestProductSort {
 	IDataStore aDataStore;
 	
 	@Autowired
-	IProductSearch aProductSearch;
+	IProductSort aProductSearch;
 	
 	private static String SMARTPHONE_CATEGORY_ID = "28726";
 	private static String IPHONE_5S_16GB_VERIZON_ID = "231983";

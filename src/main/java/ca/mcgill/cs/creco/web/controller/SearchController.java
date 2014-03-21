@@ -42,7 +42,7 @@ import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.logic.AttributeExtractor;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.search.ICategorySearch;
-import ca.mcgill.cs.creco.logic.search.IProductSearch;
+import ca.mcgill.cs.creco.logic.search.IProductSort;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
 import ca.mcgill.cs.creco.util.RankedFeaturesProducts;
 import ca.mcgill.cs.creco.web.model.EqcListVO;
@@ -98,7 +98,7 @@ public class SearchController
 	private ICategorySearch aCategorySearch;
 	
 	@Autowired
-	private IProductSearch aProductSort;
+	private IProductSort aProductSort;
 	
 	@ModelAttribute("mainQuery")
 	private MainQueryVO getMainQuery() 
