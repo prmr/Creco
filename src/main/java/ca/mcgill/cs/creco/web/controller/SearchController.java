@@ -621,7 +621,7 @@ public class SearchController
 		List<Product> productsToDisplay  = tempProducts.FeatureSensitiveRanking(userScoredFeaturesSpecs, aCategory);
 
 		// Converting to View Object
-		ArrayList<ProductVO> products = new ArrayList<ProductVO>();		
+		ArrayList<ProductVO> products = new ArrayList<ProductVO>();
 	    for (Product sp: productsToDisplay)
 	    {
 			ProductVO p = new ProductVO();
@@ -629,7 +629,9 @@ public class SearchController
 			p.setId(sp.getId());
 			products.add(p);
 		 }
-		aProductList.setProducts(products);	
+	    if (productsToDisplay.size() == 0) {
+			aProductList.setProducts(products);	
+	    }
 		return "/rankedproducts";		
 	}	
 
