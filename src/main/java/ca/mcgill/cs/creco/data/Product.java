@@ -36,6 +36,7 @@ public class Product
 	private HashMap<String, Attribute> aAttributes = new HashMap<String, Attribute>();
 	private String aCategoryId;
 	private CategoryBuilder aCategory;
+	private Attribute aPrice = null;
 	
 		
 	/**
@@ -56,10 +57,14 @@ public class Product
 		aModelOverviewPageUrl = pModelOverviewPageUrl;
 		for(Attribute att : pAttributes) 
 		{
-			// While copying over the attributes, note whether any were ratings
+			// While copying over the attributes, note whether any were ratings, and capture a reference to the price if any
 			if(att.isRating())
 			{
 				aIsRated = true;
+			}
+			else if(att.isPrice())
+			{
+				aPrice = att;
 			}
 			aAttributes.put(att.getId(), att);
 		}
@@ -75,13 +80,27 @@ public class Product
 	 */
 	public String getCategoryId() 
 	{ return aCategoryId; }
-	
+
 	/**
-	 * @return The number of ratings.
+	 * @return True if the product has been tested by Consumer Reports.
+	 */
+	public Boolean isTested() 
+	{ return aIsTested; }
+
+	/**
+	 * @return True if the product has a rating.
 	 */
 	public boolean isRated() 
 	{ 
 		return aIsRated; 
+	}
+
+	/**
+	 * @return True if the product has a price.
+	 */
+	public boolean isPriced() 
+	{ 
+		return aPrice != null; 
 	}
 
 	/**
@@ -109,12 +128,6 @@ public class Product
 		}
 	
 	/**
-	 * @return True if the product has been tested by Consumer Reports.
-	 */
-	public Boolean isTested() 
-	{ return aIsTested; }
-
-	/**
 	 * @return The product's category.
 	 */
 	public Category getCategory() 
@@ -129,13 +142,22 @@ public class Product
 	}
 		
 	/**
-	 * Return the spec for this product with pId.
+	 * Return the Attribute for this product with pId.
 	 * @param pId The id to look for.
 	 * @return The corresponding rating.
 	 */
 	public Attribute getAttribute(String pId)
 	{
 		return aAttributes.get(pId);
+	}
+	
+	/**
+	 * Return the price for this product.
+	 * @return The corresponding rating.  Null if there is no price.
+	 */
+	public Attribute getPrice()
+	{
+		return aPrice;
 	}
 	
 	
