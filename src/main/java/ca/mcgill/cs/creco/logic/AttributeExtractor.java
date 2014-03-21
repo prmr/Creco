@@ -51,7 +51,7 @@ public class AttributeExtractor
 	private SORT_METHOD aSortMethod;
 	/** Defines how to sort the scored attributes */
 	public static enum SORT_METHOD
-	{ ENTROPY, SCORE }
+	{ ENTROPY, SCORE, CORRELATION }
 		
 		
 
@@ -167,15 +167,19 @@ public class AttributeExtractor
 	}
 	public void sort()
 	{
-//		if (aSortMethod == SORT_METHOD.ENTROPY)
-//		{
-//			
-//		}
-//		else if (aSortMethod == SORT_METHOD.SCORE)
-//		{
-//			Collections.sort(aScoredAttributeList, ScoredAttribute.SORT_BY_SCORE);
-//		}
-		Collections.sort(aScoredAttributeList, ScoredAttribute.SORT_BY_ENTROPY);
+		if (aSortMethod == SORT_METHOD.CORRELATION)
+		{
+			Collections.sort(aScoredAttributeList, ScoredAttribute.SORT_BY_CORRELATION);
+
+		}
+		else if (aSortMethod == SORT_METHOD.SCORE)
+		{
+			Collections.sort(aScoredAttributeList, ScoredAttribute.SORT_BY_SCORE);
+		}
+		else
+		{
+			Collections.sort(aScoredAttributeList, ScoredAttribute.SORT_BY_ENTROPY);
+		}
 		
 	}
 
