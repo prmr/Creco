@@ -61,7 +61,7 @@ public class AttributeExtractionTest
 		ArrayList<ScoredAttribute> sal = new ArrayList<ScoredAttribute>();
 		for(int i = 0; i < 10; i++)
 		{
-			ScoredAttribute sa = new ScoredAttribute(new Attribute(i+ "", i+ "", i+ "", null), new Category("test", "test", "test", new ArrayList<Product>(), 
+			ScoredAttribute sa = new ScoredAttribute(Attribute.buildSpecification(i+ "", i+ "", i+ "", null), new Category("test", "test", "test", new ArrayList<Product>(), 
 					new ArrayList<AttributeStat>(), new ArrayList<AttributeStat>()));
 			sa.setAttributeScore(i);
 			sal.add(sa);

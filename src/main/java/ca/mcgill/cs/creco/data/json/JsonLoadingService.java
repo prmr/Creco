@@ -132,7 +132,7 @@ public class JsonLoadingService implements IDataLoadingService
 		{
 			for(SpecStub spec : pProductStub.specs)
 			{
-				atts.add(new Attribute(spec.attributeId, spec.displayName, spec.description, spec.value));
+				atts.add(Attribute.buildSpecification(spec.attributeId, spec.displayName, spec.description, spec.value));
 			}
 		}
 		
@@ -141,7 +141,7 @@ public class JsonLoadingService implements IDataLoadingService
 		{
 			for(RatingStub rating : pProductStub.ratings)
 			{
-				atts.add(new Attribute(rating.attributeId, rating.displayName, rating.description, rating.value));
+				atts.add(Attribute.buildRating(rating.attributeId, rating.displayName, rating.description, rating.value));
 			}
 		}
 		

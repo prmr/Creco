@@ -32,7 +32,7 @@ public class Product
 	private String aModelOverviewPageUrl;
 	
 	// Derived fields
-	private boolean aHasRatings = false;
+	private boolean aIsRated = false;
 	private HashMap<String, Attribute> aAttributes = new HashMap<String, Attribute>();
 	private String aCategoryId;
 	private CategoryBuilder aCategory;
@@ -56,7 +56,11 @@ public class Product
 		aModelOverviewPageUrl = pModelOverviewPageUrl;
 		for(Attribute att : pAttributes) 
 		{
-			//TODO detect ratings here
+			// While copying over the attributes, note whether any were ratings
+			if(att.isRating())
+			{
+				aIsRated = true;
+			}
 			aAttributes.put(att.getId(), att);
 		}
 	}
@@ -77,7 +81,7 @@ public class Product
 	 */
 	public boolean isRated() 
 	{ 
-		return aHasRatings; 
+		return aIsRated; 
 	}
 
 	/**

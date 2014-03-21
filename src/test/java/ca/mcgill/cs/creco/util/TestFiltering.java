@@ -120,7 +120,7 @@ public class TestFiltering {
 		List<ScoredAttribute> specList = ae.getScoredAttributeList();
 		RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(specList, prodSearch);
 		List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
-		Attribute test= new Attribute( "doesnt matter", "Manual controls", "doesn't matter", true );
+		Attribute test= Attribute.buildSpecification( "doesnt matter", "Manual controls", "doesn't matter", true );
 		ScoredAttribute test_score = new ScoredAttribute(test,new Category("empty", "test", "test", new ArrayList<Product>(), 
 					new ArrayList<AttributeStat>(), new ArrayList<AttributeStat>()));
 		TypedValue temporary = new TypedValue(false);
@@ -148,7 +148,7 @@ public class TestFiltering {
 		    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(specList, prodSearch);
 		    List<Product> scoredProducts = rankedProducts.getaProductSearchResult();
 		    List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
-			Attribute test= new Attribute( "doesnt matter", "Multiple recline positions", "doesn't matter", true );
+			Attribute test= Attribute.buildSpecification( "doesnt matter", "Multiple recline positions", "doesn't matter", true );
 		  ScoredAttribute test_score = new ScoredAttribute(test,new Category("empty", "test", "test", new ArrayList<Product>(), 
 					new ArrayList<AttributeStat>(), new ArrayList<AttributeStat>()));
 
