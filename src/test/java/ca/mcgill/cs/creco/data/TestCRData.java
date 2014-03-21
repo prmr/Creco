@@ -98,13 +98,13 @@ public class TestCRData
 	// tagged as an NA value. See Issue #0050
 	@Test public void testNAValues()
 	{
-		Attribute attribute = aDataStore.getProduct("220271").getRating("4512");
+		Attribute attribute = aDataStore.getProduct("220271").getAttribute("4512");
 		assertTrue(attribute.getTypedValue().isNA());
 				
-		attribute = aDataStore.getProduct("203938").getSpec("979");
+		attribute = aDataStore.getProduct("203938").getAttribute("979");
 		assertTrue(attribute.getTypedValue().isNA());
 		
-		attribute = aDataStore.getProduct("229028").getSpec("4188");
+		attribute = aDataStore.getProduct("229028").getAttribute("4188");
 		assertTrue(attribute.getTypedValue().isNA());
 	}
 }

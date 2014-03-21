@@ -291,16 +291,16 @@ public class CategoryTree implements IDataCollector
 			lProduct.setCategory(category);
 			
 			// Aggregate some product info in the category
-			category.addRatings(lProduct.getRatings());
-			category.putSpecifications(lProduct.getSpecs());
+			category.addRatings(lProduct.getAttributes());
+			category.putSpecifications(lProduct.getAttributes());
 			
 			// Increment the counts in this category
 			category.incrementCount(1);
-			if(lProduct.getIsTested())
+			if(lProduct.isTested())
 			{
 				category.incrementTestedCount(1);
 			}
-			if(lProduct.getNumRatings() > 0)
+			if(lProduct.isRated())
 			{
 				category.incrementRatedCount(1);
 			}

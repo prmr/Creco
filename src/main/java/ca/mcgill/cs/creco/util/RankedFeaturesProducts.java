@@ -85,20 +85,13 @@ public class RankedFeaturesProducts {
 				{
 					Product prod = main_aProductSearchResult.get(j);
 					
-					if(prod.getSpec(fID) != null)
+					if(prod.getAttribute(fID) != null)
 					{
 						matrix[i][j] = 1;
 					}
 					else
 					{
-						if(prod.getRating(fID) != null)
-						{
-							matrix[i][j] = 1;	
-						}
-						else
-						{
-							matrix[i][j] = 0;
-						}
+						matrix[i][j] = 0;
 					}						
 				}
 			}
@@ -152,49 +145,27 @@ public class RankedFeaturesProducts {
 			{
 				if(pDirection.equals(Direction.MORE_IS_BETTER))
 				{
-					if(pProductList.get(j).getRating(pAttrId) != null)
+					if(pProductList.get(j).getAttribute(pAttrId) != null) //TODO EN: I wasn't sure if this check is still needed now that there is no spec/rating ambiguity?
 					{
-						if(pProductList.get(j).getRating(pAttrId).getTypedValue().getNumeric() < pProductList.get(j-1).getRating(pAttrId).getTypedValue().getNumeric())
+						if(pProductList.get(j).getAttribute(pAttrId).getTypedValue().getNumeric() < pProductList.get(j-1).getAttribute(pAttrId).getTypedValue().getNumeric())
 						{
 							tmpProd = pProductList.get(j);
 							pProductList.set(j,pProductList.get(j-1));						
 						}						
-					}
-					else{
-						if(pProductList.get(j).getSpec(pAttrId) != null)
-						{
-							if(pProductList.get(j).getSpec(pAttrId).getTypedValue().getNumeric() < pProductList.get(j-1).getSpec(pAttrId).getTypedValue().getNumeric())
-							{
-								tmpProd = pProductList.get(j);
-								pProductList.set(j,pProductList.get(j-1));						
-							}						
-						}
-						
 					}
 				}
 				else
 				{
 					if(pDirection.equals(Direction.LESS_IS_BETTER))
 					{
-						if(pProductList.get(j).getRating(pAttrId) != null)
+						if(pProductList.get(j).getAttribute(pAttrId) != null) //TODO EN: I wasn't sure if this check is still needed now that there is no spec/rating ambiguity?
 						{
 							
-							if(pProductList.get(j).getRating(pAttrId).getTypedValue().getNumeric() > pProductList.get(j-1).getRating(pAttrId).getTypedValue().getNumeric())
+							if(pProductList.get(j).getAttribute(pAttrId).getTypedValue().getNumeric() > pProductList.get(j-1).getAttribute(pAttrId).getTypedValue().getNumeric())
 							{
 								tmpProd = pProductList.get(j);
 								pProductList.set(j,pProductList.get(j-1));							
 							}
-						}
-						else{
-							if(pProductList.get(j).getSpec(pAttrId) != null)
-							{
-								if(pProductList.get(j).getSpec(pAttrId).getTypedValue().getNumeric() > pProductList.get(j-1).getSpec(pAttrId).getTypedValue().getNumeric())
-								{
-									tmpProd = pProductList.get(j);
-									pProductList.set(j,pProductList.get(j-1));						
-								}						
-							}
-							
 						}
 					}
 					
@@ -245,7 +216,7 @@ public class RankedFeaturesProducts {
 		for(Product product: RankedFeaturesProducts.main_aProductSearchResult)
 		{
 			int flag=0;
-			Iterable<Attribute> specs = product.getSpecs();
+			Iterable<Attribute> specs = product.getAttributes();
 			for(Attribute a:specs)
 			{
 				for(ScoredAttribute b:pSpecList)

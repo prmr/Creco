@@ -32,6 +32,7 @@ public class Product
 	private String aModelOverviewPageUrl;
 	
 	// Derived fields
+	private boolean aHasRatings = false;
 	private HashMap<String, Attribute> aAttributes = new HashMap<String, Attribute>();
 	private String aCategoryId;
 	private CategoryBuilder aCategory;
@@ -45,7 +46,7 @@ public class Product
 	 * @param pCategoryId The ID of the category for this product.
 	 * @param pBrandName The brand name
 	 */
-	public Product(String pId, String pDisplayName, Boolean pIsTested, String pCategoryId, String pBrandName, String pModelOverviewPageUrl, Collection<Attribute> Attributes)
+	public Product(String pId, String pDisplayName, Boolean pIsTested, String pCategoryId, String pBrandName, String pModelOverviewPageUrl, Collection<Attribute> pAttributes)
 	{
 		aId = pId;
 		aDisplayName = pDisplayName;
@@ -53,11 +54,11 @@ public class Product
 		aCategoryId = pCategoryId;
 		aBrandName = pBrandName;
 		aModelOverviewPageUrl = pModelOverviewPageUrl;
-	}
-	
-	public void addAttribute(Attribute pAttribute)
-	{
-		aAttributes.put(pAttribute.getId(), pAttribute);
+		for(Attribute att : pAttributes) 
+		{
+			//TODO detect ratings here
+			aAttributes.put(att.getId(), att);
+		}
 	}
 	
 	void setCategory(CategoryBuilder pCategory)
@@ -74,10 +75,9 @@ public class Product
 	/**
 	 * @return The number of ratings.
 	 */
-	//TODO: this needs to detect the number of ratings proper (not all attributes)
-	public int getNumRatings() 
+	public boolean isRated() 
 	{ 
-		return aAttributes.size(); 
+		return aHasRatings; 
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class Product
 	/**
 	 * @return True if the product has been tested by Consumer Reports.
 	 */
-	public Boolean getIsTested() 
+	public Boolean isTested() 
 	{ return aIsTested; }
 
 	/**
@@ -115,24 +115,6 @@ public class Product
 	 */
 	public Category getCategory() 
 	{ return aCategory.getCategory(); }
-
-	/**
-	 * @return A iterator on the ratings for this product.
-	 */
-	@Deprecated
-	public Iterable<Attribute> getRatings()
-	{
-		return getAttributes();
-	}
-
-	/**
-	 * @return A iterator on the specs for this product.
-	 */
-	@Deprecated
-	public Iterable<Attribute> getSpecs() 
-	{	
-		return getAttributes();
-	}
 	
 	/**
 	 * @return A iterator on the specs for this product.
@@ -141,29 +123,7 @@ public class Product
 	{	
 		return Collections.unmodifiableCollection(aAttributes.values());
 	}
-	
-	/**
-	 * Return the rating for this product with pId.
-	 * @param pId The id to look for.
-	 * @return The corresponding rating.
-	 */
-	@Deprecated
-	public Attribute getRating(String pId)
-	{
-		return getAttribute(pId);
-	}
-	
-	/**
-	 * Return the spec for this product with pId.
-	 * @param pId The id to look for.
-	 * @return The corresponding rating.
-	 */
-	@Deprecated
-	public Attribute getSpec(String pId)
-	{
-		return getAttribute(pId);
-	}
-	
+		
 	/**
 	 * Return the spec for this product with pId.
 	 * @param pId The id to look for.
