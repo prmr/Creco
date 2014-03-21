@@ -39,7 +39,7 @@ import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.logic.AttributeExtractor;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.search.ICategorySearch;
-import ca.mcgill.cs.creco.logic.search.IProductSearch;
+import ca.mcgill.cs.creco.logic.search.IProductSort;
 import ca.mcgill.cs.creco.logic.search.ScoredProduct;
 import ca.mcgill.cs.creco.web.controller.SearchController;
 
@@ -53,7 +53,7 @@ public class TestFiltering {
 	IDataStore aDataStore;
 	
 	@Autowired
-	IProductSearch aProductSearch;
+	IProductSort aProductSearch;
 	
 	@Autowired
 	private ICategorySearch aCategorySearch;
@@ -72,7 +72,7 @@ public class TestFiltering {
 		    	}
 		    }
 		    
-			List<Product> prodSearch = aProductSearch.returnProductsAlphabetically("Toaster", target.getId());
+			List<Product> prodSearch = aProductSearch.returnProductsAlphabetically(target.getId());
 			AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
 			List<ScoredAttribute> ratingList = ae.getScoredRatingList();
 			List<ScoredAttribute> specList = ae.getScoredAttributeList();
@@ -92,7 +92,7 @@ public class TestFiltering {
 		    	}
 		    }
 		    
-			List<Product> prodSearch = aProductSearch.returnProductsAlphabetically("Digital SLR camera", target.getId());
+			List<Product> prodSearch = aProductSearch.returnProductsAlphabetically(target.getId());
 			AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
 			List<ScoredAttribute> ratingList = ae.getScoredRatingList();
 			List<ScoredAttribute> specList = ae.getScoredAttributeList();
@@ -114,7 +114,7 @@ public class TestFiltering {
 		    }
 		}
 		    
-		List<Product> prodSearch = aProductSearch.returnProductsAlphabetically("Point & shoot digital camera", target.getId());
+		List<Product> prodSearch = aProductSearch.returnProductsAlphabetically(target.getId());
 		AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
 		List<ScoredAttribute> ratingList = ae.getScoredRatingList();
 		List<ScoredAttribute> specList = ae.getScoredAttributeList();
@@ -141,7 +141,7 @@ public class TestFiltering {
 		    	}
 		    }
 		    
-			List<Product> prodSearch = aProductSearch.returnProductsAlphabetically("Convertible car seat", target.getId());
+			List<Product> prodSearch = aProductSearch.returnProductsAlphabetically(target.getId());
 			AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
 			List<ScoredAttribute> ratingList = ae.getScoredRatingList();
 			List<ScoredAttribute> specList = ae.getScoredAttributeList();

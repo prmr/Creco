@@ -16,12 +16,10 @@
 package ca.mcgill.cs.creco.logic.search;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,13 +31,13 @@ import ca.mcgill.cs.creco.data.Product;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/META-INF/test-context.xml"})
-public class TestProductSearch {
+public class TestProductSort {
 
 	@Autowired
 	IDataStore aDataStore;
 	
 	@Autowired
-	IProductSearch aProductSearch;
+	IProductSort aProductSearch;
 	
 	private static String SMARTPHONE_CATEGORY_ID = "28726";
 	private static String IPHONE_5S_16GB_VERIZON_ID = "231983";
@@ -48,11 +46,30 @@ public class TestProductSearch {
 	@Test
 	public void testInvalidCategory() throws IOException
 	{
-		List<Product> scoredProducts = aProductSearch.returnProductsAlphabetically("query doesn't matter", "123456789");
+		List<Product> sortedProducts = aProductSearch.returnProductsAlphabetically("123456789");
 		
-		assertEquals(null, scoredProducts);
+		assertEquals(null, sortedProducts);
 	}
 	
 
+	@Test
+	
+	public void checkIfAlphabetical()
+	{
+		List<Product> sortedProducts = aProductSearch.returnProductsAlphabetically("28726");
 		
+		char previousNameCharacter = sortedProducts.get(0).getName().charAt(0);
+		int previousASCII = (int)previousNameCharacter ;
+	
+		for(int i = 1; i < sortedProducts.size(); i++)
+		{
+			char currentNameCharacter = sortedProducts.get(i).getName().charAt(0);
+			int currentASCII = (int)currentNameCharacter;
+			
+			assertTrue(currentASCII >= previousASCII);
+			
+			previousASCII = currentASCII;
+		}
+		
+	}
 }
