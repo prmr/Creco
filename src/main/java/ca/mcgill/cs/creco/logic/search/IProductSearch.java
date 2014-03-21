@@ -18,7 +18,7 @@ public interface IProductSearch
 	 */
 	
 	
-	List<Product> returnProductsAlphabetically(String pQueryString, String pCategoryID);
+	List<Product> returnProductsAlphabetically(String pCategoryID);
 	
 	
 }

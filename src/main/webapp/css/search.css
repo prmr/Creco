@@ -99,7 +99,8 @@ html, body
 .rankedproduct-result-name
 {
 	width: 100%;
-	text-align: center;
+	padding-left: 25px;
+	color: rgb(122, 122, 122);
 }
 
 #feature 

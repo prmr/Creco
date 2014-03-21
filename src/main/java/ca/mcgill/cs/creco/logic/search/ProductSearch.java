@@ -22,16 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.en.EnglishAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.RAMDirectory;
-import org.apache.lucene.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +52,6 @@ public class ProductSearch implements IProductSearch
 	@Autowired
 	public ProductSearch(IDataStore pDataStore) throws IOException
 	{
-		
 		aDataStore = pDataStore;
 		
 		
@@ -71,7 +60,7 @@ public class ProductSearch implements IProductSearch
 	
 
 	@Override
-	public List<Product> returnProductsAlphabetically(String pQueryString, String pCategoryID)
+	public List<Product> returnProductsAlphabetically(String pCategoryID)
 	{
 		// TODO Auto-generated method stub
 		Category category = aDataStore.getCategory(pCategoryID);

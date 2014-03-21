@@ -98,7 +98,7 @@ public class SearchController
 	private ICategorySearch aCategorySearch;
 	
 	@Autowired
-	private IProductSearch aProductSearch;
+	private IProductSearch aProductSort;
 	
 	@ModelAttribute("mainQuery")
 	private MainQueryVO getMainQuery() 
@@ -455,7 +455,7 @@ public class SearchController
 	    	}
 	    }
 	    
-		List<Product> prodSearch = aProductSearch.returnProductsAlphabetically(aMainQuery.getQuery(), target.getId());
+		List<Product> prodSearch = aProductSort.returnProductsAlphabetically(target.getId());
 		AttributeExtractor ae = new AttributeExtractor(target);
 		
 		List<ScoredAttribute> attrList = ae.getScoredAttributeList();
@@ -471,6 +471,7 @@ public class SearchController
 	    {
 			ProductVO p = new ProductVO();
 			p.setName(sp.getName());
+			p.setUrl(sp.getUrl());
 			p.setId(sp.getId());
 			products.add(p);
 	    }
@@ -620,7 +621,7 @@ public class SearchController
 		List<Product> productsToDisplay  = tempProducts.FeatureSensitiveRanking(userScoredFeaturesSpecs, aCategory);
 
 		// Converting to View Object
-		ArrayList<ProductVO> products = new ArrayList<ProductVO>();		
+		ArrayList<ProductVO> products = new ArrayList<ProductVO>();
 	    for (Product sp: productsToDisplay)
 	    {
 			ProductVO p = new ProductVO();
@@ -628,7 +629,9 @@ public class SearchController
 			p.setId(sp.getId());
 			products.add(p);
 		 }
-		aProductList.setProducts(products);	
+	    if (productsToDisplay.size() == 0) {
+			aProductList.setProducts(products);	
+	    }
 		return "/rankedproducts";		
 	}	
 
