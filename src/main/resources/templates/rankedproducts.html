@@ -19,6 +19,12 @@
 	    <title>Creco</title> 
 	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	</head>
+	
+	<link rel="stylesheet" href="lib/jquery-ui.css"></link>
+	<link rel='stylesheet' type='text/css' href='lib/bootstrap.min.css'></link>
+	<link rel='stylesheet' type='text/css' href='lib/bootstrap-theme.min.css'></link>
+	<link rel='stylesheet' type='text/css' href='css/search.css' />
+	
 	<body> 
 	    <div id='search'>			
 			<div>
@@ -41,17 +47,17 @@
 							<!--.sequence(1,2)}"> -->
 							<div th:if="${specFeatures.visible==true}">
 								<div >
-									<input type="checkbox" class="check"  th:title="${specFeatures.desc}" 
+									<input type="checkbox" class="check"
 										th:name="${specFeatures.name}"
 										onclick="isChecked(this, this.name)"></input>
-									<label th:text="${specFeatures.name}"></label>
+									<label th:text="${specFeatures.name}"  th:title="${specFeatures.desc}" ></label>
 								</div>
 							</div>
 						</div>
 					</form>
 				</div>
 				<button id='submit_btn' type="button" value="Submit"
-					class="btn btn-info" onclick="sendFeatures()">Submit</button>
+					class="btn btn-info" style="opacity:0.8;width:100%" onclick="sendFeatures()">Submit</button>
 			</div>
 			
 			<div id="product-area">
@@ -66,8 +72,4 @@
 	<script type='text/javascript' src='lib/bootstrap.min.js'></script>	
 	<script type='text/javascript' src="js/autocomplete.js"></script> 
 	<script src="js/features_form.js"></script>
-	<link rel="stylesheet" href="lib/jquery-ui.css"></link>
-	<link rel='stylesheet' type='text/css' href='lib/bootstrap.min.css'></link>
-	<link rel='stylesheet' type='text/css' href='lib/bootstrap-theme.min.css'></link>
-	<link rel='stylesheet' type='text/css' href='css/search.css' />
 </html>
