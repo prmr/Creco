@@ -124,10 +124,10 @@ public class TypedValue
 				aType = Type.BOOLEAN;
 				aBooleanValue = false;
 			}
-			else if(theString.matches("(\\d+)(-)(\\d+)"))
+			else if(theString.matches("(\\d+)(-)(\\d+)(.*)"))
             {
             	aType = Type.NUMERIC;
-            	Pattern pattern = Pattern.compile("(\\d+)(-)(\\d+)(\"?)");
+            	Pattern pattern = Pattern.compile("(\\d+)(-)(\\d+)(Lbs)?(\")?");
                 Matcher matcher = pattern.matcher(theString);
             	if(matcher.find())
             	{
@@ -142,7 +142,7 @@ public class TypedValue
             {
                 aType = Type.NUMERIC;
                 
-                Pattern pattern = Pattern.compile("(Limited to )(.*)(-)(.*)(Lbs?)(\"?)");
+                Pattern pattern = Pattern.compile("(Limited to )(\\d+)(-)(\\d+)(Lbs)?(\")?");
                 Matcher matcher = pattern.matcher(theString);
                 if(matcher.find())
                 {
