@@ -2,7 +2,6 @@ package ca.mcgill.cs.creco.data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -79,32 +78,110 @@ public class TestCRData
 		assertEquals("Chain saw", category.getName());
 	}
 	
-	@Test public void testGetProduct()
-	{
-		Product product = aDataStore.getProduct("8291");
-		assertEquals("8291", product.getId());
-		
-		product = aDataStore.getProduct("46018");
-		assertEquals("46018", product.getId());
-		
-		product = aDataStore.getProduct("247118");
-		assertEquals("247118", product.getId());
-		
-		product = aDataStore.getProduct("244198");
-		assertEquals("244198", product.getId());
-	}
-	
-	// Ensures that all N/A and NA values receive the string NA and become 
-	// tagged as an NA value. See Issue #0050
-	@Test public void testNAValues()
-	{
-		Attribute attribute = aDataStore.getProduct("220271").getAttribute("4512");
-		assertTrue(attribute.getTypedValue().isNA());
-				
-		attribute = aDataStore.getProduct("203938").getAttribute("979");
-		assertTrue(attribute.getTypedValue().isNA());
-		
-		attribute = aDataStore.getProduct("229028").getAttribute("4188");
-		assertTrue(attribute.getTypedValue().isNA());
-	}
+// Testing all the counts of products
+		@Test public void testallcounts()
+		{
+			assertEquals(322,aDataStore.getCategories().size());
+			assertEquals(24268,aDataStore.getProducts().size());
+			for(Category categoryname: aDataStore.getCategories())
+				assertEquals(categoryname.getNumberOfProducts(),categoryname.getProducts().size());
+
+		}
+	// Testing the ratings and specifications counts with matching ratings and specifications	
+		@Test public void testratingsandspecs()
+		{
+			Category category = null;
+			
+			category= aDataStore.getCategory("32968");
+			assertEquals(6,category.getRatings().size());
+			assertEquals("Output",category.getRating("4556").getAttribute().getName());
+			assertEquals("Noise",category.getRating("767").getAttribute().getName());
+			assertEquals(20,category.getSpecifications().size());
+			assertEquals("Claimed maximum run time",category.getSpecification("6882").getAttribute().getName());
+			assertEquals("Claimed humidification area",category.getSpecification("4561").getAttribute().getName());
+			assertEquals("Cord length",category.getSpecification("3646").getAttribute().getName());
+			assertEquals("Color",category.getSpecification("6").getAttribute().getName());
+
+			
+			category= aDataStore.getCategory("28726");
+			assertEquals(14,category.getRatings().size());
+			assertEquals("Broadband data",category.getRating("2656").getAttribute().getName());
+			assertEquals("Display diagonal size",category.getRating("6626").getAttribute().getName());
+			assertEquals("Messaging",category.getRating("3594").getAttribute().getName());
+			assertEquals(34,category.getSpecifications().size());
+			assertEquals("Speakerphone",category.getSpecification("135").getAttribute().getName());
+			assertEquals("Mac compatible",category.getSpecification("2210").getAttribute().getName());
+			assertEquals("GPS navigation",category.getSpecification("2747").getAttribute().getName());
+			assertEquals("Case style",category.getSpecification("2649").getAttribute().getName());
+			assertEquals("Carrier used",category.getSpecification("2648").getAttribute().getName());
+			assertEquals("Full retail price",category.getSpecification("7150").getAttribute().getName());
+			assertEquals("QWERTY keyboard",category.getSpecification("2799").getAttribute().getName());
+			assertEquals("Height",category.getSpecification("6934").getAttribute().getName());
+			
+			category= aDataStore.getCategory("28701");
+			assertEquals(12,category.getRatings().size());
+			assertEquals("Ergonomics",category.getRating("2318").getAttribute().getName());
+			assertEquals("Weight",category.getRating("6464").getAttribute().getName());
+			assertEquals("Touchscreen",category.getRating("4512").getAttribute().getName());
+			assertEquals("Portability",category.getRating("2703").getAttribute().getName());
+			assertEquals(40,category.getSpecifications().size());
+			assertEquals("Built-in webcam",category.getSpecification("2598").getAttribute().getName());
+			assertEquals("Digital video out",category.getSpecification("4134").getAttribute().getName());
+			assertEquals("Tech support length",category.getSpecification("7018").getAttribute().getName());
+			assertEquals("FireWire 800 port",category.getSpecification("4135").getAttribute().getName());
+			assertEquals("Operating system (as tested)",category.getSpecification("6963").getAttribute().getName());
+			assertEquals("Optical drive",category.getSpecification("2790").getAttribute().getName());
+			assertEquals("Thunderbolt port",category.getSpecification("6338").getAttribute().getName());
+			assertEquals("DVI video out",category.getSpecification("2615").getAttribute().getName());
+			assertEquals("WiMAX",category.getSpecification("4869").getAttribute().getName());
+			assertEquals("Gigabit Ethernet",category.getSpecification("2613").getAttribute().getName());
+					
+					
+			category= aDataStore.getCategory("32003");
+			assertEquals(4,category.getRatings().size());
+			assertEquals("Life",category.getRating("3740").getAttribute().getName());
+			assertEquals("Overall score",category.getRating("254").getAttribute().getName());
+			assertEquals(5,category.getSpecifications().size());
+			assertEquals("Claimed CCA",category.getSpecification("3744").getAttribute().getName());
+			assertEquals("Has removable caps",category.getSpecification("6331").getAttribute().getName());
+			assertEquals("Handle",category.getSpecification("732").getAttribute().getName());
+			
+			
+			category= aDataStore.getCategory("28683");
+			assertEquals(8,category.getRatings().size());
+			assertEquals("Ergonomics",category.getRating("2318").getAttribute().getName());
+			assertEquals("Touchscreen",category.getRating("4512").getAttribute().getName());
+			assertEquals("Performance",category.getRating("2333").getAttribute().getName());
+			assertEquals("Overall score",category.getRating("254").getAttribute().getName());
+			assertEquals(53,category.getSpecifications().size());
+			assertEquals("Warranty length",category.getSpecification("7033").getAttribute().getName());
+			assertEquals("DVI video out",category.getSpecification("2615").getAttribute().getName());
+			assertEquals("Gigabit Ethernet",category.getSpecification("2613").getAttribute().getName());
+			assertEquals("Color",category.getSpecification("6").getAttribute().getName());
+			assertEquals("Voice command",category.getSpecification("2664").getAttribute().getName());
+			assertEquals("Memory-card reader",category.getSpecification("1557").getAttribute().getName());
+			assertEquals("Wi-Fi",category.getSpecification("2948").getAttribute().getName());
+			assertEquals("Touchpad",category.getSpecification("2037").getAttribute().getName());
+			assertEquals("Blu-ray reader",category.getSpecification("3669").getAttribute().getName());
+			assertEquals("SM (SmartMedia) reader",category.getSpecification("3663").getAttribute().getName());
+			assertEquals("TV tuner",category.getSpecification("1218").getAttribute().getName());
+			assertEquals("Free recycling of old PC",category.getSpecification("3665").getAttribute().getName());
+			assertEquals("Wireless keyboard",category.getSpecification("3666").getAttribute().getName());
+			assertEquals("Built-in microphone",category.getSpecification("50").getAttribute().getName());
+			
+			
+			category= aDataStore.getCategory("28727");
+			assertEquals(9,category.getRatings().size());
+			assertEquals("Convenience",category.getRating("760").getAttribute().getName());
+			assertEquals("Bowl size",category.getRating("6866").getAttribute().getName());
+			assertEquals("Weight",category.getRating("6464").getAttribute().getName());
+			assertEquals("Mixing",category.getRating("2376").getAttribute().getName());
+			assertEquals(7,category.getSpecifications().size());
+			assertEquals("Single beater style",category.getSpecification("2394").getAttribute().getName());
+			assertEquals("Color",category.getSpecification("6").getAttribute().getName());
+			assertEquals("Style",category.getSpecification("6597").getAttribute().getName());
+			assertEquals("Whisk",category.getSpecification("2370").getAttribute().getName());
+			assertEquals("Detachable hand mixer",category.getSpecification("2380").getAttribute().getName());
+			
+		}
 }
