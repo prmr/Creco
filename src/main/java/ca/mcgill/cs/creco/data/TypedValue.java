@@ -15,6 +15,9 @@
  */
 package ca.mcgill.cs.creco.data;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 /**
  * Represents an immutable value object from which a type has been inferred.
@@ -121,6 +124,37 @@ public class TypedValue
 				aType = Type.BOOLEAN;
 				aBooleanValue = false;
 			}
+			else if(theString.matches("(\\d+)(-)(\\d+)"))
+            {
+            	aType = Type.NUMERIC;
+            	Pattern pattern = Pattern.compile("(\\d+)(-)(\\d+)(\"?)");
+                Matcher matcher = pattern.matcher(theString);
+            	if(matcher.find())
+            	{
+            		Double leftNumber = Double.parseDouble(matcher.group(1));
+            		Double rightNumber = Double.parseDouble(matcher.group(3));
+                	aNumericValue = (leftNumber + rightNumber) / 2;
+
+            	}
+            }
+			
+            else if(theString.matches("(Limited to )(.*)"))
+            {
+                aType = Type.NUMERIC;
+                
+                Pattern pattern = Pattern.compile("(Limited to )(.*)(-)(.*)(Lbs?)(\"?)");
+                Matcher matcher = pattern.matcher(theString);
+                if(matcher.find())
+                {
+                	Double leftNumber = Double.parseDouble(matcher.group(2));
+                	Double rightNumber = Double.parseDouble(matcher.group(4));
+                	aNumericValue = (leftNumber + rightNumber)/2;
+                }
+               
+            }
+            
+            
+            
 			else
 			{
 				aType = Type.STRING;
