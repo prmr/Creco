@@ -628,10 +628,11 @@ public class SearchController
 	    {
 			ProductVO p = new ProductVO();
 			p.setName(sp.getName());
+			p.setUrl(sp.getUrl());
 			p.setId(sp.getId());
 			products.add(p);
 		 }
-	    if (productsToDisplay.size() == 0) {
+	    if (productsToDisplay.size() > 0) {
 			aProductList.setProducts(products);	
 	    }
 		return "/rankedproducts";		
