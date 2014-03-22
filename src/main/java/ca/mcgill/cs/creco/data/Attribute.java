@@ -25,22 +25,91 @@ public class Attribute
 	private final String aDescription;
 	private final String aAttributeId;
 	private final TypedValue aTypedValue;
+	private enum AttributeType {RATING, SPECIFICATION, PRICE}
+	private AttributeType aAttributeType;
 	
 	/**
-	 * Creates a new Attribute.
+	 * Creates a new Attribute.  You must use one of the factory methods below (buildSpecification,
+	 * buildRating, buildPrice), as applicable.
+	 * 
 	 * @param pId The id of the attribute.
 	 * @param pName The display name.
 	 * @param pDescription The description.
 	 * @param pValue The value for the attribute.
+	 * @param AttributeType the type of attribute (RATING, SPECIFICATION, or PRICE)
 	 */
-	public Attribute( String pId, String pName, String pDescription, Object pValue )
+	private Attribute( String pId, String pName, String pDescription, Object pValue, AttributeType pAttributeType)
 	{
 		aAttributeId = pId;
 		aDescription = pDescription;
 		aDisplayName = pName;
 		aTypedValue = new TypedValue(pValue);
+		aAttributeType = pAttributeType;
 	}
 
+	/**
+	 * Creates a new specification Attribute.
+	 * 
+	 * @param pId The id of the attribute.
+	 * @param pName The display name.
+	 * @param pDescription The description.
+	 * @param pValue The value for the attribute.
+	 */
+	public static Attribute buildSpecification(String pId, String pName, String pDescription, Object pValue )
+	{
+		return new Attribute(pId, pName, pDescription, pValue, Attribute.AttributeType.SPECIFICATION);
+	}
+
+	/**
+	 * Creates a new rating Attribute.
+	 * 
+	 * @param pId The id of the attribute.
+	 * @param pName The display name.
+	 * @param pDescription The description.
+	 * @param pValue The value for the attribute.
+	 */
+	public static Attribute buildRating(String pId, String pName, String pDescription, Object pValue )
+	{
+		return new Attribute(pId, pName, pDescription, pValue, Attribute.AttributeType.RATING);
+	}
+
+	/**
+	 * Creates a new price Attribute.
+	 * 
+	 * @param pId The id of the attribute.
+	 * @param pName The display name.
+	 * @param pDescription The description.
+	 * @param pValue The value for the attribute.
+	 */
+	public static Attribute buildPrice(String pId, String pName, String pDescription, Object pValue )
+	{
+		return new Attribute(pId, pName, pDescription, pValue, Attribute.AttributeType.PRICE);
+	}
+
+	/**
+	 * @return True if the attribute is a rating
+	 */
+	public boolean isRating()
+	{
+		return aAttributeType == AttributeType.RATING;	
+	}
+
+	/**
+	 * @return True if the attribute is a specification
+	 */
+	public boolean isSpecification()
+	{
+		return aAttributeType == AttributeType.SPECIFICATION;	
+	}
+
+	/**
+	 * @return True if the attribute is a price
+	 */
+	public boolean isPrice()
+	{
+		return aAttributeType == AttributeType.PRICE;	
+	}
+	
 	/**
 	 * @return The display name of the attribute.
 	 */

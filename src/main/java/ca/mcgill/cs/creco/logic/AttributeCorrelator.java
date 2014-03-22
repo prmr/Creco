@@ -63,14 +63,8 @@ public class AttributeCorrelator
 		
 		for (Product product : aCategory.getProducts())
 		{
-			Attribute firstAttribute = product.getRating(pFirstAttributeId);
-			Attribute secondAttribute = product.getRating(pSecondAttributeId);
-
-			//TODO Remove this if statement once specs and ratings are merged together
-			if (secondAttribute == null)
-			{
-				secondAttribute = product.getSpec(pSecondAttributeId);
-			}
+			Attribute firstAttribute = product.getAttribute(pFirstAttributeId);
+			Attribute secondAttribute = product.getAttribute(pSecondAttributeId);
 			
 			// Skip the product if it's missing either attribute
 			if (firstAttribute == null || secondAttribute == null

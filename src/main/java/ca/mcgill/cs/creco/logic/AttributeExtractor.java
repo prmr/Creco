@@ -71,11 +71,7 @@ public class AttributeExtractor
 		
 		for(Product p : products)
 		{
-			for(Attribute a : p.getRatings())
-			{
-				attributes.put(a.getId(), a);
-			}
-			for(Attribute a : p.getSpecs())
+			for(Attribute a : p.getAttributes())
 			{
 				attributes.put(a.getId(), a);
 			}

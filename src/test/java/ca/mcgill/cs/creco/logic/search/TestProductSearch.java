@@ -16,12 +16,10 @@
 package ca.mcgill.cs.creco.logic.search;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,11 +46,11 @@ public class TestProductSearch {
 	@Test
 	public void testInvalidCategory() throws IOException
 	{
-		List<Product> scoredProducts = aProductSearch.returnProductsAlphabetically("query doesn't matter", "123456789");
+		List<Product> sortedProducts = aProductSearch.returnProductsAlphabetically("123456789");
 		
-		assertEquals(null, scoredProducts);
+		assertEquals(null, sortedProducts);
 	}
 	
 
-		
+	
 }

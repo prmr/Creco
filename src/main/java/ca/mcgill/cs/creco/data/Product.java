@@ -15,6 +15,7 @@
  */
 package ca.mcgill.cs.creco.data;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -30,14 +31,14 @@ public class Product
 	private String aBrandName;
 	private String aModelOverviewPageUrl;
 	
-		
 	// Derived fields
-	private HashMap<String, Attribute> aRatings = new HashMap<String, Attribute>();
-	private HashMap<String, Attribute> aSpecs = new HashMap<String, Attribute>();
+	private boolean aIsRated = false;
+	private HashMap<String, Attribute> aAttributes = new HashMap<String, Attribute>();
 	private String aCategoryId;
 	private CategoryBuilder aCategory;
+	private Attribute aPrice = null;
 	
-	
+		
 	/**
 	 * Constructs a new product record.
 	 * @param pId The product id.
@@ -46,7 +47,7 @@ public class Product
 	 * @param pCategoryId The ID of the category for this product.
 	 * @param pBrandName The brand name
 	 */
-	public Product(String pId, String pDisplayName, Boolean pIsTested, String pCategoryId, String pBrandName, String pModelOverviewPageUrl)
+	public Product(String pId, String pDisplayName, Boolean pIsTested, String pCategoryId, String pBrandName, String pModelOverviewPageUrl, Collection<Attribute> pAttributes)
 	{
 		aId = pId;
 		aDisplayName = pDisplayName;
@@ -54,26 +55,19 @@ public class Product
 		aCategoryId = pCategoryId;
 		aBrandName = pBrandName;
 		aModelOverviewPageUrl = pModelOverviewPageUrl;
-	}
-	
-	
-
-	/**
-	 * Adds a spec to this product. 
-	 * @param pAttribute The attribute to add.
-	 */
-	public void addSpec(Attribute pAttribute)
-	{
-		aSpecs.put(pAttribute.getId(), pAttribute);
-	}
-	
-	/**
-	 * Adds a rating to this product. 
-	 * @param pAttribute The attribute to add.
-	 */
-	public void addRating(Attribute pAttribute)
-	{
-		aRatings.put(pAttribute.getId(), pAttribute);
+		for(Attribute att : pAttributes) 
+		{
+			// While copying over the attributes, note whether any were ratings, and capture a reference to the price if any
+			if(att.isRating())
+			{
+				aIsRated = true;
+			}
+			else if(att.isPrice())
+			{
+				aPrice = att;
+			}
+			aAttributes.put(att.getId(), att);
+		}
 	}
 	
 	void setCategory(CategoryBuilder pCategory)
@@ -86,12 +80,28 @@ public class Product
 	 */
 	public String getCategoryId() 
 	{ return aCategoryId; }
-	
+
 	/**
-	 * @return The number of ratings.
+	 * @return True if the product has been tested by Consumer Reports.
 	 */
-	public int getNumRatings() 
-	{ return aRatings.size(); }
+	public Boolean isTested() 
+	{ return aIsTested; }
+
+	/**
+	 * @return True if the product has a rating.
+	 */
+	public boolean isRated() 
+	{ 
+		return aIsRated; 
+	}
+
+	/**
+	 * @return True if the product has a price.
+	 */
+	public boolean isPriced() 
+	{ 
+		return aPrice != null; 
+	}
 
 	/**
 	 * @return The product ID.
@@ -118,52 +128,38 @@ public class Product
 		}
 	
 	/**
-	 * @return True if the product has been tested by Consumer Reports.
-	 */
-	public Boolean getIsTested() 
-	{ return aIsTested; }
-
-	/**
 	 * @return The product's category.
 	 */
 	public Category getCategory() 
 	{ return aCategory.getCategory(); }
-
-	/**
-	 * @return A iterator on the ratings for this product.
-	 */
-	public Iterable<Attribute> getRatings()
-	{
-		return Collections.unmodifiableCollection(Product.this.aRatings.values());
-	}
-	
-	/**
-	 * Return the rating for this product with pId.
-	 * @param pId The id to look for.
-	 * @return The corresponding rating.
-	 */
-	public Attribute getRating(String pId)
-	{
-		return this.aRatings.get(pId);
-	}
 	
 	/**
 	 * @return A iterator on the specs for this product.
 	 */
-	public Iterable<Attribute> getSpecs() 
+	public Iterable<Attribute> getAttributes() 
 	{	
-		return Collections.unmodifiableCollection(Product.this.aSpecs.values());
+		return Collections.unmodifiableCollection(aAttributes.values());
 	}
-	
+		
 	/**
-	 * Return the spec for this product with pId.
+	 * Return the Attribute for this product with pId.
 	 * @param pId The id to look for.
 	 * @return The corresponding rating.
 	 */
-	public Attribute getSpec(String pId)
+	public Attribute getAttribute(String pId)
 	{
-		return this.aSpecs.get(pId);
+		return aAttributes.get(pId);
 	}
+	
+	/**
+	 * Return the price for this product.
+	 * @return The corresponding rating.  Null if there is no price.
+	 */
+	public Attribute getPrice()
+	{
+		return aPrice;
+	}
+	
 	
 	/**
 	 * Return a url to the CR website page for the product

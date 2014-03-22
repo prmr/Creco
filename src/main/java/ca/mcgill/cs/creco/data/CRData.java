@@ -84,7 +84,7 @@ public final class CRData implements IDataStore
 		
 		// Copy the Products and Categories to CRData
 		for(Product prod : lCatTree.getProducts()) {
-			addProduct(prod);
+			aProducts.put(prod.getId(), prod);
 		}
 		for(Category cat : lCatTree.getCategories()) {
 			aCategory2Index.put(cat.getId(), cat);
@@ -101,10 +101,6 @@ public final class CRData implements IDataStore
 		return aCategory2Index.get(pIndex);
 	}
 	
-	public void addProduct(Product pProduct)
-	{
-		aProducts.put(pProduct.getId(), pProduct);
-	}
 
 	@Override
 	public Product getProduct(String pId)

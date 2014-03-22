@@ -198,12 +198,7 @@ public class ScoredAttribute
 		for(Product p : pProducts)
 		{
 			
-			//Warning: change after collapse into attribute
-			Attribute a = p.getSpec(aAttributeID);
-			if(a == null)
-			{
-				a = p.getRating(aAttributeID);
-			}
+			Attribute a = p.getAttribute(aAttributeID);
 			if( a != null)
 			{
 				values.add(a.getTypedValue());
