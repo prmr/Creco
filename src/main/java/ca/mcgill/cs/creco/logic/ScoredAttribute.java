@@ -178,10 +178,12 @@ public class ScoredAttribute
 			Collection<Product> products = pCat.getProducts();
 			setStats(products);
 			AttributeCorrelator ac = new AttributeCorrelator(pCat);
-			if(pAttribute.getTypedValue().isNumeric())
+			try{
+				aCorrelation = ac.computeCorrelation(aAttributeID);
+				aCorrelation = ac.computeCorrelation(aAttributeID);
+			}
+			catch(IllegalArgumentException e)
 			{
-				aCorrelation = ac.computeCorrelation(aAttributeID);
-				aCorrelation = ac.computeCorrelation(aAttributeID);
 			}
 			
 		}
