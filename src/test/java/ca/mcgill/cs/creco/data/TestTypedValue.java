@@ -24,11 +24,19 @@ public class TestTypedValue
 		assertTrue( value.isNumeric());
 		assertEquals( 13.0, value.getNumeric(), 0);
 		
-		value= new TypedValue("5-35");
+		value = new TypedValue("Limited to 4-22");
+		assertTrue( value.isNumeric());
+		assertEquals( 13.0, value.getNumeric(), 0);
+		
+		value= new TypedValue("5-35Lbs");
 		assertTrue( value.isNumeric());
 		assertEquals(20.0,value.getNumeric(),0);
 		
 		value= new TypedValue("5-35\"");
+		assertTrue( value.isNumeric());
+		assertEquals(20.0,value.getNumeric(),0);
+		
+		value= new TypedValue("5-35");
 		assertTrue( value.isNumeric());
 		assertEquals(20.0,value.getNumeric(),0);
 	}
