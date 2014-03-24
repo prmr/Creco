@@ -23,22 +23,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.data.TypedValue;
-//import ca.mcgill.cs.creco.data.Product;
-//import ca.mcgill.cs.creco.data.TypedValue;
-//import ca.mcgill.cs.creco.data.TypedValue.Type;
 import ca.mcgill.cs.creco.logic.AttributeExtractor;
 import ca.mcgill.cs.creco.logic.RankedFeaturesProducts;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
@@ -68,6 +63,8 @@ public class SiteController
 	private static final String URL_HOME = "/";
 	private static final String URL_INDEX = "/index";
 	private static final String URL_AUTOCOMPLETE = "/autocomplete";
+	private static final String URL_SEARCH_CATEGORIES = "/searchCategories";
+	private static final String URL_SHOW_CATEGORIES = "/categories";
 	
 	private List<ScoredAttribute> aScoredAttr; 
 	
@@ -184,7 +181,7 @@ public class SiteController
 	 */
 	@RequestMapping(value = URL_AUTOCOMPLETE, method = RequestMethod.POST )  
 	@ResponseBody  
-	public String createSmartphone(@RequestBody String pStringTyped)
+	public String getCompletions(@RequestBody String pStringTyped)
 	{  
 		if(pStringTyped.length() < MIN_NUMBER_OF_TYPED_LETTERS)
 		{
@@ -218,14 +215,12 @@ public class SiteController
 	   
 	
 	/**
-	 * 
-	 * @param pMainQuery
-	 * @param result
-	 * @param redirectAttrs
-	 * @return string to redirect browser to eqclass.html
+	 * URL to search for categories from a query text.
+	 * @param pMainQuery The search query.
+	 * @return A redirection to the url to show categories.
 	 */
-	@RequestMapping(value = "/searchEqClass", method = RequestMethod.POST)
-	public String searchEqClass(@ModelAttribute("mainQuery") MainQueryVO pMainQuery, BindingResult result, RedirectAttributes redirectAttrs) 
+	@RequestMapping(value = URL_SEARCH_CATEGORIES, method = RequestMethod.POST)
+	public String searchCategories(@ModelAttribute("mainQuery") MainQueryVO pMainQuery ) 
 	{
 		aMainQuery = pMainQuery;
 		List<Category> categoryList = aCategorySearch.queryCategories(aMainQuery.getQuery());	
@@ -245,8 +240,6 @@ public class SiteController
 		 mainString = mainString.concat("\n");
 		}
 
-		LOG.debug(mainString);
-
 		// Nishanth code
 		//Converting
 		ArrayList<EqcVO> eqcs = new ArrayList<EqcVO>();		
@@ -263,8 +256,9 @@ public class SiteController
 			eqcs.add(eqc);
 		}
 		aEqcList.setEqcs(eqcs);
-		return "/eqclass";
+		return URL_SHOW_CATEGORIES;
 	}
+	
 	/**
 	 * 		
 	 * @param eqc
@@ -308,8 +302,6 @@ public class SiteController
 	 */
 	public String getCurrentFeatureList()
 	{		
-		LOG.debug("Get Current Features");
-
 		ArrayList<FeatureVO> specFeatures = new ArrayList<FeatureVO>();	
 		List<String> values;
 

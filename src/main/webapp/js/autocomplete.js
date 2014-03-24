@@ -8,9 +8,9 @@ function getCompletions(val) {
             xhr.setRequestHeader("Accept", "application/json");
             xhr.setRequestHeader("Content-Type", "application/json");
         },
-        success: function (smartphone) {
+        success: function (response) {
             var mySplitResult;
-            mySplitResult = smartphone.split(",");
+            mySplitResult = response.split(",");
             var index = mySplitResult.length;
             var availableTags = [];
             if (index > 9) {
