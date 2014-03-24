@@ -16,12 +16,9 @@
 package ca.mcgill.cs.creco.data;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
 
 import org.springframework.stereotype.Component;
 
@@ -41,10 +38,7 @@ import ca.mcgill.cs.creco.data.json.JsonLoadingService;
 @Component
 public final class CRData implements IDataStore
 {
-	//TODO: line-coverage by tests
-	
 	private static final String DEFAULT_CATEGORY_FILENAME = "category.json";
-	private static final double JACCARD_THRESHOLD = 0.8;
 	
 	private static final String[] DEFAULT_PRODUCT_FILENAMES = 
 		{
@@ -54,7 +48,7 @@ public final class CRData implements IDataStore
 		};
 	
 	private HashMap<String, Product> aProducts = new HashMap<String, Product>();
-	private HashMap<String, Category> aCategory2Index = new HashMap<String, Category>();
+	private HashMap<String, Category> aCategoryIndex = new HashMap<String, Category>();
 	
 	private CRData() throws IOException
 	{
@@ -83,11 +77,13 @@ public final class CRData implements IDataStore
 		lCatTree.findEquivalenceClasses();
 		
 		// Copy the Products and Categories to CRData
-		for(Product prod : lCatTree.getProducts()) {
+		for(Product prod : lCatTree.getProducts()) 
+		{
 			aProducts.put(prod.getId(), prod);
 		}
-		for(Category cat : lCatTree.getCategories()) {
-			aCategory2Index.put(cat.getId(), cat);
+		for(Category cat : lCatTree.getCategories()) 
+		{
+			aCategoryIndex.put(cat.getId(), cat);
 		}
 		
 	}
@@ -98,7 +94,7 @@ public final class CRData implements IDataStore
 	 */
 	public Category getCategory(String pIndex)
 	{
-		return aCategory2Index.get(pIndex);
+		return aCategoryIndex.get(pIndex);
 	}
 	
 
@@ -111,7 +107,7 @@ public final class CRData implements IDataStore
 	@Override
 	public Collection<Category> getCategories()
 	{
-		return Collections.unmodifiableCollection(aCategory2Index.values());
+		return Collections.unmodifiableCollection(aCategoryIndex.values());
 	}
 	
 	/**

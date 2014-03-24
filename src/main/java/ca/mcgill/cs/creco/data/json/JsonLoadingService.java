@@ -124,8 +124,6 @@ public class JsonLoadingService implements IDataLoadingService
 	
 	private static Product buildProduct(ProductStub pProductStub)
 	{
-		Product lReturn ;
-		
 		// Collect all of the attributes for this product.  Starting with specifications.
 		ArrayList<Attribute> atts = new ArrayList<Attribute>();
 		if(pProductStub.specs != null)

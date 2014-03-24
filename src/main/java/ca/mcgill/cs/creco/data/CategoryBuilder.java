@@ -342,7 +342,7 @@ public class CategoryBuilder
 		aRatings.put(pRatingStat.getAttribute().getId(), newRating);
 	}
 	
-	public AttributeStat getRating(String pId)
+	AttributeStat getRating(String pId)
 	{
 		return aRatings.get(pId);
 	}
@@ -369,7 +369,7 @@ public class CategoryBuilder
 		aSpecifications.put(pSpecifications.getAttribute().getId(), newSpec);
 	}
 	
-	public AttributeStat getSpecification(String pId)
+	AttributeStat getSpecification(String pId)
 	{
 		return aSpecifications.get(pId);
 	}

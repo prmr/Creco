@@ -46,8 +46,11 @@ public class Product
 	 * @param pIsTested Whether the product has been tested by Consumer Reports.
 	 * @param pCategoryId The ID of the category for this product.
 	 * @param pBrandName The brand name
+	 * @param pModelOverviewPageUrl The url of the product on the CR website.
+	 * @param pAttributes The attributes of the product. Copied internally.
 	 */
-	public Product(String pId, String pDisplayName, Boolean pIsTested, String pCategoryId, String pBrandName, String pModelOverviewPageUrl, Collection<Attribute> pAttributes)
+	public Product(String pId, String pDisplayName, Boolean pIsTested, String pCategoryId, 
+			String pBrandName, String pModelOverviewPageUrl, Collection<Attribute> pAttributes)
 	{
 		aId = pId;
 		aDisplayName = pDisplayName;
@@ -160,12 +163,12 @@ public class Product
 		return aPrice;
 	}
 	
-	
 	/**
-	 * Return a url to the CR website page for the product
-	 * @return The url for the product overview page
+	 * Return a url to the CR website page for the product.
+	 * @return The url for the product overview page.
 	 */
-	public String getUrl() {
+	public String getUrl() 
+	{
 		return aModelOverviewPageUrl;
 	}
 }

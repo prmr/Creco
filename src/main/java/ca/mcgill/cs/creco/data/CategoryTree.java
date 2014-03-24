@@ -18,7 +18,7 @@ import java.util.Hashtable;
  * <li>Obtaining the list of categories</li>
  * </ol>
  */
-public class CategoryTree implements IDataCollector
+class CategoryTree implements IDataCollector
 {
 	
 	private static final double JACCARD_THRESHOLD = 0.8;
@@ -30,7 +30,7 @@ public class CategoryTree implements IDataCollector
 	
 	private boolean aHasFoundEquivalenceClasses = false;
 	
-	public CategoryTree() 
+	CategoryTree() 
 	{}
 	
 	/**
@@ -38,7 +38,7 @@ public class CategoryTree implements IDataCollector
 	 * findEquivalenceClasses()
 	 * @return 
 	 */
-	public Collection<Category> getCategories()
+	Collection<Category> getCategories()
 	{
 		// Must be called after findEquivalenceClasses()
 		if(!aHasFoundEquivalenceClasses)
@@ -59,7 +59,8 @@ public class CategoryTree implements IDataCollector
 	 * Adds the root categories (categoriBuilders) to the index.  Recursively adds child
 	 * categoryBuilders.
 	 */
-	void indexRootCategories() {
+	void indexRootCategories()
+	{
 		for(CategoryBuilder category : aRootCategories)
 		{
 			index(category);
@@ -70,7 +71,8 @@ public class CategoryTree implements IDataCollector
 	 * Adds the root categories (categoriBuilders) to the index.  Recursively adds child
 	 * categoryBuilders.
 	 */
-	void eliminateAllSingletons() {
+	void eliminateAllSingletons() 
+	{
 		for(CategoryBuilder category : aRootCategories)
 		{
 			eliminateSingletons(category);
@@ -90,10 +92,10 @@ public class CategoryTree implements IDataCollector
 	}
 
 	/**
-	 * Exposes the products as an unmodifiable collection
+	 * Exposes the products as an unmodifiable collection.
 	 * @return a collection list of products
 	 */
-	public Collection<Product> getProducts() 
+	Collection<Product> getProducts() 
 	{
 		return Collections.unmodifiableCollection(aProducts.values());
 	}

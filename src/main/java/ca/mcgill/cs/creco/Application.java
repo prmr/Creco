@@ -15,27 +15,25 @@
  */
 package ca.mcgill.cs.creco;
 
-import java.io.IOException;
-
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 
-
-
+/**
+ * Head of the application. Used to launch the Spring Framework.
+ */
 @ComponentScan
 @EnableAutoConfiguration
-public class Application {
-
+public final class Application 
+{
+	private Application()
+	{}
+	
     /**
-     * @param args
-     * @throws InterruptedException 
-     * @throws IOException 
+     * @param pArguments Default parameter. Not used.
      */
-    public static void main(String[] args) throws IOException, InterruptedException
+    public static void main(String[] pArguments)
     {
-        SpringApplication.run(Application.class, args);
-        //start.start_update();
+        SpringApplication.run(Application.class, pArguments);
     }
-
 }

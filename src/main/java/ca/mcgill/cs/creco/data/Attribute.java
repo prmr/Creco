@@ -15,17 +15,22 @@
  */
 package ca.mcgill.cs.creco.data;
 
-
 /**
  * Represents an immutable attribute of a product.
  */
-public class Attribute 
+public final class Attribute 
 {
+	/**
+	 * Obtained from the original data.
+	 */
+	private enum AttributeType 
+	{ RATING, SPECIFICATION, PRICE }
+	
 	private final String aDisplayName;
 	private final String aDescription;
 	private final String aAttributeId;
 	private final TypedValue aTypedValue;
-	private enum AttributeType {RATING, SPECIFICATION, PRICE}
+	
 	private AttributeType aAttributeType;
 	
 	/**
@@ -54,6 +59,7 @@ public class Attribute
 	 * @param pName The display name.
 	 * @param pDescription The description.
 	 * @param pValue The value for the attribute.
+	 * @return The newly created specification attribute.
 	 */
 	public static Attribute buildSpecification(String pId, String pName, String pDescription, Object pValue )
 	{
@@ -67,6 +73,7 @@ public class Attribute
 	 * @param pName The display name.
 	 * @param pDescription The description.
 	 * @param pValue The value for the attribute.
+	 * @return The newly created rating attribute.
 	 */
 	public static Attribute buildRating(String pId, String pName, String pDescription, Object pValue )
 	{
@@ -80,6 +87,7 @@ public class Attribute
 	 * @param pName The display name.
 	 * @param pDescription The description.
 	 * @param pValue The value for the attribute.
+	 * @return The newly created price attribute.
 	 */
 	public static Attribute buildPrice(String pId, String pName, String pDescription, Object pValue )
 	{
@@ -129,20 +137,8 @@ public class Attribute
 	{ return aAttributeId; }
 
 	/**
-	 * @return The value for this attribute.
-	 */
-//	public Object getValue() 
-//	{ return aTypedValue.getValue(); }
-	
-	/**
 	 * @return The typed value.
 	 */
 	public TypedValue getTypedValue() 
 	{ return aTypedValue; }
-
-//	/**
-//	 * @return The type of the value.
-//	 */
-//	public TypedValue.Type getType() 
-//	{ return aTypedValue.getType(); }
 }
