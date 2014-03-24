@@ -51,7 +51,7 @@ import ca.mcgill.cs.creco.web.model.UserFeatureModel;
 import com.google.gson.Gson;
 
 /**
- * Currently this is the only controller for the entire web application.
+ * Currently this is the only controller for the entire web application. 
  */
 @Controller
 public class SiteController
