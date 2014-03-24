@@ -20,17 +20,15 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
- * Head of the application. Used to launch the Spring Framework.
+ * Application head.
+ * CSOFF: // To disable the warning about public constructors, which is needed for Spring.
  */
 @ComponentScan
 @EnableAutoConfiguration
-public final class Application 
+public class Application
 {
-	private Application()
-	{}
-	
     /**
-     * @param pArguments Default parameter. Not used.
+     * @param pArguments Not used.
      */
     public static void main(String[] pArguments)
     {
