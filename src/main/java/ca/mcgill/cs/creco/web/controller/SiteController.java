@@ -65,6 +65,8 @@ public class SiteController
 	private static final String URL_AUTOCOMPLETE = "/autocomplete";
 	private static final String URL_SEARCH_CATEGORIES = "/searchCategories";
 	private static final String URL_SHOW_CATEGORIES = "/categories";
+	private static final String URL_SEARCH_PRODUCTS = "/searchProducts";
+	private static final String URL_SHOW_PRODUCTS = "/products";
 	
 	private List<ScoredAttribute> aScoredAttr; 
 	
@@ -260,11 +262,12 @@ public class SiteController
 	}
 	
 	/**
-	 * 		
-	 * @param eqc
-	 * @return
+	 * A category is selected and this controller obtains the features
+	 * and products to display.		
+	 * @param eqc the category
+	 * @return A redirection to the product page
 	 */
-	@RequestMapping(value = "/searchRankedFeaturesProducts", method = RequestMethod.POST)  
+	@RequestMapping(value = URL_SEARCH_PRODUCTS, method = RequestMethod.POST)  
 	public String searchRankedFeaturesProducts(@ModelAttribute("eqc") EqcVO eqc)
 	{  
 	    List<Category> categoryList = aCategorySearch.queryCategories(aMainQuery.getQuery());
@@ -296,11 +299,8 @@ public class SiteController
 		aProductList.setProducts(products);	
 		return getCurrentFeatureList();
 	}
-	/**
-	 * @author MariamN
-	 * @return string to redirect the browser to feature selection page
-	 */
-	public String getCurrentFeatureList()
+	
+	private String getCurrentFeatureList()
 	{		
 		ArrayList<FeatureVO> specFeatures = new ArrayList<FeatureVO>();	
 		List<String> values;
@@ -364,37 +364,37 @@ public class SiteController
 		}		
 		aSpecFeatureList.setFeatures(specFeatures);	
 
-		return "/rankedproducts";
+		return URL_SHOW_PRODUCTS;
 						
 	}
-	/**
-	 * 
-	 * @return name of file to redirect the browser to popupFeature.html
-	 */
-	@RequestMapping(value = "/popupFeature", method = RequestMethod.GET)
-	public String getPopUp() 
-	{
-		return "/popupFeature";
-	}
+//	/**
+//	 * 
+//	 * @return name of file to redirect the browser to popupFeature.html
+//	 */
+//	@RequestMapping(value = "/popupFeature", method = RequestMethod.GET)
+//	public String getPopUp() 
+//	{
+//		return "/popupFeature";
+//	}
 	
 	/**
 	 * 
 	 * @return name of file to redirect the browser to rankedproducts.html
 	 */
-	@RequestMapping(value = "/searchRankedFeaturesProducts", method = RequestMethod.GET)
+	@RequestMapping(value = URL_SEARCH_PRODUCTS, method = RequestMethod.GET)
 	public String getRankedProducts() 
 	{
-		return "/rankedproducts";
+		return URL_SHOW_PRODUCTS;
 	}
 	
 	/**
 	 * 
 	 * @return name of file to redirect the browser to rankedproducts.html
 	 */
-	@RequestMapping(value = "/rankedproducts", method = RequestMethod.GET)
+	@RequestMapping(value = URL_SHOW_PRODUCTS, method = RequestMethod.GET)
 	public String getRankedProducts2() 
 	{
-		return "/rankedproducts";
+		return URL_SHOW_PRODUCTS;
 	}
 	
 	/**
