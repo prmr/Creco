@@ -12,13 +12,8 @@ public interface IProductSearch
 	/**
 	 * Returns only the products within the
 	 * equivalence class which match the query string (alphabetically).
-	 * @param pQueryString The string to match against product names and other fields.
 	 * @param pCategoryID The ID of the equivalence class within which the search will focus.
 	 * @return A list of ScoredProducts arranged in alphabetical order
 	 */
-	
-	
 	List<Product> returnProductsAlphabetically(String pCategoryID);
-	
-	
 }

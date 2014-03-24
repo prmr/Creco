@@ -17,7 +17,6 @@ package ca.mcgill.cs.creco.logic.search;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -32,17 +31,13 @@ import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
 
 /**
- *Lists products alphabetically after taking a category id
+ *Lists products alphabetically after taking a category id.
  */
 @Component
 public class ProductSearch implements IProductSearch
 {
-	
 	private static final Logger LOG = LoggerFactory.getLogger(ProductSearch.class);
-	
-	
-	private IDataStore aDataStore;
-	
+	private IDataStore aDataStore;	
 
 	/**
 	 * Constructor.
@@ -53,16 +48,11 @@ public class ProductSearch implements IProductSearch
 	public ProductSearch(IDataStore pDataStore) throws IOException
 	{
 		aDataStore = pDataStore;
-		
-		
 	}
 	
-	
-
 	@Override
 	public List<Product> returnProductsAlphabetically(String pCategoryID)
 	{
-		// TODO Auto-generated method stub
 		Category category = aDataStore.getCategory(pCategoryID);
 		if (category == null)
 		{
@@ -70,22 +60,19 @@ public class ProductSearch implements IProductSearch
 			return null;
 		} 
 		
-	
 		List<Product> scoredProducts = new ArrayList<Product>();
-		Map<String, Product> map = new HashMap<String, Product>();
+		Map<String, Product> map = new TreeMap<String, Product>();
 		
-		
+		// The products get sorted as they are added to a tree map.
 		for(Product product :category.getProducts())
 		{
 			map.put(product.getName(), product );
 		}
 		
-		Map<String, Product> treeMap = new TreeMap<String, Product>(map);
-		
-		for (Map.Entry entry : treeMap.entrySet()) 
+		// Repackage the treemap as a list.
+		for( Product product : map.values()) 
 		{
-			Product p = (Product) entry.getValue();
-			scoredProducts.add(p);
+			scoredProducts.add(product);
 		}
 		
 		return scoredProducts;

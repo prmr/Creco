@@ -45,7 +45,6 @@ import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
 
-
 /**
  * Searches a list of categories with Lucene indexes.
  */

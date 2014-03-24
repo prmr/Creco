@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,18 +40,21 @@ public class TestProductSearch {
 	@Autowired
 	IProductSearch aProductSearch;
 	
-	private static String SMARTPHONE_CATEGORY_ID = "28726";
-	private static String IPHONE_5S_16GB_VERIZON_ID = "231983";
-	
-	
 	@Test
 	public void testInvalidCategory() throws IOException
 	{
 		List<Product> sortedProducts = aProductSearch.returnProductsAlphabetically("123456789");
-		
 		assertEquals(null, sortedProducts);
 	}
 	
-
+	@Test 
+	public void testBasicAlphaSort()
+	{
+		List<Product> sortedProducts = aProductSearch.returnProductsAlphabetically("34687");
+		for( int i = 0; i < sortedProducts.size() - 2; i++ )
+		{
+			assertTrue(sortedProducts.get(i).getName().compareTo(sortedProducts.get(i+1).getName())<0);
+		}
+	}
 	
 }

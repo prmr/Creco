@@ -9,7 +9,6 @@ import ca.mcgill.cs.creco.data.Category;
  */
 public interface ICategorySearch
 {
-
 	/**
 	 * Searches the database for matching categories (or equivalence classes).
 	 * @param pQueryString The string to match against category names and other fields.
