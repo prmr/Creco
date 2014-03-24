@@ -1,6 +1,6 @@
 function abcd(val) {
     $.ajax({
-        url: "ajax.html",
+        url: "autocomplete.html",
         data: val,
         type: "POST",
 

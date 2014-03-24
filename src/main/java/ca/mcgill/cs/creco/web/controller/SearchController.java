@@ -61,7 +61,13 @@ import com.google.gson.Gson;
 @Controller
 public class SearchController
 {
+	private static final int MIN_NUMBER_OF_TYPED_LETTERS = 3;
+
 	private static final Logger LOG = LoggerFactory.getLogger(SearchController.class);
+	
+	private static final String URL_HOME = "/";
+	private static final String URL_INDEX = "/index";
+	private static final String URL_AUTOCOMPLETE = "/autocomplete";
 	
 	private List<ScoredAttribute> aScoredAttr; 
 	
@@ -100,6 +106,8 @@ public class SearchController
 	
 	@Autowired
 	private IProductSearch aProductSort;
+	
+	// ***** Model Attributes *****
 	
 	@ModelAttribute("mainQuery")
 	private MainQueryVO getMainQuery() 
@@ -148,78 +156,66 @@ public class SearchController
 		return aRateFeatureList;
 	}
 	
-	/**
-	 * 
-	 * @param pScoredSpecs list of scored spec Attributes
-	 */
-	public void setScoredSpecs(List<ScoredAttribute> pScoredSpecs)
-	{
-
-		LOG.debug("in setscoredSpecs"+ pScoredSpecs.toString());
-		
-		this.aScoredAttr = pScoredSpecs;	
-		
-	}
-
-	/**
-	 * 
-	 * @return list of scored spec Attributes
-	 */
-	public List<ScoredAttribute> getScoredSpecs()
-	{
-		return this.aScoredAttr;
-		
-	}	
+	// ***** URL Mappings *****
 	
-
 	/**
-	 * 
-	 * @param typedString
-	 * @return 
+	 * Loads the user model and redirects the browser to the index 
+	 * page.
+	 * @param pModel The automatically-inserted model.
+	 * @return The relative path to the index page.
 	 */
-	   @RequestMapping(value = "/ajax", method = RequestMethod.POST )  
-	   @ResponseBody  
-	   public String createSmartphone(@RequestBody String typedString)
-	   {  
-		
-		   if(typedString.length()<3)
-		   {
-			   return "";
-		   }
-		   String return_this = new String("");
-
-		   for (Category category123 : aDataStore.getCategories()) 
-			{
-			   if(category123.getNumberOfProducts() == 0)
-				   continue;
-			   if(category123.getName().toLowerCase().contains(typedString.toLowerCase()))
-				   	return_this =return_this.concat(category123.getName()+",");
-
-			}
-		   for (Product category1234 : aDataStore.getProducts()) 
-			{
-			   if(category1234.getName().toLowerCase().contains(typedString.toLowerCase()))
-				   	return_this =return_this.concat(category1234.getName()+",");
-
-			}
-
-		   return return_this;
-	   }  
-	   /**
-	    * 
-	    * @param model
-	    * @return string to redirect browser to index.html
-	    */
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String init(Model model)
+	@RequestMapping(value = URL_HOME, method = RequestMethod.GET)
+	public String init(Model pModel)
 	{
 		 UserFeatureModel form = new UserFeatureModel();
-		 model.addAttribute("myForm", form);
+		 pModel.addAttribute("myForm", form);
 		 aSpecFeatureList = new FeatureListVO();
 		 aRateFeatureList = new FeatureListVO();
 		 aProductList = new ProductListView();
-		 return "/index";								
+		 return URL_INDEX;								
 	}
+	
+	/**
+	 * Returns a response body with results for the search autocomplete
+	 * box.
+	 * 
+	 * @param pStringTyped The string typed by the user.
+	 * @return The response body containing the completions.
+	 */
+	@RequestMapping(value = URL_AUTOCOMPLETE, method = RequestMethod.POST )  
+	@ResponseBody  
+	public String createSmartphone(@RequestBody String pStringTyped)
+	{  
+		if(pStringTyped.length() < MIN_NUMBER_OF_TYPED_LETTERS)
+		{
+			return "";
+		}
+
+		String response = "";
+
+		for(Category category : aDataStore.getCategories()) 
+		{
+			if(category.getNumberOfProducts() == 0)
+			{
+				continue;
+			}
+			if(category.getName().toLowerCase().contains(pStringTyped.toLowerCase()))
+			{
+				response = response.concat(category.getName() + ",");
+			}
+		}
+		
+		for(Product product : aDataStore.getProducts()) 
+		{
+			if(product.getName().toLowerCase().contains(pStringTyped.toLowerCase()))
+			{
+				response = response.concat(product.getName()+ ",");
+			}
+		}
+
+		return response;
+	  }  
+	   
 	
 	/**
 	 * 
