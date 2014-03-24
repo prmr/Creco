@@ -16,7 +16,7 @@
 package ca.mcgill.cs.creco.web.controller;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -351,6 +351,31 @@ public class SearchController
 				   	return_this =return_this.concat(category123.getName()+",");
 
 			}
+		   
+			Set<String> collectedtillnow = new HashSet<String>();
+			   for (Product productname : aDataStore.getProducts()) 
+				{
+
+				   if(productname.getName().toLowerCase().contains(typedString.toLowerCase()))
+				   {
+					   for (String productspace: productname.getName().toLowerCase().split(" "))
+					   {
+						   if(productspace.contains(typedString.toLowerCase()))
+						   {
+							   if(collectedtillnow.contains(productspace))
+							   {
+								   
+							   }
+							   else
+							   {
+								  collectedtillnow.add(productspace);		
+								   return_this =return_this.concat(productspace+",");
+							   }
+						   }
+					   	}
+				   }
+
+				}
 		   for (Product category1234 : aDataStore.getProducts()) 
 			{
 			   if(category1234.getName().toLowerCase().contains(typedString.toLowerCase()))
