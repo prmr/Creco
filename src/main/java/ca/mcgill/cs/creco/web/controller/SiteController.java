@@ -59,11 +59,11 @@ import com.google.gson.Gson;
  * Currently this is the only controller for the entire web application.
  */
 @Controller
-public class SearchController
+public class SiteController
 {
 	private static final int MIN_NUMBER_OF_TYPED_LETTERS = 3;
 
-	private static final Logger LOG = LoggerFactory.getLogger(SearchController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SiteController.class);
 	
 	private static final String URL_HOME = "/";
 	private static final String URL_INDEX = "/index";

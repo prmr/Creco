@@ -40,13 +40,13 @@ import ca.mcgill.cs.creco.logic.RankedFeaturesProducts;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.search.ICategorySearch;
 import ca.mcgill.cs.creco.logic.search.IProductSearch;
-import ca.mcgill.cs.creco.web.controller.SearchController;
+import ca.mcgill.cs.creco.web.controller.SiteController;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/META-INF/test-context.xml"})
 public class TestFiltering {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SearchController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SiteController.class);
 	
 	@Autowired
 	IDataStore aDataStore;

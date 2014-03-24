@@ -1,4 +1,4 @@
-function abcd(val) {
+function getCompletions(val) {
     $.ajax({
         url: "autocomplete.html",
         data: val,
