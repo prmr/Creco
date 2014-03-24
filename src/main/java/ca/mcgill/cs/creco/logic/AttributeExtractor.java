@@ -16,7 +16,6 @@
 package ca.mcgill.cs.creco.logic;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -28,48 +27,34 @@ import org.slf4j.LoggerFactory;
 import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.Product;
-import ca.mcgill.cs.creco.logic.search.ScoredProduct;
-
-
-
 
  /**
- * This class handles the extraction of most relevant attribute from an equivalence class
- * with respect to a product list.
- * 
- * @see ProductList
- * @see Attribute
+ * This class handles the extraction of most relevant attribute from a category.
  */
 public class AttributeExtractor
 {
-
-	private static final double DEFAULT_MIN = 10000000;
-	private static final double DEFAULT_MAX = -10000000;
-	private final Logger logger = LoggerFactory.getLogger(AttributeExtractor.class);
+	/** Sorting methods for attributes. */
+	public static enum SORT_METHOD
+	{ ENTROPY, SCORE, CORRELATION }
+	
+	private static final Logger LOG = LoggerFactory.getLogger(AttributeExtractor.class);
+	
 	private Category aCategory;
 	private ArrayList<ScoredAttribute> aScoredAttributeList;
 	private SORT_METHOD aSortMethod;
-	/** Defines how to sort the scored attributes */
-	public static enum SORT_METHOD
-	{ ENTROPY, SCORE, CORRELATION }
-		
-		
-
 	
-	/**Constructor that takes a category.
-	 * @param pProductSearchResult a lucene result
+	/** Constructor that takes a category.
 	 * @param pCategory the whole space of interesting products
 	 */
 	public AttributeExtractor(Category pCategory)
 	{
 		aCategory = pCategory;
 		aSortMethod = SORT_METHOD.ENTROPY;
-		Collection<Product> products = pCategory.getProducts();
 		aScoredAttributeList = new ArrayList<ScoredAttribute>();
 		
-		HashMap<String,Attribute> attributes = new HashMap<String,Attribute>();
+		HashMap<String, Attribute> attributes = new HashMap<String, Attribute>();
 		
-		for(Product p : products)
+		for(Product p : pCategory.getProducts())
 		{
 			for(Attribute a : p.getAttributes())
 			{
@@ -147,20 +132,11 @@ public class AttributeExtractor
 		return aScoredAttributeList;
 	}
 	
-	public Logger getLogger()
-	{
-		return logger;
-	}
-
-	public SORT_METHOD getSortMethod()
-	{
-		return aSortMethod;
-	}
-
 	public void setSortMethod(SORT_METHOD pSortMethod)
 	{
 		aSortMethod = pSortMethod;
 	}
+	
 	public void sort()
 	{
 		if (aSortMethod == SORT_METHOD.CORRELATION)

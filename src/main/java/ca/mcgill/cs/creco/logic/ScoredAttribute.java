@@ -21,10 +21,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.Category;
@@ -32,21 +32,20 @@ import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.data.TypedValue;
 
-import com.google.common.collect.Lists;
-
 /**
- *
+ * An attribute associated with a ranking.
  */
 public class ScoredAttribute
 {
+	/** Denotes the "natural" direction of an attribute. */
+	public static enum Direction 
+	{ MORE_IS_BETTER, LESS_IS_BETTER };
 	
+	private static final Logger LOG = LoggerFactory.getLogger(ScoredAttribute.class);
 	
 	private static final double CONSIDERATION_THRESHOLD = 0.8;
 	private static final double DEFAULT_MIN = 10000000;
 	private static final double DEFAULT_MAX = -10000000;
-	public static enum Direction {MORE_IS_BETTER, LESS_IS_BETTER};
-	private final Logger logger = LoggerFactory.getLogger(ScoredAttribute.class);
-
 	
 	public static final Comparator<ScoredAttribute> SORT_BY_CORRELATION = 
 			new Comparator<ScoredAttribute>() 
@@ -149,21 +148,23 @@ public class ScoredAttribute
  	private String aAttributeDesc;
  	private double aEntropy;
  	private double aCorrelation;
- 	private Direction aDirection;
  	
  	private TypedValue aMin;
  	private TypedValue aMax;
  	private List<TypedValue> aStringValues;
 
 	   
+ 	/**
+ 	 * The type of attribute.
+ 	 */
  	private enum Type
  	{ NULL, NA, BOOLEAN, NUMERIC, STRING }
 
 	/**Constructor from an attribute.
 	 * @param pAttribute attribute to build score for.
-	 * @param Category in which the attribute is present
+	 * @param pCategory in which the attribute is present
 	 */
-	public ScoredAttribute(Attribute pAttribute, Category pCat)
+	public ScoredAttribute(Attribute pAttribute, Category pCategory)
 	{
 
 		aAttributeID = pAttribute.getId();
@@ -172,18 +173,20 @@ public class ScoredAttribute
 		aAttributeDesc = pAttribute.getDescription();
 		aEntropy = 0;
 		aCorrelation = 0;
-		aDirection = Direction.MORE_IS_BETTER;
-		if(pCat != null)
+		
+		if( pCategory != null )
 		{
-			Collection<Product> products = pCat.getProducts();
+			Collection<Product> products = pCategory.getProducts();
 			setStats(products);
-			AttributeCorrelator ac = new AttributeCorrelator(pCat);
-			try{
+			AttributeCorrelator ac = new AttributeCorrelator(pCategory);
+			try
+			{
 				aCorrelation = ac.computeCorrelation(aAttributeID);
 				aCorrelation = ac.computeCorrelation(aAttributeID);
 			}
 			catch(IllegalArgumentException e)
 			{
+				LOG.error("Exception while constructing ScoredAttribute", e);
 			}
 			
 		}
@@ -252,11 +255,11 @@ public class ScoredAttribute
 		}
 		if(Double.isNaN(min))
 		{
-			logger.error("Min value is NaN: " + aAttributeID +", "+ aAttributeName + ", "+ aCategoryID);
+			LOG.error("Min value is NaN: " + aAttributeID +", "+ aAttributeName + ", "+ aCategoryID);
 		}
 		if(Double.isNaN(max))
 		{
-			logger.error("Max value is NaN: " + aAttributeID +", "+ aAttributeName + ", "+ aCategoryID);
+			LOG.error("Max value is NaN: " + aAttributeID +", "+ aAttributeName + ", "+ aCategoryID);
 		}
 		aMin = new TypedValue(min);
 		aMax = new TypedValue(max);
@@ -350,8 +353,8 @@ public class ScoredAttribute
 		}
 		double entropy = 0;
 		boolean mode = false;
-		double probTrue= trueCount/totalCount;
-		double probFalse= 1- probTrue;
+		double probTrue = trueCount/totalCount;
+		double probFalse = 1 - probTrue;
 		entropy = -probTrue * (Math.log(probTrue)) - probFalse * (Math.log(probFalse));
 		if(trueCount >= totalCount/2)
 		{
@@ -443,12 +446,11 @@ public class ScoredAttribute
 	}
 
 	/**
-
-	 * {@param pAttributeScore score to set the attribute to
+	 * @param pAttributeScore score to set the attribute to
 	 */
 	public void setAttributeScore(double pAttributeScore)
 	{
-		this.aAttributeScore = pAttributeScore;
+		aAttributeScore = pAttributeScore;
 	}
 
 	/**
@@ -483,27 +485,25 @@ public class ScoredAttribute
 		aDefaultValue = pDefault;
 	}
 
-//	/**
-//	 * @param pAttributeMean mean or mode of this attribute given a product list used to 
-//	 * calculate the score
-//	 */
-//	public void setAttributeMean(TypedValue pAttributeMean) 
-//	{
-//		this.aAttributeMean = pAttributeMean;
-//	}
 	/**
-	 * @return true if the attribute was derived from a cat
+	 * @return The minimum value for this attribute.
 	 */
 	public TypedValue getMin()
 	{
 		return aMin;
 	}
 	
+	/**
+	 * @return The maximum value for this attribute.
+	 */
 	public TypedValue getMax()
 	{
 		return aMax;
 	}
 	
+	/**
+	 * @return The potential string values for this attribute.
+	 */
 	public List<TypedValue> getDict()
 	{
 		return aStringValues;
@@ -526,49 +526,19 @@ public class ScoredAttribute
 		this.aAttributeDesc = pAttributeDesc;
 	}
 
+	/**
+	 * @return The entropy for this attribute.
+	 */
 	public double getEntropy()
 	{
 		return aEntropy;
 	}
 	
-	public boolean isBoolean()
+	/**
+	 * @return The correlation for this attribute.
+	 */
+	public double getCorrelation()
 	{
-		return aDefaultValue.isBoolean();
-	}
-	public boolean isNumeric()
-	{
-		return aDefaultValue.isNumeric();
-	}
-	
-	public boolean isString()
-	{
-		return aDefaultValue.isString();
-	}
-	
-	public boolean isNA()
-	{
-		return aDefaultValue.isNA();
-	}
-	public double getCorrelation() {
 		return aCorrelation;
 	}
-	public boolean moreIsBetter() {
-		if(aDirection == Direction.MORE_IS_BETTER)
-		{
-			return true;
-		}
-		return false;
-		
-	}
-	public boolean lessIsBetter() {
-		if(aDirection == Direction.LESS_IS_BETTER)
-		{
-			return true;
-		}
-		return false;
-		
-	}
-	
-	
-	
 }

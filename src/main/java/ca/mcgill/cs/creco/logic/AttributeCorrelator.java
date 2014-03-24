@@ -16,11 +16,15 @@ import ca.mcgill.cs.creco.data.Product;
  */
 public class AttributeCorrelator 
 {
+	private static final String OVERALL_SCORE_ATTRIBUTE_ID = "254";
+	private static final double LESS_IS_BETTER_THRESHOLD = -0.15;
+	
 	private Category aCategory;
-	
-	private final String OVERALL_SCORE_ATTRIBUTE_ID = "254";
-	private final double LESS_IS_BETTER_THRESHOLD = -0.15;
-	
+		
+	/**
+	 * New Correlator for this Category.
+	 * @param pCategory The category whose products we want to correlate.
+	 */
 	public AttributeCorrelator(Category pCategory)
 	{
 		aCategory = pCategory;
@@ -67,11 +71,7 @@ public class AttributeCorrelator
 			Attribute secondAttribute = product.getAttribute(pSecondAttributeId);
 			
 			// Skip the product if it's missing either attribute
-			if (firstAttribute == null || secondAttribute == null
-					|| firstAttribute.getTypedValue().isNull()
-					|| secondAttribute.getTypedValue().isNull()
-					|| firstAttribute.getTypedValue().isNA()
-					|| secondAttribute.getTypedValue().isNA())
+			if( missing(firstAttribute) || missing(secondAttribute))
 			{
 				continue;
 			}
@@ -101,4 +101,8 @@ public class AttributeCorrelator
 		return pearsonsCorrelation.correlation(firstArray, secondArray);
 	}
 	
+	private static boolean missing( Attribute pAttribute )
+	{
+		return pAttribute == null || pAttribute.getTypedValue().isNull() || pAttribute.getTypedValue().isNA();
+	}
 }
