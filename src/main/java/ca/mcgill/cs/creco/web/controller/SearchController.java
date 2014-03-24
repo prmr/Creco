@@ -49,17 +49,19 @@ import ca.mcgill.cs.creco.web.model.EqcVO;
 import ca.mcgill.cs.creco.web.model.FeatureListVO;
 import ca.mcgill.cs.creco.web.model.FeatureVO;
 import ca.mcgill.cs.creco.web.model.MainQueryVO;
-import ca.mcgill.cs.creco.web.model.ProductListVO;
-import ca.mcgill.cs.creco.web.model.ProductVO;
+import ca.mcgill.cs.creco.web.model.ProductListView;
+import ca.mcgill.cs.creco.web.model.ProductView;
 import ca.mcgill.cs.creco.web.model.UserFeatureModel;
 
 import com.google.gson.Gson;
 
+/**
+ * Currently this is the only controller for the entire web application.
+ */
 @Controller
 public class SearchController
 {
 	private static final Logger LOG = LoggerFactory.getLogger(SearchController.class);
-	
 	
 	private List<ScoredAttribute> aScoredAttr; 
 	
@@ -67,7 +69,7 @@ public class SearchController
 	private Category aCategory;
 	
 	@Autowired
-	private ProductListVO aProductList;
+	private ProductListView aProductList;
 	
 	@Autowired
 	private EqcListVO aEqcList;
@@ -118,7 +120,7 @@ public class SearchController
 	}
 	
 	@ModelAttribute("productList")
-	private ProductListVO getProductList() 
+	private ProductListView getProductList() 
 	{
 		return aProductList;
 	}
@@ -371,7 +373,7 @@ public class SearchController
 		 model.addAttribute("myForm", form);
 		 aSpecFeatureList = new FeatureListVO();
 		 aRateFeatureList = new FeatureListVO();
-		 aProductList = new ProductListVO();
+		 aProductList = new ProductListView();
 		 return "/index";								
 	}
 	
@@ -397,7 +399,8 @@ public class SearchController
 	 * @return string to redirect browser to eqclass.html
 	 */
 	@RequestMapping(value = "/searchEqClass", method = RequestMethod.POST)
-	public String searchEqClass(@ModelAttribute("mainQuery") MainQueryVO pMainQuery, BindingResult result, RedirectAttributes redirectAttrs) {
+	public String searchEqClass(@ModelAttribute("mainQuery") MainQueryVO pMainQuery, BindingResult result, RedirectAttributes redirectAttrs) 
+	{
 		aMainQuery = pMainQuery;
 		List<Category> categoryList = aCategorySearch.queryCategories(aMainQuery.getQuery());	
 				
@@ -465,14 +468,10 @@ public class SearchController
 	    aScoredAttr = rankedProducts.getaAttrList();
 	    	   
 	    // Converting
-		ArrayList<ProductVO> products = new ArrayList<ProductVO>();		
-	    for (Product sp: aScoredProducts) 
+		ArrayList<ProductView> products = new ArrayList<ProductView>();		
+	    for (Product scoredProduct: aScoredProducts) 
 	    {
-			ProductVO p = new ProductVO();
-			p.setName(sp.getName());
-			p.setUrl(sp.getUrl());
-			p.setId(sp.getId());
-			products.add(p);
+			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl()));
 	    }
 		aProductList.setProducts(products);	
 		return getCurrentFeatureList();
@@ -622,14 +621,10 @@ public class SearchController
 		List<Product> productsToDisplay  = tempProducts.FeatureSensitiveRanking(userScoredFeaturesSpecs, aCategory);
 
 		// Converting to View Object
-		ArrayList<ProductVO> products = new ArrayList<ProductVO>();
-	    for (Product sp: productsToDisplay)
+		ArrayList<ProductView> products = new ArrayList<ProductView>();
+	    for (Product scoredProduct: productsToDisplay)
 	    {
-			ProductVO p = new ProductVO();
-			p.setName(sp.getName());
-			p.setUrl(sp.getUrl());
-			p.setId(sp.getId());
-			products.add(p);
+			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl()));
 		 }
 	    if (productsToDisplay.size() > 0) {
 			aProductList.setProducts(products);	

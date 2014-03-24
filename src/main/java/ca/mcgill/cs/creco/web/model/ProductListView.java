@@ -22,27 +22,31 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
+/**
+ * A list of products for presentation on the web front-end.
+ */
 @Component
-@Scope(value="session", proxyMode=ScopedProxyMode.TARGET_CLASS)
-public class ProductListVO implements Serializable
+@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
+public class ProductListView implements Serializable
 {
-
 	private static final long serialVersionUID = -5156221733524698009L;
-	private ArrayList<ProductVO> products = new ArrayList<ProductVO>();
+	private ArrayList<ProductView> aProducts = new ArrayList<ProductView>();
 
-	public ProductListVO()
+	/**
+	 * @return All the products in this list.
+	 */
+	public ArrayList<ProductView> getProducts()
 	{
-		
+		return aProducts;
 	}
 
-	public ArrayList<ProductVO> getProducts()
+	/**
+	 * Sets the products in the view.
+	 * @param pProducts The products in the view.
+	 */
+	public void setProducts(ArrayList<ProductView> pProducts)
 	{
-		return products;
-	}
-
-	public void setProducts(ArrayList<ProductVO> products)
-	{
-		this.products = products;
+		aProducts = pProducts;
 	}
 	
 }

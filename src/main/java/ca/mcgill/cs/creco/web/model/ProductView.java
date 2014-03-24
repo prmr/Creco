@@ -15,40 +15,49 @@
  */
 package ca.mcgill.cs.creco.web.model;
 
-public class ProductVO
+/**
+ * Represents information about a product to show in the web front-end. Immutable.
+ */
+public class ProductView
 {
-	private String id;
-	private String name;
-	private String url;
+	private String aId;
+	private String aName;
+	private String aUrl;
+	
+	/**
+	 * Creates a new product.
+	 * @param pId The product's idea.
+	 * @param pName The display name of the product.
+	 * @param pUrl The url pointing to the product's web page on the CR database.
+	 */
+	public ProductView( String pId, String pName, String pUrl)
+	{
+		aId = pId;
+		aName = pName;
+		aUrl = pUrl;
+	}
 
+	/**
+	 * @return The product's id.
+	 */
 	public String getId()
 	{
-		return id;
+		return aId;
 	}
 
-	public void setId(String id)
-	{
-		this.id = id;
-	}
-
+	/**
+	 * @return The product's display name.
+	 */
 	public String getName()
 	{
-		return name;
+		return aName;
 	}
-
-	public void setName(String name)
-	{
-		this.name = name;
-	}
-
+	
+	/**
+	 * @return The product page's URL.
+	 */
 	public String getUrl()
 	{
-		return url;
+		return aUrl;
 	}
-
-	public void setUrl(String url)
-	{
-		this.url = url;
-	}
-
 }
