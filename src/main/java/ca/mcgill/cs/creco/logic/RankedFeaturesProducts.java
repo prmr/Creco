@@ -1,38 +1,22 @@
-package ca.mcgill.cs.creco.util;
+package ca.mcgill.cs.creco.logic;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.mcgill.cs.creco.data.*;
-import ca.mcgill.cs.creco.logic.AttributeCorrelator;
-import ca.mcgill.cs.creco.logic.ScoredAttribute;
-import ca.mcgill.cs.creco.logic.ScoredAttribute.Direction;
+import ca.mcgill.cs.creco.data.Attribute;
+import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.Product;
+import ca.mcgill.cs.creco.logic.ScoredAttribute.Direction;
 
-public class RankedFeaturesProducts {
+public class RankedFeaturesProducts 
+{
 	private static List<Product> main_aProductSearchResult;
 	private static List<ScoredAttribute> aAttrList;
 	private static List<Product> aProductSearchResult;
 
-	@Deprecated
-	private static List<ScoredAttribute> aRatingList;
-	@Deprecated
-	private static List<ScoredAttribute> aSpecList;
-
-
-
 	public RankedFeaturesProducts()
 	{
 	
-	}
-	
-	@Deprecated
-	public RankedFeaturesProducts(List<ScoredAttribute> pRatingList, List<ScoredAttribute> pSpecList, List<Product> pProductSearchResult)
-	{
-		RankedFeaturesProducts.main_aProductSearchResult=pProductSearchResult;
-		RankedFeaturesProducts.aProductSearchResult=pProductSearchResult;
-		RankedFeaturesProducts.aSpecList = pSpecList;
-		RankedFeaturesProducts.aRatingList = pRatingList;	
 	}
 	
 	public RankedFeaturesProducts(List<ScoredAttribute> pAttrList, List<Product> pProductSearchResult)
@@ -265,16 +249,4 @@ public class RankedFeaturesProducts {
 	{
 		return aProductSearchResult;
 	}
-	@Deprecated
-	public List<ScoredAttribute> getaRatingList()
-	{
-		return aRatingList;
-	}
-	@Deprecated
-	public List<ScoredAttribute> getaSpecList()
-	{
-		return aSpecList;
-	}
-
-	
 }
