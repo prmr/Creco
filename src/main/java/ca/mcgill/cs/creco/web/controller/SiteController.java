@@ -196,14 +196,17 @@ public class SiteController
 	/**
 	 * URL to search for categories from a query text.
 	 * @param pSearchQuery The search query.
+	 * @param pModel The model, containing the list of categories.
 	 * @return A redirection to the url to show categories.
 	 */
 	@RequestMapping(URL_SEARCH_CATEGORIES)
-	public String searchCategories(@RequestParam(value = "query", required = true) String pSearchQuery) 
+	public String searchCategories(@RequestParam(value = "query", required = true) String pSearchQuery, Model pModel) 
 	{
 		aMainQuery = new MainQueryVO();
 		aMainQuery.setQuery(pSearchQuery);
-		setCategoryListView(aServiceFacade.searchCategories(pSearchQuery));	
+//		setCategoryListView(aServiceFacade.searchCategories(pSearchQuery));	
+		
+		pModel.addAttribute("categories", aServiceFacade.searchCategories(pSearchQuery));
 				
 		return URL_SHOW_CATEGORIES;
 	}

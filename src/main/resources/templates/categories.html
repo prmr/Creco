@@ -42,7 +42,7 @@
 				<div class="alert">
 					Please select one category related to the query <span class="keyword" th:text="${mainQuery.query}"></span>. 
 				</div>
-				<div class="eq-result-entry" th:each="eqc : ${eqcList.eqcs}">
+				<div class="eq-result-entry" th:each="eqc : ${categories}">
 				   <form class="eq-button-wrap" action="/searchProducts" method="POST">
                         <input id="id" name="id" type="hidden" th:value="${eqc.id}"></input>
                         <input id="id" name="name" type="hidden" th:value="${eqc.name}"></input>
