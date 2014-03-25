@@ -16,7 +16,6 @@
 package ca.mcgill.cs.creco.web.controller;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -57,7 +56,7 @@ import com.google.gson.Gson;
 public class SiteController
 { 
 	private static final Logger LOG = LoggerFactory.getLogger(SiteController.class);
-	 
+	
 	private static final int NUMBER_OF_FEATURES_TO_DISPLAY = 10;
 	
 	private static final String URL_HOME = "/";
@@ -303,15 +302,6 @@ public class SiteController
 		return URL_SHOW_PRODUCTS;
 						
 	}
-//	/**
-//	 * 
-//	 * @return name of file to redirect the browser to popupFeature.html
-//	 */
-//	@RequestMapping(value = "/popupFeature", method = RequestMethod.GET)
-//	public String getPopUp() 
-//	{
-//		return "/popupFeature";
-//	}
 	
 	/**
 	 * 
