@@ -16,9 +16,7 @@
 package ca.mcgill.cs.creco.web.controller;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,9 +57,9 @@ import com.google.gson.Gson;
 @Controller
 public class SiteController
 {
-	private static final int MIN_NUMBER_OF_TYPED_LETTERS = 3;
-
 	private static final Logger LOG = LoggerFactory.getLogger(SiteController.class);
+	
+	private static final int NUMBER_OF_FEATURES_TO_DISPLAY = 10;
 	
 	private static final String URL_HOME = "/";
 	private static final String URL_INDEX = "/index";
@@ -285,11 +283,10 @@ public class SiteController
 		List<String> values;
 
 		//Display top 10 scored attributes
-		int featureNumToDisplay = 10;
 		for (int i = 0 ; i < aScoredAttr.size() ; i++)
 		{
 
-			if(i>featureNumToDisplay)
+			if(i > NUMBER_OF_FEATURES_TO_DISPLAY)
 			{
 				break;
 			}
@@ -383,10 +380,9 @@ public class SiteController
 	 * @return name of file to redirect the browser to the products page.
 	 */
 	@RequestMapping(value = "/sendFeatures", method = RequestMethod.POST)	
-	public String sendCurrentFeatureList(@RequestParam String dataSpec, @RequestParam String dataRate)
+	public String sendCurrentFeatureList(@RequestParam String dataSpec)
 	{
-		Gson gson = new Gson();
-		UserFeatureModel userFMSpec = gson.fromJson(dataSpec, UserFeatureModel.class);
+		UserFeatureModel userFMSpec = new Gson().fromJson(dataSpec, UserFeatureModel.class);
 
 		List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
 			
@@ -430,18 +426,17 @@ public class SiteController
 	 */
 	public List<ScoredAttribute> sortFeatures(List<ScoredAttribute> pUserFeatures)
 	{
-		int len = pUserFeatures.size();
 		ScoredAttribute tmp = null;
 		
-		for(int i = 0; i<len; i++)
+		for(int i = 0; i<pUserFeatures.size(); i++)
 		{
-			for(int j = (len-1); j >= (i+1); j--)
+			for(int j = pUserFeatures.size()-1; j >= i+1; j--)
 			{				
 				if(pUserFeatures.get(j).getEntropy() > pUserFeatures.get(j-1).getEntropy())
 				{
 					tmp = pUserFeatures.get(j);			       
-					pUserFeatures.set(j,pUserFeatures.get(j-1));
-					pUserFeatures.set(j-1,tmp);
+					pUserFeatures.set(j, pUserFeatures.get(j-1));
+					pUserFeatures.set(j-1, tmp);
 				}
 			}
 		}
