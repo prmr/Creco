@@ -81,9 +81,6 @@ public class SiteController
 	private ProductListView aProductList;
 	
 	@Autowired
-	private EqcListVO aEqcList;
-	
-	@Autowired
 	private MainQueryVO aMainQuery;
 
 	@Autowired
@@ -124,12 +121,6 @@ public class SiteController
 		return new FeatureListVO();
 	}
 
-	@ModelAttribute("eqcList")
-	private EqcListVO getEqcList() 
-	{
-		return aEqcList;
-	}
-	
 	@ModelAttribute("productList")
 	private ProductListView getProductList() 
 	{
@@ -204,25 +195,9 @@ public class SiteController
 	{
 		aMainQuery = new MainQueryVO();
 		aMainQuery.setQuery(pSearchQuery);
-//		setCategoryListView(aServiceFacade.searchCategories(pSearchQuery));	
-		
 		pModel.addAttribute("categories", aServiceFacade.searchCategories(pSearchQuery));
-				
+		pModel.addAttribute("query", pSearchQuery);
 		return URL_SHOW_CATEGORIES;
-	}
-	
-	private void setCategoryListView(Collection<Category> pCategories)
-	{
-		ArrayList<EqcVO> eqcs = new ArrayList<EqcVO>();		
-		for (Category cat: pCategories)
-		{
-			EqcVO eqc = new EqcVO();
-			eqc.setId(cat.getId());
-			eqc.setName(cat.getName());
-			eqc.setCount(cat.getNumberOfProducts());
-			eqcs.add(eqc);
-		}
-		aEqcList.setEqcs(eqcs);
 	}
 	
 	/**
