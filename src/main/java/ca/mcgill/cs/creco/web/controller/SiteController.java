@@ -430,10 +430,6 @@ public class SiteController
 	@RequestMapping(value = "/sendFeatures", method = RequestMethod.POST)	
 	public String sendCurrentFeatureList(@RequestParam String dataSpec, @RequestParam String dataRate)
 	{
-
-		LOG.debug(" spec data is  " + dataSpec);
-		LOG.debug(" rate data is  " + dataRate);
-
 		Gson gson = new Gson();
 		UserFeatureModel userFMSpec = gson.fromJson(dataSpec, UserFeatureModel.class);
 
@@ -452,11 +448,6 @@ public class SiteController
 
 		}
 		
-		for(Product sa : aScoredProducts)
-		{
-			LOG.debug(sa.toString());					
-		}
-	
 		RankedFeaturesProducts tempProducts = new RankedFeaturesProducts();	
 		userScoredFeaturesSpecs = sortFeatures(userScoredFeaturesSpecs);
 		
@@ -514,7 +505,6 @@ public class SiteController
 			ScoredAttribute temp = pFeatureList.get(i);
 			if(temp.getAttributeName().equals(pName))
 			{
-				LOG.debug("old mean value is " + pFeatureList.get(i).getAttributeDefault());
 				return temp;
 
 			}
