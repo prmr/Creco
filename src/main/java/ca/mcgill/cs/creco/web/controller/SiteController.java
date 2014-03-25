@@ -16,7 +16,9 @@
 package ca.mcgill.cs.creco.web.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -201,6 +203,28 @@ public class SiteController
 			if(category.getName().toLowerCase().contains(pStringTyped.toLowerCase()))
 			{
 				response = response.concat(category.getName() + ",");
+			}
+		}
+		
+		Set<String> collectedtillnow = new HashSet<String>();
+		for (Product productname : aDataStore.getProducts()) 
+		{
+			if(productname.getName().toLowerCase().contains(pStringTyped.toLowerCase()))
+			{
+				for (String productspace: productname.getName().toLowerCase().split(" "))
+				{
+					if(productspace.contains(pStringTyped.toLowerCase()))
+					{
+						if(collectedtillnow.contains(productspace))
+						{
+						}
+						else
+						{
+							collectedtillnow.add(productspace);		
+							response = response.concat(productspace+",");
+						}
+					}
+				}
 			}
 		}
 		
