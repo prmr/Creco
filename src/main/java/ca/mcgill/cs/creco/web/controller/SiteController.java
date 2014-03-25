@@ -40,7 +40,6 @@ import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.ServiceFacade;
 import ca.mcgill.cs.creco.logic.search.ICategorySearch;
 import ca.mcgill.cs.creco.logic.search.IProductSearch;
-import ca.mcgill.cs.creco.web.model.EqcListVO;
 import ca.mcgill.cs.creco.web.model.EqcVO;
 import ca.mcgill.cs.creco.web.model.FeatureListVO;
 import ca.mcgill.cs.creco.web.model.FeatureVO;
@@ -166,7 +165,7 @@ public class SiteController
 		 aSpecFeatureList = new FeatureListVO();
 		 aRateFeatureList = new FeatureListVO();
 		 aProductList = new ProductListView();
-		 return URL_INDEX;								
+		 return URL_SHOW_CATEGORIES;								
 	}
 	
 	/**
@@ -191,7 +190,7 @@ public class SiteController
 	 * @return A redirection to the url to show categories.
 	 */
 	@RequestMapping(URL_SEARCH_CATEGORIES)
-	public String searchCategories(@RequestParam(value = "query", required = true) String pSearchQuery, Model pModel) 
+	public String searchCategories(@RequestParam(value = "query") String pSearchQuery, Model pModel) 
 	{
 		aMainQuery = new MainQueryVO();
 		aMainQuery.setQuery(pSearchQuery);

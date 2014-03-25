@@ -38,7 +38,7 @@
 					<input id='search_btn' type="submit" class="btn btn-info" value="Search"></input>	
 				</form>
 			</div>
-			<div id='eq-result'>
+			<div id='eq-result' th:unless="${categories == null}">
 				<div class="alert">
 					Please select one category related to the query <span class="keyword" th:text="${query}"></span>. 
 				</div>
