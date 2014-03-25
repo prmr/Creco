@@ -57,7 +57,7 @@ import com.google.gson.Gson;
 public class SiteController
 { 
 	private static final Logger LOG = LoggerFactory.getLogger(SiteController.class);
-	
+	 
 	private static final int NUMBER_OF_FEATURES_TO_DISPLAY = 10;
 	
 	private static final String URL_HOME = "/";
