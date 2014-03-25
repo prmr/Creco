@@ -39,6 +39,7 @@ import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.logic.AttributeExtractor;
 import ca.mcgill.cs.creco.logic.RankedFeaturesProducts;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
+import ca.mcgill.cs.creco.logic.ServiceFacade;
 import ca.mcgill.cs.creco.logic.search.ICategorySearch;
 import ca.mcgill.cs.creco.logic.search.IProductSearch;
 import ca.mcgill.cs.creco.web.model.EqcListVO;
@@ -69,6 +70,9 @@ public class SiteController
 	private static final String URL_SHOW_CATEGORIES = "/categories";
 	private static final String URL_SEARCH_PRODUCTS = "/searchProducts";
 	private static final String URL_SHOW_PRODUCTS = "/products";
+	
+	@Autowired
+	private ServiceFacade aServiceFacade;
 	
 	private List<ScoredAttribute> aScoredAttr; 
 	
@@ -177,7 +181,7 @@ public class SiteController
 	}
 	
 	/**
-	 * Returns a response body with results for the search autocomplete
+	 * Returns a response body with results for the search auto-complete
 	 * box.
 	 * 
 	 * @param pStringTyped The string typed by the user.
@@ -187,57 +191,8 @@ public class SiteController
 	@ResponseBody  
 	public String getCompletions(@RequestBody String pStringTyped)
 	{  
-		if(pStringTyped.length() < MIN_NUMBER_OF_TYPED_LETTERS)
-		{
-			return "";
-		}
-
-		String response = "";
-
-		for(Category category : aDataStore.getCategories()) 
-		{
-			if(category.getNumberOfProducts() == 0)
-			{
-				continue;
-			}
-			if(category.getName().toLowerCase().contains(pStringTyped.toLowerCase()))
-			{
-				response = response.concat(category.getName() + ",");
-			}
-		}
-		
-		Set<String> collectedtillnow = new HashSet<String>();
-		for (Product productname : aDataStore.getProducts()) 
-		{
-			if(productname.getName().toLowerCase().contains(pStringTyped.toLowerCase()))
-			{
-				for (String productspace: productname.getName().toLowerCase().split(" "))
-				{
-					if(productspace.contains(pStringTyped.toLowerCase()))
-					{
-						if(collectedtillnow.contains(productspace))
-						{
-						}
-						else
-						{
-							collectedtillnow.add(productspace);		
-							response = response.concat(productspace+",");
-						}
-					}
-				}
-			}
-		}
-		
-		for(Product product : aDataStore.getProducts()) 
-		{
-			if(product.getName().toLowerCase().contains(pStringTyped.toLowerCase()))
-			{
-				response = response.concat(product.getName()+ ",");
-			}
-		}
-
-		return response;
-	  }  
+		return aServiceFacade.getCompletions(pStringTyped);
+	}  
 	   
 	
 	/**
