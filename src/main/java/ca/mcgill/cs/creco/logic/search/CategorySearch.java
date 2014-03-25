@@ -101,7 +101,7 @@ public class CategorySearch implements ICategorySearch
 	@Override
 	public List<Category> queryCategories(String pQueryString) 
 	{
-		List<Category> equivalenceClassResults = new ArrayList<Category>();
+		List<Category> searchResult = new ArrayList<Category>();
 		try 
 		{
 			DirectoryReader reader = DirectoryReader.open(aDirectory);
@@ -121,9 +121,9 @@ public class CategorySearch implements ICategorySearch
 			    Document doc = searcher.doc(scoredResult.doc);
 			    Category resultCategory = aDataStore.getCategory(doc.get(CATEGORY_ID));
 
-			    if (!equivalenceClassResults.contains(resultCategory))
+			    if (!searchResult.contains(resultCategory) && resultCategory.getNumberOfProducts() > 0)
 			    {
-			    	equivalenceClassResults.add(resultCategory);
+			    	searchResult.add(resultCategory);
 			    }
 			}
 		}
@@ -135,6 +135,6 @@ public class CategorySearch implements ICategorySearch
 		{
 			LOG.error(e.getMessage());
 		}
-		return equivalenceClassResults;
+		return searchResult;
 	}
 }

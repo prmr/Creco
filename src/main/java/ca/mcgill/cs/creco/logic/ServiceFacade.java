@@ -15,6 +15,10 @@
  */
 package ca.mcgill.cs.creco.logic;
 
+import java.util.Collection;
+
+import ca.mcgill.cs.creco.data.Category;
+
 /**
  * Single point of access for all services of domain 
  * objects. Implements Fowler's Service Layer pattern.
@@ -29,4 +33,12 @@ public interface ServiceFacade
 	 * @return A comma-separated string of potential completions.
 	 */
 	String getCompletions(String pInput);
+	
+	/**
+	 * Return all categories that somehow match pQuery. 
+	 * Only categories with at least one product are returned.
+	 * @param pQuery The input query
+	 * @return A collection of Category objects representing categories that match pQuery.
+	 */
+	Collection<Category> searchCategories(String pQuery);
 }

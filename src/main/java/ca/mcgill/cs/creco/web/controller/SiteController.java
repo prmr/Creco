@@ -16,6 +16,7 @@
 package ca.mcgill.cs.creco.web.controller;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -202,32 +203,16 @@ public class SiteController
 	public String searchCategories(@ModelAttribute("mainQuery") MainQueryVO pMainQuery ) 
 	{
 		aMainQuery = pMainQuery;
-		List<Category> categoryList = aCategorySearch.queryCategories(aMainQuery.getQuery());	
+		setCategoryListView(aServiceFacade.searchCategories(pMainQuery.getQuery()));	
 				
-		//Nishanth code 
-		String mainString = "";
-		for (Category category123 : aDataStore.getCategories()) 
-		{
-		   if(category123.getNumberOfProducts() == 0)
-		   {
-			   continue;
-		   }
-		 mainString = mainString.concat("\"");
-		 mainString = mainString.concat(category123.getName());
-		 mainString = mainString.concat("\"");
-		 mainString = mainString.concat(",");
-		 mainString = mainString.concat("\n");
-		}
-
-		// Nishanth code
-		//Converting
+		return URL_SHOW_CATEGORIES;
+	}
+	
+	private void setCategoryListView(Collection<Category> pCategories)
+	{
 		ArrayList<EqcVO> eqcs = new ArrayList<EqcVO>();		
-		for (Category cat: categoryList)
+		for (Category cat: pCategories)
 		{
-			if(cat.getNumberOfProducts() == 0)
-			{
-				continue;
-			}
 			EqcVO eqc = new EqcVO();
 			eqc.setId(cat.getId());
 			eqc.setName(cat.getName());
@@ -235,7 +220,6 @@ public class SiteController
 			eqcs.add(eqc);
 		}
 		aEqcList.setEqcs(eqcs);
-		return URL_SHOW_CATEGORIES;
 	}
 	
 	/**

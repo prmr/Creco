@@ -15,6 +15,7 @@
  */
 package ca.mcgill.cs.creco.logic;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -80,5 +81,11 @@ public class ConcreteServiceFacade implements ServiceFacade
 			}
 		}
 		return response;
+	}
+
+	@Override
+	public Collection<Category> searchCategories(String pQuery)
+	{
+		return aCategorySearch.queryCategories(pQuery);
 	}
 }
