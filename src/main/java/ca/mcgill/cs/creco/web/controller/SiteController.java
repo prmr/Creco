@@ -55,7 +55,7 @@ import com.google.gson.Gson;
  */
 @Controller
 public class SiteController
-{
+{ 
 	private static final Logger LOG = LoggerFactory.getLogger(SiteController.class);
 	
 	private static final int NUMBER_OF_FEATURES_TO_DISPLAY = 10;
