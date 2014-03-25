@@ -61,7 +61,6 @@ public class SiteController
 	private static final int NUMBER_OF_FEATURES_TO_DISPLAY = 10;
 	
 	private static final String URL_HOME = "/";
-	private static final String URL_INDEX = "/index";
 	private static final String URL_AUTOCOMPLETE = "/autocomplete";
 	private static final String URL_SEARCH_CATEGORIES = "/searchCategories";
 	private static final String URL_SHOW_CATEGORIES = "/categories";
