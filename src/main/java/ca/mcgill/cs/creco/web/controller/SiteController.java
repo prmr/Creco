@@ -288,17 +288,17 @@ public class SiteController
 	/**
 	 * A category is selected and this controller obtains the features
 	 * and products to display.		
-	 * @param eqc the category
+	 * @param pCategory The category
 	 * @return A redirection to the product page
 	 */
 	@RequestMapping(value = URL_SEARCH_PRODUCTS, method = RequestMethod.POST)  
-	public String searchRankedFeaturesProducts(@ModelAttribute("eqc") EqcVO eqc)
+	public String searchRankedFeaturesProducts(@ModelAttribute("eqc") EqcVO pCategory)
 	{  
-	    List<Category> categoryList = aCategorySearch.queryCategories(aMainQuery.getQuery());
+		List<Category> categoryList = aCategorySearch.queryCategories(aMainQuery.getQuery());
 	    Category target = null;
 	    for (Category cat: categoryList)
 	    {
-	    	if (cat.getId().equals(eqc.getId()))
+	    	if (cat.getId().equals(pCategory.getId()))
 	    	{
 	    		target = cat;
 	    	}
@@ -425,7 +425,7 @@ public class SiteController
 	 * @author MariamN
 	 * @param dataSpec
 	 * @param dataRate
-	 * @return name of file to redirect the browser to rankedproducts.html
+	 * @return name of file to redirect the browser to the products page.
 	 */
 	@RequestMapping(value = "/sendFeatures", method = RequestMethod.POST)	
 	public String sendCurrentFeatureList(@RequestParam String dataSpec, @RequestParam String dataRate)
@@ -468,10 +468,11 @@ public class SiteController
 	    {
 			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl()));
 		 }
-	    if (productsToDisplay.size() > 0) {
+	    if (productsToDisplay.size() > 0) 
+	    {
 			aProductList.setProducts(products);	
 	    }
-		return "/rankedproducts";		
+		return URL_SHOW_PRODUCTS;		
 	}	
 
 	
