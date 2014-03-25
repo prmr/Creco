@@ -183,14 +183,14 @@ public class SiteController
 	 * Returns a response body with results for the search auto-complete
 	 * box.
 	 * 
-	 * @param pStringTyped The string typed by the user.
+	 * @param pInput The string typed by the user.
 	 * @return The response body containing the completions.
 	 */
-	@RequestMapping(value = URL_AUTOCOMPLETE, method = RequestMethod.POST )  
-	@ResponseBody  
-	public String getCompletions(@RequestBody String pStringTyped)
+	@RequestMapping(URL_AUTOCOMPLETE)  
+	@ResponseBody
+	public String getCompletions(@RequestParam(value = "input", required = true) String pInput)
 	{  
-		return aServiceFacade.getCompletions(pStringTyped);
+		return aServiceFacade.getCompletions(pInput);
 	}  
 	   
 	

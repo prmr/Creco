@@ -1,13 +1,7 @@
 function getCompletions(val) {
     $.ajax({
-        url: "autocomplete.html",
-        data: val,
-        type: "POST",
-
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("Accept", "application/json");
-            xhr.setRequestHeader("Content-Type", "application/json");
-        },
+        url: "/autocomplete?input=" + val,
+        async: false,
         success: function (response) {
             var mySplitResult;
             mySplitResult = response.split(",");
