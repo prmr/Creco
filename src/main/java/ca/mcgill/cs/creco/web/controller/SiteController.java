@@ -69,27 +69,14 @@ public class SiteController
 	
 	private List<ScoredAttribute> aScoredAttr; 
 	
-	private List<Product> aScoredProducts;
 	private Category aCategory;
 	
 	@Autowired
 	private ProductListView aProductList;
 	
 	@Autowired
-	private FeatureListVO aUserList;
-
-	@Autowired
 	private FeatureListVO aSpecFeatureList;
 
-	@Autowired
-	private FeatureListVO aRateFeatureList;
-
-	@Autowired
-	private FeatureListVO aFeatureList;
-
-	@Autowired
-	private FeatureVO aUserSpecFeatures;
-	
 	@Autowired
 	private IDataStore aDataStore;
 	
@@ -101,39 +88,16 @@ public class SiteController
 	
 	// ***** Model Attributes *****
 	
-	@ModelAttribute("userList")
-	private FeatureListVO getUserList() 
-	{
-		return new FeatureListVO();
-	}
-
 	@ModelAttribute("productList")
 	private ProductListView getProductList() 
 	{
 		return aProductList;
-	}
-	@ModelAttribute("featureList")
-	private FeatureListVO getFeatureList() 
-	{
-		return aFeatureList;
 	}
 	
 	@ModelAttribute("specFeatureList")
 	private FeatureListVO getSpecFeatureList() 
 	{
 		return aSpecFeatureList;
-	}
-	
-	@ModelAttribute("userSpecFeatures")
-	private FeatureVO getUserSpecFeatures()
-	{
-		return aUserSpecFeatures;
-	}
-	
-	@ModelAttribute("rateFeatureList")
-	private FeatureListVO getRateFeatureList()
-	{
-		return aRateFeatureList;
 	}
 	
 	// ***** URL Mappings *****
@@ -150,7 +114,6 @@ public class SiteController
 		 UserFeatureModel form = new UserFeatureModel();
 		 pModel.addAttribute("myForm", form);
 		 aSpecFeatureList = new FeatureListVO();
-		 aRateFeatureList = new FeatureListVO();
 		 aProductList = new ProductListView();
 		 return URL_SHOW_CATEGORIES;								
 	}
@@ -200,7 +163,7 @@ public class SiteController
 		List<ScoredAttribute> attrList = ae.getScoredAttributeList();
 		aCategory = ae.getCategory();
 		RankedFeaturesProducts rankedProducts = new RankedFeaturesProducts(attrList, prodSearch);
-	    aScoredProducts = rankedProducts.getaProductSearchResult();
+		List<Product> aScoredProducts = rankedProducts.getaProductSearchResult();
 	    
 	    aScoredAttr = rankedProducts.getaAttrList();
 	    	   
