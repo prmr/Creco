@@ -39,7 +39,6 @@ import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.ServiceFacade;
 import ca.mcgill.cs.creco.logic.search.ICategorySearch;
 import ca.mcgill.cs.creco.logic.search.IProductSearch;
-import ca.mcgill.cs.creco.web.model.EqcVO;
 import ca.mcgill.cs.creco.web.model.FeatureListVO;
 import ca.mcgill.cs.creco.web.model.FeatureVO;
 import ca.mcgill.cs.creco.web.model.MainQueryVO;
