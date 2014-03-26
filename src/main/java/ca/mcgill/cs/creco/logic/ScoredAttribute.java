@@ -446,14 +446,6 @@ public class ScoredAttribute
 	}
 
 	/**
-	 * @param pAttributeScore score to set the attribute to
-	 */
-	public void setAttributeScore(double pAttributeScore)
-	{
-		aAttributeScore = pAttributeScore;
-	}
-
-	/**
 	 * @return name of the attribute as String
 	 */
 	public String getAttributeName() 
@@ -474,15 +466,6 @@ public class ScoredAttribute
 	public TypedValue getAttributeDefault() 
 	{
 		return aDefaultValue;
-	}
-	
-	/**
-	 * @param pDefault mean or mode of this attribute given a product list used to 
-	 * calculate the score
-	 */
-	public void setAttributeDefault(TypedValue pDefault) 
-	{
-		aDefaultValue = pDefault;
 	}
 
 	/**
@@ -516,16 +499,6 @@ public class ScoredAttribute
 	{
 		return aAttributeDesc;
 	}
-
-	
-	/**
-	 * @param pAttributeDesc description of this attribute
-	 * ***/	
-	public void setAttributeDesc(String pAttributeDesc)
-	{
-		this.aAttributeDesc = pAttributeDesc;
-	}
-
 	/**
 	 * @return The entropy for this attribute.
 	 */

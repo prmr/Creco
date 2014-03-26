@@ -57,6 +57,9 @@ public class TestFiltering {
 	@Autowired
 	private ICategorySearch aCategorySearch;
 	
+	@Autowired
+	private AttributeExtractor aAttributeExtractor;
+	
 	private static String SMARTPHONE_CATEGORY_ID = "28726";
 	
 	
@@ -72,10 +75,8 @@ public class TestFiltering {
 		    }
 		    
 			List<Product> prodSearch = aProductSearch.returnProductsAlphabetically(target.getId());
-			AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
-			List<ScoredAttribute> ratingList = ae.getScoredRatingList();
-			List<ScoredAttribute> specList = ae.getScoredAttributeList();
-		    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(specList, prodSearch);
+			List<ScoredAttribute> attrList = aAttributeExtractor.getAttributesForCategory(target.getId());
+		    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(attrList, prodSearch);
 		    List<Product> scoredProducts = rankedProducts.getaProductSearchResult();
 			assertEquals(407, scoredProducts.size());
 	}
@@ -92,10 +93,8 @@ public class TestFiltering {
 		    }
 		    
 			List<Product> prodSearch = aProductSearch.returnProductsAlphabetically(target.getId());
-			AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
-			List<ScoredAttribute> ratingList = ae.getScoredRatingList();
-			List<ScoredAttribute> specList = ae.getScoredAttributeList();
-		    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(specList, prodSearch);
+			List<ScoredAttribute> attrList = aAttributeExtractor.getAttributesForCategory(target.getId());
+		    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(attrList, prodSearch);
 		    List<Product> scoredProducts = rankedProducts.getaProductSearchResult();
 			assertEquals(111, scoredProducts.size());
 	}
@@ -114,11 +113,9 @@ public class TestFiltering {
 		}
 		    
 		List<Product> prodSearch = aProductSearch.returnProductsAlphabetically(target.getId());
-		AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
-		List<ScoredAttribute> ratingList = ae.getScoredRatingList();
-		List<ScoredAttribute> specList = ae.getScoredAttributeList();
-		RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(specList, prodSearch);
-		List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
+		List<ScoredAttribute> attrList = aAttributeExtractor.getAttributesForCategory(target.getId());
+	    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(attrList, prodSearch);
+	    List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
 		Attribute test= Attribute.buildSpecification( "doesnt matter", "Manual controls", "doesn't matter", true );
 		ScoredAttribute test_score = new ScoredAttribute(test,new Category("empty", "test", "test", new ArrayList<Product>(), 
 					new ArrayList<AttributeStat>(), new ArrayList<AttributeStat>()));
@@ -141,10 +138,8 @@ public class TestFiltering {
 		    }
 		    
 			List<Product> prodSearch = aProductSearch.returnProductsAlphabetically(target.getId());
-			AttributeExtractor ae = new AttributeExtractor(prodSearch, target);
-			List<ScoredAttribute> ratingList = ae.getScoredRatingList();
-			List<ScoredAttribute> specList = ae.getScoredAttributeList();
-		    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(specList, prodSearch);
+			List<ScoredAttribute> attrList = aAttributeExtractor.getAttributesForCategory(target.getId());
+		    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(attrList, prodSearch);
 		    List<Product> scoredProducts = rankedProducts.getaProductSearchResult();
 		    List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
 			Attribute test= Attribute.buildSpecification( "doesnt matter", "Multiple recline positions", "doesn't matter", true );

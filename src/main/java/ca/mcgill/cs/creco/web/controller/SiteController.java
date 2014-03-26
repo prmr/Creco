@@ -71,6 +71,8 @@ public class SiteController
 	
 	@Autowired
 	private ServiceFacade aServiceFacade;
+	@Autowired
+	private AttributeExtractor aAttributeExtractor;
 	
 	private List<ScoredAttribute> aScoredAttr; 
 	
@@ -241,10 +243,9 @@ public class SiteController
 	    }
 	    
 		List<Product> prodSearch = aProductSort.returnProductsAlphabetically(target.getId());
-		AttributeExtractor ae = new AttributeExtractor(target);
+		List<ScoredAttribute> attrList = aAttributeExtractor.getAttributesForCategory(target.getId());
+		aCategory = target;
 		
-		List<ScoredAttribute> attrList = ae.getScoredAttributeList();
-		aCategory = ae.getCategory();
 		RankedFeaturesProducts rankedProducts = new RankedFeaturesProducts(attrList, prodSearch);
 	    aScoredProducts = rankedProducts.getaProductSearchResult();
 	    
@@ -375,7 +376,8 @@ public class SiteController
 			ScoredAttribute sa = locateFeatureScoredAttribute(aScoredAttr, tempName);
 			if ( sa != null)
 			{
-				TypedValue av = new TypedValue(userFMSpec.getValues().get(i));				
+				TypedValue av = new TypedValue(userFMSpec.getValues().get(i));
+				//whats is this used for is it still needed?
 				sa.setAttributeDefault(av);
 				userScoredFeaturesSpecs.add(sa);				
 			}			

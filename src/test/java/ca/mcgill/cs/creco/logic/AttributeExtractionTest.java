@@ -1,3 +1,7 @@
+/*
+ * Write a new set of tests for the AttributeExtractor
+ */
+		
 package ca.mcgill.cs.creco.logic;
 
 import static org.junit.Assert.assertTrue;
@@ -26,53 +30,5 @@ public class AttributeExtractionTest
 {
 	@Autowired
 	IDataStore aDataStore;
-	
-	@Test
-	public void testAllCategories() 
-	{
-		try
-		{
-			for(Category c : aDataStore.getCategories())
-			{
-				Set<Product> productSet = new HashSet<Product>();
-				for(Product product : c.getProducts())
-				{
-					productSet.add(product);
-				}
-				AttributeExtractor ae = new AttributeExtractor(productSet, c);
-				ae.getScoredSpecList();
-				ae.getScoredRatingList();
-			}
-			
-		}
-		catch (Exception e)
-		{
-			fail("Exception caught " + e);
-		}
-		
-	}
-	
-	@Test
-	public void testSorting() 
-	{
-		//numeric
-		ArrayList<ScoredAttribute> sal = new ArrayList<ScoredAttribute>();
-		for(int i = 0; i < 10; i++)
-		{
-			ScoredAttribute sa = new ScoredAttribute(Attribute.buildSpecification(i+ "", i+ "", i+ "", null), new Category("test", "test", "test", new ArrayList<Product>(), 
-					new ArrayList<AttributeStat>(), new ArrayList<AttributeStat>()));
-			sa.setAttributeScore(i);
-			sal.add(sa);
-		}
-		
-		Collections.sort(sal,ScoredAttribute.SORT_BY_SCORE);
-	
-		for(int i = 0; i < 10; i++)
-		{
-			String index = (9 - i) + "";
-			assertTrue(index.equals(sal.get(i).getAttributeName()));
-		}
-		
-	}
 
 }
