@@ -43,9 +43,9 @@
 					Please select one category related to the query <span class="keyword" th:text="${query}"></span>. 
 				</div>
 				<div class="eq-result-entry" th:each="eqc : ${categories}">
-				   <form class="eq-button-wrap" action="/searchProducts" method="POST">
+				   <form class="eq-button-wrap" action="/searchProducts">
                         <input id="id" name="id" type="hidden" th:value="${eqc.id}"></input>
-                        <input id="id" name="name" type="hidden" th:value="${eqc.name}"></input>
+                        <!-- <input id="id" name="name" type="hidden" th:value="${eqc.name}"></input> -->
                         <input class="eq-button" type="submit" th:value="${eqc.name}"></input>       
                     </form>
 				</div>

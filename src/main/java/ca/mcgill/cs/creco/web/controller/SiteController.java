@@ -200,24 +200,15 @@ public class SiteController
 	/**
 	 * A category is selected and this controller obtains the features
 	 * and products to display.		
-	 * @param pCategory The category
+	 * @param pCategoryId The id of the selected category
+	 * @param pModel The model, containing the list of categories.
 	 * @return A redirection to the product page
 	 */
-	@RequestMapping(value = URL_SEARCH_PRODUCTS, method = RequestMethod.POST)  
-	public String searchRankedFeaturesProducts(@ModelAttribute("eqc") EqcVO pCategory)
+	@RequestMapping(URL_SEARCH_PRODUCTS)  
+	public String searchRankedFeaturesProducts(@RequestParam(value = "id", required = true) String pCategoryId, Model pModel)
 	{  
-		List<Category> categoryList = aCategorySearch.queryCategories(aMainQuery.getQuery());
-	    Category target = null;
-	    for (Category cat: categoryList)
-	    {
-	    	if (cat.getId().equals(pCategory.getId()))
-	    	{
-	    		target = cat;
-	    	}
-	    }
-	    
-		List<Product> prodSearch = aProductSort.returnProductsAlphabetically(target.getId());
-		AttributeExtractor ae = new AttributeExtractor(target);
+		List<Product> prodSearch = aProductSort.returnProductsAlphabetically(pCategoryId);
+		AttributeExtractor ae = new AttributeExtractor(aServiceFacade.getCategory(pCategoryId));
 		
 		List<ScoredAttribute> attrList = ae.getScoredAttributeList();
 		aCategory = ae.getCategory();
@@ -301,26 +292,6 @@ public class SiteController
 
 		return URL_SHOW_PRODUCTS;
 						
-	}
-	
-	/**
-	 * 
-	 * @return name of file to redirect the browser to rankedproducts.html
-	 */
-	@RequestMapping(value = URL_SEARCH_PRODUCTS, method = RequestMethod.GET)
-	public String getRankedProducts() 
-	{
-		return URL_SHOW_PRODUCTS;
-	}
-	
-	/**
-	 * 
-	 * @return name of file to redirect the browser to rankedproducts.html
-	 */
-	@RequestMapping(value = URL_SHOW_PRODUCTS, method = RequestMethod.GET)
-	public String getRankedProducts2() 
-	{
-		return URL_SHOW_PRODUCTS;
 	}
 	
 	/**

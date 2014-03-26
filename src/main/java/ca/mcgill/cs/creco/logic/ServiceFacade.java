@@ -41,4 +41,11 @@ public interface ServiceFacade
 	 * @return A collection of Category objects representing categories that match pQuery.
 	 */
 	Collection<Category> searchCategories(String pQuery);
+	
+	/**
+	 * Returns a category given its id.
+	 * @param pId The id of the category to obtain.
+	 * @return The corresponding category.
+	 */
+	Category getCategory(String pId);
 }
