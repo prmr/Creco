@@ -41,7 +41,6 @@ import ca.mcgill.cs.creco.logic.search.ICategorySearch;
 import ca.mcgill.cs.creco.logic.search.IProductSearch;
 import ca.mcgill.cs.creco.web.model.FeatureListVO;
 import ca.mcgill.cs.creco.web.model.FeatureVO;
-import ca.mcgill.cs.creco.web.model.MainQueryVO;
 import ca.mcgill.cs.creco.web.model.ProductListView;
 import ca.mcgill.cs.creco.web.model.ProductView;
 import ca.mcgill.cs.creco.web.model.UserFeatureModel;
@@ -77,9 +76,6 @@ public class SiteController
 	private ProductListView aProductList;
 	
 	@Autowired
-	private MainQueryVO aMainQuery;
-
-	@Autowired
 	private FeatureListVO aUserList;
 
 	@Autowired
@@ -104,12 +100,6 @@ public class SiteController
 	private IProductSearch aProductSort;
 	
 	// ***** Model Attributes *****
-	
-	@ModelAttribute("mainQuery")
-	private MainQueryVO getMainQuery() 
-	{
-		return new MainQueryVO();
-	}
 	
 	@ModelAttribute("userList")
 	private FeatureListVO getUserList() 
@@ -187,10 +177,8 @@ public class SiteController
 	 * @return A redirection to the url to show categories.
 	 */
 	@RequestMapping(URL_SEARCH_CATEGORIES)
-	public String searchCategories(@RequestParam(value = "query") String pSearchQuery, Model pModel) 
+	public String searchCategories(@RequestParam(value = "query", required = true) String pSearchQuery, Model pModel) 
 	{
-		aMainQuery = new MainQueryVO();
-		aMainQuery.setQuery(pSearchQuery);
 		pModel.addAttribute("categories", aServiceFacade.searchCategories(pSearchQuery));
 		pModel.addAttribute("query", pSearchQuery);
 		return URL_SHOW_CATEGORIES;
