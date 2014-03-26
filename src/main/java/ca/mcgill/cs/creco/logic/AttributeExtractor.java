@@ -46,15 +46,15 @@ public class AttributeExtractor
 	{ ENTROPY, SCORE, CORRELATION }
 	private static final SORT_METHOD DEFAULT_SORT = SORT_METHOD.ENTROPY;
 	private static final Logger LOG = LoggerFactory.getLogger(AttributeExtractor.class);
-	@Autowired
  	private IDataStore aDataStore;
 	private HashMap<String, ArrayList<ScoredAttribute>> aAllAttributes;
 	/** Constructor that takes a category.
 	 * @param pCategory the whole space of interesting products
 	 */
-	public AttributeExtractor()
+	@Autowired
+	public AttributeExtractor(IDataStore pDataStore)
 	{
-		
+		aDataStore = pDataStore;
 		aAllAttributes = new HashMap<String, ArrayList<ScoredAttribute>>();
 		for(Category cat : aDataStore.getCategories())
 		{
