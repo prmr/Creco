@@ -30,14 +30,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.logic.AttributeExtractor;
 import ca.mcgill.cs.creco.logic.RankedFeaturesProducts;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.ServiceFacade;
-import ca.mcgill.cs.creco.logic.search.ICategorySearch;
 import ca.mcgill.cs.creco.logic.search.IProductSearch;
 import ca.mcgill.cs.creco.web.model.FeatureListVO;
 import ca.mcgill.cs.creco.web.model.FeatureVO;
@@ -77,12 +75,6 @@ public class SiteController
 	@Autowired
 	private FeatureListVO aSpecFeatureList;
 
-	@Autowired
-	private IDataStore aDataStore;
-	
-	@Autowired
-	private ICategorySearch aCategorySearch;
-	
 	@Autowired
 	private IProductSearch aProductSort;
 	
@@ -157,11 +149,11 @@ public class SiteController
 	@RequestMapping(URL_SEARCH_PRODUCTS)  
 	public String searchRankedFeaturesProducts(@RequestParam(value = "id", required = true) String pCategoryId, Model pModel)
 	{  
+		aCategory = aServiceFacade.getCategory(pCategoryId);
 		List<Product> prodSearch = aProductSort.returnProductsAlphabetically(pCategoryId);
 		AttributeExtractor ae = new AttributeExtractor(aServiceFacade.getCategory(pCategoryId));
 		
 		List<ScoredAttribute> attrList = ae.getScoredAttributeList();
-		aCategory = ae.getCategory();
 		RankedFeaturesProducts rankedProducts = new RankedFeaturesProducts(attrList, prodSearch);
 		List<Product> aScoredProducts = rankedProducts.getaProductSearchResult();
 	    
@@ -174,10 +166,13 @@ public class SiteController
 			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl()));
 	    }
 		aProductList.setProducts(products);	
-		return getCurrentFeatureList();
+		
+		updateCurrentFeatureList();
+		
+		return URL_SHOW_PRODUCTS;
 	}
 	
-	private String getCurrentFeatureList()
+	private void updateCurrentFeatureList()
 	{		
 		ArrayList<FeatureVO> specFeatures = new ArrayList<FeatureVO>();	
 		List<String> values;
@@ -239,9 +234,6 @@ public class SiteController
 			specFeatures.add(f);	
 		}		
 		aSpecFeatureList.setFeatures(specFeatures);	
-
-		return URL_SHOW_PRODUCTS;
-						
 	}
 	
 	/**
