@@ -27,7 +27,7 @@ html, body
 	border-bottom: 1px solid #ddd;
 }
 
-.alert 
+.alert-message 
 {
 	font-size: 16px;
 	margin-bottom: 20px;
@@ -119,6 +119,16 @@ html, body
 	padding: 10px 20px;
 	font-size: 16px;
 	background: #ddd;
+}
+
+#feature_description
+{
+	display: none;
+	font-size: 11px;
+	padding-top: 5px;
+	margin-top: 5px;
+	opacity: 0.6;
+	border-top: 1px solid;
 }
 
 label 

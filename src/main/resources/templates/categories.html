@@ -39,7 +39,7 @@
 				</form>
 			</div>
 			<div id='eq-result' th:unless="${categories == null}">
-				<div class="alert">
+				<div class="alert-message">
 					Please select one category related to the query <span class="keyword" th:text="${query}"></span>. 
 				</div>
 				<div class="eq-result-entry" th:each="category : ${categories}">

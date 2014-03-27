@@ -281,3 +281,17 @@ $(function() {
 		        }
 		      });			    		
 	}
+	
+	/**
+	 * Hover effect to display the attributes selection guide
+	 */
+	$("#feature_title").hover(
+			function() 
+			{
+				$("#feature_description").toggle();
+			},
+			function() 
+			{
+				$("#feature_description").toggle();
+			}
+		);
