@@ -40,7 +40,11 @@
 			</div>
 
 			<div id="feature">
-				<div id="feature_title">Specifications</div>
+				<div id="feature_title">Attributes
+					<p id="feature_description">
+						Select attributes that are most important to you to rank products based on these attributes. 
+						Mouse over an attribute to see its description</p>
+				</div>
 				<div id='main_specs'>
 					<form id="myForm" >
 						<div th:each="specFeatures : ${specFeatureList.features}">
@@ -62,8 +66,11 @@
 			
 			<div id="product-area">
 				<div class="rankedproduct-result-entry" th:each="product : ${productList.products}">
-                    <a class="rankedproduct-result-name" th:text="${product.name}"
-                   		th:href="@{${product.url}}"></a>
+					<div th:switch="${product.url}">
+	                    <p th:case="''" class="rankedproduct-result-name" th:text="${product.name}"></p>
+	                   	<a th:case="*" class="rankedproduct-result-name" th:text="${product.name}"
+	                   	 	th:href="@{${product.url}}"></a>
+					</div>
 				</div>
 			</div>
 		</div>
