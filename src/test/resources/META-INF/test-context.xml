@@ -31,5 +31,12 @@
     		<ref bean="TestDataStore"/>
     	</constructor-arg>
     </bean>
+    <bean id="TestServiceFacade" class="ca.mcgill.cs.creco.logic.ConcreteServiceFacade" />
+
+	<bean id="TestAttributeExtractor" class="ca.mcgill.cs.creco.logic.AttributeExtractor">
+        <constructor-arg index="0">
+            <ref bean="TestDataStore"/>
+        </constructor-arg>
+	</bean>
 
 </beans>
