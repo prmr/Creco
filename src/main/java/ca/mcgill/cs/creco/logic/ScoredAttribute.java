@@ -152,8 +152,10 @@ public class ScoredAttribute
  	private TypedValue aMin;
  	private TypedValue aMax;
  	private List<TypedValue> aStringValues;
-
-	   
+ 	
+ 	private Type aAttributeMainType;
+ 	
+   
  	/**
  	 * The type of attribute.
  	 */
@@ -211,16 +213,15 @@ public class ScoredAttribute
 			
 		}
 		// goes only over the products that had a non null attribute value
-		Type attributeMainType = getMainType(values);
-		if(attributeMainType == Type.NUMERIC)
+		if(aAttributeMainType == Type.NUMERIC)
 		{
 			setNumericStats(values);
 		}
-		else if(attributeMainType == Type.BOOLEAN)
+		else if(aAttributeMainType == Type.BOOLEAN)
 		{
 			setBooleanStats(values);
 		}
-		else if(attributeMainType == Type.STRING)
+		else if(aAttributeMainType == Type.STRING)
 		{
 			setStringStats(values);
 		}
@@ -387,7 +388,7 @@ public class ScoredAttribute
 	}
 
 	
-	private Type getMainType(ArrayList<TypedValue> pValues)
+	private void getMainType(ArrayList<TypedValue> pValues)
 	{
 		float stringCount = 0;
 		float numericCount = 0;
@@ -410,19 +411,19 @@ public class ScoredAttribute
 		float totalCount = pValues.size();
 		if((booleanCount/totalCount) >=CONSIDERATION_THRESHOLD)
 		{
-			return Type.BOOLEAN;
+			aAttributeMainType = Type.BOOLEAN;
 		}
 		else if((numericCount/totalCount) >=CONSIDERATION_THRESHOLD)
 		{
-			return Type.NUMERIC;
+			aAttributeMainType = Type.NUMERIC;
 		}
 		else if((stringCount/totalCount) >=CONSIDERATION_THRESHOLD)
 		{
-			return Type.STRING;
+			aAttributeMainType = Type.STRING;
 		}
 		else
 		{
-			return Type.NA;
+			aAttributeMainType = Type.NA;
 		}
 	}
 	
@@ -453,6 +454,9 @@ public class ScoredAttribute
 		return aAttributeName;
 	}
 
+	/**
+	 * To be Changed
+	 */
 	@Override
 	public String toString()
 	{
@@ -514,4 +518,51 @@ public class ScoredAttribute
 	{
 		return aCorrelation;
 	}
+	
+	/**
+	 * @return True if and only if this object represents
+	 * a non-available value.
+	 */
+	public boolean isNA()
+	{
+		return aAttributeMainType == Type.NA;
+	}
+	
+	/**
+	 * @return True if and only if this object represents
+	 * a null value.
+	 */
+	public boolean isNull()
+	{
+		return aAttributeMainType == Type.NULL;
+	}
+	
+	/**
+	 * @return True if and only if this object represents
+	 * a boolean value.
+	 */
+	public boolean isBoolean()
+	{
+		return aAttributeMainType == Type.BOOLEAN;
+	}
+	
+	/**
+	 * @return True if and only if this object represents
+	 * a numeric.
+	 */
+	public boolean isNumeric()
+	{
+		return aAttributeMainType == Type.NUMERIC;
+	}
+	
+	/**
+	 * @return True if and only if this object represents
+	 * a string value.
+	 */
+	public boolean isString()
+	{
+		return aAttributeMainType == Type.STRING;
+	}
+	
 }
+
