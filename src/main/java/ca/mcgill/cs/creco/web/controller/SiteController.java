@@ -16,7 +16,6 @@
 package ca.mcgill.cs.creco.web.controller;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -31,20 +30,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.logic.AttributeExtractor;
 import ca.mcgill.cs.creco.logic.RankedFeaturesProducts;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.ServiceFacade;
-import ca.mcgill.cs.creco.logic.search.ICategorySearch;
 import ca.mcgill.cs.creco.logic.search.IProductSearch;
-import ca.mcgill.cs.creco.web.model.EqcListVO;
-import ca.mcgill.cs.creco.web.model.EqcVO;
 import ca.mcgill.cs.creco.web.model.FeatureListVO;
 import ca.mcgill.cs.creco.web.model.FeatureVO;
-import ca.mcgill.cs.creco.web.model.MainQueryVO;
 import ca.mcgill.cs.creco.web.model.ProductListView;
 import ca.mcgill.cs.creco.web.model.ProductView;
 import ca.mcgill.cs.creco.web.model.UserFeatureModel;
@@ -56,13 +50,12 @@ import com.google.gson.Gson;
  */
 @Controller
 public class SiteController
-{
+{ 
 	private static final Logger LOG = LoggerFactory.getLogger(SiteController.class);
 	
 	private static final int NUMBER_OF_FEATURES_TO_DISPLAY = 10;
 	
 	private static final String URL_HOME = "/";
-	private static final String URL_INDEX = "/index";
 	private static final String URL_AUTOCOMPLETE = "/autocomplete";
 	private static final String URL_SEARCH_CATEGORIES = "/searchCategories";
 	private static final String URL_SHOW_CATEGORIES = "/categories";
@@ -76,89 +69,29 @@ public class SiteController
 	
 	private List<ScoredAttribute> aScoredAttr; 
 	
-	private List<Product> aScoredProducts;
 	private Category aCategory;
 	
 	@Autowired
 	private ProductListView aProductList;
 	
 	@Autowired
-	private EqcListVO aEqcList;
-	
-	@Autowired
-	private MainQueryVO aMainQuery;
-
-	@Autowired
-	private FeatureListVO aUserList;
-
-	@Autowired
 	private FeatureListVO aSpecFeatureList;
 
-	@Autowired
-	private FeatureListVO aRateFeatureList;
-
-	@Autowired
-	private FeatureListVO aFeatureList;
-
-	@Autowired
-	private FeatureVO aUserSpecFeatures;
-	
-	@Autowired
-	private IDataStore aDataStore;
-	
-	@Autowired
-	private ICategorySearch aCategorySearch;
-	
 	@Autowired
 	private IProductSearch aProductSort;
 	
 	// ***** Model Attributes *****
-	
-	@ModelAttribute("mainQuery")
-	private MainQueryVO getMainQuery() 
-	{
-		return new MainQueryVO();
-	}
-	
-	@ModelAttribute("userList")
-	private FeatureListVO getUserList() 
-	{
-		return new FeatureListVO();
-	}
-
-	@ModelAttribute("eqcList")
-	private EqcListVO getEqcList() 
-	{
-		return aEqcList;
-	}
 	
 	@ModelAttribute("productList")
 	private ProductListView getProductList() 
 	{
 		return aProductList;
 	}
-	@ModelAttribute("featureList")
-	private FeatureListVO getFeatureList() 
-	{
-		return aFeatureList;
-	}
 	
 	@ModelAttribute("specFeatureList")
 	private FeatureListVO getSpecFeatureList() 
 	{
 		return aSpecFeatureList;
-	}
-	
-	@ModelAttribute("userSpecFeatures")
-	private FeatureVO getUserSpecFeatures()
-	{
-		return aUserSpecFeatures;
-	}
-	
-	@ModelAttribute("rateFeatureList")
-	private FeatureListVO getRateFeatureList()
-	{
-		return aRateFeatureList;
 	}
 	
 	// ***** URL Mappings *****
@@ -175,9 +108,8 @@ public class SiteController
 		 UserFeatureModel form = new UserFeatureModel();
 		 pModel.addAttribute("myForm", form);
 		 aSpecFeatureList = new FeatureListVO();
-		 aRateFeatureList = new FeatureListVO();
 		 aProductList = new ProductListView();
-		 return URL_INDEX;								
+		 return URL_SHOW_CATEGORIES;								
 	}
 	
 	/**
@@ -197,57 +129,35 @@ public class SiteController
 	
 	/**
 	 * URL to search for categories from a query text.
-	 * @param pMainQuery The search query.
+	 * @param pSearchQuery The search query.
+	 * @param pModel The model, containing the list of categories.
 	 * @return A redirection to the url to show categories.
 	 */
-	@RequestMapping(value = URL_SEARCH_CATEGORIES, method = RequestMethod.POST)
-	public String searchCategories(@ModelAttribute("mainQuery") MainQueryVO pMainQuery ) 
+	@RequestMapping(URL_SEARCH_CATEGORIES)
+	public String searchCategories(@RequestParam(value = "query", required = true) String pSearchQuery, Model pModel) 
 	{
-		aMainQuery = pMainQuery;
-		setCategoryListView(aServiceFacade.searchCategories(pMainQuery.getQuery()));	
-				
+		pModel.addAttribute("categories", aServiceFacade.searchCategories(pSearchQuery));
+		pModel.addAttribute("query", pSearchQuery);
 		return URL_SHOW_CATEGORIES;
-	}
-	
-	private void setCategoryListView(Collection<Category> pCategories)
-	{
-		ArrayList<EqcVO> eqcs = new ArrayList<EqcVO>();		
-		for (Category cat: pCategories)
-		{
-			EqcVO eqc = new EqcVO();
-			eqc.setId(cat.getId());
-			eqc.setName(cat.getName());
-			eqc.setCount(cat.getNumberOfProducts());
-			eqcs.add(eqc);
-		}
-		aEqcList.setEqcs(eqcs);
 	}
 	
 	/**
 	 * A category is selected and this controller obtains the features
 	 * and products to display.		
-	 * @param pCategory The category
+	 * @param pCategoryId The id of the selected category
+	 * @param pModel The model, containing the list of categories.
 	 * @return A redirection to the product page
 	 */
-	@RequestMapping(value = URL_SEARCH_PRODUCTS, method = RequestMethod.POST)  
-	public String searchRankedFeaturesProducts(@ModelAttribute("eqc") EqcVO pCategory)
+	@RequestMapping(URL_SEARCH_PRODUCTS)  
+	public String searchRankedFeaturesProducts(@RequestParam(value = "id", required = true) String pCategoryId, Model pModel)
 	{  
-		List<Category> categoryList = aCategorySearch.queryCategories(aMainQuery.getQuery());
-	    Category target = null;
-	    for (Category cat: categoryList)
-	    {
-	    	if (cat.getId().equals(pCategory.getId()))
-	    	{
-	    		target = cat;
-	    	}
-	    }
-	    
-		List<Product> prodSearch = aProductSort.returnProductsAlphabetically(target.getId());
-		List<ScoredAttribute> attrList = aAttributeExtractor.getAttributesForCategory(target.getId());
-		aCategory = target;
-		
+
+		aCategory = aServiceFacade.getCategory(pCategoryId);
+		List<Product> prodSearch = aProductSort.returnProductsAlphabetically(pCategoryId);
+        List<ScoredAttribute> attrList = aAttributeExtractor.getAttributesForCategory(aCategory.getId());
+
 		RankedFeaturesProducts rankedProducts = new RankedFeaturesProducts(attrList, prodSearch);
-	    aScoredProducts = rankedProducts.getaProductSearchResult();
+		List<Product> aScoredProducts = rankedProducts.getaProductSearchResult();
 	    
 	    aScoredAttr = rankedProducts.getaAttrList();
 	    	   
@@ -258,10 +168,13 @@ public class SiteController
 			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl()));
 	    }
 		aProductList.setProducts(products);	
-		return getCurrentFeatureList();
+		
+		updateCurrentFeatureList();
+		
+		return URL_SHOW_PRODUCTS;
 	}
 	
-	private String getCurrentFeatureList()
+	private void updateCurrentFeatureList()
 	{		
 		ArrayList<FeatureVO> specFeatures = new ArrayList<FeatureVO>();	
 		List<String> values;
@@ -323,38 +236,6 @@ public class SiteController
 			specFeatures.add(f);	
 		}		
 		aSpecFeatureList.setFeatures(specFeatures);	
-
-		return URL_SHOW_PRODUCTS;
-						
-	}
-//	/**
-//	 * 
-//	 * @return name of file to redirect the browser to popupFeature.html
-//	 */
-//	@RequestMapping(value = "/popupFeature", method = RequestMethod.GET)
-//	public String getPopUp() 
-//	{
-//		return "/popupFeature";
-//	}
-	
-	/**
-	 * 
-	 * @return name of file to redirect the browser to rankedproducts.html
-	 */
-	@RequestMapping(value = URL_SEARCH_PRODUCTS, method = RequestMethod.GET)
-	public String getRankedProducts() 
-	{
-		return URL_SHOW_PRODUCTS;
-	}
-	
-	/**
-	 * 
-	 * @return name of file to redirect the browser to rankedproducts.html
-	 */
-	@RequestMapping(value = URL_SHOW_PRODUCTS, method = RequestMethod.GET)
-	public String getRankedProducts2() 
-	{
-		return URL_SHOW_PRODUCTS;
 	}
 	//TODO clean this method up doesn't need to default value anymore
 	/**

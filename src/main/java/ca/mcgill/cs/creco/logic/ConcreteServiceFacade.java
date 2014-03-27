@@ -88,4 +88,10 @@ public class ConcreteServiceFacade implements ServiceFacade
 	{
 		return aCategorySearch.queryCategories(pQuery);
 	}
+
+	@Override
+	public Category getCategory(String pId) 
+	{
+		return aDataStore.getCategory(pId);
+	}
 }

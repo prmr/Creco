@@ -32,21 +32,20 @@
 			</div>
 
 			<div id='main_searchbar' class="input-group">
-				<form action="/searchCategories" method="POST" th:object="${mainQuery}">
-					<input id='main_search_text' type="text" class="form-control" style="width: 350px" placeholder="Please enter product names, brands, etc."
-					onkeyup="javascript:getCompletions($('#main_search_text').val())" autocomplete="off" th:field="*{query}"></input>
+				<form action="/searchCategories" >
+					<input id='main_search_text' type="text" name="query" class="form-control" style="width: 350px" placeholder="Please enter product names, brands, etc."
+					onkeyup="javascript:getCompletions($('#main_search_text').val())" autocomplete="off" ></input>
 					<input id='search_btn' type="submit" class="btn btn-info" value="Search"></input>	
 				</form>
 			</div>
-			<div id='eq-result'>
+			<div id='eq-result' th:unless="${categories == null}">
 				<div class="alert">
-					Please select one category related to the query <span class="keyword" th:text="${mainQuery.query}"></span>. 
+					Please select one category related to the query <span class="keyword" th:text="${query}"></span>. 
 				</div>
-				<div class="eq-result-entry" th:each="eqc : ${eqcList.eqcs}">
-				   <form class="eq-button-wrap" action="/searchProducts" method="POST">
-                        <input id="id" name="id" type="hidden" th:value="${eqc.id}"></input>
-                        <input id="id" name="name" type="hidden" th:value="${eqc.name}"></input>
-                        <input class="eq-button" type="submit" th:value="${eqc.name}"></input>       
+				<div class="eq-result-entry" th:each="category : ${categories}">
+				   <form class="eq-button-wrap" action="/searchProducts">
+                        <input id="id" name="id" type="hidden" th:value="${category.id}"></input>
+                        <input class="eq-button" type="submit" th:value="${category.name}"></input>       
                     </form>
 				</div>
 			</div>

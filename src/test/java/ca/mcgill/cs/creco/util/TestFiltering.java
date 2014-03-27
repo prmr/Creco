@@ -38,6 +38,7 @@ import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.logic.AttributeExtractor;
 import ca.mcgill.cs.creco.logic.RankedFeaturesProducts;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
+import ca.mcgill.cs.creco.logic.ServiceFacade;
 import ca.mcgill.cs.creco.logic.search.ICategorySearch;
 import ca.mcgill.cs.creco.logic.search.IProductSearch;
 import ca.mcgill.cs.creco.web.controller.SiteController;
@@ -58,6 +59,9 @@ public class TestFiltering {
 	private ICategorySearch aCategorySearch;
 	
 	@Autowired
+	private ServiceFacade aServiceFacade;
+	
+	@Autowired
 	private AttributeExtractor aAttributeExtractor;
 	
 	private static String SMARTPHONE_CATEGORY_ID = "28726";
@@ -65,15 +69,8 @@ public class TestFiltering {
 	
 	@Test
 	public void testFunction_initialreturn() throws IOException
-	{
-		 List<Category> categoryList = aCategorySearch.queryCategories("Toaster");
-		    Category target = null;
-		    for (Category cat: categoryList) {
-		    	if (cat.getName().equals("Toaster")) {
-		    		target = cat;
-		    	}
-		    }
-		    
+	{    
+		    Category target = aServiceFacade.getCategory("28732"); //Toaster
 			List<Product> prodSearch = aProductSearch.returnProductsAlphabetically(target.getId());
 			List<ScoredAttribute> attrList = aAttributeExtractor.getAttributesForCategory(target.getId());
 		    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(attrList, prodSearch);
@@ -84,14 +81,7 @@ public class TestFiltering {
 	@Test
 	public void testFunction_intialreturn2() throws IOException
 	{
-		 List<Category> categoryList = aCategorySearch.queryCategories("Digital SLR camera");
-		    Category target = null;
-		    for (Category cat: categoryList) {
-		    	if (cat.getName().equals("Digital SLR camera")) {
-		    		target = cat;
-		    	}
-		    }
-		    
+		    Category target = aServiceFacade.getCategory("28723"); //Digital SLR Camera
 			List<Product> prodSearch = aProductSearch.returnProductsAlphabetically(target.getId());
 			List<ScoredAttribute> attrList = aAttributeExtractor.getAttributesForCategory(target.getId());
 		    RankedFeaturesProducts rankedProducts =new RankedFeaturesProducts(attrList, prodSearch);

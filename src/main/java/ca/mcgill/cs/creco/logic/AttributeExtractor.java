@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,7 +138,7 @@ public class AttributeExtractor
 		return null;
 	}
 	
-	public void sort(SORT_METHOD pSortMethod, ArrayList<ScoredAttribute> pScoredAttributeList)
+	private void sort(SORT_METHOD pSortMethod, ArrayList<ScoredAttribute> pScoredAttributeList)
 	{
 		if (pSortMethod == SORT_METHOD.CORRELATION)
 		{
