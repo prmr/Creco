@@ -563,6 +563,17 @@ public class ScoredAttribute
 	{
 		return aAttributeMainType == Type.STRING;
 	}
+	/**
+	 * @return The threshold at which an attribute is determined
+	 * to be of a certain type. An attribute must have more than
+	 * the threshold fraction of it's attribute of a same type 
+	 * to be considered of that type. This is currently set to 
+	 * 0.8.
+	 */
+	public double getTypeThreshold()
+	{
+		return CONSIDERATION_THRESHOLD;
+	}
 	
 }
 

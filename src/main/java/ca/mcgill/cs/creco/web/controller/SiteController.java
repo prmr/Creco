@@ -356,7 +356,7 @@ public class SiteController
 	{
 		return URL_SHOW_PRODUCTS;
 	}
-	
+	//TODO clean this method up doesn't need to default value anymore
 	/**
 	 * @author MariamN
 	 * @param dataSpec
@@ -377,8 +377,7 @@ public class SiteController
 			if ( sa != null)
 			{
 				TypedValue av = new TypedValue(userFMSpec.getValues().get(i));
-				//whats is this used for is it still needed?
-				sa.setAttributeDefault(av);
+				//sa.setAttributeDefault(av);
 				userScoredFeaturesSpecs.add(sa);				
 			}			
 
