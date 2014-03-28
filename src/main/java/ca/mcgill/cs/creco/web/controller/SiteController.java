@@ -33,6 +33,7 @@ import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.logic.AttributeExtractor;
+import ca.mcgill.cs.creco.logic.ProductRanker;
 import ca.mcgill.cs.creco.logic.RankedFeaturesProducts;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.ServiceFacade;
@@ -267,7 +268,10 @@ public class SiteController
 		RankedFeaturesProducts tempProducts = new RankedFeaturesProducts();	
 		userScoredFeaturesSpecs = sortFeatures(userScoredFeaturesSpecs);
 		
-		List<Product> productsToDisplay  = tempProducts.FeatureSensitiveRanking(userScoredFeaturesSpecs, aCategory);
+		//List<Product> productsToDisplay  = tempProducts.FeatureSensitiveRanking(userScoredFeaturesSpecs, aCategory);
+		
+		ProductRanker productRanker = new ProductRanker();
+		List<Product> productsToDisplay = productRanker.rankProducts(userScoredFeaturesSpecs, aCategory.getProducts());
 
 		// Converting to View Object
 		ArrayList<ProductView> products = new ArrayList<ProductView>();
