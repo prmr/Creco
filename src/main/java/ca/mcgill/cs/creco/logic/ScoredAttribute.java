@@ -154,6 +154,7 @@ public class ScoredAttribute
  	private List<TypedValue> aStringValues;
  	
  	private Type aAttributeMainType;
+ 	private Direction aDirection;
  	
    
  	/**
@@ -183,7 +184,8 @@ public class ScoredAttribute
 			AttributeCorrelator ac = new AttributeCorrelator(pCategory);
 			if(aAttributeMainType == Type.NUMERIC)
 			{
-				aCorrelation = ac.computeCorrelation(aAttributeID,CONSIDERATION_THRESHOLD);
+				aCorrelation = ac.computeCorrelation(aAttributeID, CONSIDERATION_THRESHOLD);
+				aDirection = ac.computeAttributeDirection(aAttributeID, CONSIDERATION_THRESHOLD);
 			}
 		}
 		else
@@ -206,6 +208,7 @@ public class ScoredAttribute
 			}
 			
 		}
+		getMainType(values);
 		// goes only over the products that had a non null attribute value
 		if(aAttributeMainType == Type.NUMERIC)
 		{
@@ -567,6 +570,11 @@ public class ScoredAttribute
 	public double getTypeThreshold()
 	{
 		return CONSIDERATION_THRESHOLD;
+	}
+	
+	public Direction getDirection()
+	{
+		return aDirection;
 	}
 	
 }
