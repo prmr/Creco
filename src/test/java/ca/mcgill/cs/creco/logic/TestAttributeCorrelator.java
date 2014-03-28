@@ -34,7 +34,7 @@ public class TestAttributeCorrelator
 	}
 	
 	@Test
-	public void testGoodDirection() 
+	public void testMoreIsBetterDirection() 
 	{
 		Category category = aDataStore.getCategory(HUMIDIFIER_CATEGORY_ID);
 		AttributeCorrelator attributeCorrelator = new AttributeCorrelator(category);
@@ -46,7 +46,7 @@ public class TestAttributeCorrelator
 	}
 	
 	@Test
-	public void testBadDirection() 
+	public void testLessIsBetterDirection() 
 	{
 		Category category = aDataStore.getCategory(HUMIDIFIER_CATEGORY_ID);
 		AttributeCorrelator attributeCorrelator = new AttributeCorrelator(category);
