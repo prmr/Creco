@@ -18,7 +18,6 @@ package ca.mcgill.cs.creco.data;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 
 /**
  * Represents a category in the product database.
@@ -37,8 +36,6 @@ public class Category
 	 * @param pSingularName z
 	 * @param pRootCategory z
 	 * @param pProducts z
-	 * @param pSpecifications z
-	 * @param pRatings z
 	 */
 	public Category(String pId, String pSingularName, String pRootCategory, Collection<Product> pProducts)
 	{

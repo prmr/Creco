@@ -16,22 +16,15 @@
 package ca.mcgill.cs.creco.data;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-
-import org.thymeleaf.util.StringUtils;
 
 /**
  * Represents a category in the product database.
  */
 public class CategoryNode 
 {
-	private static final int PERCENT = 100;
-	
 	// Fields copied directly from CR database
 	private String aId;
 	private String aSingularName;
@@ -192,7 +185,8 @@ public class CategoryNode
 		aAttributeIntersection.add(pAttributeId);
 	}
 	
-	void mergeAttributes(Set<String> pAttributeIds) {
+	void mergeAttributes(Set<String> pAttributeIds) 
+	{
 		for(String attributeId : pAttributeIds)
 		{
 			aAttributeUnion.add(attributeId);
