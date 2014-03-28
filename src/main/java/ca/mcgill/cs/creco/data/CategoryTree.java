@@ -255,7 +255,6 @@ class CategoryTree implements IDataCollector
 		{
 			pCategory.setRatedCount(0);
 			pCategory.setTestedCount(0);
-			pCategory.setCount(0);
 		}
 	
 		// Roll up counts and collections
@@ -281,7 +280,6 @@ class CategoryTree implements IDataCollector
 			pCategory.putProducts(child.getProducts());
 			pCategory.incrementRatedCount(child.getRatedCount());
 			pCategory.incrementTestedCount(child.getTestedCount());
-			pCategory.incrementCount(child.getCount());
 		}
 		pCategory.calculateJaccard();
 	}
@@ -306,7 +304,6 @@ class CategoryTree implements IDataCollector
 			}
 			
 			// Increment the counts in this category
-			category.incrementCount(1);
 			if(lProduct.isTested())
 			{
 				category.incrementTestedCount(1);

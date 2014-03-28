@@ -30,7 +30,6 @@ public class CategoryNode
 	private String aSingularName;
 	
 	// Derived fields set in constructor
-	private int aCount;
 	private int aRatedCount;
 	private int aTestedCount;
 	private CategoryNode aParent; 
@@ -86,7 +85,7 @@ public class CategoryNode
 	 */
 	public int getCount()
 	{
-		return aCount;
+		return aProducts.size();
 	}
 	
 	/**
@@ -119,7 +118,7 @@ public class CategoryNode
 	{
 		String description = "";
 		description += aSingularName + " (\"" + aId + "\")\n";
-		description += " - count: " + aCount + "\n";
+		description += " - count: " + getCount() + "\n";
 		description += " - ratedCount: " + aRatedCount + "\n";
 		description += " - testedCount: " + aTestedCount + "\n";
 		description += " - number of attributes: " + aAttributeUnion.size() + "\n";
@@ -216,12 +215,7 @@ public class CategoryNode
 	{
 		return aTestedCount;
 	}
-	
-	void incrementCount(int pAmount)
-	{
-		aCount += pAmount;
-	}
-	
+		
 	void incrementRatedCount(int pAmount)
 	{
 		aRatedCount += pAmount;
@@ -230,11 +224,6 @@ public class CategoryNode
 	void incrementTestedCount(int pAmount)
 	{
 		aTestedCount += pAmount;
-	}
-	
-	void setCount(int pCount)
-	{
-		aCount = pCount;
 	}
 	
 	void setRatedCount(int pCount)
