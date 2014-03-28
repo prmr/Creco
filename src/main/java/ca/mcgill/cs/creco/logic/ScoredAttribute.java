@@ -13,6 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * TODO fix the Attribtue correlation
+ */
 package ca.mcgill.cs.creco.logic;
 
 import java.util.ArrayList;
