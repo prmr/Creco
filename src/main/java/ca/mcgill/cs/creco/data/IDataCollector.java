@@ -24,7 +24,7 @@ public interface IDataCollector
 	 * Adds a category to the collector.
 	 * @param pCategory The category to add.
 	 */
-	void addCategory(CategoryBuilder pCategory);
+	void addCategory(CategoryNode pCategory);
 	
 	/**
 	 * Adds a product to the collector.

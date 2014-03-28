@@ -23,7 +23,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import ca.mcgill.cs.creco.data.Attribute;
-import ca.mcgill.cs.creco.data.CategoryBuilder;
+import ca.mcgill.cs.creco.data.CategoryNode;
 import ca.mcgill.cs.creco.data.IDataCollector;
 import ca.mcgill.cs.creco.data.IDataLoadingService;
 import ca.mcgill.cs.creco.data.Product;
@@ -56,14 +56,14 @@ public class JsonLoadingService implements IDataLoadingService
 		// get built, and so on, recursively.
 		for(CategoryStub inputCategory : inputCategories)
 		{
-			CategoryBuilder outputCategory = buildCategory(inputCategory, null);
+			CategoryNode outputCategory = buildCategory(inputCategory, null);
 			pCollector.addCategory(outputCategory);
 		}
 	}
 	
-	private static CategoryBuilder buildCategory(CategoryStub pCategoryStub, CategoryBuilder pParent)
+	private static CategoryNode buildCategory(CategoryStub pCategoryStub, CategoryNode pParent)
 	{
-		CategoryBuilder lReturn = new CategoryBuilder(pCategoryStub.id, pCategoryStub.singularName, pParent);
+		CategoryNode lReturn = new CategoryNode(pCategoryStub.id, pCategoryStub.singularName, pParent);
 		
 		if(pCategoryStub.downLevel != null)
 		{

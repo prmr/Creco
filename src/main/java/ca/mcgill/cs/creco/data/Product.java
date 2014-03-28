@@ -35,7 +35,7 @@ public class Product
 	private boolean aIsRated = false;
 	private HashMap<String, Attribute> aAttributes = new HashMap<String, Attribute>();
 	private String aCategoryId;
-	private CategoryBuilder aCategory;
+	private CategoryNode aCategory;
 	private Attribute aPrice = null;
 	
 		
@@ -73,7 +73,7 @@ public class Product
 		}
 	}
 	
-	void setCategory(CategoryBuilder pCategory)
+	void setCategory(CategoryNode pCategory)
 	{
 		aCategory = pCategory;
 	}

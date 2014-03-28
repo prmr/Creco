@@ -25,10 +25,10 @@ class CategoryTree implements IDataCollector
 	
 	private static final double JACCARD_THRESHOLD = 0.8;
 	private HashMap<String, Product> aProducts = new HashMap<String, Product>();
-	private Hashtable<String, CategoryBuilder> aCategoryIndex = new Hashtable<String, CategoryBuilder>();
-	private ArrayList<CategoryBuilder> aRootCategories = new ArrayList<CategoryBuilder>();					// Top-level categories
-	private ArrayList<CategoryBuilder> aEquivalenceClasses = new ArrayList<CategoryBuilder>();
-	private ArrayList<CategoryBuilder> aSubEquivalenceClasses = new ArrayList<CategoryBuilder>();
+	private Hashtable<String, CategoryNode> aCategoryIndex = new Hashtable<String, CategoryNode>();
+	private ArrayList<CategoryNode> aRootCategories = new ArrayList<CategoryNode>();					// Top-level categories
+	private ArrayList<CategoryNode> aEquivalenceClasses = new ArrayList<CategoryNode>();
+	private ArrayList<CategoryNode> aSubEquivalenceClasses = new ArrayList<CategoryNode>();
 	
 	private boolean aHasFoundEquivalenceClasses = false;
 	
@@ -50,7 +50,7 @@ class CategoryTree implements IDataCollector
 		
 		// Make a collection of plain Categorys from the list of "EquivalenceClass" Categorys
 		Collection<Category> lCategories = new ArrayList<Category>();
-		for(CategoryBuilder lCatBuilder : aEquivalenceClasses)
+		for(CategoryNode lCatBuilder : aEquivalenceClasses)
 		{
 			lCategories.add(lCatBuilder.getCategory());
 		}
@@ -63,7 +63,7 @@ class CategoryTree implements IDataCollector
 	 */
 	void indexRootCategories()
 	{
-		for(CategoryBuilder category : aRootCategories)
+		for(CategoryNode category : aRootCategories)
 		{
 			index(category);
 		}
@@ -75,14 +75,14 @@ class CategoryTree implements IDataCollector
 	 */
 	void eliminateAllSingletons() 
 	{
-		for(CategoryBuilder category : aRootCategories)
+		for(CategoryNode category : aRootCategories)
 		{
 			eliminateSingletons(category);
 		}
 	}
 	
 	@Override
-	public void addCategory(CategoryBuilder pCategory)
+	public void addCategory(CategoryNode pCategory)
 	{
 		aRootCategories.add(pCategory);
 	}
@@ -108,7 +108,7 @@ class CategoryTree implements IDataCollector
 	 */
 	void findEquivalenceClasses() 
 	{
-		for(CategoryBuilder franchise : aRootCategories)
+		for(CategoryNode franchise : aRootCategories)
 		{
 			recurseFindEquivalenceClasses(franchise, 0);
 		}
@@ -155,15 +155,15 @@ class CategoryTree implements IDataCollector
 	 * @param pCategory
 	 * @param pMode
 	 */
-	private void recurseFindEquivalenceClasses(CategoryBuilder pCategory, int pMode)
+	private void recurseFindEquivalenceClasses(CategoryNode pCategory, int pMode)
 	{
-		Iterable<CategoryBuilder> children = pCategory.getChildren();
+		Iterable<CategoryNode> children = pCategory.getChildren();
 		int numChildren = pCategory.getNumberOfChildren();
 		
 		if(pMode == 1)
 		{
 			aSubEquivalenceClasses.add(pCategory);
-			for(CategoryBuilder child : children)
+			for(CategoryNode child : children)
 			{
 				recurseFindEquivalenceClasses(child, 1);
 			}
@@ -182,7 +182,7 @@ class CategoryTree implements IDataCollector
 				Double jaccard = pCategory.getJaccardIndex();
 				if(jaccard == null || jaccard < JACCARD_THRESHOLD)
 				{
-					for(CategoryBuilder child : children)
+					for(CategoryNode child : children)
 					{
 						recurseFindEquivalenceClasses(child, 0);
 					}
@@ -191,7 +191,7 @@ class CategoryTree implements IDataCollector
 				else
 				{
 					aEquivalenceClasses.add(pCategory);
-					for(CategoryBuilder child : children)
+					for(CategoryNode child : children)
 					{
 						recurseFindEquivalenceClasses(child, 1);
 					}
@@ -207,10 +207,10 @@ class CategoryTree implements IDataCollector
 	 * needed here
 	 * @param pCategory
 	 */
-	private void index(CategoryBuilder pCategory)
+	private void index(CategoryNode pCategory)
 	{
 		aCategoryIndex.put(pCategory.getId(), pCategory);
-		for(CategoryBuilder child : pCategory.getChildren())
+		for(CategoryNode child : pCategory.getChildren())
 		{
 			index(child);
 		}
@@ -224,7 +224,7 @@ class CategoryTree implements IDataCollector
 	void refresh() 
 	{			
 		// Now recursively refresh the category list
-		for(CategoryBuilder franchise : aRootCategories)
+		for(CategoryNode franchise : aRootCategories)
 		{
 			recursiveRefresh(franchise, 0);
 		}
@@ -243,9 +243,9 @@ class CategoryTree implements IDataCollector
 	 * @param pCategory
 	 * @param pDepth
 	 */
-	private void recursiveRefresh(CategoryBuilder pCategory, int pDepth)
+	private void recursiveRefresh(CategoryNode pCategory, int pDepth)
 	{
-		for(CategoryBuilder child : pCategory.getChildren()) 
+		for(CategoryNode child : pCategory.getChildren()) 
 		{
 			recursiveRefresh(child, pDepth + 1);
 		}
@@ -261,7 +261,7 @@ class CategoryTree implements IDataCollector
 	
 		// Roll up counts and collections
 		boolean first = true;
-		for(CategoryBuilder child : pCategory.getChildren())
+		for(CategoryNode child : pCategory.getChildren())
 		{
 			// aggregate children's collections
 			Set<String> attributeIds = child.getAttributeIds();
@@ -294,7 +294,7 @@ class CategoryTree implements IDataCollector
 	{
 		for(Product lProduct : aProducts.values()) 
 		{
-			CategoryBuilder category = aCategoryIndex.get(lProduct.getCategoryId());
+			CategoryNode category = aCategoryIndex.get(lProduct.getCategoryId());
 			
 			// Create two way link between category and product
 			category.addProduct(lProduct);
@@ -330,13 +330,13 @@ class CategoryTree implements IDataCollector
 	 * 
 	 * @param pCategory
 	 */
-	private void eliminateSingletons(CategoryBuilder pCategory)
+	private void eliminateSingletons(CategoryNode pCategory)
 	{
 		// detect if this is a singleton, if so, splice it out of the hierarchy
 		if(pCategory.getNumberOfChildren() == 1)
 		{
-			CategoryBuilder child = pCategory.getChildren().iterator().next();
-			CategoryBuilder parent = pCategory.getParent();
+			CategoryNode child = pCategory.getChildren().iterator().next();
+			CategoryNode parent = pCategory.getParent();
 			child.setParent(parent);
 			parent.removeChild(pCategory);
 			parent.addSubcategory(child);
@@ -345,7 +345,7 @@ class CategoryTree implements IDataCollector
 		}
 		else
 		{
-			for(CategoryBuilder child : pCategory.getChildren())
+			for(CategoryNode child : pCategory.getChildren())
 			{
 				eliminateSingletons(child);
 			}
