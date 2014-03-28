@@ -212,7 +212,15 @@ public class ScoredAttribute
 			}
 			
 		}
-		getMainType(values);
+		if(values.size()>0)
+		{
+			aAttributeMainType = getMainType(values);
+		}
+		else
+		{
+			aAttributeMainType = Type.NA;
+		}
+		
 		// goes only over the products that had a non null attribute value
 		if(aAttributeMainType == Type.NUMERIC)
 		{
@@ -389,7 +397,7 @@ public class ScoredAttribute
 	}
 
 	
-	private void getMainType(ArrayList<TypedValue> pValues)
+	private Type getMainType(ArrayList<TypedValue> pValues)
 	{
 		float stringCount = 0;
 		float numericCount = 0;
@@ -398,33 +406,33 @@ public class ScoredAttribute
 		{
 			if(tv.isBoolean())
 			{
-				booleanCount += 1;
+				booleanCount += 1.0;
 			}
 			else if (tv.isNumeric())
 			{
-				numericCount += 1;
+				numericCount += 1.0;
 			}
 			else if(tv.isString())
 			{
-				stringCount += 1;
+				stringCount += 1.0;
 			}
 		}
 		float totalCount = pValues.size();
-		if((booleanCount/totalCount) >=CONSIDERATION_THRESHOLD)
+		if((booleanCount/totalCount) >= CONSIDERATION_THRESHOLD)
 		{
-			aAttributeMainType = Type.BOOLEAN;
+			return Type.BOOLEAN;
 		}
-		else if((numericCount/totalCount) >=CONSIDERATION_THRESHOLD)
+		else if((numericCount/totalCount) >= CONSIDERATION_THRESHOLD)
 		{
-			aAttributeMainType = Type.NUMERIC;
+			return Type.NUMERIC;
 		}
-		else if((stringCount/totalCount) >=CONSIDERATION_THRESHOLD)
+		else if((stringCount/totalCount) >= CONSIDERATION_THRESHOLD)
 		{
-			aAttributeMainType = Type.STRING;
+			return Type.STRING;
 		}
 		else
 		{
-			aAttributeMainType = Type.NA;
+			return Type.NA;
 		}
 	}
 	
