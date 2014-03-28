@@ -181,16 +181,10 @@ public class ScoredAttribute
 			Collection<Product> products = pCategory.getProducts();
 			setStats(products);
 			AttributeCorrelator ac = new AttributeCorrelator(pCategory);
-			try
+			if(aAttributeMainType == Type.NUMERIC)
 			{
-				aCorrelation = ac.computeCorrelation(aAttributeID);
-				aCorrelation = ac.computeCorrelation(aAttributeID);
+				aCorrelation = ac.computeCorrelation(aAttributeID,CONSIDERATION_THRESHOLD);
 			}
-			catch(IllegalArgumentException e)
-			{
-				LOG.error("Exception while constructing ScoredAttribute", e);
-			}
-			
 		}
 		else
 		{

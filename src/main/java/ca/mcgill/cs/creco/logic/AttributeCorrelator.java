@@ -34,12 +34,27 @@ public class AttributeCorrelator
 	 * Computes the attribute's direction. The computation is based on the correlation with the
 	 * overall score. If the attribute is negatively correlated with the overall score below the
 	 * LESS_IS_BETTER_THRESHOLD, then LESS_IS_BETTER. Otherwise, as is more common, MORE_IS_BETTER.
+	 * All attributes must be numeric.
 	 * @param pAttributeId The attribute for which to compute the direction.
 	 * @return Either LESS_IS_BETTER or MORE_IS_BETTER.
 	 */
 	public ScoredAttribute.Direction computeAttributeDirection(String pAttributeId)
 	{
-		double correlation = computeCorrelation(pAttributeId);
+		return computeAttributeDirection(pAttributeId, 1.0);
+	}
+	/**
+	 * Computes the attribute's direction. The computation is based on the correlation with the
+	 * overall score. If the attribute is negatively correlated with the overall score below the
+	 * LESS_IS_BETTER_THRESHOLD, then LESS_IS_BETTER. Otherwise, as is more common, MORE_IS_BETTER.
+	 * As opposed to @see computeAttributeDirection(String) it takes into account
+	 *  a minimum fraction of attributes that need to be numeric.
+	 * @param pAttributeId The attribute for which to compute the direction.
+	 * @param pThreshold The minimum fraction of attributes that need to be numeric
+	 * @return Either LESS_IS_BETTER or MORE_IS_BETTER.
+	 */
+	public ScoredAttribute.Direction computeAttributeDirection(String pAttributeId, double pThreshold)
+	{
+		double correlation = computeCorrelation(pAttributeId,pThreshold);
 		
 		if (correlation < LESS_IS_BETTER_THRESHOLD)
 		{
@@ -51,19 +66,37 @@ public class AttributeCorrelator
 		}
 	}
 	/**
-	 * Computes the correlation between the given attribute and the overall score of products in the category.
+	 * Computes the correlation between the given attribute and the overall score of products 
+	 * in the category.
+	 * All attributes must be numeric.
 	 * @param pAttributeId The attribute to correlate with the overall score.
 	 * @return The Pearson's correlation score between the two attributes.
 	 */
 	public double computeCorrelation(String pAttributeId)
 	{
-		return computeCorrelation(OVERALL_SCORE_ATTRIBUTE_ID, pAttributeId);
+		return computeCorrelation(OVERALL_SCORE_ATTRIBUTE_ID, pAttributeId, 1.0);
 	}
 	
-	private double computeCorrelation(String pFirstAttributeId, String pSecondAttributeId)
+	/**
+	 * Computes the correlation between the given attribute and the overall score of products
+	 *  in the category. As opposed to @see computeCorrelation(String) it takes into account
+	 *  a minimum fraction of attributes that need to be numeric.
+	 * @param pAttributeId The attribute to correlate with the overall score.
+	 * @param pThreshold The minimum fraction of attributes that need to be numeric
+	 * @return The Pearson's correlation score between the two attributes.
+	 */
+	public double computeCorrelation(String pAttributeId, double pThreshold)
+	{
+		return computeCorrelation(OVERALL_SCORE_ATTRIBUTE_ID, pAttributeId, pThreshold);
+	}
+	
+	private double computeCorrelation(String pFirstAttributeId, String pSecondAttributeId, double pThreshold)
 	{
 		List<Double> firstValues = new ArrayList<Double>();
 		List<Double> secondValues = new ArrayList<Double>();
+		
+		double existingCount = 0.0;
+		double nonNumericCount = 0.0;
 		
 		for (Product product : aCategory.getProducts())
 		{
@@ -75,23 +108,34 @@ public class AttributeCorrelator
 			{
 				continue;
 			}
-			
+			//add if the value is not missing
+			existingCount++;
+			//if the attribute is not numeric keep count
 			if (!firstAttribute.getTypedValue().isNumeric() ||
 					!secondAttribute.getTypedValue().isNumeric())
 			{
-				throw new IllegalArgumentException("Can only correlate numeric attributes but one of the attributes was not numeric: "
-						+ firstAttribute.getTypedValue() + " and " + secondAttribute.getTypedValue());
+				nonNumericCount++;
 			}
-			
-			
-			double firstValue = firstAttribute.getTypedValue().getNumeric();
-			double secondValue = secondAttribute.getTypedValue().getNumeric();
-			
-			if (firstValue > 0)
+			//else add the values to the correlation array
+			else
 			{
-				firstValues.add(firstValue);
-				secondValues.add(secondValue);
+				double firstValue = firstAttribute.getTypedValue().getNumeric();
+				double secondValue = secondAttribute.getTypedValue().getNumeric();
+				
+				if (firstValue > 0)
+				{
+					firstValues.add(firstValue);
+					secondValues.add(secondValue);
+				}
 			}
+			
+			
+		}
+		double ratio = 1 - nonNumericCount/existingCount;
+		if(ratio < pThreshold)
+		{
+			throw new IllegalArgumentException("Threshold for correlation was not met: "
+					+ ratio + "<" + pThreshold + " count: " + existingCount + " NNcount: " + nonNumericCount);
 		}
 		
 		double[] firstArray = ArrayUtils.toPrimitive(firstValues.toArray(new Double[0]));
@@ -105,4 +149,5 @@ public class AttributeCorrelator
 	{
 		return pAttribute == null || pAttribute.getTypedValue().isNull() || pAttribute.getTypedValue().isNA();
 	}
+	
 }
