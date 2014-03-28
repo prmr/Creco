@@ -148,8 +148,8 @@ public class SiteController
 	 * @param pModel The model, containing the list of categories.
 	 * @return A redirection to the product page
 	 */
-	@RequestMapping(URL_SEARCH_PRODUCTS)  
-	public String searchRankedFeaturesProducts(@RequestParam(value = "id", required = true) String pCategoryId, Model pModel)
+	@RequestMapping(value=URL_SEARCH_PRODUCTS, method=RequestMethod.POST)  
+	public String searchRankedFeaturesProducts_POST(@RequestParam(value = "id", required = true) String pCategoryId, Model pModel)
 	{  
 
 		aCategory = aServiceFacade.getCategory(pCategoryId);
@@ -174,6 +174,12 @@ public class SiteController
 		return URL_SHOW_PRODUCTS;
 	}
 	
+	@RequestMapping(value=URL_SEARCH_PRODUCTS, method=RequestMethod.GET)  
+	public String searchRankedFeaturesProducts_GET( Model pModel)
+	{ 
+		return URL_SHOW_PRODUCTS;
+	}
+	
 	private void updateCurrentFeatureList()
 	{		
 		ArrayList<FeatureVO> specFeatures = new ArrayList<FeatureVO>();	
@@ -193,7 +199,6 @@ public class SiteController
 			f.setId(aScoredAttr.get(i).getAttributeID());
 			f.setName(aScoredAttr.get(i).getAttributeName());
 			f.setSpec(true);
-			f.setRate(false);			
 			f.setVisible(true);
 
 
@@ -257,8 +262,6 @@ public class SiteController
 			ScoredAttribute sa = locateFeatureScoredAttribute(aScoredAttr, tempName);
 			if ( sa != null)
 			{
-				TypedValue av = new TypedValue(userFMSpec.getValues().get(i));
-				//sa.setAttributeDefault(av);
 				userScoredFeaturesSpecs.add(sa);				
 			}			
 

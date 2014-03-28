@@ -60,13 +60,11 @@
 						</div>
 					</form>
 				</div>
-				<button id='submit_btn' type="button" value="Submit"
-					class="btn btn-info" style="opacity:0.8;width:100%" onclick="sendFeatures()">Submit</button>
 			</div>
 			
 			<div id="product-area">
 				<div class="rankedproduct-result-entry" th:each="product : ${productList.products}">
-					<div th:switch="${product.url}">
+					<div th:id="${product.id}" th:switch="${product.url}">
 	                    <p th:case="''" class="rankedproduct-result-name" th:text="${product.name}"></p>
 	                   	<a th:case="*" class="rankedproduct-result-name" th:text="${product.name}"
 	                   	 	th:href="@{${product.url}}"></a>

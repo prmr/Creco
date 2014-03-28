@@ -189,7 +189,15 @@ public class ScoredAttribute
 			if(aAttributeMainType == Type.NUMERIC)
 			{
 				aCorrelation = ac.computeCorrelation(aAttributeID, CONSIDERATION_THRESHOLD);
-				aDirection = ac.computeAttributeDirection(aAttributeID, CONSIDERATION_THRESHOLD);
+				
+				if (pAttribute.isPrice())
+				{
+					aDirection = Direction.LESS_IS_BETTER;
+				}
+				else
+				{
+					aDirection = ac.computeAttributeDirection(aAttributeID, CONSIDERATION_THRESHOLD);
+				}
 			}
 		}
 		else
