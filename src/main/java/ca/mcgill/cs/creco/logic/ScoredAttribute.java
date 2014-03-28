@@ -158,6 +158,7 @@ public class ScoredAttribute
  	private List<TypedValue> aStringValues;
  	
  	private Type aAttributeMainType;
+ 	private Direction aDirection;
  	
    
  	/**
@@ -185,16 +186,11 @@ public class ScoredAttribute
 			Collection<Product> products = pCategory.getProducts();
 			setStats(products);
 			AttributeCorrelator ac = new AttributeCorrelator(pCategory);
-			try
+			if(aAttributeMainType == Type.NUMERIC)
 			{
-				aCorrelation = ac.computeCorrelation(aAttributeID);
-				aCorrelation = ac.computeCorrelation(aAttributeID);
+				aCorrelation = ac.computeCorrelation(aAttributeID, CONSIDERATION_THRESHOLD);
+				aDirection = ac.computeAttributeDirection(aAttributeID, CONSIDERATION_THRESHOLD);
 			}
-			catch(IllegalArgumentException e)
-			{
-				LOG.error("Exception while constructing ScoredAttribute", e);
-			}
-			
 		}
 		else
 		{
@@ -216,6 +212,7 @@ public class ScoredAttribute
 			}
 			
 		}
+		getMainType(values);
 		// goes only over the products that had a non null attribute value
 		if(aAttributeMainType == Type.NUMERIC)
 		{
@@ -577,6 +574,11 @@ public class ScoredAttribute
 	public double getTypeThreshold()
 	{
 		return CONSIDERATION_THRESHOLD;
+	}
+	
+	public Direction getDirection()
+	{
+		return aDirection;
 	}
 	
 }
