@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * An object of this class is used to collect category nodes 
@@ -56,7 +58,7 @@ class CategoryTree implements IDataCollector
 	}
 	
 	/**
-	 * Adds the root categories (categoriBuilders) to the index.  Recursively adds child
+	 * Adds the root categories (categoryBuilders) to the index.  Recursively adds child
 	 * categoryBuilders.
 	 */
 	void indexRootCategories()
@@ -215,7 +217,7 @@ class CategoryTree implements IDataCollector
 	}
 	
 	/**
-	 * Aggregates information about the ratings and specs for all products under a given
+	 * Aggregates information about the Attributes for all products under a given
 	 * category, and aggregates the counts of the number of tested products and rated
 	 * products under a given category.  See recursiveRefresh() for more details.
 	 */
@@ -229,9 +231,9 @@ class CategoryTree implements IDataCollector
 	}
 	
 	/**
-	 * One of the purposes of CategoryTree is to aggregate information about the ratings
-	 * and specs for all the products under a given category.  This is done recursively:
-	 * a non-leaf category aggregates information about the specs and ratings of all its
+	 * One of the purposes of CategoryTree is to aggregate information about the
+	 * Attributes for all the products under a given category.  This is done recursively:
+	 * a non-leaf category aggregates information about the Attributes of all its
 	 * children.  Thus, this information must be "rolled up", from leaves to root, which
 	 * is accomplished here recursion.
 	 * 
@@ -255,21 +257,27 @@ class CategoryTree implements IDataCollector
 			pCategory.setRatedCount(0);
 			pCategory.setTestedCount(0);
 			pCategory.setCount(0);
-			pCategory.clearRatings();
-			pCategory.clearSpecs();
-			pCategory.restartRatingIntersection();
-			pCategory.restartSpecIntersection();
 		}
 	
 		// Roll up counts and collections
+		boolean first = true;
 		for(CategoryBuilder child : pCategory.getChildren())
 		{
 			// aggregate children's collections
-			pCategory.mergeRatings(child.getRatings());
-			pCategory.mergeSpecs(child.getSpecifications());
-			pCategory.intersectRatings(child);
-			pCategory.intersectSpecs(child);
-			
+			Set<String> attributeIds = child.getAttributeIds();
+			if(first)
+			{
+				for(String attributeId : attributeIds)
+				{
+					pCategory.addAttribute(attributeId);
+				}
+				first = false;
+			}
+			else
+			{
+				pCategory.mergeAttributes(attributeIds);
+			}
+		    
 			// aggregate children's counts
 			pCategory.putProducts(child.getProducts());
 			pCategory.incrementRatedCount(child.getRatedCount());
@@ -293,8 +301,10 @@ class CategoryTree implements IDataCollector
 			lProduct.setCategory(category);
 			
 			// Aggregate some product info in the category
-			category.addRatings(lProduct.getAttributes());
-			category.putSpecifications(lProduct.getAttributes());
+			for(Attribute attribute : lProduct.getAttributes())
+			{
+				category.addAttribute(attribute.getId());
+			}
 			
 			// Increment the counts in this category
 			category.incrementCount(1);
