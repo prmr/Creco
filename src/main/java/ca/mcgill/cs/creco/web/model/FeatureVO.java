@@ -42,8 +42,6 @@ public class FeatureVO
 	private Number maxValue=50;
 	private Boolean visible;
 	private Boolean spec;
-	private Boolean rate;
-//	private AttribureValue mean;
 	
 
 	public String getId()
@@ -124,25 +122,10 @@ public class FeatureVO
 		this.spec = spec;
 	}
 	
-	public Boolean getRate() 
-	{
-		return rate;
-	}
-
-	public void setRate(Boolean rate) 
-	{
-		this.rate = rate;
-	}
-
-	
 	public Boolean isSpec() {
 		return this.spec;		
 	}
 	
-	public Boolean isRate() {
-		return this.rate;		
-	}
-
 	public String getuValue() {
 		return uValue;
 	}

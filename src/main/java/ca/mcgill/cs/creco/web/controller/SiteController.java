@@ -199,7 +199,6 @@ public class SiteController
 			f.setId(aScoredAttr.get(i).getAttributeID());
 			f.setName(aScoredAttr.get(i).getAttributeName());
 			f.setSpec(true);
-			f.setRate(false);			
 			f.setVisible(true);
 
 
@@ -263,8 +262,6 @@ public class SiteController
 			ScoredAttribute sa = locateFeatureScoredAttribute(aScoredAttr, tempName);
 			if ( sa != null)
 			{
-				TypedValue av = new TypedValue(userFMSpec.getValues().get(i));
-				//sa.setAttributeDefault(av);
 				userScoredFeaturesSpecs.add(sa);				
 			}			
 
