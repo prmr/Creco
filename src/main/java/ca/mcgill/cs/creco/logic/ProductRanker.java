@@ -38,20 +38,20 @@ public class ProductRanker
 		for (ScoredAttribute scoredAttribute : pScoredAttributes)
 		{	
 			for (Product product : pProducts)
+			{
+				Attribute attribute = product.getAttribute(scoredAttribute.getAttributeID());
+				
+				double updateValue = 0;
+				if (attribute == null)
 				{
-					Attribute attribute = product.getAttribute(scoredAttribute.getAttributeID());
-					
-					double updateValue = 0;
-					if (attribute == null)
-					{
-						updateValue = MISSING_ATTRIBUTE_PENALTY;
-					} 
-					else if (attribute.getTypedValue().isNumeric())
-					{
-						updateValue = numericUpdateEquation(scoredAttribute, attribute.getTypedValue().getNumeric());
-					}
-					scoredProducts.put(product, scoredProducts.get(product) + updateValue);
+					updateValue = MISSING_ATTRIBUTE_PENALTY;
+				} 
+				else if (attribute.getTypedValue().isNumeric())
+				{
+					updateValue = numericUpdateEquation(scoredAttribute, attribute.getTypedValue().getNumeric());
 				}
+				scoredProducts.put(product, scoredProducts.get(product) + updateValue);
+			}
 		}
 
 		return sortProductsByScore(scoredProducts);
