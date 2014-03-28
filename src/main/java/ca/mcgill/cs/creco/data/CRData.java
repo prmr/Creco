@@ -71,14 +71,22 @@ public final class CRData implements IDataStore
 		lCatTree.refresh();
 		lCatTree.findEquivalenceClasses();
 		
+
 		// Copy the Products and Categories to CRData
 		for(Product prod : lCatTree.getProducts()) 
 		{
 			aProducts.put(prod.getId(), prod);
 		}
-		for(Category cat : lCatTree.getCategories()) 
+		for(CategoryNode catNode : lCatTree.getCategories()) 
 		{
-			aCategoryIndex.put(cat.getId(), cat);
+			Category newCategory = new Category(catNode.getId(), catNode.getName(), catNode.getRootCategoryName(), catNode.getProducts());
+			aCategoryIndex.put(newCategory.getId(), newCategory);
+
+			// Associate products to the equivalence class that contains them
+			for(Product prod : newCategory.getProducts())
+			{
+				prod.setCategory(newCategory);
+			}
 		}
 		
 	}

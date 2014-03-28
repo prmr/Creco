@@ -16,6 +16,7 @@
 package ca.mcgill.cs.creco.data;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -75,7 +76,7 @@ public class CategoryNode
 	/**
 	 * @return The products associated with this category.
 	 */
-	public Iterable<Product> getProducts()
+	public Collection<Product> getProducts()
 	{
 		return Collections.unmodifiableCollection(aProducts);
 	}

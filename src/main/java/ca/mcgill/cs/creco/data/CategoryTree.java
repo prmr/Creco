@@ -39,7 +39,7 @@ class CategoryTree implements IDataCollector
 	 * findEquivalenceClasses()
 	 * @return 
 	 */
-	Collection<Category> getCategories()
+	Collection<CategoryNode> getCategories()
 	{
 		// Must be called after findEquivalenceClasses()
 		if(!aHasFoundEquivalenceClasses)
@@ -47,11 +47,11 @@ class CategoryTree implements IDataCollector
 			return null;
 		}
 		
-		// Make a collection of plain Categorys from the list of "EquivalenceClass" Categorys
-		Collection<Category> lCategories = new ArrayList<Category>();
-		for(CategoryNode lCatBuilder : aEquivalenceClasses)
+		// Make a collection of plain Category's from the list of "EquivalenceClass" Category's
+		Collection<CategoryNode> lCategories = new ArrayList<CategoryNode>();
+		for(CategoryNode lCatNode : aEquivalenceClasses)
 		{
-			lCategories.add(lCatBuilder.getCategory());
+			lCategories.add(lCatNode);
 		}
 		return lCategories;
 	}
@@ -293,9 +293,8 @@ class CategoryTree implements IDataCollector
 		{
 			CategoryNode category = aCategoryIndex.get(lProduct.getCategoryId());
 			
-			// Create two way link between category and product
+			// Create a link from category to product
 			category.addProduct(lProduct);
-			lProduct.setCategory(category);
 			
 			// Aggregate some product info in the category
 			for(Attribute attribute : lProduct.getAttributes())

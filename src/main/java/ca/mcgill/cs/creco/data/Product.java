@@ -35,7 +35,7 @@ public class Product
 	private boolean aIsRated = false;
 	private HashMap<String, Attribute> aAttributes = new HashMap<String, Attribute>();
 	private String aCategoryId;
-	private CategoryNode aCategory;
+	private Category aCategory;
 	private Attribute aPrice = null;
 	
 		
@@ -73,7 +73,7 @@ public class Product
 		}
 	}
 	
-	void setCategory(CategoryNode pCategory)
+	void setCategory(Category pCategory)
 	{
 		aCategory = pCategory;
 	}
@@ -134,7 +134,7 @@ public class Product
 	 * @return The product's category.
 	 */
 	public Category getCategory() 
-	{ return aCategory.getCategory(); }
+	{ return aCategory; }
 	
 	/**
 	 * @return A iterator on the specs for this product.
