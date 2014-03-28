@@ -142,6 +142,12 @@ public class AttributeCorrelator
 		double[] secondArray = ArrayUtils.toPrimitive(secondValues.toArray(new Double[0]));
 		
 		PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
+		
+		//TODO look at this in more detail.
+		if(firstArray.length < 2 || secondArray.length < 2)
+		{
+			return 0;
+		}
 		return pearsonsCorrelation.correlation(firstArray, secondArray);
 	}
 	
