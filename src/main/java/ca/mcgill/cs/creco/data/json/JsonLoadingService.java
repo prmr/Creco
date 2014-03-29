@@ -16,11 +16,13 @@
 package ca.mcgill.cs.creco.data.json;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.CategoryNode;
@@ -38,12 +40,15 @@ public class JsonLoadingService implements IDataLoadingService
 {
 	private String aPath;
 	private String aCategoryFileName;
+	private String aDeadLinksFileName;
 	private String[] aProductFileNames;
+	private static HashMap<String, Integer> aDeadLinks = new HashMap<String, Integer>();
 	
-	public JsonLoadingService(String pPath, String pCategoryFileName, String[] pProductFileNames)
+	public JsonLoadingService(String pPath, String pCategoryFileName, String[] pProductFileNames, String pDeadLinksFileName)
 	{
 		aPath = pPath;
 		aCategoryFileName = pCategoryFileName;
+		aDeadLinksFileName = pDeadLinksFileName;
 		aProductFileNames = pProductFileNames;
 	}
 	
@@ -99,6 +104,7 @@ public class JsonLoadingService implements IDataLoadingService
 	@Override
 	public void loadProducts(IDataCollector pCollector) throws IOException 
 	{
+		readDeadLinks();
 		for(String fileName : aProductFileNames)
 		{
 			readFile(aPath + fileName, pCollector);
@@ -122,6 +128,25 @@ public class JsonLoadingService implements IDataLoadingService
 		in.close();
 	}
 	
+	private void readDeadLinks() throws FileNotFoundException, IOException
+	{
+		// Make a json reader for the deadlinks file
+		InputStream in = new FileInputStream(aPath + aDeadLinksFileName);
+		JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
+		reader.beginArray();
+		
+		// Iterate over each entry in the deadlinks file, putting a records in a HashTable
+		while(reader.hasNext()) 
+		{
+			LinkResponseStub responseStub = new Gson().fromJson(reader, LinkResponseStub.class);
+			aDeadLinks.put(responseStub.product_id, responseStub.state);
+		}
+
+		reader.endArray();
+		reader.close();
+		in.close();
+	}
+
 	private static Product buildProduct(ProductStub pProductStub)
 	{
 		// Collect all of the attributes for this product.  Starting with specifications.
@@ -150,6 +175,7 @@ public class JsonLoadingService implements IDataLoadingService
 			atts.add(Attribute.buildPrice(price.attributeId, price.displayName, price.description, price.value));
 		}
 		
+		// Work out the brandName
 		String brandName;
 		if(pProductStub.brand != null)
 		{
@@ -159,7 +185,15 @@ public class JsonLoadingService implements IDataLoadingService
 		{
 			brandName = null;
 		}
-		return new Product(pProductStub.id, pProductStub.displayName, pProductStub.isTested, pProductStub.category.id, brandName, pProductStub.modelOverviewPageUrl, atts);
+		
+		// Work out the product detail URL.  All null or broken URLs are stored as empty strings
+		String prodUrl = "";
+		if(pProductStub.modelOverviewPageUrl != null && aDeadLinks.get(pProductStub.id) == 200)
+		{
+			prodUrl = pProductStub.modelOverviewPageUrl;
+		}
+		
+		return new Product(pProductStub.id, pProductStub.displayName, pProductStub.isTested, pProductStub.category.id, brandName, prodUrl, atts);
 	}
 
 }

@@ -34,6 +34,7 @@ import ca.mcgill.cs.creco.data.json.JsonLoadingService;
 public final class CRData implements IDataStore
 {
 	private static final String DEFAULT_CATEGORY_FILENAME = "category.json";
+	private static final String DEFAULT_DEAD_LINKS_FILENAME = "dead_links.json";
 	
 	private static final String[] DEFAULT_PRODUCT_FILENAMES = 
 		{
@@ -53,7 +54,7 @@ public final class CRData implements IDataStore
 	private CRData(String[] pProductFileNames, String pCategoryFileName) throws IOException
 	{
 		
-		IDataLoadingService loadingService = new JsonLoadingService(DataPath.get(), DEFAULT_CATEGORY_FILENAME, DEFAULT_PRODUCT_FILENAMES);
+		IDataLoadingService loadingService = new JsonLoadingService(DataPath.get(), DEFAULT_CATEGORY_FILENAME, DEFAULT_PRODUCT_FILENAMES, DEFAULT_DEAD_LINKS_FILENAME);
 		CategoryTree lCatTree = new CategoryTree();
 		
 		loadingService.loadCategories(lCatTree);
