@@ -113,6 +113,18 @@ public class Product
 	{ return aId; }
 	
 	
+	
+	
+	/**
+	 * @return The Brand name of the product.
+	 */
+	public String getBrandName() 
+	{
+		if(aBrandName != null)
+			return aBrandName;
+		else 
+			return "";
+	}
 
 	/**
 	 * @return The modified display name of the product.

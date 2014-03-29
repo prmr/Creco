@@ -48,42 +48,58 @@ public class ConcreteServiceFacade implements ServiceFacade
 	@Override
 	public String getCompletions(String pInput)
 	{
-		String response = "";
-		
-		if(pInput.length() >= MIN_NUMBER_OF_TYPED_LETTERS)
+		if(pInput.length() < MIN_NUMBER_OF_TYPED_LETTERS)
 		{
-			for(Category category : aDataStore.getCategories()) 
+			return "";
+		}
+
+		String response = "";
+
+		for(Category category : aDataStore.getCategories()) 
+		{
+			if(category.getNumberOfProducts() == 0)
 			{
-				if(category.getNumberOfProducts() > 0 && category.getName().toLowerCase().contains(pInput.toLowerCase()))
-				{
-					response = response.concat(category.getName() + ",");
-				}
+				continue;
 			}
-		
-			Set<String> collectedtillnow = new HashSet<String>();
-			for(Product productname : aDataStore.getProducts()) 
+			if(category.getName().toLowerCase().contains(pInput.toLowerCase()))
 			{
-				if(productname.getName().toLowerCase().contains(pInput.toLowerCase()))
+				response = response.concat(category.getName() + ", " +"Category"+", ");
+			}
+		}
+		
+		Set<String> collectedtexttillnow = new HashSet<String>();
+		Set<String> Brands = new HashSet<String>();
+		Set<String> Text_search = new HashSet<String>();
+		for (Product productname : aDataStore.getProducts()) 
+		{
+			if(productname.getName().toLowerCase().contains(pInput.toLowerCase()))
+			{
+				for (String productspace: productname.getName().toLowerCase().split(" "))
 				{
-					for (String productspace: productname.getName().toLowerCase().split(" "))
+					if(productspace.contains(pInput.toLowerCase()))
 					{
-						if(productspace.contains(pInput.toLowerCase()) && !collectedtillnow.contains(productspace))
+						if(collectedtexttillnow.contains(productspace))
 						{
-							collectedtillnow.add(productspace);		
-							response = response.concat(productspace+",");
+						}
+						else
+						{
+							collectedtexttillnow.add(productspace);
+							if(productspace.equals(productname.getBrandName().toLowerCase()))
+							Brands.add(productspace);
+							else
+							Text_search.add(productspace);
 						}
 					}
 				}
 			}
-		
-			for(Product product : aDataStore.getProducts()) 
-			{
-				if(product.getName().toLowerCase().contains(pInput.toLowerCase()))
-				{
-					response = response.concat(product.getName()+ ",");
-				}
-			}
 		}
+		
+for(String brandname : Brands)
+		response = response.concat(brandname+", " +"Brand" +", ");
+
+for(String textname : Text_search)
+	response = response.concat(textname+", " +"Text_search" +", ");
+
 		return response;
 	}
 
