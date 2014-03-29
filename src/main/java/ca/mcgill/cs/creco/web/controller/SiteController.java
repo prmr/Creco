@@ -61,6 +61,7 @@ public class SiteController
 	private static final String URL_SHOW_CATEGORIES = "/categories";
 	private static final String URL_SEARCH_PRODUCTS = "/searchProducts";
 	private static final String URL_SHOW_PRODUCTS = "/products";
+	private static final String URL_UPDATE_FEATURES = "/sendFeatures";
 	
 	@Autowired
 	private ServiceFacade aServiceFacade;
@@ -148,7 +149,7 @@ public class SiteController
 	 * @param pModel The model, containing the list of categories.
 	 * @return A redirection to the product page
 	 */
-	@RequestMapping(value=URL_SEARCH_PRODUCTS, method=RequestMethod.POST)  
+	@RequestMapping(URL_SEARCH_PRODUCTS)  
 	public String searchRankedFeaturesProducts_POST(@RequestParam(value = "id", required = true) String pCategoryId, Model pModel)
 	{  
 
@@ -171,12 +172,6 @@ public class SiteController
 		
 		updateCurrentFeatureList();
 		
-		return URL_SHOW_PRODUCTS;
-	}
-	
-	@RequestMapping(value=URL_SEARCH_PRODUCTS, method=RequestMethod.GET)  
-	public String searchRankedFeaturesProducts_GET( Model pModel)
-	{ 
 		return URL_SHOW_PRODUCTS;
 	}
 	
@@ -242,6 +237,7 @@ public class SiteController
 		}		
 		aSpecFeatureList.setFeatures(specFeatures);	
 	}
+	
 	//TODO clean this method up doesn't need to default value anymore
 	/**
 	 * @author MariamN
@@ -249,7 +245,8 @@ public class SiteController
 	 * @param dataRate
 	 * @return name of file to redirect the browser to the products page.
 	 */
-	@RequestMapping(value = "/sendFeatures", method = RequestMethod.POST)	
+	@RequestMapping(URL_UPDATE_FEATURES)	
+	@ResponseBody
 	public String sendCurrentFeatureList(@RequestParam String dataSpec)
 	{
 		UserFeatureModel userFMSpec = new Gson().fromJson(dataSpec, UserFeatureModel.class);
@@ -282,7 +279,15 @@ public class SiteController
 	    {
 			aProductList.setProducts(products);	
 	    }
-		return URL_SHOW_PRODUCTS;		
+
+	    // This response is to be process by AJAX in JavaScript
+	    String response = "";
+	    for (ProductView productView : aProductList.getProducts()) 
+	    {
+	    	response = response.concat(productView.getId() + ",");
+	    }
+	    
+		return response;		
 	}	
 
 	

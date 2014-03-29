@@ -46,7 +46,6 @@
 						Mouse over an attribute to see its description</p>
 				</div>
 				<div id='main_specs'>
-					<form id="myForm" >
 						<div th:each="specFeatures : ${specFeatureList.features}">
 							<!--.sequence(1,2)}"> -->
 							<div th:if="${specFeatures.visible==true}">
@@ -58,13 +57,12 @@
 								</div>
 							</div>
 						</div>
-					</form>
 				</div>
 			</div>
 			
 			<div id="product-area">
-				<div class="rankedproduct-result-entry" th:each="product : ${productList.products}">
-					<div th:id="${product.id}" th:switch="${product.url}">
+				<div  th:id="${product.id}" class="rankedproduct-result-entry" th:each="product : ${productList.products}">
+					<div th:switch="${product.url}">
 	                    <p th:case="''" class="rankedproduct-result-name" th:text="${product.name}"></p>
 	                   	<a th:case="*" class="rankedproduct-result-name" th:text="${product.name}"
 	                   	 	th:href="@{${product.url}}"></a>
