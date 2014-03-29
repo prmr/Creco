@@ -28,12 +28,7 @@ import ca.mcgill.cs.creco.data.json.JsonLoadingService;
  * Root of the object graph representing the consumer reports database. 
  * All of the data is accessible through a singleton CRData object. Just 
  * create a new CRData object to get started. Normally in production this
- * will be built when the server starts up, and might be provided to your
- * class by a master controller. For now, make one yourself:
- * CRData crData = new CRData(DataPath.get()); 
- * The main entry points to the data are via the CategoryList and ProductList.
- * CategoryList catList = crData.getCategoryList();
- * These provide access to categories or products by id, and are iterables.
+ * will be built when the server starts up.
  */
 @Component
 public final class CRData implements IDataStore
@@ -76,14 +71,22 @@ public final class CRData implements IDataStore
 		lCatTree.refresh();
 		lCatTree.findEquivalenceClasses();
 		
+
 		// Copy the Products and Categories to CRData
 		for(Product prod : lCatTree.getProducts()) 
 		{
 			aProducts.put(prod.getId(), prod);
 		}
-		for(Category cat : lCatTree.getCategories()) 
+		for(CategoryNode catNode : lCatTree.getCategories()) 
 		{
-			aCategoryIndex.put(cat.getId(), cat);
+			Category newCategory = new Category(catNode.getId(), catNode.getName(), catNode.getRootCategoryName(), catNode.getProducts());
+			aCategoryIndex.put(newCategory.getId(), newCategory);
+
+			// Associate products to the equivalence class that contains them
+			for(Product prod : newCategory.getProducts())
+			{
+				prod.setCategory(newCategory);
+			}
 		}
 		
 	}

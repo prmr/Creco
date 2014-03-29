@@ -18,7 +18,6 @@ package ca.mcgill.cs.creco.data;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 
 /**
  * Represents a category in the product database.
@@ -30,8 +29,6 @@ public class Category
 	private String aSingularName;
 	private String aRootCategoryName; 
 	private ArrayList<Product> aProducts = new ArrayList<Product>();	
-	private HashMap<String, AttributeStat> aSpecifications = new HashMap<String, AttributeStat>();
-	private HashMap<String, AttributeStat> aRatings = new  HashMap<String, AttributeStat>();
 	
 	/**
 	 * TODO Make package-private.
@@ -39,25 +36,13 @@ public class Category
 	 * @param pSingularName z
 	 * @param pRootCategory z
 	 * @param pProducts z
-	 * @param pSpecifications z
-	 * @param pRatings z
 	 */
-	public Category(String pId, String pSingularName, String pRootCategory, 
-			  Collection<Product> pProducts, Collection<AttributeStat> pSpecifications, Collection<AttributeStat> pRatings)
+	public Category(String pId, String pSingularName, String pRootCategory, Collection<Product> pProducts)
 	{
 		aId = pId;
 		aSingularName = pSingularName;
 		aRootCategoryName = pRootCategory;
 		aProducts.addAll(pProducts);
-		for(AttributeStat stat : pSpecifications)
-		{
-			aSpecifications.put(stat.getAttribute().getId(), stat);
-		}
-		
-		for(AttributeStat stat : pRatings )
-		{
-			aRatings.put(stat.getAttribute().getId(), stat);
-		}
 	}
 	
 	/**
@@ -76,40 +61,6 @@ public class Category
 		return aProducts.size();
 	}
 	
-	/**
-	 * @return A collection of ratings associated with this category.
-	 */
-	public Collection<AttributeStat> getRatings()
-	{
-		return Collections.unmodifiableCollection(aRatings.values());
-	}
-	
-	/**
-	 * @return A collection of specifications associated with this category.
-	 */
-	public Collection<AttributeStat> getSpecifications()
-	{
-		return Collections.unmodifiableCollection(aSpecifications.values());
-	}
-	
-	/**
-	 * @param pId The id of the attribute to find
-	 * @return the attribute stat with attribute id pId
-	 */
-	public AttributeStat getSpecification(String pId)
-	{
-		return aSpecifications.get(pId);
-	}
-
-	/**
-	 * @param pId The id of the attribute to find
-	 * @return the attribute stat with attribute id pId
-	 */
-	public AttributeStat getRating(String pId)
-	{
-		return aRatings.get(pId);
-	}
-
 	
 	/**
 	 * @return The products associated with this category.

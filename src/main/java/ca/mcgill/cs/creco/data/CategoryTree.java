@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Set;
 
 /**
  * An object of this class is used to collect category nodes 
@@ -23,10 +24,10 @@ class CategoryTree implements IDataCollector
 	
 	private static final double JACCARD_THRESHOLD = 0.8;
 	private HashMap<String, Product> aProducts = new HashMap<String, Product>();
-	private Hashtable<String, CategoryBuilder> aCategoryIndex = new Hashtable<String, CategoryBuilder>();
-	private ArrayList<CategoryBuilder> aRootCategories = new ArrayList<CategoryBuilder>();					// Top-level categories
-	private ArrayList<CategoryBuilder> aEquivalenceClasses = new ArrayList<CategoryBuilder>();
-	private ArrayList<CategoryBuilder> aSubEquivalenceClasses = new ArrayList<CategoryBuilder>();
+	private Hashtable<String, CategoryNode> aCategoryIndex = new Hashtable<String, CategoryNode>();
+	private ArrayList<CategoryNode> aRootCategories = new ArrayList<CategoryNode>();					// Top-level categories
+	private ArrayList<CategoryNode> aEquivalenceClasses = new ArrayList<CategoryNode>();
+	private ArrayList<CategoryNode> aSubEquivalenceClasses = new ArrayList<CategoryNode>();
 	
 	private boolean aHasFoundEquivalenceClasses = false;
 	
@@ -38,7 +39,7 @@ class CategoryTree implements IDataCollector
 	 * findEquivalenceClasses()
 	 * @return 
 	 */
-	Collection<Category> getCategories()
+	Collection<CategoryNode> getCategories()
 	{
 		// Must be called after findEquivalenceClasses()
 		if(!aHasFoundEquivalenceClasses)
@@ -46,22 +47,22 @@ class CategoryTree implements IDataCollector
 			return null;
 		}
 		
-		// Make a collection of plain Categorys from the list of "EquivalenceClass" Categorys
-		Collection<Category> lCategories = new ArrayList<Category>();
-		for(CategoryBuilder lCatBuilder : aEquivalenceClasses)
+		// Make a collection of plain Category's from the list of "EquivalenceClass" Category's
+		Collection<CategoryNode> lCategories = new ArrayList<CategoryNode>();
+		for(CategoryNode lCatNode : aEquivalenceClasses)
 		{
-			lCategories.add(lCatBuilder.getCategory());
+			lCategories.add(lCatNode);
 		}
 		return lCategories;
 	}
 	
 	/**
-	 * Adds the root categories (categoriBuilders) to the index.  Recursively adds child
+	 * Adds the root categories (categoryBuilders) to the index.  Recursively adds child
 	 * categoryBuilders.
 	 */
 	void indexRootCategories()
 	{
-		for(CategoryBuilder category : aRootCategories)
+		for(CategoryNode category : aRootCategories)
 		{
 			index(category);
 		}
@@ -73,14 +74,14 @@ class CategoryTree implements IDataCollector
 	 */
 	void eliminateAllSingletons() 
 	{
-		for(CategoryBuilder category : aRootCategories)
+		for(CategoryNode category : aRootCategories)
 		{
 			eliminateSingletons(category);
 		}
 	}
 	
 	@Override
-	public void addCategory(CategoryBuilder pCategory)
+	public void addCategory(CategoryNode pCategory)
 	{
 		aRootCategories.add(pCategory);
 	}
@@ -106,7 +107,7 @@ class CategoryTree implements IDataCollector
 	 */
 	void findEquivalenceClasses() 
 	{
-		for(CategoryBuilder franchise : aRootCategories)
+		for(CategoryNode franchise : aRootCategories)
 		{
 			recurseFindEquivalenceClasses(franchise, 0);
 		}
@@ -153,15 +154,15 @@ class CategoryTree implements IDataCollector
 	 * @param pCategory
 	 * @param pMode
 	 */
-	private void recurseFindEquivalenceClasses(CategoryBuilder pCategory, int pMode)
+	private void recurseFindEquivalenceClasses(CategoryNode pCategory, int pMode)
 	{
-		Iterable<CategoryBuilder> children = pCategory.getChildren();
+		Iterable<CategoryNode> children = pCategory.getChildren();
 		int numChildren = pCategory.getNumberOfChildren();
 		
 		if(pMode == 1)
 		{
 			aSubEquivalenceClasses.add(pCategory);
-			for(CategoryBuilder child : children)
+			for(CategoryNode child : children)
 			{
 				recurseFindEquivalenceClasses(child, 1);
 			}
@@ -180,7 +181,7 @@ class CategoryTree implements IDataCollector
 				Double jaccard = pCategory.getJaccardIndex();
 				if(jaccard == null || jaccard < JACCARD_THRESHOLD)
 				{
-					for(CategoryBuilder child : children)
+					for(CategoryNode child : children)
 					{
 						recurseFindEquivalenceClasses(child, 0);
 					}
@@ -189,7 +190,7 @@ class CategoryTree implements IDataCollector
 				else
 				{
 					aEquivalenceClasses.add(pCategory);
-					for(CategoryBuilder child : children)
+					for(CategoryNode child : children)
 					{
 						recurseFindEquivalenceClasses(child, 1);
 					}
@@ -205,33 +206,33 @@ class CategoryTree implements IDataCollector
 	 * needed here
 	 * @param pCategory
 	 */
-	private void index(CategoryBuilder pCategory)
+	private void index(CategoryNode pCategory)
 	{
 		aCategoryIndex.put(pCategory.getId(), pCategory);
-		for(CategoryBuilder child : pCategory.getChildren())
+		for(CategoryNode child : pCategory.getChildren())
 		{
 			index(child);
 		}
 	}
 	
 	/**
-	 * Aggregates information about the ratings and specs for all products under a given
+	 * Aggregates information about the Attributes for all products under a given
 	 * category, and aggregates the counts of the number of tested products and rated
 	 * products under a given category.  See recursiveRefresh() for more details.
 	 */
 	void refresh() 
 	{			
 		// Now recursively refresh the category list
-		for(CategoryBuilder franchise : aRootCategories)
+		for(CategoryNode franchise : aRootCategories)
 		{
 			recursiveRefresh(franchise, 0);
 		}
 	}
 	
 	/**
-	 * One of the purposes of CategoryTree is to aggregate information about the ratings
-	 * and specs for all the products under a given category.  This is done recursively:
-	 * a non-leaf category aggregates information about the specs and ratings of all its
+	 * One of the purposes of CategoryTree is to aggregate information about the
+	 * Attributes for all the products under a given category.  This is done recursively:
+	 * a non-leaf category aggregates information about the Attributes of all its
 	 * children.  Thus, this information must be "rolled up", from leaves to root, which
 	 * is accomplished here recursion.
 	 * 
@@ -241,9 +242,9 @@ class CategoryTree implements IDataCollector
 	 * @param pCategory
 	 * @param pDepth
 	 */
-	private void recursiveRefresh(CategoryBuilder pCategory, int pDepth)
+	private void recursiveRefresh(CategoryNode pCategory, int pDepth)
 	{
-		for(CategoryBuilder child : pCategory.getChildren()) 
+		for(CategoryNode child : pCategory.getChildren()) 
 		{
 			recursiveRefresh(child, pDepth + 1);
 		}
@@ -254,27 +255,31 @@ class CategoryTree implements IDataCollector
 		{
 			pCategory.setRatedCount(0);
 			pCategory.setTestedCount(0);
-			pCategory.setCount(0);
-			pCategory.clearRatings();
-			pCategory.clearSpecs();
-			pCategory.restartRatingIntersection();
-			pCategory.restartSpecIntersection();
 		}
 	
 		// Roll up counts and collections
-		for(CategoryBuilder child : pCategory.getChildren())
+		boolean first = true;
+		for(CategoryNode child : pCategory.getChildren())
 		{
 			// aggregate children's collections
-			pCategory.mergeRatings(child.getRatings());
-			pCategory.mergeSpecs(child.getSpecifications());
-			pCategory.intersectRatings(child);
-			pCategory.intersectSpecs(child);
-			
+			Set<String> attributeIds = child.getAttributeIds();
+			if(first)
+			{
+				for(String attributeId : attributeIds)
+				{
+					pCategory.addAttribute(attributeId);
+				}
+				first = false;
+			}
+			else
+			{
+				pCategory.mergeAttributes(attributeIds);
+			}
+		    
 			// aggregate children's counts
 			pCategory.putProducts(child.getProducts());
 			pCategory.incrementRatedCount(child.getRatedCount());
 			pCategory.incrementTestedCount(child.getTestedCount());
-			pCategory.incrementCount(child.getCount());
 		}
 		pCategory.calculateJaccard();
 	}
@@ -286,18 +291,18 @@ class CategoryTree implements IDataCollector
 	{
 		for(Product lProduct : aProducts.values()) 
 		{
-			CategoryBuilder category = aCategoryIndex.get(lProduct.getCategoryId());
+			CategoryNode category = aCategoryIndex.get(lProduct.getCategoryId());
 			
-			// Create two way link between category and product
+			// Create a link from category to product
 			category.addProduct(lProduct);
-			lProduct.setCategory(category);
 			
 			// Aggregate some product info in the category
-			category.addRatings(lProduct.getAttributes());
-			category.putSpecifications(lProduct.getAttributes());
+			for(Attribute attribute : lProduct.getAttributes())
+			{
+				category.addAttribute(attribute.getId());
+			}
 			
 			// Increment the counts in this category
-			category.incrementCount(1);
 			if(lProduct.isTested())
 			{
 				category.incrementTestedCount(1);
@@ -320,13 +325,13 @@ class CategoryTree implements IDataCollector
 	 * 
 	 * @param pCategory
 	 */
-	private void eliminateSingletons(CategoryBuilder pCategory)
+	private void eliminateSingletons(CategoryNode pCategory)
 	{
 		// detect if this is a singleton, if so, splice it out of the hierarchy
 		if(pCategory.getNumberOfChildren() == 1)
 		{
-			CategoryBuilder child = pCategory.getChildren().iterator().next();
-			CategoryBuilder parent = pCategory.getParent();
+			CategoryNode child = pCategory.getChildren().iterator().next();
+			CategoryNode parent = pCategory.getParent();
 			child.setParent(parent);
 			parent.removeChild(pCategory);
 			parent.addSubcategory(child);
@@ -335,7 +340,7 @@ class CategoryTree implements IDataCollector
 		}
 		else
 		{
-			for(CategoryBuilder child : pCategory.getChildren())
+			for(CategoryNode child : pCategory.getChildren())
 			{
 				eliminateSingletons(child);
 			}
