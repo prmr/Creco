@@ -17,6 +17,7 @@ package ca.mcgill.cs.creco.logic;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,9 @@ public class ConcreteServiceFacade implements ServiceFacade
 	
 	@Autowired
 	private ICategorySearch aCategorySearch;
+	
+	@Autowired
+	private ProductRanker aProductRanker;
 
 	@Override
 	public String getCompletions(String pInput)
@@ -93,5 +97,11 @@ public class ConcreteServiceFacade implements ServiceFacade
 	public Category getCategory(String pId) 
 	{
 		return aDataStore.getCategory(pId);
+	}
+	
+	@Override
+	public List<Product> rankProducts(List<ScoredAttribute> pScoredAttributes, Collection<Product> pProducts)
+	{
+		return aProductRanker.rankProducts(pScoredAttributes, pProducts);
 	}
 }

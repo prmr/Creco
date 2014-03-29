@@ -31,6 +31,9 @@
     		<ref bean="TestDataStore"/>
     	</constructor-arg>
     </bean>
+    
+    <bean id="TestProductRanker" class="ca.mcgill.cs.creco.logic.ProductRanker" />
+        
     <bean id="TestServiceFacade" class="ca.mcgill.cs.creco.logic.ConcreteServiceFacade" />
 
 	<bean id="TestAttributeExtractor" class="ca.mcgill.cs.creco.logic.AttributeExtractor">

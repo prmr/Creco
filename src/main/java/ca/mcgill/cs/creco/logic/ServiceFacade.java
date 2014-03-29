@@ -16,8 +16,10 @@
 package ca.mcgill.cs.creco.logic;
 
 import java.util.Collection;
+import java.util.List;
 
 import ca.mcgill.cs.creco.data.Category;
+import ca.mcgill.cs.creco.data.Product;
 
 /**
  * Single point of access for all services of domain 
@@ -48,4 +50,13 @@ public interface ServiceFacade
 	 * @return The corresponding category.
 	 */
 	Category getCategory(String pId);
+	
+	/**
+	 * Ranks a collection of products according to a given set of attributes.
+	 * @param pScoredAttributes The set of attributes used to rank the products.
+	 * @param pProducts The collection of products to rank.
+	 * @return The ranked list of products, ordered from highest to lowest score.
+	 */
+	List<Product> rankProducts(List <ScoredAttribute> pScoredAttributes, Collection<Product> pProducts);
+	
 }

@@ -33,8 +33,6 @@ import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.logic.AttributeExtractor;
-import ca.mcgill.cs.creco.logic.ProductRanker;
-import ca.mcgill.cs.creco.logic.RankedFeaturesProducts;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.ServiceFacade;
 import ca.mcgill.cs.creco.logic.search.IProductSearch;
@@ -156,16 +154,11 @@ public class SiteController
 
 		aCategory = aServiceFacade.getCategory(pCategoryId);
 		List<Product> prodSearch = aProductSort.returnProductsAlphabetically(pCategoryId);
-        List<ScoredAttribute> attrList = aAttributeExtractor.getAttributesForCategory(aCategory.getId());
-
-		RankedFeaturesProducts rankedProducts = new RankedFeaturesProducts(attrList, prodSearch);
-		List<Product> aScoredProducts = rankedProducts.getaProductSearchResult();
-	    
-	    aScoredAttr = rankedProducts.getaAttrList();
+        aScoredAttr = aAttributeExtractor.getAttributesForCategory(aCategory.getId());   
 	    	   
 	    // Converting
 		ArrayList<ProductView> products = new ArrayList<ProductView>();		
-	    for (Product scoredProduct: aScoredProducts) 
+	    for (Product scoredProduct: prodSearch) 
 	    {
 			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl()));
 	    }
@@ -265,21 +258,17 @@ public class SiteController
 
 		}
 		
-		RankedFeaturesProducts tempProducts = new RankedFeaturesProducts();	
 		userScoredFeaturesSpecs = sortFeatures(userScoredFeaturesSpecs);
-		
-		//List<Product> productsToDisplay  = tempProducts.FeatureSensitiveRanking(userScoredFeaturesSpecs, aCategory);
-		
-		ProductRanker productRanker = new ProductRanker();
-		List<Product> productsToDisplay = productRanker.rankProducts(userScoredFeaturesSpecs, aCategory.getProducts());
 
+		List<Product> rankedProducts = aServiceFacade.rankProducts(userScoredFeaturesSpecs, aCategory.getProducts());
+		
 		// Converting to View Object
 		ArrayList<ProductView> products = new ArrayList<ProductView>();
-	    for (Product scoredProduct: productsToDisplay)
+	    for (Product scoredProduct: rankedProducts)
 	    {
 			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl()));
 		 }
-	    if (productsToDisplay.size() > 0) 
+	    if (rankedProducts.size() > 0) 
 	    {
 			aProductList.setProducts(products);	
 	    }

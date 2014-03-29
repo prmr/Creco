@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Component;
+
 import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.logic.ScoredAttribute.Direction;
@@ -15,6 +17,7 @@ import ca.mcgill.cs.creco.logic.ScoredAttribute.Direction;
 /**
  * Ranks a collection of products according to a given set of attributes.
  */
+@Component
 public class ProductRanker 
 {
 	private static final double MISSING_ATTRIBUTE_PENALTY = -1.0;
@@ -50,6 +53,10 @@ public class ProductRanker
 				{
 					updateValue = numericUpdateEquation(scoredAttribute, attribute.getTypedValue().getNumeric());
 				}
+				else
+				{
+					//TODO Non-numeric attributes are ignored right now
+				}
 				scoredProducts.put(product, scoredProducts.get(product) + updateValue);
 			}
 		}
@@ -59,16 +66,18 @@ public class ProductRanker
 	
 	private double numericUpdateEquation(ScoredAttribute pScoredAttribute, double pAttributeValue)
 	{
-		int directionFactor = 1;
+		int direction = 1;
 		if (pScoredAttribute.getDirection() == Direction.LESS_IS_BETTER)
 		{
-			directionFactor = -1;
+			direction = -1;
 		}
 		
 		// The attribute's correlation with the products' overall score is used as a weight
 		double attributeWeight = Math.abs(pScoredAttribute.getCorrelation());
 		
-		return directionFactor * attributeWeight * pAttributeValue;
+		double normalization = 1 / (double) pScoredAttribute.getMax().getNumeric();
+		
+		return direction * attributeWeight * normalization * pAttributeValue;
 	}
 	
 	/**
@@ -79,13 +88,13 @@ public class ProductRanker
 	private List<Product> sortProductsByScore(Map<Product, Double> pScoredProducts)
 	{
 		List<Map.Entry<Product, Double>> productEntries = new ArrayList<Map.Entry<Product, Double>>(pScoredProducts.entrySet());
+		
 		Collections.sort(productEntries, new ScoreComparator());
 		
 		// Place the sorted entries back into a list
 		List<Product> sortedProducts = new ArrayList<Product>();
 		for (Map.Entry<Product, Double> entry : productEntries)
 		{
-			System.out.println("product : "+ entry.getKey().getName() + " has score: " + entry.getValue());
 			sortedProducts.add(entry.getKey());
 		}
 		return sortedProducts;

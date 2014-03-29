@@ -114,7 +114,7 @@ function sendFeatures() {
             		var attributeId = $(this).attr("id");
             		if (attributeId == order[i])
             		{
-            			 $(this).prependTo(this.parentNode);
+            			 $(this).appendTo(this.parentNode);
             		}
             	});
         	}
