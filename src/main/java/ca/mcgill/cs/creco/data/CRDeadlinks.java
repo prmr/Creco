@@ -18,11 +18,10 @@ package ca.mcgill.cs.creco.data;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 
 import org.springframework.stereotype.Component;
+
+import weka.core.Debug;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
@@ -30,20 +29,15 @@ import com.google.gson.stream.JsonReader;
 import ca.mcgill.cs.creco.data.json.*;
 
 /**
- * Root of the object graph representing the consumer reports database. 
- * All of the data is accessible through a singleton CRData object. Just 
- * create a new CRData object to get started. Normally in production this
- * will be built when the server starts up, and might be provided to your
- * class by a master controller. For now, make one yourself:
- * CRData crData = new CRData(DataPath.get()); 
- * The main entry points to the data are via the CategoryList and ProductList.
- * CategoryList catList = crData.getCategoryList();
- * These provide access to categories or products by id, and are iterables.
+ * File which creates the dead_links
+ * Can be accessed with the dead_links.json
+ * Should be run when dead_links in the Database needs to be revisited
+ * A check of how many products are present is performed at t 
  * @param <CategoryStub>
  * @param <PriceStub>
  * @param <BrandStub>
  */
-public class CRDeadlinks<CategoryStub, PriceStub, BrandStub> implements IDataStore
+public class CRDeadlinks<CategoryStub, PriceStub, BrandStub> 
 {
 	public static String write_to_file = new String(""); 
 	private static final String DEFAULT_CATEGORY_FILENAME = "category.json";
@@ -55,8 +49,6 @@ public class CRDeadlinks<CategoryStub, PriceStub, BrandStub> implements IDataSto
 			"food.json", "babiesKids.json", "money.json"
 		};
 	
-	private HashMap<String, Product> aProducts = new HashMap<String, Product>();
-	private HashMap<String, Category> aCategoryIndex = new HashMap<String, Category>();
 	
 	public CRDeadlinks() throws IOException, InterruptedException
 	{
@@ -66,7 +58,7 @@ public class CRDeadlinks<CategoryStub, PriceStub, BrandStub> implements IDataSto
 	private CRDeadlinks(String[] pProductFileNames, String pCategoryFileName) throws IOException, InterruptedException
 	{
 		
-	/*	write_to_file=write_to_file.concat("[");
+		write_to_file=write_to_file.concat("[");
 		for(String fileName : pProductFileNames)
 		{
 			System.out.println("Reading file "+fileName);
@@ -76,7 +68,7 @@ public class CRDeadlinks<CategoryStub, PriceStub, BrandStub> implements IDataSto
 		write_to_file = write_to_file.substring(0, write_to_file.length() - 1);
 		write_to_file=write_to_file.concat("]");
 		System.out.println(write_to_file);
-		write_to_file();*/
+		write_to_file();
 		tryreadingthejson();
 	}
 	
@@ -93,15 +85,11 @@ public class CRDeadlinks<CategoryStub, PriceStub, BrandStub> implements IDataSto
 		InputStream in = new FileInputStream(DataPath.get()+"dead_links.json");
 		JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
 		reader.beginArray();
-		int count=0;
-		System.out.println("Over");
+		// Variable to keep a count of products
 		while(reader.hasNext()) 
 		{
-			responsecode prodStub = new Gson().fromJson(reader, responsecode.class);
-			count++;
-			//System.out.println(prodStub.state);
+			responsecode returnedlink = new Gson().fromJson(reader, responsecode.class);
 		}
-		System.out.println("Count ="+count);
 		reader.endArray();
 		reader.close();
 		in.close();
@@ -111,29 +99,26 @@ public class CRDeadlinks<CategoryStub, PriceStub, BrandStub> implements IDataSto
 	{
 		InputStream in = new FileInputStream(filePath);
 		JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
-				int count=0;
 		reader.beginArray();
 		while(reader.hasNext()) 
 		{
 	
 			ProductStub prodStub = new Gson().fromJson(reader, ProductStub.class);
-			count++;
 		write_to_file=write_to_file.concat("{\"product_id\":"+prodStub.id+",");
 		String urltext = prodStub.modelOverviewPageUrl;
-			 if(urltext==null)
+		// Write 404 error if no URL exists
+		if(urltext==null)
 			 {
 				 write_to_file=write_to_file.concat("\"state\":"+"404"+"},");
 				 continue;
 			 }
-				 Thread.sleep(200);
-			    URL url = new URL(urltext);
-			    int responseCode = ((HttpURLConnection) url.openConnection()).getResponseCode();
-				 write_to_file=write_to_file.concat("\"state\":"+responseCode+"},");
-			   
-			    System.out.println("  "+count);
-	
+		
+		Thread.sleep(200);
+		URL url = new URL(urltext);
+		// Attempt a connection and see the resulting response code it returns
+		int responseCode = ((HttpURLConnection) url.openConnection()).getResponseCode();
+		write_to_file=write_to_file.concat("\"state\":"+responseCode+"},");
 		}
-		System.out.println("Count is "+count);
 		reader.endArray();
 		reader.close();
 		in.close();
@@ -144,7 +129,7 @@ public class CRDeadlinks<CategoryStub, PriceStub, BrandStub> implements IDataSto
 		public int product_id;
 		public int state;
 	}
-	
+	// Enew class
 	static class ProductStub 
 	{
 		public String summary;
@@ -180,38 +165,6 @@ public class CRDeadlinks<CategoryStub, PriceStub, BrandStub> implements IDataSto
 	}
 
 
-
-	
-	/**
-	 * @param pIndex The requested index.
-	 * @return The category corresponding to pIndex.
-	 */
-	public Category getCategory(String pIndex)
-	{
-		return aCategoryIndex.get(pIndex);
-	}
-	
-
-	@Override
-	public Product getProduct(String pId)
-	{
-		return aProducts.get(pId);
-	}
-	
-	@Override
-	public Collection<Category> getCategories()
-	{
-		return Collections.unmodifiableCollection(aCategoryIndex.values());
-	}
-	
-	/**
-	 * @return An iterator on the product list.
-	 */
-	@Override
-	public Collection<Product> getProducts() 
-	{
-		return Collections.unmodifiableCollection(aProducts.values());
-	}
 	
 	public static void main1(String args[]) throws IOException, InterruptedException
 	{
