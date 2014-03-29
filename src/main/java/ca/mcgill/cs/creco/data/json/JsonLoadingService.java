@@ -43,6 +43,7 @@ public class JsonLoadingService implements IDataLoadingService
 	private String aDeadLinksFileName;
 	private String[] aProductFileNames;
 	private static HashMap<String, Integer> aDeadLinks = new HashMap<String, Integer>();
+	private static boolean aDoCheckDeadLinks = false;
 	
 	public JsonLoadingService(String pPath, String pCategoryFileName, String[] pProductFileNames, String pDeadLinksFileName)
 	{
@@ -130,8 +131,22 @@ public class JsonLoadingService implements IDataLoadingService
 	
 	private void readDeadLinks() throws FileNotFoundException, IOException
 	{
+		// Try to read the dead links file
+		InputStream in;
+		try 
+		{
+			in = new FileInputStream(aPath + aDeadLinksFileName);
+		}
+		catch (FileNotFoundException e)
+		{
+			return;
+		}
+		
+		// Flag that we were succesful finding the deadlins file, so deadlinks
+		// will be checked while building products
+		aDoCheckDeadLinks = true;
+		
 		// Make a json reader for the deadlinks file
-		InputStream in = new FileInputStream(aPath + aDeadLinksFileName);
 		JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
 		reader.beginArray();
 		
@@ -187,10 +202,13 @@ public class JsonLoadingService implements IDataLoadingService
 		}
 		
 		// Work out the product detail URL.  All null or broken URLs are stored as empty strings
-		String prodUrl = "";
-		if(pProductStub.modelOverviewPageUrl != null && aDeadLinks.get(pProductStub.id) == 200)
+		String prodUrl = pProductStub.modelOverviewPageUrl;
+		if(aDoCheckDeadLinks)
 		{
-			prodUrl = pProductStub.modelOverviewPageUrl;
+			if(pProductStub.modelOverviewPageUrl == null || aDeadLinks.get(pProductStub.id) != 200)
+			{
+				prodUrl = "";
+			}
 		}
 		
 		return new Product(pProductStub.id, pProductStub.displayName, pProductStub.isTested, pProductStub.category.id, brandName, prodUrl, atts);
