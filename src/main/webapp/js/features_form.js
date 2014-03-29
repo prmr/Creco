@@ -15,7 +15,6 @@ function findParentID(node, id) {
         parent = parent.parentNode;
     }
     return false;
-
 }
 
 /**
@@ -80,7 +79,6 @@ function addFeature(elem, name, val) {
     var isSpec = findParentID(elem, "main_specs")
 
     for (var i = 0; i < specGlobalFeatureObject.names.length; i++) {
-        console.log("specGlobalFeatureObject.names[i] " + specGlobalFeatureObject.names[i]);
         if (specGlobalFeatureObject.names[i] == name) {
             specGlobalFeatureObject.values[i] = val;
             exist = true;
@@ -102,17 +100,24 @@ function addFeature(elem, name, val) {
 function sendFeatures() {
     var sjData = JSON.stringify(specGlobalFeatureObject);
     $.ajax({
-        type: "POST",
-        dataType: "json",
-        url: 'sendFeatures.html',
+        async: false,
+        url: '/sendFeatures',
         data: ({
             dataSpec: sjData
         }),
-        success: function (data) {
-            console.log(data);
-        },
-        complete: function (data) {
-            location.reload();
+        success: function (response) {
+        	var order = response.split(",");
+        	
+        	for (var i = 0; i < order.length - 1; i++) 
+        	{
+            	$.each($("#product-area div"), function () {
+            		var attributeId = $(this).attr("id");
+            		if (attributeId == order[i])
+            		{
+            			 $(this).prependTo(this.parentNode);
+            		}
+            	});
+        	}
         }
     });
 }
