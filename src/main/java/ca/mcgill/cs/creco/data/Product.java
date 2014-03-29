@@ -37,7 +37,7 @@ public class Product
 	private String aCategoryId;
 	private Category aCategory;
 	private Attribute aPrice = null;
-	
+	private String aExplanation = "";
 		
 	/**
 	 * Constructs a new product record.
@@ -170,5 +170,15 @@ public class Product
 	public String getUrl() 
 	{
 		return aModelOverviewPageUrl;
+	}
+
+	public String getExplanation() 
+	{
+		return aExplanation;
+	}
+
+	public void setExplanation(String explanation) 
+	{
+		this.aExplanation = explanation;
 	}
 }

@@ -57,6 +57,15 @@ public class ProductRanker
 				{
 					//TODO Non-numeric attributes are ignored right now
 				}
+				if(updateValue > 0)
+				{
+					String exp = product.getExplanation();
+					product.setExplanation(exp+" This product has "+ attribute.getName()+" value of "+attribute.getTypedValue().getNumeric()+".");
+					
+				}else
+				{
+				//TODO add the negative example	
+				}
 				scoredProducts.put(product, scoredProducts.get(product) + updateValue);
 			}
 		}

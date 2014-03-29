@@ -65,8 +65,9 @@
 					<div th:switch="${product.url}">
 	                    <p th:case="''" class="rankedproduct-result-name" th:text="${product.name}"></p>
 	                   	<a th:case="*" class="rankedproduct-result-name" th:text="${product.name}"
-	                   	 	th:href="@{${product.url}}"></a>
+	                   	 	th:href="@{${product.url}}"></a>	                   	
 					</div>
+					<label th:text="${product.explanation}" th:title="${product.explanation}" ></label>			
 				</div>
 			</div>
 		</div>

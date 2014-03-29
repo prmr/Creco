@@ -23,18 +23,21 @@ public class ProductView
 	private String aId;
 	private String aName;
 	private String aUrl;
+	private String aExplanation;
 	
 	/**
 	 * Creates a new product.
 	 * @param pId The product's idea.
 	 * @param pName The display name of the product.
 	 * @param pUrl The url pointing to the product's web page on the CR database.
+	 * @param pExplanation 
 	 */
-	public ProductView( String pId, String pName, String pUrl)
+	public ProductView( String pId, String pName, String pUrl, String pExplanation)
 	{
 		aId = pId;
 		aName = pName;
 		aUrl = pUrl;
+		aExplanation = pExplanation;
 	}
 
 	/**
@@ -60,4 +63,13 @@ public class ProductView
 	{
 		return aUrl;
 	}
+
+	/***
+	 * 
+	 * @return The product Ranking Explanation
+	 */
+	public String getExplanation() 
+	{
+		return aExplanation;
+	}	
 }
