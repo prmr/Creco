@@ -112,9 +112,11 @@ function sendFeatures() {
         	{
             	$.each($("#product-area div"), function () {
             		var attributeId = $(this).attr("id");
-            		if (attributeId == order[i])
+            		var split = order[i].split("|");
+            		if (attributeId == split[0])
             		{
             			 $(this).appendTo(this.parentNode);
+            			 $(this).attr("title",split[1]);
             		}
             	});
         	}

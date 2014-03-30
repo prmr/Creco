@@ -63,11 +63,10 @@
 			<div id="product-area">
 				<div  th:id="${product.id}" class="rankedproduct-result-entry" th:each="product : ${productList.products}">
 					<div th:switch="${product.url}">
-	                    <p th:case="''" class="rankedproduct-result-name" th:text="${product.name}"></p>
+	                    <p th:case="''" class="rankedproduct-result-name" th:text="${product.name}"  alt="Description"  align="middle" data-toggle="tooltip" data-placement="middle" th:title="${product.explanation}"></p>
 	                   	<a th:case="*" class="rankedproduct-result-name" th:text="${product.name}"
-	                   	 	th:href="@{${product.url}}"></a>	                   	
-					</div>
-					<label th:text="${product.explanation}" th:title="${product.explanation}" ></label>			
+	                   	 	th:href="@{${product.url}}" alt="Description"  align="middle" data-toggle="tooltip" data-placement="middle" th:title="${product.explanation}"></a>
+					</div>		
 				</div>
 			</div>
 		</div>

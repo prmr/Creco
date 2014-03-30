@@ -160,7 +160,7 @@ public class SiteController
 		ArrayList<ProductView> products = new ArrayList<ProductView>();		
 	    for (Product scoredProduct: prodSearch) 
 	    {
-			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl(), scoredProduct.getExplanation()));
+			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl(),scoredProduct.getExplanation()));
 	    }
 		aProductList.setProducts(products);	
 		
@@ -266,7 +266,7 @@ public class SiteController
 		ArrayList<ProductView> products = new ArrayList<ProductView>();
 	    for (Product scoredProduct: rankedProducts)
 	    {
-			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl(), scoredProduct.getExplanation()));
+			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl(),scoredProduct.getExplanation()));
 			System.out.println("explanation "+ scoredProduct.getExplanation());
 		 }
 	    if (rankedProducts.size() > 0) 
@@ -278,7 +278,7 @@ public class SiteController
 	    String response = "";
 	    for (ProductView productView : aProductList.getProducts()) 
 	    {
-	    	response = response.concat(productView.getId() + ",");
+	    	response = response.concat(productView.getId() +"| "+productView.getExplanation()+ ",");
 	    }
 	    
 		return response;		

@@ -23,7 +23,7 @@ public class ProductView
 	private String aId;
 	private String aName;
 	private String aUrl;
-	private String aExplanation;
+	public String explanation;
 	
 	/**
 	 * Creates a new product.
@@ -37,7 +37,7 @@ public class ProductView
 		aId = pId;
 		aName = pName;
 		aUrl = pUrl;
-		aExplanation = pExplanation;
+		explanation = pExplanation;
 	}
 
 	/**
@@ -70,6 +70,6 @@ public class ProductView
 	 */
 	public String getExplanation() 
 	{
-		return aExplanation;
+		return explanation;
 	}	
 }
