@@ -124,6 +124,30 @@ public class TypedValue
 				aType = Type.BOOLEAN;
 				aBooleanValue = false;
 			}
+			else if(theString.matches("(\\d+)( ?\")"))
+            {
+            	//matches Strings of the form 23" denoting 23 inches
+				aType = Type.NUMERIC;
+            	Pattern pattern = Pattern.compile("(\\d+)( ?\")");
+                Matcher matcher = pattern.matcher(theString);
+            	if(matcher.find())
+            	{
+            		aNumericValue = Double.parseDouble(matcher.group(1).trim());
+
+            	}
+            }
+			else if(theString.matches("(\\d+)( ?hours)?( ?days)?"))
+            {
+				//matches Strings of the form 23 hours or 23 days
+				aType = Type.NUMERIC;
+            	Pattern pattern = Pattern.compile("(\\d+)( ?hours)?( ?days)?");
+                Matcher matcher = pattern.matcher(theString);
+            	if(matcher.find())
+            	{
+            		aNumericValue = Double.parseDouble(matcher.group(1).trim());
+
+            	}
+            }
 			else if(theString.matches("(\\d+)(-)(\\d+)(.*)"))
             {
             	aType = Type.NUMERIC;
@@ -319,4 +343,3 @@ public class TypedValue
 		return lReturn;
 	}
 }
-

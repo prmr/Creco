@@ -121,6 +121,18 @@ public class TestTypedValue
 		assertTrue(value.isNumeric());
 		assertEquals( -28.123, value.getNumeric(), 0);
 		
+		value = new TypedValue("90 hours");
+		assertTrue(value.isNumeric());
+		assertEquals( 90, value.getNumeric(), 0);
+		
+		value = new TypedValue("50 days");
+		assertTrue(value.isNumeric());
+		assertEquals( 50, value.getNumeric(), 0);
+		
+		value = new TypedValue("56 \"");
+		assertTrue(value.isNumeric());
+		assertEquals( 56, value.getNumeric(), 0);
+		
 		value.getString();
 	}
 	
