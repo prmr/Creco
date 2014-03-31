@@ -69,7 +69,7 @@ public class AttributeCorrelator
 	 */
 	public ScoredAttribute.Direction computeAttributeDirection(String pAttributeId, double pThreshold)
 	{
-		double correlation = computeCorrelation(pAttributeId,pThreshold);
+		double correlation = computeCorrelation(pAttributeId, pThreshold);
 		
 		if (correlation < LESS_IS_BETTER_THRESHOLD)
 		{

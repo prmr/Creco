@@ -57,9 +57,10 @@ public class ProductRanker
 		{	
 			for (Product product : pProducts)
 			{
+				double updateValue = 0;
+				
 				Attribute attribute = product.getAttribute(scoredAttribute.getAttributeID());
 				
-				double updateValue = 0;
 				if (attribute == null)
 				{
 					updateValue = MISSING_ATTRIBUTE_PENALTY;
@@ -72,6 +73,8 @@ public class ProductRanker
 				{
 					//TODO Non-numeric attributes are ignored right now
 				}
+				
+				// Update the product's score according to the attribute's value
 				scoredProducts.put(product, scoredProducts.get(product) + updateValue);
 			}
 		}
@@ -79,6 +82,12 @@ public class ProductRanker
 		return sortProductsByScore(scoredProducts);
 	}
 	
+	/**
+	 * Computes a score update depending on a numeric attribute value.
+	 * @param pScoredAttribute The score attribute according to which the update value will be computed.
+	 * @param pAttributeValue The numeric attribute value.
+	 * @return The score update value.
+	 */
 	private double numericUpdateEquation(ScoredAttribute pScoredAttribute, double pAttributeValue)
 	{
 		int direction = 1;
@@ -90,7 +99,7 @@ public class ProductRanker
 		// The attribute's correlation with the products' overall score is used as a weight
 		double attributeWeight = Math.abs(pScoredAttribute.getCorrelation());
 		
-		double normalization = 1 / (double) pScoredAttribute.getMax().getNumeric();
+		double normalization = 1 / pScoredAttribute.getMax().getNumeric();
 		
 		return direction * attributeWeight * normalization * pAttributeValue;
 	}
