@@ -3,10 +3,11 @@
       var that = this,
         currentCategory = "";
       $.each( items, function( index, item ) {
-        if ( item.category != currentCategory ) {
-          ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
-          currentCategory = item.category;
-        }
+    	//  item.category="";
+      //  if ( item.category != currentCategory ) {
+      //   ul.append( "<li class='ui-autocomplete-category'>" +"" + "</li>" );
+       //   currentCategory = item.category;
+       // }
         that._renderItemData( ul, item );
       });
     }

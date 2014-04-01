@@ -6,6 +6,7 @@
 
 /* Layout helpers
 ----------------------------------*/
+
 .ui-helper-hidden {
 	display: none;
 }
@@ -478,7 +479,7 @@ button.ui-button::-moz-focus-inner {
 	text-decoration: none;
 	display: block;
 	padding: 2px .4em;
-	line-height: 1.5;
+	line-height:0.5;
 	min-height: 0; /* support: IE7 */
 	font-weight: normal;
 }
@@ -491,7 +492,7 @@ button.ui-button::-moz-focus-inner {
 .ui-menu .ui-state-disabled {
 	font-weight: normal;
 	margin: .4em 0 .2em;
-	line-height: 1.5;
+	line-height: 0.5;
 }
 .ui-menu .ui-state-disabled a {
 	cursor: default;
@@ -550,14 +551,14 @@ button.ui-button::-moz-focus-inner {
 }
 .ui-resizable-n {
 	cursor: n-resize;
-	height: 7px;
+	height: 2px;
 	width: 100%;
 	top: -5px;
 	left: 0;
 }
 .ui-resizable-s {
 	cursor: s-resize;
-	height: 7px;
+	height: 2px;
 	width: 100%;
 	bottom: -5px;
 	left: 0;
@@ -927,7 +928,7 @@ body .ui-tooltip {
 /* states and images */
 .ui-icon {
 	width: 16px;
-	height: 16px;
+	height: 4px;
 }
 .ui-icon,
 .ui-widget-content .ui-icon {

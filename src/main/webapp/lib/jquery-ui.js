@@ -2540,8 +2540,8 @@ $.widget( "ui.autocomplete", {
 	},
 
 	_renderItem: function( ul, item ) {
-		return $( "<li>" )
-			.append( $( "<a>" ).text( item.label ) )
+		return $( "<li><a>"+item.label+"<b><div align=\"right\">"+item.category+"</div></b></a>")//+"<b><div align=\"right\">"+item.category+"</div></b></a>" )
+			//.append( $( "<a>" ).text( item.label ) )
 			.appendTo( ul );
 	},
 
