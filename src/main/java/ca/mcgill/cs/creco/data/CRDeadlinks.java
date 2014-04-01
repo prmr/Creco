@@ -19,9 +19,6 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.springframework.stereotype.Component;
-
-import weka.core.Debug;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
@@ -80,16 +77,18 @@ public class CRDeadlinks<CategoryStub, PriceStub, BrandStub>
          fileWriter.write(write_to_file);
          fileWriter.close();
 	}
+	
 	private void tryreadingthejson() throws FileNotFoundException, IOException
 	{
 		InputStream in = new FileInputStream(DataPath.get()+"dead_links.json");
 		JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
 		reader.beginArray();
-		// Variable to keep a count of products
 		while(reader.hasNext()) 
 		{
-			responsecode returnedlink = new Gson().fromJson(reader, responsecode.class);
+		
+			
 		}
+
 		reader.endArray();
 		reader.close();
 		in.close();
@@ -166,9 +165,5 @@ public class CRDeadlinks<CategoryStub, PriceStub, BrandStub>
 
 
 	
-	public static void main1(String args[]) throws IOException, InterruptedException
-	{
-		CRDeadlinks object = new CRDeadlinks();
-	}
 
 }
