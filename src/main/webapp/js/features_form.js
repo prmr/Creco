@@ -133,3 +133,4 @@ $("#feature_title").hover(
         $("#feature_description").toggle();
     }
 );
+

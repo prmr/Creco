@@ -2034,9 +2034,9 @@ $.widget( "ui.autocomplete", {
 	defaultElement: "<input>",
 	options: {
 		appendTo: null,
-		autoFocus: false,
-		delay: 300,
-		minLength: 1,
+		autoFocus: true,
+		delay: 0,
+		minLength: 2,
 		position: {
 			my: "left top",
 			at: "left bottom",
@@ -2215,6 +2215,7 @@ $.widget( "ui.autocomplete", {
 
 		this._on( this.menu.element, {
 			mousedown: function( event ) {
+			//	alert("yo");
 				// prevent moving focus out of the text field
 				event.preventDefault();
 
@@ -2275,6 +2276,7 @@ $.widget( "ui.autocomplete", {
 				}
 			},
 			menuselect: function( event, ui ) {
+		
 				var item = ui.item.data( "ui-autocomplete-item" ),
 					previous = this.previous;
 
@@ -2300,6 +2302,7 @@ $.widget( "ui.autocomplete", {
 
 				this.close( event );
 				this.selectedItem = item;
+				 $( "#search_btn" ).click();
 			}
 		});
 

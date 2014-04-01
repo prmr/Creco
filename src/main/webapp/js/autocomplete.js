@@ -16,6 +16,8 @@ function getCompletions(val) {
                 delay: 0,
                 source: data
               });
+
+
         }
     });
 
