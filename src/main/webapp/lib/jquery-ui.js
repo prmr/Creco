@@ -2540,7 +2540,7 @@ $.widget( "ui.autocomplete", {
 	},
 
 	_renderItem: function( ul, item ) {
-		return $( "<li><a>"+item.label+"<b><div align=\"right\">"+item.category+"</div></b></a>")//+"<b><div align=\"right\">"+item.category+"</div></b></a>" )
+		return $( "<li><a><b>"+item.label+"</b><div style=\"float:right\">"+item.category+"</div></a>")//+"<b><div align=\"right\">"+item.category+"</div></b></a>" )
 			//.append( $( "<a>" ).text( item.label ) )
 			.appendTo( ul );
 	},

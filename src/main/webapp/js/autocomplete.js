@@ -1,7 +1,7 @@
 function getCompletions(val) {
     $.ajax({
         url: "/autocomplete?input=" + val,
-        async: false,
+        async: true,
         success: function (response) {
         	var data = [];
             var mySplitResult;
