@@ -60,7 +60,7 @@ public final class CRData implements IDataStore
 		loadingService.loadCategories(lCatTree);
 		
 		// Build the categoryTree index
-		lCatTree.indexRootCategories(); // TODO: Check if this is actually needed 
+		lCatTree.indexRootCategories();
 		lCatTree.eliminateAllSingletons();
 		
 		loadingService.loadProducts(lCatTree);

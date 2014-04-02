@@ -67,6 +67,7 @@ public class JsonLoadingService implements IDataLoadingService
 		}
 	}
 	
+	// TODO: remove the pParent parameter -- it's not being used!
 	private static CategoryNode buildCategory(CategoryStub pCategoryStub, CategoryNode pParent)
 	{
 		CategoryNode lReturn = new CategoryNode(pCategoryStub.id, pCategoryStub.singularName, pParent);

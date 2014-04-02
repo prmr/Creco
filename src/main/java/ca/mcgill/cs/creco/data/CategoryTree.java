@@ -86,6 +86,11 @@ class CategoryTree implements IDataCollector
 		aRootCategories.add(pCategory);
 	}
 	
+	CategoryNode getCategoryNode(String pId)
+	{
+		return aCategoryIndex.get(pId);
+	}
+	
 	@Override
 	public void addProduct(Product pProduct)
 	{

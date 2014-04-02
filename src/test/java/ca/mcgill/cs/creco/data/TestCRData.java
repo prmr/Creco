@@ -16,6 +16,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = {"classpath:/META-INF/test-context.xml"})
 public class TestCRData 
 {	
+	
+	// TODO: Add test to CRData: check that cat = cat.getProducts()[0].getCategory()
+
 	@Autowired
 	IDataStore aDataStore;
 	
