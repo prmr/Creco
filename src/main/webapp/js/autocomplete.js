@@ -10,7 +10,7 @@ function getCompletions(val) {
 		check_set=[];
 		return;
 		}
-	if(check_set.indexOf(val)>=0 && val.length>2)
+	if(check_set.indexOf(val)>=0 && val.length>2&&count-1!=val.length)
 		{
 		return;
 		}
@@ -33,8 +33,10 @@ function getCompletions(val) {
         		temporary = temporary.concat("| ");
         		data.push({label : mySplitResult[i],category : mySplitResult[i+1]});
         		}
-        		check_set= temporary;
-        		}
+        	check_set= temporary;
+        	}
+            else
+            	check_set=[];
             $("#main_search_text").catcomplete({
                 delay: 0,
                 source: data
