@@ -204,7 +204,7 @@ public class CategoryNode
 	
 	Set<String> getAttributeIds()
 	{
-		return Collections.unmodifiableSet(aAttributeIntersection);
+		return Collections.unmodifiableSet(aAttributeUnion);
 	}
 	
 	int getRatedCount()

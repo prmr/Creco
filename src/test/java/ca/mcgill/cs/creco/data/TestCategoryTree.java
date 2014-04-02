@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -108,7 +109,7 @@ public class TestCategoryTree
 				ArrayList<Attribute> testAttributes = new ArrayList<Attribute>();
 				testAttributes.add(Attribute.buildSpecification("specIdEq", "specName", "Number of pixels per inch", 72));
 				testAttributes.add(Attribute.buildSpecification("ratingIdEq", "ratingName", "Ease of use", 5));
-				testAttributes.add(Attribute.buildPrice("priceIdEq", "priceName", "Typical retail price", 99.99));
+				testAttributes.add(Attribute.buildPrice("priceId", "priceName", "Typical retail price", 99.99));
 	
 				// Make a product for the singleton-child and add it to the collection of test products
 				aTestProducts.add(new Product("productIdEq" + i + "-" + j, "productNameEq" + i + "-" + j, 
@@ -127,7 +128,7 @@ public class TestCategoryTree
 				ArrayList<Attribute> testAttributes = new ArrayList<Attribute>();
 				testAttributes.add(Attribute.buildSpecification("specIdEq" + i, "specName" + i, "Number of pixels per inch", 72));
 				testAttributes.add(Attribute.buildSpecification("ratingIdEq" + i, "ratingName" + i, "Ease of use", 5));
-				testAttributes.add(Attribute.buildPrice("priceIdEq", "priceName", "Typical retail price", 99.99));
+				testAttributes.add(Attribute.buildPrice("priceId", "priceName", "Typical retail price", 99.99));
 	
 				// Make a product for the singleton-child and add it to the collection of test products
 				aTestProducts.add(new Product("productIdNonEq" + i + "-" + j, "productNameNonEq" + i + "-" + j, true, 
@@ -216,7 +217,6 @@ public class TestCategoryTree
 		
 		// run a method to associate products to their categories
 		catTree.associateProducts();
-		catTree.refresh();
 		
 		// verify that the products have now been associated
 		CategoryNode dissimilarNode1 = null;
@@ -266,7 +266,8 @@ public class TestCategoryTree
 			else
 			{
 				// We should never get here, if we do, it's because a wrong product was associated
-				assertTrue(false);
+				fail("The test product with id " + prod.getId() + " should not have been associated to category " 
+					+ dissimilarNode1.getId() + ". (But it was!)");
 			}
 		}
 		assertTrue(found0);
@@ -276,6 +277,35 @@ public class TestCategoryTree
 
 	@Test public void testRefresh()
 	{
+		CategoryTree catTree = new CategoryTree();
+		catTree.addCategory(aRootCategory);
+		catTree.indexRootCategories();
+		
+		for(Product prod : aTestProducts)
+		{
+			catTree.addProduct(prod);
+		}
+		
+		// verify that the products are there
+		assertEquals(catTree.getProducts().size(), 18);
+		
+		// verify that the root category has no products
+		assertEquals(0, aRootCategory.getCount());
+		
+		// run a method to associate products to their categories
+		catTree.associateProducts();
+		
+		// Now refresh
+		catTree.refresh();
+
+		// The root should have all the products now
+		assertEquals(18, aRootCategory.getCount());
+		
+		// The Jaccard should have been calculated, but only the price is common to all
+		// products.  That means of 7 unique attributes, only 1 is common
+		double epsilon = 10e-8;
+		assertTrue(1/11.0 - epsilon < aRootCategory.getJaccardIndex());
+		assertTrue(1/11.0 + epsilon > aRootCategory.getJaccardIndex());
 	}
 
 	@Test public void testFindEquivalenceClasses()
