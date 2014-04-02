@@ -69,7 +69,6 @@ public class TestCategoryTree
 		nonEquivalenceClass.addSubcategory(dissimilarNode0);
 		CategoryNode dissimilarNode1 = new CategoryNode("dissimilarNode1Id", "dissimilarNode1Name", nonEquivalenceClass);
 		nonEquivalenceClass.addSubcategory(dissimilarNode1);
-	
 	}
 
 	/**
@@ -310,6 +309,35 @@ public class TestCategoryTree
 
 	@Test public void testFindEquivalenceClasses()
 	{
+		CategoryTree catTree = new CategoryTree();
+		catTree.addCategory(aRootCategory);
+		catTree.indexRootCategories();
+		catTree.eliminateAllSingletons();
+		for(Product prod : aTestProducts)
+		{
+			catTree.addProduct(prod);
+		}
+		
+		catTree.associateProducts();
+		catTree.refresh();
+
+		// At this point the CategoryTree is basically loaded and sync'd, but equivalence classes
+		// have not been calculated yet.
+		assertNull(catTree.getCategories());
+		
+		// run a method to find the equivalence classes
+		catTree.findEquivalenceClasses();
+		
+		// Now we will have equivalence classes
+		String[] expectedEquivalenceClasses = 
+		{
+			"leaf0Id", "leaf1Id", "equivalenceClassId", "dissimilarNode0Id", "dissimilarNode1Id"
+		};
+		assertEquals(expectedEquivalenceClasses.length, catTree.getCategories().size());
+		for(CategoryNode cat : catTree.getCategories())
+		{
+			assertTrue(Arrays.asList(expectedEquivalenceClasses).contains(cat.getId()));
+		}
 	}
 
 }
