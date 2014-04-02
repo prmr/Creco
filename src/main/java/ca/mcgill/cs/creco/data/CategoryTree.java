@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Set;
 
+//TODO: remove getCategoryNode
+
 /**
  * An object of this class is used to collect category nodes 
  * organized in a tree structure and process them to flatten the 

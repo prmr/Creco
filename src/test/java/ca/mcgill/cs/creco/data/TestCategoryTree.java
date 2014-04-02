@@ -7,8 +7,10 @@ import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 
 import ca.mcgill.cs.creco.data.CategoryNode;
+import ca.mcgill.cs.creco.data.Attribute;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -35,9 +37,8 @@ public class TestCategoryTree
 	 * test products to go with it.
 	 */
 	@Before
-	public void setupTests()
+	public void buildCategories()
 	{
-		
 		// make a root node for the tree (i.e. like a franchise in the CR data set
 		CategoryNode rootParent = null;
 		aRootCategory = new CategoryNode("rootCategoryId", "rootCategoryName", rootParent);
@@ -47,29 +48,94 @@ public class TestCategoryTree
 		aRootCategory.addSubcategory(singleton);
 		CategoryNode childOfSingleton = new CategoryNode("childOfSingletonId", "childOfSingletonName", singleton);
 		singleton.addSubcategory(childOfSingleton);
+		CategoryNode leaf0 = new CategoryNode("leaf0Id", "leaf0Name", childOfSingleton);
+		childOfSingleton.addSubcategory(leaf0);
 		CategoryNode leaf1 = new CategoryNode("leaf1Id", "leaf1Name", childOfSingleton);
 		childOfSingleton.addSubcategory(leaf1);
-		CategoryNode leaf2 = new CategoryNode("leaf2Id", "leaf2Name", childOfSingleton);
-		childOfSingleton.addSubcategory(leaf2);
 		
 		// Add a subtree will have similar leaves, so the subtree should be turned into an equivalence class
 		CategoryNode equivalenceClass = new CategoryNode("equivalenceClassId", "equivalenceClassName", aRootCategory);
 		aRootCategory.addSubcategory(equivalenceClass);
+		CategoryNode similarNode0 = new CategoryNode("similarNode0Id", "similarNode0Name", equivalenceClass);
+		equivalenceClass.addSubcategory(similarNode0);
 		CategoryNode similarNode1 = new CategoryNode("similarNode1Id", "similarNode1Name", equivalenceClass);
 		equivalenceClass.addSubcategory(similarNode1);
-		CategoryNode similarNode2 = new CategoryNode("similarNode2Id", "similarNode2Name", equivalenceClass);
-		equivalenceClass.addSubcategory(similarNode2);
 		
 		// This subtree has dissimilar leaves, so the subtree shouldn't be turned into an equivalence class
 		CategoryNode nonEquivalenceClass = new CategoryNode("nonEquivalenceClassId", "nonEquivalenceClassName", aRootCategory);
 		aRootCategory.addSubcategory(nonEquivalenceClass);
-		CategoryNode dissimilarNode1 = new CategoryNode("disimilarNode1Id", "dissimilarNode1Name", nonEquivalenceClass);
+		CategoryNode dissimilarNode0 = new CategoryNode("dissimilarNode0Id", "dissimilarNode0Name", nonEquivalenceClass);
+		nonEquivalenceClass.addSubcategory(dissimilarNode0);
+		CategoryNode dissimilarNode1 = new CategoryNode("dissimilarNode1Id", "dissimilarNode1Name", nonEquivalenceClass);
 		nonEquivalenceClass.addSubcategory(dissimilarNode1);
-		CategoryNode dissimilarNode2 = new CategoryNode("disimilarNode2Id", "dissimilarNode2Name", nonEquivalenceClass);
-		nonEquivalenceClass.addSubcategory(dissimilarNode2);
-				
-	}
 	
+	}
+
+	/**
+	 * Make make a set of products for testing purposes.
+	 */
+	@Before
+	public void buildProducts()
+	{
+		int numProducts = 3; 
+
+		// Make some products for each of the leaves below the singleton-child
+		int numSingletonLeaves = 2;
+		for(int i=0; i<numSingletonLeaves; i++)
+		{
+			for(int j = 0; j<numProducts; j++)
+			{
+				// Make attributes for the singleton-child's product
+				ArrayList<Attribute> testAttributes = new ArrayList<Attribute>();
+				testAttributes.add(Attribute.buildSpecification("specId" + i, "specName" + i, "Number of pixels per inch", 72));
+				testAttributes.add(Attribute.buildSpecification("ratingId" + i, "ratingName" + i, "Ease of use", 5));
+				testAttributes.add(Attribute.buildPrice("priceId", "priceName", "Typical retail price", 99.99));
+	
+				// Make a product for the singleton-child and add it to the collection of test products
+				aTestProducts.add(new Product("productIdSingleton" + i + "-" + j, "productNameSingleton" + i + "-" + j, true, 
+					"leaf"+i+"Id", "brandName", "http://www.example.com", testAttributes));
+			}
+		}
+		
+		// Make some products for each of the leaves below the equivalence-class
+		int numEqLeaves = 2;
+		for(int i=0; i<numEqLeaves; i++)
+		{
+			for(int j = 0; j<numProducts; j++)
+			{
+				// Make attributes for the singleton-child's product. 
+				// Note they are the same for each product made
+				ArrayList<Attribute> testAttributes = new ArrayList<Attribute>();
+				testAttributes.add(Attribute.buildSpecification("specIdEq", "specName", "Number of pixels per inch", 72));
+				testAttributes.add(Attribute.buildSpecification("ratingIdEq", "ratingName", "Ease of use", 5));
+				testAttributes.add(Attribute.buildPrice("priceIdEq", "priceName", "Typical retail price", 99.99));
+	
+				// Make a product for the singleton-child and add it to the collection of test products
+				aTestProducts.add(new Product("productIdEq" + i + "-" + j, "productNameEq" + i + "-" + j, 
+					true, "similarNode" + i + "Id", "brandName", "http://www.example.com", testAttributes));
+			}
+		}
+
+		// Make some products for each of the leaves below the non-equivalence-class
+		int numNonEqLeaves = 2;
+		for(int i=0; i<numNonEqLeaves; i++)
+		{
+			for(int j = 0; j<numProducts; j++)
+			{
+				// Make attributes for the singleton-child's product. 
+				// Note two of these three attributes will have different attribute ids, depending on the equivalence class leaf
+				ArrayList<Attribute> testAttributes = new ArrayList<Attribute>();
+				testAttributes.add(Attribute.buildSpecification("specIdEq" + i, "specName" + i, "Number of pixels per inch", 72));
+				testAttributes.add(Attribute.buildSpecification("ratingIdEq" + i, "ratingName" + i, "Ease of use", 5));
+				testAttributes.add(Attribute.buildPrice("priceIdEq", "priceName", "Typical retail price", 99.99));
+	
+				// Make a product for the singleton-child and add it to the collection of test products
+				aTestProducts.add(new Product("productIdNonEq" + i + "-" + j, "productNameNonEq" + i + "-" + j, true, 
+					"dissimilarNode" + i + "Id", "brandName", "http://www.example.com", testAttributes));
+			}
+		}
+	}
+
 	@Test public void testEliminateSingletons()
 	{
 		CategoryTree catTree = new CategoryTree();
@@ -115,6 +181,97 @@ public class TestCategoryTree
 	
 	@Test public void testAssociateProducts()
 	{
+		CategoryTree catTree = new CategoryTree();
+		catTree.addCategory(aRootCategory);
+		catTree.indexRootCategories();
+		
+		for(Product prod : aTestProducts)
+		{
+			catTree.addProduct(prod);
+		}
+		
+		// verify that the products are there
+		assertEquals(catTree.getProducts().size(), 18);
+		
+		// verify that the products are not yet associated
+		for(CategoryNode depth1Cat: aRootCategory.getChildren())
+		{
+			// This branch of the tree goes deeper than the others
+			Iterable<CategoryNode> children;
+			if(depth1Cat.getId().equals("singletonId"))
+			{
+				CategoryNode depth2Cat = depth1Cat.getChildren().iterator().next();
+				children = depth2Cat.getChildren(); 
+			}
+			else
+			{
+				children = depth1Cat.getChildren();
+			}
+			
+			for(CategoryNode leaf: children)
+			{
+				assertEquals(0, leaf.getCount());
+			}
+		}
+		
+		// run a method to associate products to their categories
+		catTree.associateProducts();
+		catTree.refresh();
+		
+		// verify that the products have now been associated
+		CategoryNode dissimilarNode1 = null;
+		for(CategoryNode depth1Cat: aRootCategory.getChildren())
+		{
+			// This branch of the tree goes deeper than the others
+			Iterable<CategoryNode> children;
+			if(depth1Cat.getId().equals("singletonId"))
+			{
+				CategoryNode depth2Cat = depth1Cat.getChildren().iterator().next();
+				children = depth2Cat.getChildren(); 
+			}
+			else
+			{
+				children = depth1Cat.getChildren();
+			}
+			
+			for(CategoryNode leaf: children)
+			{
+				assertEquals(3, leaf.getCount());
+				
+				// Keep a reference to one of the leaves for a more detailed spot-check
+				if(leaf.getId().equals("dissimilarNode1Id"))
+				{
+					dissimilarNode1 = leaf;
+				}
+			}
+		}
+		
+		
+		// Spot check that the children are in the right places
+		boolean found0 = false, found1 = false, found2 = false;
+		for(Product prod : dissimilarNode1.getProducts())
+		{
+			if(prod.getId().equals("productIdNonEq1-0"))
+			{
+				found0 = true;
+			}
+			else if(prod.getId().equals("productIdNonEq1-1"))
+			{
+				found1 = true;
+			}
+			else if(prod.getId().equals("productIdNonEq1-2"))
+			{
+				found2 = true;
+			}
+			else
+			{
+				// We should never get here, if we do, it's because a wrong product was associated
+				assertTrue(false);
+			}
+		}
+		assertTrue(found0);
+		assertTrue(found1);
+		assertTrue(found2);
 	}
 
 	@Test public void testRefresh()
