@@ -63,7 +63,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 			}
 			if(category.getName().toLowerCase().contains(pInput.toLowerCase()))
 			{
-				response = response.concat(category.getName() + ", " +"Category"+", ");
+				response = response.concat(category.getName() + "| " +"Category"+"| ");
 			}
 		}
 		Set<String> collectedbrandstillnow = new HashSet<String>();
@@ -111,10 +111,10 @@ public class ConcreteServiceFacade implements ServiceFacade
 		}
 		
 for(String brandname : Brands)
-		response = response.concat(brandname+", " +"Brand" +", ");
+		response = response.concat(brandname+"| " +"Brand" +"| ");
 
 for(String textname : Text_search)
-	response = response.concat(textname+", " +"Text Search" +", ");
+	response = response.concat(textname+"| " +"Text Search" +"| ");
 		return response;
 	}
 
