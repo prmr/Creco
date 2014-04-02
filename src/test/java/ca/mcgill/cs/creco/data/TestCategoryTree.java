@@ -302,7 +302,7 @@ public class TestCategoryTree
 		assertEquals(18, aRootCategory.getCount());
 		
 		// The Jaccard should have been calculated, but only the price is common to all
-		// products.  That means of 7 unique attributes, only 1 is common
+		// products.  That means of 11 unique attributes, only 1 is common
 		double epsilon = 10e-8;
 		assertTrue(1/11.0 - epsilon < aRootCategory.getJaccardIndex());
 		assertTrue(1/11.0 + epsilon > aRootCategory.getJaccardIndex());
