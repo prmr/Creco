@@ -2034,9 +2034,9 @@ $.widget( "ui.autocomplete", {
 	defaultElement: "<input>",
 	options: {
 		appendTo: null,
-		autoFocus: true,
-		delay: 0,
-		minLength: 2,
+		autoFocus: false,
+		delay: 300,
+		minLength: 3,
 		position: {
 			my: "left top",
 			at: "left bottom",
@@ -2125,11 +2125,13 @@ $.widget( "ui.autocomplete", {
 						suppressKeyPress = true;
 						event.preventDefault();
 						this.menu.select( event );
+						$("search_btn").click();
 					}
 					break;
 				case keyCode.TAB:
 					if ( this.menu.active ) {
 						this.menu.select( event );
+						$("search_btn").click();
 					}
 					break;
 				case keyCode.ESCAPE:
@@ -2215,7 +2217,6 @@ $.widget( "ui.autocomplete", {
 
 		this._on( this.menu.element, {
 			mousedown: function( event ) {
-			//	alert("yo");
 				// prevent moving focus out of the text field
 				event.preventDefault();
 
@@ -2276,7 +2277,6 @@ $.widget( "ui.autocomplete", {
 				}
 			},
 			menuselect: function( event, ui ) {
-		
 				var item = ui.item.data( "ui-autocomplete-item" ),
 					previous = this.previous;
 
@@ -2295,6 +2295,7 @@ $.widget( "ui.autocomplete", {
 
 				if ( false !== this._trigger( "select", event, { item: item } ) ) {
 					this._value( item.value );
+				
 				}
 				// reset the term after the select event
 				// this allows custom select handling to work properly
@@ -2540,7 +2541,7 @@ $.widget( "ui.autocomplete", {
 	},
 
 	_renderItem: function( ul, item ) {
-		return $( "<li><a><b>"+item.label+"</b><div style=\"float:right\">"+item.category+"</div></a>")//+"<b><div align=\"right\">"+item.category+"</div></b></a>" )
+		return $( "<li><a>"+item.label+"<i><div style=\"float:right\">"+item.category+"</div></i></a>")
 			//.append( $( "<a>" ).text( item.label ) )
 			.appendTo( ul );
 	},

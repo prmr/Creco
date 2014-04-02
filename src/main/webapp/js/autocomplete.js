@@ -1,4 +1,15 @@
+var count =0;
+var check_set= [];
 function getCompletions(val) {
+	if(Math.abs(count-val.length)>1)
+		{
+		return;
+		}
+	if(check_set.indexOf(val)>=0)
+		{
+		return;
+		}
+		count=val.length;
     $.ajax({
         url: "/autocomplete?input=" + val,
         async: true,
@@ -6,6 +17,7 @@ function getCompletions(val) {
         	var data = [];
             var mySplitResult;
             mySplitResult = response.split(",");
+            check_set= response;
             var index = mySplitResult.length;
             if(index>1)
         	{
@@ -16,8 +28,8 @@ function getCompletions(val) {
                 delay: 0,
                 source: data
               });
-
-
+            $("#main_search_text").catcomplete('search', val);
+        
         }
     });
 

@@ -34,7 +34,7 @@ import ca.mcgill.cs.creco.logic.search.ICategorySearch;
 @Component
 public class ConcreteServiceFacade implements ServiceFacade 
 {
-	private static final int MIN_NUMBER_OF_TYPED_LETTERS = 3;
+	private static final int MIN_NUMBER_OF_TYPED_LETTERS = 2;
 	
 	@Autowired
 	private IDataStore aDataStore;
@@ -48,7 +48,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 	@Override
 	public String getCompletions(String pInput)
 	{
-		if(pInput.length() < MIN_NUMBER_OF_TYPED_LETTERS)
+		if(pInput.length() <= MIN_NUMBER_OF_TYPED_LETTERS)
 		{
 			return "";
 		}
@@ -66,7 +66,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 				response = response.concat(category.getName() + ", " +"Category"+", ");
 			}
 		}
-		
+		Set<String> collectedbrandstillnow = new HashSet<String>();
 		Set<String> collectedtexttillnow = new HashSet<String>();
 		Set<String> Brands = new HashSet<String>();
 		Set<String> Text_search = new HashSet<String>();
@@ -78,16 +78,32 @@ public class ConcreteServiceFacade implements ServiceFacade
 				{
 					if(productspace.contains(pInput.toLowerCase()))
 					{
-						if(collectedtexttillnow.contains(productspace))
+						if(productspace.equals(productname.getBrandName().toLowerCase()))
 						{
+							if(collectedbrandstillnow.contains(productspace))
+							{
+								
+							}
+							else
+							{
+							collectedbrandstillnow.add(productspace);
+							Brands.add(productspace);
+							}
 						}
+						else if(collectedtexttillnow.contains(productspace)||collectedbrandstillnow.contains(productspace))
+							{
+							}
 						else
 						{
 							collectedtexttillnow.add(productspace);
-							if(productspace.equals(productname.getBrandName().toLowerCase()))
-							Brands.add(productspace);
-							else
-							Text_search.add(productspace);
+								int count=0;
+								for(int i=0;i<productspace.length();i++)
+								{
+									if(Character.isDigit(productspace.charAt(i)))
+										count++;
+								}
+								if(count<2&&!productspace.contains("(")&&!productspace.contains(")"))
+									Text_search.add(productspace);
 						}
 					}
 				}
@@ -98,8 +114,7 @@ for(String brandname : Brands)
 		response = response.concat(brandname+", " +"Brand" +", ");
 
 for(String textname : Text_search)
-	response = response.concat(textname+", " +"Text_search" +", ");
-
+	response = response.concat(textname+", " +"Text Search" +", ");
 		return response;
 	}
 
