@@ -167,6 +167,21 @@ public class ScoredAttribute
  	private enum Type
  	{ NULL, NA, BOOLEAN, NUMERIC, STRING }
 
+ 	
+ 	/**Constructor for a null scored attribute.
+	 */
+	public ScoredAttribute()
+	{
+		aAttributeID = "0";
+		aAttributeScore = 0.0;
+		aAttributeName = "";
+		aAttributeDesc = "";
+		aEntropy = 0;
+		aCorrelation = 0;
+		aAttributeMainType = Type.NULL;
+		aDefaultValue = new TypedValue();
+		aDirection = Direction.MORE_IS_BETTER;
+	}
 	/**Constructor from an attribute.
 	 * @param pAttribute attribute to build score for.
 	 * @param pCategory in which the attribute is present

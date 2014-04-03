@@ -2,6 +2,7 @@ package ca.mcgill.cs.creco.logic;
 
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -25,8 +26,14 @@ public class TestScoredAttribute {
 	ProductRanker aProductRanker;
 	
 	@Test
-	public void testSorting() 
+	public void testSorting() throws NoSuchMethodException, SecurityException 
 	{
+		
+		Constructor<Product> c = Product.class.getDeclaredConstructor();
+		c.setAccessible(true);
+		//Product u = c.newInstance( ); 
+
+		
 	}
 	
 }

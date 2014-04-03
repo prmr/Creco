@@ -35,7 +35,8 @@ import ca.mcgill.cs.creco.data.Product;
  * This class is a Bean (singleton) and it is created at startup. You should access this class
  * to get information on attributes within a category such as attribute entropy
  * and correlation with overall score. Iterables are returned and ScoredAttribtues 
- * are immutable.
+ * are immutable. If a category is not found will on request the extractor will
+ * return an empty list, and log an error.
  */
 @Component
 public class AttributeExtractor
@@ -85,7 +86,8 @@ public class AttributeExtractor
 	 * can return null pointers if it doesn't have any attributes to work with.
 	 * @param pCatID Id of the category you want
 	 * @return list of scored attributes ranked from most important
-	 * to least important (by default).
+	 * to least important (by default).If the category is not found will return an
+	 * empty list, and log an error.
 	 */
 	public List<ScoredAttribute> getAttributesForCategory(String pCatID) 
 	{
@@ -93,8 +95,10 @@ public class AttributeExtractor
 		if(scoredAttributeList != null)
 		{
 			sort(DEFAULT_SORT, scoredAttributeList);
+			return Collections.unmodifiableList(scoredAttributeList);
 		}		
-		return Collections.unmodifiableList(scoredAttributeList);
+		LOG.error("Category("+pCatID+") not found returning empty ScoredAttribute List");
+		return Collections.unmodifiableList(new ArrayList<ScoredAttribute>());
 	}
 	/**
 	 * Call this method to get the list of scored Attributes ranked from most important
@@ -103,7 +107,8 @@ public class AttributeExtractor
 	 * @param pSortMethod Sort logic you want the list to be sorted by
 	 * can return null pointers if it doesn't have any attributes to work with.
 	 * @return list of scored attributes ranked from most important
-	 * to least important (by passed method).
+	 * to least important (by passed method). If the category is not found will return an
+	 * empty list, and log an error.
 	 */
 	public List<ScoredAttribute> getAttributesForCategory(String pCatID, SORT_METHOD pSortMethod) 
 	{
@@ -111,8 +116,10 @@ public class AttributeExtractor
 		if(scoredAttributeList != null)
 		{
 			sort(pSortMethod, scoredAttributeList);
-		}		
-		return Collections.unmodifiableList(scoredAttributeList);
+			return Collections.unmodifiableList(scoredAttributeList);
+		}	
+		LOG.error("Category("+pCatID+") not found returning empty ScoredAttribute List");	
+		return Collections.unmodifiableList(new ArrayList<ScoredAttribute>());
 	}
 	
 	/**
@@ -134,8 +141,13 @@ public class AttributeExtractor
 					return sa;
 				}
 			}
-		}		
-		return null;
+			LOG.error("AttributeID: " + pAttributeID + " Not Found in CategoryID: " +pCatID );	
+		}	
+		else{
+			LOG.error("Category("+pCatID+") not found returning default null ScoredAttribute");	
+		}
+		
+		return new ScoredAttribute();
 	}
 	
 	private void sort(SORT_METHOD pSortMethod, ArrayList<ScoredAttribute> pScoredAttributeList)
