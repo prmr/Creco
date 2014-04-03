@@ -329,7 +329,7 @@ public class TypedValue
 		}
 		else if( aType == Type.NUMERIC)
 		{
-			return new Double(getNumeric()).hashCode();
+			return new Integer(new Double(getNumeric()).intValue()).hashCode();
 		}
 		else if( aType == Type.STRING)
 		{

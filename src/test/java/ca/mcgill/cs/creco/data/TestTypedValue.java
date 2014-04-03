@@ -304,5 +304,47 @@ public class TestTypedValue
 		assertEquals(value1.hashCode(), value2.hashCode());
 	}
 	
+	@Test public void testEqualsNumeric()
+	{
+		TypedValue value1 = new TypedValue(28);
+		TypedValue value2 = new TypedValue(28.0);
+		TypedValue value3 = new TypedValue("no");
+		TypedValue value4 = new TypedValue(true);
+		TypedValue value5 = new TypedValue(-0.0765);
+		TypedValue value6 = new TypedValue(-0.07650000001);
+		TypedValue value7 = new TypedValue(-0.076501);
+		assertTrue(value1.equals(value1));
+		assertTrue(value1.equals(value2));
+		assertTrue(value2.equals(value1));
+		assertFalse(value1.equals(value3));
+		assertFalse(value3.equals(value1));
+		assertFalse(value2.equals(value4));
+		assertFalse(value4.equals(value2));
+		assertTrue(value5.equals(value6));
+		assertTrue(value6.equals(value5));
+		assertFalse(value5.equals(value7));
+		assertFalse(value7.equals(value5));
+	
+		assertEquals(value1.hashCode(), value2.hashCode());
+		assertEquals(value5.hashCode(), value6.hashCode());
+	}
+	
+	@Test public void testEqualsString()
+	{
+		TypedValue value1 = new TypedValue("Foo");
+		TypedValue value2 = new TypedValue("Foo");
+		TypedValue value3 = new TypedValue("Bar");
+		TypedValue value4 = new TypedValue(true);
+		assertTrue(value1.equals(value1));
+		assertTrue(value1.equals(value2));
+		assertTrue(value2.equals(value1));
+		assertFalse(value1.equals(value3));
+		assertFalse(value3.equals(value1));
+		assertFalse(value1.equals(value4));
+		assertFalse(value4.equals(value1));
+	
+		assertEquals(value1.hashCode(), value2.hashCode());
+	}
+	
 	
 }
