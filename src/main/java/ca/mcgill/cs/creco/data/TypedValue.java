@@ -290,7 +290,7 @@ public class TypedValue
 		
 		TypedValue value = (TypedValue) pObject;
 		return (value.aType == aType) && (value.aNumericValue == aNumericValue) && 
-			   (value.aBooleanValue == aBooleanValue) && (value.aStringValue == aStringValue);
+			   (value.aBooleanValue == aBooleanValue) && (value.aStringValue.equals(aStringValue));
 	}
 	
 	@Override
