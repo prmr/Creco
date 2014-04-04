@@ -73,6 +73,10 @@ public class ProductRanker
 				{
 					updateValue = stringUpdateEquation(scoredAttribute, attribute.getTypedValue().getString());
 				}
+				else if (attribute.getTypedValue().isBoolean())
+				{
+					updateValue = stringUpdateEquation(scoredAttribute, String.valueOf(attribute.getTypedValue().getBoolean()));
+				}
 				
 				// Update the product's score according to the attribute's value
 				scoredProducts.put(product, scoredProducts.get(product) + updateValue);
@@ -106,11 +110,17 @@ public class ProductRanker
 	
 	private double stringUpdateEquation(ScoredAttribute pScoredAttribute, String pAttributeValue)
 	{
-		double labelValue = pScoredAttribute.getLabelMeanScores().get(pAttributeValue);
+		Double labelValue = pScoredAttribute.getLabelMeanScores().get(pAttributeValue);
+		if (labelValue == null)
+		{
+			labelValue = 0.0;
+		}
 		
-		// TODO multiply this by the attribute score (need to add method in ScoredAttribute to expose nominal score)
+		double normalization = 1.0/100;
 		
-		return labelValue;
+		double attributeWeight = Math.abs(pScoredAttribute.getCorrelation());
+		
+		return attributeWeight * normalization * labelValue;
 	}
 	
 	/**

@@ -225,6 +225,8 @@ public class ScoredAttribute
 				{
 					aLabelMeanScores.put(entry.getKey(), entry.getValue());
 				}
+				
+				aCorrelation = nominalCorrelator.computeAttributeWeight(aAttributeID);
 			}
 		}
 		else
