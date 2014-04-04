@@ -13,7 +13,7 @@ import ca.mcgill.cs.creco.data.IDataStore;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/META-INF/test-context.xml"})
-public class TestAttributeCorrelator
+public class TestNumericCorrelator
 {
 	@Autowired
 	IDataStore aDataStore;
@@ -26,7 +26,7 @@ public class TestAttributeCorrelator
 	public void testCorrelation() 
 	{
 		Category category = aDataStore.getCategory(HUMIDIFIER_CATEGORY_ID);
-		AttributeCorrelator attributeCorrelator = new AttributeCorrelator(category);
+		NumericCorrelator attributeCorrelator = new NumericCorrelator(category);
 		
 		double correlation = attributeCorrelator.computeCorrelation(HUMIDIFIER_OUTPUT_ID);
 		
@@ -37,7 +37,7 @@ public class TestAttributeCorrelator
 	public void testMoreIsBetterDirection() 
 	{
 		Category category = aDataStore.getCategory(HUMIDIFIER_CATEGORY_ID);
-		AttributeCorrelator attributeCorrelator = new AttributeCorrelator(category);
+		NumericCorrelator attributeCorrelator = new NumericCorrelator(category);
 		
 		ScoredAttribute.Direction direction = 
 				attributeCorrelator.computeAttributeDirection(HUMIDIFIER_OUTPUT_ID);
@@ -49,7 +49,7 @@ public class TestAttributeCorrelator
 	public void testLessIsBetterDirection() 
 	{
 		Category category = aDataStore.getCategory(HUMIDIFIER_CATEGORY_ID);
-		AttributeCorrelator attributeCorrelator = new AttributeCorrelator(category);
+		NumericCorrelator attributeCorrelator = new NumericCorrelator(category);
 		
 		ScoredAttribute.Direction direction = 
 				attributeCorrelator.computeAttributeDirection(HUMIDIFIER_FULL_TANK_WEIGHT_ID);

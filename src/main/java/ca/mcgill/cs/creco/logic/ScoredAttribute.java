@@ -200,7 +200,7 @@ public class ScoredAttribute
 		{
 			Collection<Product> products = pCategory.getProducts();
 			setStats(products);
-			AttributeCorrelator ac = new AttributeCorrelator(pCategory);
+			NumericCorrelator ac = new NumericCorrelator(pCategory);
 			if(aAttributeMainType == Type.NUMERIC)
 			{
 				aCorrelation = ac.computeCorrelation(aAttributeID, CONSIDERATION_THRESHOLD);

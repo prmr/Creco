@@ -69,8 +69,8 @@ public class NominalCorrelator {
 	
 	public double computeAttributeWeight(String pFirstAttributeId)
 	{
-		Map<String, Double> labelMeanScores = getLabelMeanScores(pFirstAttributeId);
-		int numClusters = labelMeanScores.entrySet().size();
+		Map<String, Double> labelCentroids = getLabelMeanScores(pFirstAttributeId);
+		int numClusters = labelCentroids.entrySet().size();
 		int correctCount = 0;
 		int totalCount = 0;
 		
@@ -79,14 +79,14 @@ public class NominalCorrelator {
 			double minimumDistance = Double.MAX_VALUE;
 			String centroidLabel = "";
 			
-			for (Entry<String, Double> labelMeanScore : labelMeanScores.entrySet())
+			for (Entry<String, Double> labelCentroid : labelCentroids.entrySet())
 			{
-				double distance = Math.abs(labelScorePair.getValue() - labelMeanScore.getValue());
+				double distance = Math.abs(labelScorePair.getValue() - labelCentroid.getValue());
 				
 				if (distance < minimumDistance)
 				{
 					minimumDistance = distance;
-					centroidLabel = labelMeanScore.getKey();
+					centroidLabel = labelCentroid.getKey();
 				}
 			}
 			

@@ -29,7 +29,7 @@ import ca.mcgill.cs.creco.data.Product;
  * Computes the correlation between attributes of products within a category.
  * By default, attributes are correlated with the products' Overall Score.
  */
-public class AttributeCorrelator 
+public class NumericCorrelator 
 {
 	private static final String OVERALL_SCORE_ATTRIBUTE_ID = "254";
 	private static final double LESS_IS_BETTER_THRESHOLD = -0.15;
@@ -40,7 +40,7 @@ public class AttributeCorrelator
 	 * New Correlator for this Category.
 	 * @param pCategory The category whose products we want to correlate.
 	 */
-	public AttributeCorrelator(Category pCategory)
+	public NumericCorrelator(Category pCategory)
 	{
 		aCategory = pCategory;
 	}
