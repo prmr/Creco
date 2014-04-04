@@ -49,7 +49,7 @@
 			</div>
 
 			<div id="feature">
-				<div id="feature_title">Attributes
+				<div id="feature_title">Which features do you care about?
 					<p id="feature_description">
 						Select attributes that are most important to you to rank products based on these attributes. 
 						Mouse over an attribute to see its description</p>
@@ -59,10 +59,17 @@
 							<!--.sequence(1,2)}"> -->
 							<div th:if="${specFeatures.visible==true}">
 								<div >
-									<input type="checkbox" class="check"
-										th:name="${specFeatures.name}"
-										onclick="isChecked(this, this.name)"></input>
-									<label th:text="${specFeatures.name}"  th:title="${specFeatures.desc}" ></label>
+									<div class="check-wrapper">
+										<input type="checkbox" class="check"
+											th:name="${specFeatures.name}"
+											th:id="${specFeatures.name}"
+											onclick="isChecked(this, this.name)"></input>
+									</div>
+									<label class="attribute-label" 
+										th:for="${specFeatures.name}" 
+										th:text="${specFeatures.name}"  
+										th:title="${specFeatures.desc}" ></label>
+									<div class="clear"></div>
 								</div>
 							</div>
 						</div>
@@ -71,11 +78,20 @@
 			
 			<div id="product-area">
 				<div  th:id="${product.id}" class="rankedproduct-result-entry" th:each="product : ${productList.products}">
-					<div th:switch="${product.url}">
-	                    <p th:case="''" class="rankedproduct-result-name" th:text="${product.name}"></p>
-	                   	<a th:case="*" class="rankedproduct-result-name" th:text="${product.name}"
-	                   	 	th:href="@{${product.url}}"></a>
+					<div class="no-product-image">no image</div>
+					<div class="product-description-area">	
+						<div th:switch="${product.url}">
+		                    <p th:case="''" class="rankedproduct-result-name" th:text="${product.name}"></p>
+		                   	<a th:case="*" class="rankedproduct-result-name" th:text="${product.name}"
+		                   	 	th:href="@{${product.url}}"></a>
+						</div>
+						<div class="one-line-description">
+							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras 
+							ullamcorper, nisi vel eleifend commodo, enim nunc faucibus mauris, 
+							nec posuere justo lectus vitae metus.
+						</div>
 					</div>
+					<div class="clear"></div>
 				</div>
 			</div>
 		</div>
