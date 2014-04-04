@@ -212,7 +212,7 @@ public class JsonLoadingService implements IDataLoadingService
 			}
 		}
 		
-		return new Product(pProductStub.id, pProductStub.displayName, pProductStub.isTested, pProductStub.category.id, brandName, prodUrl, atts);
+		return new Product(pProductStub.id, pProductStub.displayName, pProductStub.isTested, pProductStub.category.id, brandName, prodUrl, atts,  pProductStub.imageThumbnail);
 	}
 
 }
