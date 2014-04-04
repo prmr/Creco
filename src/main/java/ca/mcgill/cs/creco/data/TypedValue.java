@@ -41,6 +41,9 @@ import java.util.regex.Pattern;
  */
 public class TypedValue 
 {
+	// Arbitrary difference tolerance for comparing double values.
+	private static final double EPSILON = 0.000001;
+	
 	private final Type aType;
 	
 	private boolean aBooleanValue;
@@ -175,9 +178,6 @@ public class TypedValue
                 }
                
             }
-            
-            
-            
 			else
 			{
 				aType = Type.STRING;
@@ -289,14 +289,37 @@ public class TypedValue
 		{ return false; }
 		
 		TypedValue value = (TypedValue) pObject;
-		return (value.aType == aType) && (value.aNumericValue == aNumericValue) && 
-			   (value.aBooleanValue == aBooleanValue) && (value.aStringValue.equals(aStringValue));
+		
+		return (value.aType == aType) && equalDoubles(value.aNumericValue, aNumericValue) && 
+			   (value.aBooleanValue == aBooleanValue) && equalStrings(aStringValue, value.aStringValue);
+	}
+	
+	private boolean equalStrings(String pString1, String pString2)
+	{
+		boolean equalStrings = false;
+		if( pString1 == null )
+		{
+			if( pString2 == null )
+			{
+				equalStrings = true;
+			}
+		}
+		else
+		{
+			equalStrings = aStringValue.equals(pString2);
+		}
+		return equalStrings;
+	}
+	
+	private boolean equalDoubles(double pDouble1, double pDouble2)
+	{
+		return Math.abs(pDouble1 - pDouble2) < EPSILON; 
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		if( aType == Type.NULL && aType == Type.NA )
+		if( aType == Type.NULL || aType == Type.NA )
 		{
 			return aType.hashCode();
 		}
@@ -306,7 +329,7 @@ public class TypedValue
 		}
 		else if( aType == Type.NUMERIC)
 		{
-			return new Double(getNumeric()).hashCode();
+			return new Integer(new Double(getNumeric()).intValue()).hashCode();
 		}
 		else if( aType == Type.STRING)
 		{
