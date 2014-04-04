@@ -92,6 +92,14 @@ function addFeature(elem, name, val) {
 
 }
 
+function startSpinner() {
+	$('#spinner-wrapper').css('display', 'block');
+}
+
+function stopSpinner() {
+	$('#spinner-wrapper').css('display', 'none');
+}
+
 /**
  * Once submit button is clicked
  * create an AJAX call to send the tweaked features
@@ -99,6 +107,7 @@ function addFeature(elem, name, val) {
  */
 function sendFeatures() {
     var sjData = JSON.stringify(specGlobalFeatureObject);
+    startSpinner();
     $.ajax({
         async: true,
         url: '/sendFeatures',
@@ -106,6 +115,7 @@ function sendFeatures() {
             dataSpec: sjData
         }),
         success: function (response) {
+        	stopSpinner();
         	var order = response.split(",");
         	
         	for (var i = 0; i < order.length - 1; i++) 
