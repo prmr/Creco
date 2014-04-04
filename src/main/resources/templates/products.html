@@ -77,7 +77,10 @@
 			</div>
 			
 			<div id="product-area">
-				<div id="spinner-wrapper"><div id="spinner"></div></div>
+				<div id="spinner-wrapper">
+					<div id="spinner-content-mask"></div>
+					<div id="spinner"></div>
+				</div>
 				<div  th:id="${product.id}" class="rankedproduct-result-entry" th:each="product : ${productList.products}">
 					<div class="no-product-image">no image</div>
 					<div class="product-description-area">	

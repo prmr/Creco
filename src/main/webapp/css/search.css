@@ -4,6 +4,69 @@ html, body
 	background: rgb(236, 236, 236);
 }
 
+#spinner-wrapper
+{
+	position: absolute;
+	display: none;
+	text-align: center;	
+	width: 550px;
+}
+
+#spinner-content-mask
+{
+	position: absolute;
+	text-align: center;	
+	width: 550px;
+	background: white;
+
+	/*opacity settings -- a cross-browser nightmare -- big thanks to
+	http://css-tricks.com/snippets/css/cross-browser-opacity/ */
+	 
+	/* IE 8 */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	
+	/* IE 5-7 */
+	filter: alpha(opacity=50);
+	
+	/* Netscape */
+	-moz-opacity: 0.5;
+	
+	/* Safari 1.x */
+	-khtml-opacity: 0.5;
+	
+	/* Good browsers */
+	opacity: 0.5;
+}
+
+
+#spinner
+{
+	position: relative;
+	top: 100px;
+	width: 32px;
+	height: 32px;
+	background: url('../images/ajax-loader.gif');
+	margin: auto;
+
+	/*opacity settings -- a cross-browser nightmare -- big thanks to
+	http://css-tricks.com/snippets/css/cross-browser-opacity/ */
+	 
+	/* IE 8 */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+	
+	/* IE 5-7 */
+	filter: alpha(opacity=100);
+	
+	/* Netscape */
+	-moz-opacity: 1;
+	
+	/* Safari 1.x */
+	-khtml-opacity: 1;
+	
+	/* Good browsers */
+	opacity: 1;
+
+}
 
 #search 
 {

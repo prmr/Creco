@@ -93,6 +93,8 @@ function addFeature(elem, name, val) {
 }
 
 function startSpinner() {
+	var height = $('#product-area').outerHeight();
+	$('#spinner-content-mask').height(height);
 	$('#spinner-wrapper').css('display', 'block');
 }
 
