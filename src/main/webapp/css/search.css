@@ -95,11 +95,6 @@ html, body
 	margin-right: 20px;
 }
 
-.one-line-description
-{
-	font-size: 12px;
-	color: rgb(80,80,80);
-}
  
 #search_btn 
 {
@@ -138,6 +133,35 @@ html, body
 	font-size: 12px;
 	color: rgb(160,160,160);
 	font-style: italic;
+}
+
+.rankedproduct-result-entry
+{	
+	border: 1px solid #ddd;
+	display: block;
+	/*display: -webkit-box;*/
+	margin-bottom: 6px;
+    background: #FAFAFA;
+    color: rgb(122, 122, 122);
+	padding: 20px;
+	width: 550px;
+    font-size: 16px;
+}
+
+a.rankedproduct-result-name
+{
+	width: 100%;
+}
+
+p.rankedproduct-result-name
+{
+	color: rgb(122, 122, 122);
+}
+
+.one-line-description
+{
+	font-size: 12px;
+	color: rgb(80,80,80);
 }
 
 .alert-message 
@@ -200,27 +224,6 @@ html, body
 	clear:both;
 }
 
-.rankedproduct-result-entry
-{	
-	border: 1px solid #ddd;
-	display: -webkit-box;
-	margin-bottom: 6px;
-    background: #FAFAFA;
-    color: rgb(122, 122, 122);
-	padding: 20px;
-	width: 550px;
-    font-size: 16px;
-}
-
-.rankedproduct-result-name
-{
-	width: 100%;
-}
-
-.rankedproduct-result-name .p
-{
-	color: rgb(122, 122, 122);
-}
 
 
 #feature_title
