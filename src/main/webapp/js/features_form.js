@@ -100,7 +100,7 @@ function addFeature(elem, name, val) {
 function sendFeatures() {
     var sjData = JSON.stringify(specGlobalFeatureObject);
     $.ajax({
-        async: false,
+        async: true,
         url: '/sendFeatures',
         data: ({
             dataSpec: sjData
