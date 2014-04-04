@@ -53,8 +53,11 @@
 				</form>
 			</div>
 			<div id='eq-result' th:unless="${categories == null}">
-				<div class="alert-message">
-					Please select one category related to the query <span class="keyword" th:text="${query}"></span>. 
+				<div id="has-result-message" class="alert-message">
+					Please select a category related to the query <span class="keyword" th:text="${query}"></span>. 
+				</div>
+				<div id="no-result-message" class="alert-message">
+					Sorry, we have no categories matching <span class="keyword" th:text="${query}"></span>. 
 				</div>
 				<div class="eq-result-entry" th:each="category : ${categories}">
 				   <form class="eq-button-wrap" action="/searchProducts">
@@ -70,5 +73,6 @@
 	<script type='text/javascript' src='lib/bootstrap.min.js'></script>	
 	<script type='text/javascript' src="js/autocomplete.js"></script> 
 	<script type='text/javascript' src="js/category_autocomplete.js"></script> 
+	<script type='text/javascript' src="js/category.js"></script> 
 	
 </html>
