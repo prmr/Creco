@@ -69,9 +69,9 @@ public class ProductRanker
 				{
 					updateValue = numericUpdateEquation(scoredAttribute, attribute.getTypedValue().getNumeric());
 				}
-				else
+				else if (attribute.getTypedValue().isString())
 				{
-					//TODO Non-numeric attributes are ignored right now
+					updateValue = stringUpdateEquation(scoredAttribute, attribute.getTypedValue().getString());
 				}
 				
 				// Update the product's score according to the attribute's value
@@ -102,6 +102,15 @@ public class ProductRanker
 		double normalization = 1 / pScoredAttribute.getMax().getNumeric();
 		
 		return direction * attributeWeight * normalization * pAttributeValue;
+	}
+	
+	private double stringUpdateEquation(ScoredAttribute pScoredAttribute, String pAttributeValue)
+	{
+		double labelValue = pScoredAttribute.getLabelMeanScores().get(pAttributeValue);
+		
+		// TODO multiply this by the attribute score (need to add method in ScoredAttribute to expose nominal score)
+		
+		return labelValue;
 	}
 	
 	/**

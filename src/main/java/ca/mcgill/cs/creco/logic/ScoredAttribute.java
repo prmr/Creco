@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.slf4j.Logger;
@@ -156,6 +157,7 @@ public class ScoredAttribute
  	private TypedValue aMin;
  	private TypedValue aMax;
  	private List<TypedValue> aStringValues;
+ 	private Map<String, Double> aLabelMeanScores;
  	
  	private Type aAttributeMainType;
  	private Direction aDirection;
@@ -212,6 +214,16 @@ public class ScoredAttribute
 				else
 				{
 					aDirection = ac.computeAttributeDirection(aAttributeID, CONSIDERATION_THRESHOLD);
+				}
+			}
+			else if (aAttributeMainType == Type.STRING || aAttributeMainType == Type.BOOLEAN)
+			{
+				aLabelMeanScores = new HashMap<String, Double>();
+				
+				NominalCorrelator nominalCorrelator = new NominalCorrelator(pCategory);
+				for (Map.Entry<String, Double> entry : nominalCorrelator.getLabelMeanScores(aAttributeID).entrySet())
+				{
+					aLabelMeanScores.put(entry.getKey(), entry.getValue());
 				}
 			}
 		}
@@ -526,6 +538,14 @@ public class ScoredAttribute
 	public List<TypedValue> getDict()
 	{
 		return aStringValues;
+	}
+	
+	/**
+	 * @return The potential string values for this attribute.
+	 */
+	public Map<String, Double> getLabelMeanScores()
+	{
+		return aLabelMeanScores;
 	}
 	
 	/**
