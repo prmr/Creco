@@ -30,6 +30,7 @@ public class Product
 	private Boolean aIsTested;
 	private String aBrandName;
 	private String aModelOverviewPageUrl;
+	private String aImageThumbnail;
 	
 	// Derived fields
 	private boolean aIsRated = false;
@@ -48,9 +49,12 @@ public class Product
 	 * @param pBrandName The brand name
 	 * @param pModelOverviewPageUrl The url of the product on the CR website.
 	 * @param pAttributes The attributes of the product. Copied internally.
+	 * @param pImageThumbnail Thumbnail of the image
+	 * @param pImageLarge large image
 	 */
 	public Product(String pId, String pDisplayName, Boolean pIsTested, String pCategoryId, 
-			String pBrandName, String pModelOverviewPageUrl, Collection<Attribute> pAttributes)
+			String pBrandName, String pModelOverviewPageUrl, Collection<Attribute> pAttributes,
+			String pImageThumbnail)
 	{
 		aId = pId;
 		aDisplayName = pDisplayName;
@@ -58,6 +62,7 @@ public class Product
 		aCategoryId = pCategoryId;
 		aBrandName = pBrandName;
 		aModelOverviewPageUrl = pModelOverviewPageUrl;
+		aImageThumbnail = pImageThumbnail;
 		for(Attribute att : pAttributes) 
 		{
 			// While copying over the attributes, note whether any were ratings, and capture a reference to the price if any
@@ -121,9 +126,13 @@ public class Product
 	public String getBrandName() 
 	{
 		if(aBrandName != null)
+		{
 			return aBrandName;
+		}
 		else 
+		{
 			return "";
+		}
 	}
 
 	/**
@@ -183,4 +192,17 @@ public class Product
 	{
 		return aModelOverviewPageUrl;
 	}
+	/**
+	 * Return a Thumbnail url for the product.
+	 * @return The Thumbnail url for the product.
+	 */
+	public String getImageThumbnail() 
+	{
+		if(!aImageThumbnail.contains("missing-product-image-thumbnail") && (!aImageThumbnail.contains("static2")))
+		{
+		return aImageThumbnail;
+		}
+		return "";
+	}
+	
 }
