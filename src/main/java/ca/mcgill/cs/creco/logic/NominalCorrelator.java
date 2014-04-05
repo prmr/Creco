@@ -28,7 +28,11 @@ import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.Product;
 
-public class NominalCorrelator {
+/**
+ * Computes how well nominal attributes correspond to a product's overall score.
+ */
+public class NominalCorrelator 
+{
 
 	private static final String OVERALL_SCORE_ATTRIBUTE_ID = "254";
 	
@@ -43,6 +47,12 @@ public class NominalCorrelator {
 		aCategory = pCategory;
 	}
 	
+	/**
+	 * Computes the mean overall score of all products which share the same label
+	 * (or value) of a given nominal attribute.
+	 * @param pFirstAttributeId The nominal attribute for which to get all labels.
+	 * @return A mapping of label values and the mean overall score of products which have that value.
+	 */
 	public Map<String, Double> getLabelMeanScores(String pFirstAttributeId)
 	{
 		Map<String, Double> labelScores = new HashMap<String, Double>();
@@ -67,6 +77,15 @@ public class NominalCorrelator {
 		return labelScores;
 	}
 	
+	/**
+	 * Computes the attribute's weight, which is a measure of how well nominal labels
+	 * can predict a product's overall score. If the attribute values clearly differentiate
+	 * products with low score from products with high score, the attribute's weight will be high (1).
+	 * If nominal attribute values share similar product overall scores, the weight will be low (0).
+	 * @param pFirstAttributeId The nominal attribute for which to compute the weight.
+	 * @return The attribute's weight, between 0.0 (terrible indicator of overall score) 
+	 * and 1.0 (great indicator of overall score).
+	 */
 	public double computeAttributeWeight(String pFirstAttributeId)
 	{
 		Map<String, Double> labelCentroids = getLabelMeanScores(pFirstAttributeId);
@@ -104,6 +123,13 @@ public class NominalCorrelator {
 		return normalizedWeight;
 	}
 	
+	/**
+	 * Given some nominal attribute, gets a list of products which have that nominal
+	 * attribute and have an overall score. Assembles a list of nominal label and score
+	 * pairs.
+	 * @param pFirstAttributeId The nominal attribute.
+	 * @return A list of nominal value and overall score pairs.
+	 */
 	private List<Entry<String, Double>> getLabelScorePairs(String pFirstAttributeId)
 	{
 		List<Entry<String, Double>> labelScorePairs = new ArrayList<Entry<String, Double>>();
@@ -139,6 +165,12 @@ public class NominalCorrelator {
 		return labelScorePairs;
 	}
 	
+	/**
+	 * Given a list of nominal value and score pairs, returns the set of all nominal
+	 * values possible
+	 * @param pLabelScorePairs The list of nominal label and score pairs.
+	 * @return The set of nominal labels.
+	 */
 	private Set<String> getUniqueLabels(List<Entry<String, Double>> pLabelScorePairs)
 	{
 		Set<String> uniqueLabels = new HashSet<String>();

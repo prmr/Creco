@@ -26,7 +26,7 @@ import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.Product;
 
 /**
- * Computes the correlation between attributes of products within a category.
+ * Computes the correlation between numeric attributes of products within a category.
  * By default, attributes are correlated with the products' Overall Score.
  */
 public class NumericCorrelator 
