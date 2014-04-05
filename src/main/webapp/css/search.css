@@ -144,6 +144,7 @@ html, body
     background: #FAFAFA;
     color: rgb(122, 122, 122);
 	padding: 20px;
+	height: 120px;
 	width: 550px;
     font-size: 16px;
 }
@@ -226,16 +227,6 @@ p.rankedproduct-result-name
 	font-size: 16px;
 	background: #ddd;
 	font-style: italic;
-}
-
-#feature_description
-{
-	display: none;
-	font-size: 11px;
-	padding-top: 5px;
-	margin-top: 5px;
-	opacity: 0.6;
-	border-top: 1px solid;
 }
 
 label 

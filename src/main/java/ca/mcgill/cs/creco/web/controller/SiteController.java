@@ -35,8 +35,6 @@ import ca.mcgill.cs.creco.web.model.UserFeatureModel;
 @Controller
 public class SiteController
 { 
-	private static final Logger LOG = LoggerFactory.getLogger(SiteController.class);
-		
 	private static final String URL_HOME = "/";
 	private static final String URL_AUTOCOMPLETE = "/autocomplete";
 	private static final String URL_SEARCH_CATEGORIES = "/searchCategories";
@@ -106,10 +104,10 @@ public class SiteController
 	{  	
 		pModel.addAttribute("productList", aServiceFacade.searchRankedFeaturesProducts_POST(pCategoryId, pModel));			
 		pModel.addAttribute("specFeatureList", aServiceFacade.updateCurrentFeatureList());
+		pModel.addAttribute("currentCategoryId", pCategoryId);
 		return URL_SHOW_PRODUCTS;
 	}
 	
-	//TODO clean this method up doesn't need to default value anymore
 	/**
 	 * @author MariamN
 	 * @param dataSpec
@@ -118,10 +116,9 @@ public class SiteController
 	 */
 	@RequestMapping(URL_UPDATE_FEATURES)	
 	@ResponseBody
-	public String sendCurrentFeatureList(@RequestParam String dataSpec)
+	public String sendCurrentFeatureList(@RequestParam String dataSpec, @RequestParam String pCategoryId)
 	{
-		
-	    	String response = aServiceFacade.sendCurrentFeatureList(dataSpec);	    
+	    String response = aServiceFacade.sendCurrentFeatureList(dataSpec, pCategoryId);	    
 		return response;		
 	}		
 }

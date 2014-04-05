@@ -69,7 +69,7 @@ public interface ServiceFacade
 	 * @param dataSpec
 	 * @return Name of file to redirect the browser to the products page.
 	 */
-	String sendCurrentFeatureList(String dataSpec);
+	String sendCurrentFeatureList(String dataSpec, String pCategoryId);
 	
 	/**
 	 * A category is selected and this controller obtains the features
