@@ -55,7 +55,7 @@
 						Mouse over an attribute to see its description</p>
 				</div>
 				<div id='main_specs'>
-						<div th:each="specFeatures : ${specFeatureList.features}">
+						<div th:each="specFeatures : ${specFeatureList}">
 							<!--.sequence(1,2)}"> -->
 							<div th:if="${specFeatures.visible==true}">
 								<div >
@@ -81,7 +81,7 @@
 					<div id="spinner-content-mask"></div>
 					<div id="spinner"></div>
 				</div>
-				<div  th:id="${product.id}" class="rankedproduct-result-entry" th:each="product : ${productList.products}">
+				<div  th:id="${product.id}" class="rankedproduct-result-entry" th:each="product : ${productList}">
 					<div class="no-product-image">no image</div>
 					<div class="product-description-area">	
 						<div th:switch="${product.url}">

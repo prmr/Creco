@@ -33,7 +33,7 @@ import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.logic.search.ICategorySearch;
 import ca.mcgill.cs.creco.logic.search.IProductSearch;
-import ca.mcgill.cs.creco.web.model.FeatureVO;
+import ca.mcgill.cs.creco.web.model.FeatureView;
 import ca.mcgill.cs.creco.web.model.ProductView;
 import ca.mcgill.cs.creco.web.model.UserFeatureModel;
 
@@ -252,9 +252,9 @@ for(String textname : Text_search)
 	
 	
 	@Override
-	public ArrayList<FeatureVO> updateCurrentFeatureList()
+	public ArrayList<FeatureView> updateCurrentFeatureList()
 	{		
-		ArrayList<FeatureVO> specFeatures = new ArrayList<FeatureVO>();	
+		ArrayList<FeatureView> specFeatures = new ArrayList<FeatureView>();	
 		List<String> values;
 
 		//Display top 10 scored attributes
@@ -267,7 +267,7 @@ for(String textname : Text_search)
 			}
 
 			values = new ArrayList<String>();
-			FeatureVO f = new FeatureVO();
+			FeatureView f = new FeatureView();
 			f.setId(aScoredAttr.get(i).getAttributeID());
 			f.setName(aScoredAttr.get(i).getAttributeName());
 			f.setSpec(true);

@@ -23,7 +23,7 @@ import org.springframework.ui.Model;
 
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.Product;
-import ca.mcgill.cs.creco.web.model.FeatureVO;
+import ca.mcgill.cs.creco.web.model.FeatureView;
 import ca.mcgill.cs.creco.web.model.ProductView;
 
 /**
@@ -84,6 +84,6 @@ public interface ServiceFacade
 	 * Updated current feature list based on the category selected
 	 * @return List of features
 	 */
-	ArrayList<FeatureVO> updateCurrentFeatureList();
+	ArrayList<FeatureView> updateCurrentFeatureList();
 	
 }

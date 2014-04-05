@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,8 +27,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ca.mcgill.cs.creco.logic.AttributeExtractor;
 import ca.mcgill.cs.creco.logic.ServiceFacade;
-import ca.mcgill.cs.creco.web.model.FeatureListVO;
-import ca.mcgill.cs.creco.web.model.ProductListView;
 import ca.mcgill.cs.creco.web.model.UserFeatureModel;
 
 /**
@@ -54,28 +51,6 @@ public class SiteController
 	private AttributeExtractor aAttributeExtractor;
 
 	
-	@Autowired
-	private ProductListView aProductList;
-	
-	@Autowired
-	private FeatureListVO aSpecFeatureList;
-	
-	// ***** Model Attributes *****
-	
-	@ModelAttribute("productList")
-	private ProductListView getProductList() 
-	{
-		return aProductList;
-	}
-	
-	@ModelAttribute("specFeatureList")
-	private FeatureListVO getSpecFeatureList() 
-	{
-		return aSpecFeatureList;
-	}
-	
-	// ***** URL Mappings *****
-	
 	/**
 	 * Loads the user model and redirects the browser to the index 
 	 * page.
@@ -87,8 +62,6 @@ public class SiteController
 	{
 		 UserFeatureModel form = new UserFeatureModel();
 		 pModel.addAttribute("myForm", form);
-		 aSpecFeatureList = new FeatureListVO();
-		 aProductList = new ProductListView();
 		 return URL_SHOW_CATEGORIES;								
 	}
 	
@@ -130,13 +103,9 @@ public class SiteController
 	 */
 	@RequestMapping(URL_SEARCH_PRODUCTS)  
 	public String searchRankedFeaturesProducts_POST(@RequestParam(value = "id", required = true) String pCategoryId, Model pModel)
-	{  
-
-
-		aProductList.setProducts(aServiceFacade.searchRankedFeaturesProducts_POST(pCategoryId, pModel));	
-		
-		aSpecFeatureList.setFeatures(aServiceFacade.updateCurrentFeatureList());
-
+	{  	
+		pModel.addAttribute("productList", aServiceFacade.searchRankedFeaturesProducts_POST(pCategoryId, pModel));			
+		pModel.addAttribute("specFeatureList", aServiceFacade.updateCurrentFeatureList());
 		return URL_SHOW_PRODUCTS;
 	}
 	
