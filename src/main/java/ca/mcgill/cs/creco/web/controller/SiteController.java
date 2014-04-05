@@ -15,8 +15,6 @@
  */
 package ca.mcgill.cs.creco.web.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ca.mcgill.cs.creco.logic.AttributeExtractor;
 import ca.mcgill.cs.creco.logic.ServiceFacade;
 import ca.mcgill.cs.creco.web.model.UserFeatureModel;
 
@@ -45,8 +42,6 @@ public class SiteController
 	
 	@Autowired
 	private ServiceFacade aServiceFacade;
-	@Autowired
-	private AttributeExtractor aAttributeExtractor;
 
 	
 	/**
@@ -103,7 +98,7 @@ public class SiteController
 	public String searchRankedFeaturesProducts_POST(@RequestParam(value = "id", required = true) String pCategoryId, Model pModel)
 	{  	
 		pModel.addAttribute("productList", aServiceFacade.searchRankedFeaturesProducts_POST(pCategoryId, pModel));			
-		pModel.addAttribute("specFeatureList", aServiceFacade.updateCurrentFeatureList());
+		pModel.addAttribute("specFeatureList", aServiceFacade.updateCurrentFeatureList(pCategoryId));
 		pModel.addAttribute("currentCategoryId", pCategoryId);
 		return URL_SHOW_PRODUCTS;
 	}

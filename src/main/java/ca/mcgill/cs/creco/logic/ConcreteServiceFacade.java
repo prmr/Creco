@@ -22,17 +22,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 
-import com.google.gson.Gson;
-
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
-import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.logic.search.ICategorySearch;
 import ca.mcgill.cs.creco.logic.search.IProductSearch;
 import ca.mcgill.cs.creco.web.model.FeatureView;
 import ca.mcgill.cs.creco.web.model.ProductView;
 import ca.mcgill.cs.creco.web.model.UserFeatureModel;
+
+import com.google.gson.Gson;
 
 /**
  * Default implementation of the service layer.
@@ -54,10 +53,6 @@ public class ConcreteServiceFacade implements ServiceFacade
 
 	@Autowired
 	private AttributeExtractor aAttributeExtractor;
-
-	private List<ScoredAttribute> aScoredAttr;
-
-	private Category aCategory;
 
 	@Autowired
 	private IProductSearch aProductSort;
@@ -235,11 +230,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 	@Override
 	public ArrayList<ProductView> searchRankedFeaturesProducts_POST(String pCategoryId, Model pModel)
 	{
-		aCategory = getCategory(pCategoryId);
 		List<Product> prodSearch = aProductSort.returnProductsAlphabetically(pCategoryId);
-		aScoredAttr = aAttributeExtractor.getAttributesForCategory(aCategory.getId());
-
-		// Converting
 		ArrayList<ProductView> products = new ArrayList<ProductView>();
 		for (Product scoredProduct : prodSearch)
 		{
@@ -249,62 +240,25 @@ public class ConcreteServiceFacade implements ServiceFacade
 	}
 
 	@Override
-	public ArrayList<FeatureView> updateCurrentFeatureList()
+	public ArrayList<FeatureView> updateCurrentFeatureList(String pCategoryId)
 	{
 		ArrayList<FeatureView> specFeatures = new ArrayList<FeatureView>();
-		List<String> values;
-
+		List<ScoredAttribute> scoredAttr = aAttributeExtractor.getAttributesForCategory(pCategoryId);
 		// Display top 10 scored attributes
-		for (int i = 0; i < aScoredAttr.size(); i++)
+		for (int i = 0; i < scoredAttr.size(); i++)
 		{
-
 			if (i > NUMBER_OF_FEATURES_TO_DISPLAY)
 			{
 				break;
 			}
 
-			values = new ArrayList<String>();
 			FeatureView f = new FeatureView();
-			f.setId(aScoredAttr.get(i).getAttributeID());
-			f.setName(aScoredAttr.get(i).getAttributeName());
+			f.setId(scoredAttr.get(i).getAttributeID());
+			f.setName(scoredAttr.get(i).getAttributeName());
 			f.setSpec(true);
 			f.setVisible(true);
+			f.setDesc(scoredAttr.get(i).getAttributeDesc());
 
-			f.setDesc(aScoredAttr.get(i).getAttributeDesc());
-			TypedValue val = aScoredAttr.get(i).getAttributeDefault();
-
-			if (val.isBoolean())
-			{
-				f.setType("Bool");
-				values.add(val.getBoolean() + "");
-				f.setValue((ArrayList<String>) values);
-			}
-			else if (val.isNumeric())
-			{
-				f.setType("Numeric");
-				f.setMinValue(aScoredAttr.get(i).getMin().getNumeric());
-				f.setMaxValue(aScoredAttr.get(i).getMax().getNumeric());
-				values.add(val.getNumeric() + "");
-				f.setValue((ArrayList<String>) values);
-			}
-			else if (val.isString() || val.isNA())
-			{
-				f.setType("Nominal");
-				if (val.isNA())
-				{
-					values.add("N/A");
-				}
-				else
-				{
-					// comment to change possibly
-					List<TypedValue> tvs = aScoredAttr.get(i).getDict();
-					for (TypedValue tv : tvs)
-					{
-						values.add(tv.getString());
-					}
-				}
-				f.setValue((ArrayList<String>) values);
-			}
 			specFeatures.add(f);
 		}
 		return specFeatures;

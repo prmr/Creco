@@ -84,6 +84,6 @@ public interface ServiceFacade
 	 * Updated current feature list based on the category selected
 	 * @return List of features
 	 */
-	ArrayList<FeatureView> updateCurrentFeatureList();
+	ArrayList<FeatureView> updateCurrentFeatureList(String pCategoryId);
 	
 }
