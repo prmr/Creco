@@ -144,13 +144,14 @@ public class ScoredAttribute
 
     		     };
  	@Autowired
+ 
  	private IDataStore aDataStore;
     private String aAttributeID;
  	private String aAttributeName;
  	private double aAttributeScore;
  	private TypedValue aDefaultValue;
 
- 	private String aCategoryID;
+ 	private Category aCategory;
  	private String aAttributeDesc;
  	private double aEntropy;
  	private double aCorrelation;
@@ -204,6 +205,7 @@ public class ScoredAttribute
 		aLabelMeanScores = new HashMap<String, Double>();
 		aNumericValueRank = new HashMap<Double, Integer>();
 		aStringValueRank = new HashMap<String, Integer>();
+		aCategory = pCategory;
 		
 		aIsPrice = pAttribute.isPrice();
 		
@@ -290,11 +292,11 @@ public class ScoredAttribute
 		//Set bounds
 		if(Double.isNaN(min))
 		{
-			LOG.error("Min value is NaN: " + aAttributeID +", "+ aAttributeName + ", "+ aCategoryID);
+			LOG.error("Min value is NaN: " + aAttributeID +", "+ aAttributeName + ", "+ aCategory.getId());
 		}
 		if(Double.isNaN(max))
 		{
-			LOG.error("Max value is NaN: " + aAttributeID +", "+ aAttributeName + ", "+ aCategoryID);
+			LOG.error("Max value is NaN: " + aAttributeID +", "+ aAttributeName + ", "+ aCategory.getId());
 		}
 		aMin = new TypedValue(min);
 		aMax = new TypedValue(max);
@@ -321,7 +323,7 @@ public class ScoredAttribute
 		}
 		
 		//Get the correlation
-		NumericCorrelator ac = new NumericCorrelator(aDataStore.getCategory(aCategoryID));
+		NumericCorrelator ac = new NumericCorrelator(aCategory);
 		aCorrelation = ac.computeCorrelation(aAttributeID, CONSIDERATION_THRESHOLD);
 			
 		if(aIsPrice)
@@ -344,7 +346,7 @@ public class ScoredAttribute
 				if(previousValue != val.doubleValue()){
 					if(aNumericValueRank.containsKey(val))
 					{
-						LOG.error("setNumericStats sort error in Attribute " +aAttributeID+ "in Category " + aCategoryID);
+						LOG.error("setNumericStats sort error in Attribute " +aAttributeID+ "in Category " + aCategory.getId());
 					}
 					else{
 						aNumericValueRank.put(val, rank);
@@ -411,7 +413,7 @@ public class ScoredAttribute
 		// Compute Correlation and rankings
 		aLabelMeanScores = new HashMap<String, Double>();
 		
-		NominalCorrelator nominalCorrelator = new NominalCorrelator(aDataStore.getCategory(aCategoryID));
+		NominalCorrelator nominalCorrelator = new NominalCorrelator(aCategory);
 		ArrayList<Map.Entry<String, Double>> entryList = new ArrayList<Map.Entry<String, Double>>();
 		entryList.addAll(nominalCorrelator.getLabelMeanScores(aAttributeID).entrySet());
 		sortEntries(entryList);
@@ -465,7 +467,7 @@ public class ScoredAttribute
 		}
 		// Compute Correlation
 	
-		NominalCorrelator nominalCorrelator = new NominalCorrelator(aDataStore.getCategory(aCategoryID));
+		NominalCorrelator nominalCorrelator = new NominalCorrelator(aCategory);
 		ArrayList<Map.Entry<String, Double>> entryList = new ArrayList<Map.Entry<String, Double>>();
 		entryList.addAll(nominalCorrelator.getLabelMeanScores(aAttributeID).entrySet());
 		sortEntries(entryList);
@@ -730,7 +732,7 @@ public class ScoredAttribute
 			else
 			{
 				throw new IllegalArgumentException("TypedValue Incompatible with Ranking "
-						+ "in Attribute " +aAttributeID+ "in Category " + aCategoryID);
+						+ "in Attribute " +aAttributeID+ "in Category " + aCategory.getId());
 			}
 		}
 		else if(pValue.isString())
@@ -742,7 +744,7 @@ public class ScoredAttribute
 			else
 			{
 				throw new IllegalArgumentException("TypedValue Incompatible with Ranking "
-						+ "in Attribute " +aAttributeID+ "in Category " + aCategoryID);
+						+ "in Attribute " +aAttributeID+ "in Category " + aCategory.getId());
 			}
 		}
 		else if(pValue.isBoolean()) //Assume it is always better to have 
@@ -754,13 +756,13 @@ public class ScoredAttribute
 			else
 			{
 				throw new IllegalArgumentException("TypedValue Incompatible with Ranking "
-						+ "in Attribute " +aAttributeID+ "in Category " + aCategoryID);
+						+ "in Attribute " +aAttributeID+ "in Category " + aCategory.getId());
 			}
 		}
 		else
 		{
 			throw new IllegalArgumentException("TypedValue Incompatible with Ranking "
-					+ "in Attribute " +aAttributeID+ "in Category " + aCategoryID);
+					+ "in Attribute " +aAttributeID+ "in Category " + aCategory.getId());
 		}
 	}
 	
@@ -794,7 +796,7 @@ public class ScoredAttribute
 			else
 			{
 				throw new IllegalArgumentException("TypedValue Incompatible with Ranking "
-						+ "in Attribute " +aAttributeID+ "in Category " + aCategoryID);
+						+ "in Attribute " +aAttributeID+ "in Category " + aCategory.getId());
 			}
 		}
 		else if(pValue.isBoolean()) //Assume it is always better to have 
@@ -806,13 +808,13 @@ public class ScoredAttribute
 			else
 			{
 				throw new IllegalArgumentException("TypedValue Incompatible with Ranking "
-						+ "in Attribute " +aAttributeID+ "in Category " + aCategoryID);
+						+ "in Attribute " +aAttributeID+ "in Category " + aCategory.getId());
 			}
 		}
 		else
 		{
 			throw new IllegalArgumentException("TypedValue Incompatible with Ranking "
-					+ "in Attribute " +aAttributeID+ "in Category " + aCategoryID);
+					+ "in Attribute " +aAttributeID+ "in Category " + aCategory.getId());
 		}
 	}
 	
