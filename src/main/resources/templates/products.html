@@ -77,6 +77,10 @@
 			</div>
 			
 			<div id="product-area">
+				<div id="spinner-wrapper">
+					<div id="spinner-content-mask"></div>
+					<div id="spinner"></div>
+				</div>
 				<div  th:id="${product.id}" class="rankedproduct-result-entry" th:each="product : ${productList.products}">
 					<div class="no-product-image">no image</div>
 					<div class="product-description-area">	
@@ -85,11 +89,9 @@
 		                   	<a th:case="*" class="rankedproduct-result-name" th:text="${product.name}"
 		                   	 	th:href="@{${product.url}}"></a>
 						</div>
-						<div class="one-line-description">
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras 
-							ullamcorper, nisi vel eleifend commodo, enim nunc faucibus mauris, 
-							nec posuere justo lectus vitae metus.
-						</div>
+						
+						<!-- This might be an easy place to put ranking-explanations  -->
+
 					</div>
 					<div class="clear"></div>
 				</div>

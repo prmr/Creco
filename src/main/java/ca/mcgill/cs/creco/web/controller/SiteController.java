@@ -15,9 +15,6 @@
  */
 package ca.mcgill.cs.creco.web.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,20 +26,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.data.Product;
-import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.logic.AttributeExtractor;
-import ca.mcgill.cs.creco.logic.ScoredAttribute;
 import ca.mcgill.cs.creco.logic.ServiceFacade;
-import ca.mcgill.cs.creco.logic.search.IProductSearch;
 import ca.mcgill.cs.creco.web.model.FeatureListVO;
-import ca.mcgill.cs.creco.web.model.FeatureVO;
 import ca.mcgill.cs.creco.web.model.ProductListView;
-import ca.mcgill.cs.creco.web.model.ProductView;
 import ca.mcgill.cs.creco.web.model.UserFeatureModel;
-
-import com.google.gson.Gson;
 
 /**
  * Currently this is the only controller for the entire web application. 
@@ -51,9 +39,7 @@ import com.google.gson.Gson;
 public class SiteController
 { 
 	private static final Logger LOG = LoggerFactory.getLogger(SiteController.class);
-	
-	private static final int NUMBER_OF_FEATURES_TO_DISPLAY = 10;
-	
+		
 	private static final String URL_HOME = "/";
 	private static final String URL_AUTOCOMPLETE = "/autocomplete";
 	private static final String URL_SEARCH_CATEGORIES = "/searchCategories";
@@ -66,19 +52,13 @@ public class SiteController
 	private ServiceFacade aServiceFacade;
 	@Autowired
 	private AttributeExtractor aAttributeExtractor;
-	
-	private List<ScoredAttribute> aScoredAttr; 
-	
-	private Category aCategory;
+
 	
 	@Autowired
 	private ProductListView aProductList;
 	
 	@Autowired
 	private FeatureListVO aSpecFeatureList;
-
-	@Autowired
-	private IProductSearch aProductSort;
 	
 	// ***** Model Attributes *****
 	
@@ -152,84 +132,12 @@ public class SiteController
 	public String searchRankedFeaturesProducts_POST(@RequestParam(value = "id", required = true) String pCategoryId, Model pModel)
 	{  
 
-		aCategory = aServiceFacade.getCategory(pCategoryId);
-		List<Product> prodSearch = aProductSort.returnProductsAlphabetically(pCategoryId);
-        aScoredAttr = aAttributeExtractor.getAttributesForCategory(aCategory.getId());   
-	    	   
-	    // Converting
-		ArrayList<ProductView> products = new ArrayList<ProductView>();		
-	    for (Product scoredProduct: prodSearch) 
-	    {
-			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl()));
-	    }
-		aProductList.setProducts(products);	
+
+		aProductList.setProducts(aServiceFacade.searchRankedFeaturesProducts_POST(pCategoryId, pModel));	
 		
-		updateCurrentFeatureList();
-		
+		aSpecFeatureList.setFeatures(aServiceFacade.updateCurrentFeatureList());
+
 		return URL_SHOW_PRODUCTS;
-	}
-	
-	private void updateCurrentFeatureList()
-	{		
-		ArrayList<FeatureVO> specFeatures = new ArrayList<FeatureVO>();	
-		List<String> values;
-
-		//Display top 10 scored attributes
-		for (int i = 0 ; i < aScoredAttr.size() ; i++)
-		{
-
-			if(i > NUMBER_OF_FEATURES_TO_DISPLAY)
-			{
-				break;
-			}
-
-			values = new ArrayList<String>();
-			FeatureVO f = new FeatureVO();
-			f.setId(aScoredAttr.get(i).getAttributeID());
-			f.setName(aScoredAttr.get(i).getAttributeName());
-			f.setSpec(true);
-			f.setVisible(true);
-
-
-			f.setDesc(aScoredAttr.get(i).getAttributeDesc());
-			TypedValue val = aScoredAttr.get(i).getAttributeDefault();		
-
-
-			if( val.isBoolean() )
-			{	
-				f.setType("Bool");								
-				values.add(val.getBoolean()+"");
-				f.setValue((ArrayList<String>) values);
-			}
-			else if( val.isNumeric() )
-			{				
-				f.setType("Numeric");
-				f.setMinValue(aScoredAttr.get(i).getMin().getNumeric());
-				f.setMaxValue(aScoredAttr.get(i).getMax().getNumeric());										
-				values.add(val.getNumeric()+"");
-				f.setValue((ArrayList<String>)values);	
-			}
-			else if( val.isString() || val.isNA() )
-			{				
-				f.setType("Nominal");
-				if(val.isNA())
-				{
-					values.add("N/A");
-				}
-				else
-				{
-					//comment to change possibly
-					List<TypedValue> tvs = aScoredAttr.get(i).getDict();	
-					for(TypedValue tv :tvs)
-					{
-						values.add(tv.getString());
-					}					
-				}
-				f.setValue((ArrayList<String>)values);										
-			}
-			specFeatures.add(f);	
-		}		
-		aSpecFeatureList.setFeatures(specFeatures);	
 	}
 	
 	//TODO clean this method up doesn't need to default value anymore
@@ -243,88 +151,8 @@ public class SiteController
 	@ResponseBody
 	public String sendCurrentFeatureList(@RequestParam String dataSpec)
 	{
-		UserFeatureModel userFMSpec = new Gson().fromJson(dataSpec, UserFeatureModel.class);
-
-		List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
-			
-		for(int i = 0 ; i < userFMSpec.getNames().size() ; i++)
-		{
-			String tempName = userFMSpec.getNames().get(i);
-			ScoredAttribute sa = locateFeatureScoredAttribute(aScoredAttr, tempName);
-			if ( sa != null)
-			{
-				userScoredFeaturesSpecs.add(sa);				
-			}			
-
-		}
 		
-		userScoredFeaturesSpecs = sortFeatures(userScoredFeaturesSpecs);
-
-		List<Product> rankedProducts = aServiceFacade.rankProducts(userScoredFeaturesSpecs, aCategory.getProducts());
-		
-		// Converting to View Object
-		ArrayList<ProductView> products = new ArrayList<ProductView>();
-	    for (Product scoredProduct: rankedProducts)
-	    {
-			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl()));
-		 }
-	    if (rankedProducts.size() > 0) 
-	    {
-			aProductList.setProducts(products);	
-	    }
-
-	    // This response is to be process by AJAX in JavaScript
-	    String response = "";
-	    for (ProductView productView : aProductList.getProducts()) 
-	    {
-	    	response = response.concat(productView.getId() + ",");
-	    }
-	    
+	    	String response = aServiceFacade.sendCurrentFeatureList(dataSpec);	    
 		return response;		
-	}	
-
-	
-	/**
-	 * @author MariamN
-	 * Sort user selected features based on Entropy
-	 * @param pUserFeatures user selected features
-	 * @return list of sorted features
-	 */
-	public List<ScoredAttribute> sortFeatures(List<ScoredAttribute> pUserFeatures)
-	{
-		ScoredAttribute tmp = null;
-		
-		for(int i = 0; i<pUserFeatures.size(); i++)
-		{
-			for(int j = pUserFeatures.size()-1; j >= i+1; j--)
-			{				
-				if(pUserFeatures.get(j).getEntropy() > pUserFeatures.get(j-1).getEntropy())
-				{
-					tmp = pUserFeatures.get(j);			       
-					pUserFeatures.set(j, pUserFeatures.get(j-1));
-					pUserFeatures.set(j-1, tmp);
-				}
-			}
-		}
-		return pUserFeatures;		
-	}
-	/**
-	 * @author MariamN
-	 * @param pFeatureList : feature list, either specs or ratings
-	 * @param pName   : Name of feature to locate
-	 * @return ScoredAttribute matched object
-	 */
-	public ScoredAttribute locateFeatureScoredAttribute(List<ScoredAttribute> pFeatureList, String pName)
-	{
-		for (int i = 0 ; i< pFeatureList.size() ; i++)
-		{
-			ScoredAttribute temp = pFeatureList.get(i);
-			if(temp.getAttributeName().equals(pName))
-			{
-				return temp;
-
-			}
-		}
-		return null;
-	}
+	}		
 }
