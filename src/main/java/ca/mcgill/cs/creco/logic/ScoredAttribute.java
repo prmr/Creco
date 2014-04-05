@@ -201,6 +201,9 @@ public class ScoredAttribute
 		aAttributeDesc = pAttribute.getDescription();
 		aEntropy = 0;
 		aCorrelation = 0;
+		aLabelMeanScores = new HashMap<String, Double>();
+		aNumericValueRank = new HashMap<Double, Integer>();
+		aStringValueRank = new HashMap<String, Integer>();
 		
 		aIsPrice = pAttribute.isPrice();
 		
@@ -461,12 +464,17 @@ public class ScoredAttribute
 			aEntropy = 0;
 		}
 		// Compute Correlation
-		aLabelMeanScores = new HashMap<String, Double>();
-		
+	
 		NominalCorrelator nominalCorrelator = new NominalCorrelator(aDataStore.getCategory(aCategoryID));
-		for (Map.Entry<String, Double> entry : nominalCorrelator.getLabelMeanScores(aAttributeID).entrySet())
+		ArrayList<Map.Entry<String, Double>> entryList = new ArrayList<Map.Entry<String, Double>>();
+		entryList.addAll(nominalCorrelator.getLabelMeanScores(aAttributeID).entrySet());
+		sortEntries(entryList);
+		int rank = 1;
+		for (Map.Entry<String, Double> entry : entryList)
 		{
 			aLabelMeanScores.put(entry.getKey(), entry.getValue());
+			aStringValueRank.put(entry.getKey(), rank);
+			rank++;
 		}
 		
 		aCorrelation = nominalCorrelator.computeAttributeWeight(aAttributeID);
@@ -693,15 +701,22 @@ public class ScoredAttribute
 	{
 		return CONSIDERATION_THRESHOLD;
 	}
-	
+	/**
+	 * @return The directions in which the atrtibute is worth more
+	 * MORE_IS_BETTER or LESS_IS_BETTER. 
+	 */
 	public Direction getDirection()
 	{
 		return aDirection;
 	}
 	/**
+	 * This will return the rank of the Typed value passed. If the value is not found,
+	 * this will throw an IllegalArgeumetnException error.
+	 * 
+	 * For booleans, true always has rank 1 and false always has rank 2;
 	 * 
 	 * @param pValue the value to be checkAgainst
-	 * @return the rank of the value in this socredAttribute
+	 * @return the rank of the value in this ScoredAttribute
 	 * @throws IllegalArgumentException If the value wasn't found or if the type is incompatible
 	 */
 	public Integer getValueRank(TypedValue pValue)
@@ -732,13 +747,66 @@ public class ScoredAttribute
 		}
 		else if(pValue.isBoolean()) //Assume it is always better to have 
 		{
-			if(pValue.getBoolean())
+			if(aStringValueRank.containsKey(String.valueOf(pValue.getString())))
 			{
-				return 1;
+				return aStringValueRank.get(String.valueOf(pValue.getString()));
 			}
 			else
 			{
-				return 2;
+				throw new IllegalArgumentException("TypedValue Incompatible with Ranking "
+						+ "in Attribute " +aAttributeID+ "in Category " + aCategoryID);
+			}
+		}
+		else
+		{
+			throw new IllegalArgumentException("TypedValue Incompatible with Ranking "
+					+ "in Attribute " +aAttributeID+ "in Category " + aCategoryID);
+		}
+	}
+	
+	/**
+	 * This will return the score for a  TypedValue passed. If the value is not found,
+	 * this will throw an IllegalArgeumetnException error.
+	 * 
+	 * For numeric TypedValues the score is the value if the attribute is numeric and zero otherwise.
+	 * 
+	 * @param pValue the value to be checkAgainst
+	 * @return the score of the value in this ScoredAttribute
+	 * @throws IllegalArgumentException If the value wasn't found or if the type is incompatible
+	 */
+	public double getValueScore(TypedValue pValue)
+	{
+		if(pValue.isNumeric())
+		{
+			if(aAttributeMainType == Type.NUMERIC)
+			{
+				return pValue.getNumeric();
+			}
+			return 0.0;
+			
+		}
+		else if(pValue.isString() || pValue.isBoolean())
+		{
+			if(aLabelMeanScores.containsKey(pValue.getString()))
+			{
+				return aLabelMeanScores.get(pValue.getString());
+			}
+			else
+			{
+				throw new IllegalArgumentException("TypedValue Incompatible with Ranking "
+						+ "in Attribute " +aAttributeID+ "in Category " + aCategoryID);
+			}
+		}
+		else if(pValue.isBoolean()) //Assume it is always better to have 
+		{
+			if(aLabelMeanScores.containsKey(String.valueOf(pValue.getBoolean())))
+			{
+				return aLabelMeanScores.get(String.valueOf(pValue.getBoolean()));
+			}
+			else
+			{
+				throw new IllegalArgumentException("TypedValue Incompatible with Ranking "
+						+ "in Attribute " +aAttributeID+ "in Category " + aCategoryID);
 			}
 		}
 		else
