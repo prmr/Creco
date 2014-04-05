@@ -15,11 +15,16 @@
  */
 package ca.mcgill.cs.creco.logic;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.ui.Model;
+
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.Product;
+import ca.mcgill.cs.creco.web.model.FeatureVO;
+import ca.mcgill.cs.creco.web.model.ProductView;
 
 /**
  * Single point of access for all services of domain 
@@ -58,5 +63,27 @@ public interface ServiceFacade
 	 * @return The ranked list of products, ordered from highest to lowest score.
 	 */
 	List<Product> rankProducts(List <ScoredAttribute> pScoredAttributes, Collection<Product> pProducts);
+
+	/**
+	 * Returns a string of for the products view page.
+	 * @param dataSpec
+	 * @return Name of file to redirect the browser to the products page.
+	 */
+	String sendCurrentFeatureList(String dataSpec);
+	
+	/**
+	 * A category is selected and this controller obtains the features
+	 * and products to display.
+	 * @param pCategoryId The id of the selected category
+	 * @param pModel The model, containing the list of categories.
+	 * @return List of products
+	 */
+	ArrayList<ProductView> searchRankedFeaturesProducts_POST(String pCategoryId, Model pModel);
+	
+	/**
+	 * Updated current feature list based on the category selected
+	 * @return List of features
+	 */
+	ArrayList<FeatureVO> updateCurrentFeatureList();
 	
 }
