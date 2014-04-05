@@ -21,6 +21,7 @@ package ca.mcgill.cs.creco.logic;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -114,7 +115,7 @@ public class ScoredAttribute
 		 * @param pB scoredAttribute B
 		 * @return -1 for A > B, 1 for B > A, 0 if A==B
 		 */
-     public static final Comparator<ScoredAttribute> SORT_BY_ENTROPY = 
+    public static final Comparator<ScoredAttribute> SORT_BY_ENTROPY = 
     			new Comparator<ScoredAttribute>() 
     		    {
     				
@@ -158,9 +159,12 @@ public class ScoredAttribute
  	private TypedValue aMax;
  	private List<TypedValue> aStringValues;
  	private Map<String, Double> aLabelMeanScores;
+ 	private Map<Double, Integer> aNumericValueRank;
+ 	private Map<String, Integer> aStringValueRank;
  	
  	private Type aAttributeMainType;
  	private Direction aDirection;
+ 	private boolean aIsPrice;
  	
    
  	/**
@@ -198,36 +202,12 @@ public class ScoredAttribute
 		aEntropy = 0;
 		aCorrelation = 0;
 		
+		aIsPrice = pAttribute.isPrice();
+		
 		if( pCategory != null )
 		{
 			Collection<Product> products = pCategory.getProducts();
-			setStats(products);
-			NumericCorrelator ac = new NumericCorrelator(pCategory);
-			if(aAttributeMainType == Type.NUMERIC)
-			{
-				aCorrelation = ac.computeCorrelation(aAttributeID, CONSIDERATION_THRESHOLD);
-				
-				if (pAttribute.isPrice())
-				{
-					aDirection = Direction.LESS_IS_BETTER;
-				}
-				else
-				{
-					aDirection = ac.computeAttributeDirection(aAttributeID, CONSIDERATION_THRESHOLD);
-				}
-			}
-			else if (aAttributeMainType == Type.STRING || aAttributeMainType == Type.BOOLEAN)
-			{
-				aLabelMeanScores = new HashMap<String, Double>();
-				
-				NominalCorrelator nominalCorrelator = new NominalCorrelator(pCategory);
-				for (Map.Entry<String, Double> entry : nominalCorrelator.getLabelMeanScores(aAttributeID).entrySet())
-				{
-					aLabelMeanScores.put(entry.getKey(), entry.getValue());
-				}
-				
-				aCorrelation = nominalCorrelator.computeAttributeWeight(aAttributeID);
-			}
+			setStats(products);	
 		}
 		else
 		{
@@ -262,6 +242,7 @@ public class ScoredAttribute
 		if(aAttributeMainType == Type.NUMERIC)
 		{
 			setNumericStats(values);
+			
 		}
 		else if(aAttributeMainType == Type.BOOLEAN)
 		{
@@ -283,6 +264,7 @@ public class ScoredAttribute
 		SummaryStatistics ss = new SummaryStatistics();
 		double min = DEFAULT_MIN;
 		double max = DEFAULT_MAX;
+		ArrayList<Double> values = new ArrayList<Double>(pValues.size());
 		for(TypedValue tv : pValues)
 		{
 			if(tv.isNumeric())
@@ -298,8 +280,11 @@ public class ScoredAttribute
 					max = tv.getNumeric();
 					
 				}
+				values.add(tv.getNumeric());
 			}
+			
 		}
+		//Set bounds
 		if(Double.isNaN(min))
 		{
 			LOG.error("Min value is NaN: " + aAttributeID +", "+ aAttributeName + ", "+ aCategoryID);
@@ -312,7 +297,7 @@ public class ScoredAttribute
 		aMax = new TypedValue(max);
 		double mean = ss.getGeometricMean();
 		double variance = ss.getStandardDeviation()*ss.getStandardDeviation();
-		
+		//Calculate Entropy
 		double entropy = 0;
 		for(TypedValue tv : pValues)
 		{
@@ -332,6 +317,46 @@ public class ScoredAttribute
 			aEntropy = 0;
 		}
 		
+		//Get the correlation
+		NumericCorrelator ac = new NumericCorrelator(aDataStore.getCategory(aCategoryID));
+		aCorrelation = ac.computeCorrelation(aAttributeID, CONSIDERATION_THRESHOLD);
+			
+		if(aIsPrice)
+		{
+			aDirection = Direction.LESS_IS_BETTER;
+		}
+		else
+		{
+			aDirection = ac.computeAttributeDirection(aAttributeID, CONSIDERATION_THRESHOLD);
+		}
+		//Calculate Ranking
+		Collections.sort(values);
+		double previousValue = 0;
+		boolean notFirst = false;
+		int rank = 1;
+		for(Double val : values)
+		{			
+			if(notFirst)
+			{
+				if(previousValue != val.doubleValue()){
+					if(aNumericValueRank.containsKey(val))
+					{
+						LOG.error("setNumericStats sort error in Attribute " +aAttributeID+ "in Category " + aCategoryID);
+					}
+					else{
+						aNumericValueRank.put(val, rank);
+						previousValue = val.doubleValue();
+					}
+				}			
+			}
+			else//It is the first Item
+			{
+				aNumericValueRank.put(val, rank);
+				previousValue = val.doubleValue();
+				notFirst = true;
+			}
+			rank ++;
+		}
 	}
 	
 	private void setStringStats(ArrayList<TypedValue> pValues)
@@ -380,6 +405,24 @@ public class ScoredAttribute
 		{
 			aEntropy = 0;
 		}
+		// Compute Correlation and rankings
+		aLabelMeanScores = new HashMap<String, Double>();
+		
+		NominalCorrelator nominalCorrelator = new NominalCorrelator(aDataStore.getCategory(aCategoryID));
+		ArrayList<Map.Entry<String, Double>> entryList = new ArrayList<Map.Entry<String, Double>>();
+		entryList.addAll(nominalCorrelator.getLabelMeanScores(aAttributeID).entrySet());
+		sortEntries(entryList);
+		int rank = 1;
+		for (Map.Entry<String, Double> entry : entryList)
+		{
+			aLabelMeanScores.put(entry.getKey(), entry.getValue());
+			aStringValueRank.put(entry.getKey(), rank);
+			rank++;
+		}
+		
+		aCorrelation = nominalCorrelator.computeAttributeWeight(aAttributeID);
+		
+
 		
 	}
 	
@@ -417,6 +460,16 @@ public class ScoredAttribute
 		{
 			aEntropy = 0;
 		}
+		// Compute Correlation
+		aLabelMeanScores = new HashMap<String, Double>();
+		
+		NominalCorrelator nominalCorrelator = new NominalCorrelator(aDataStore.getCategory(aCategoryID));
+		for (Map.Entry<String, Double> entry : nominalCorrelator.getLabelMeanScores(aAttributeID).entrySet())
+		{
+			aLabelMeanScores.put(entry.getKey(), entry.getValue());
+		}
+		
+		aCorrelation = nominalCorrelator.computeAttributeWeight(aAttributeID);
 		
 	}
  
@@ -473,6 +526,18 @@ public class ScoredAttribute
 		}
 	}
 	
+	private void sortEntries(List<Map.Entry<String, Double>> pEntries)
+	{
+		Collections.sort(pEntries, 
+				new Comparator<Map.Entry<String, Double>>() 
+				{
+					@Override
+					public int compare(Map.Entry<String, Double> pA, Map.Entry<String, Double> pB) 
+					{
+						return Double.compare(pA.getValue(), pB.getValue());
+					}
+				});
+	}
 	
 	/**
 	 * @return attribute or category ID check first
@@ -632,6 +697,55 @@ public class ScoredAttribute
 	public Direction getDirection()
 	{
 		return aDirection;
+	}
+	/**
+	 * 
+	 * @param pValue the value to be checkAgainst
+	 * @return the rank of the value in this socredAttribute
+	 * @throws IllegalArgumentException If the value wasn't found or if the type is incompatible
+	 */
+	public Integer getValueRank(TypedValue pValue)
+	{
+		if(pValue.isNumeric())
+		{
+			if(aNumericValueRank.containsKey(pValue.getNumeric()))
+			{
+				return aNumericValueRank.get(pValue.getNumeric());
+			}
+			else
+			{
+				throw new IllegalArgumentException("TypedValue Incompatible with Ranking "
+						+ "in Attribute " +aAttributeID+ "in Category " + aCategoryID);
+			}
+		}
+		else if(pValue.isString())
+		{
+			if(aStringValueRank.containsKey(pValue.getString()))
+			{
+				return aStringValueRank.get(pValue.getString());
+			}
+			else
+			{
+				throw new IllegalArgumentException("TypedValue Incompatible with Ranking "
+						+ "in Attribute " +aAttributeID+ "in Category " + aCategoryID);
+			}
+		}
+		else if(pValue.isBoolean()) //Assume it is always better to have 
+		{
+			if(pValue.getBoolean())
+			{
+				return 1;
+			}
+			else
+			{
+				return 2;
+			}
+		}
+		else
+		{
+			throw new IllegalArgumentException("TypedValue Incompatible with Ranking "
+					+ "in Attribute " +aAttributeID+ "in Category " + aCategoryID);
+		}
 	}
 	
 }
