@@ -21,6 +21,7 @@ package ca.mcgill.cs.creco.logic;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -114,7 +115,7 @@ public class ScoredAttribute
 		 * @param pB scoredAttribute B
 		 * @return -1 for A > B, 1 for B > A, 0 if A==B
 		 */
-     public static final Comparator<ScoredAttribute> SORT_BY_ENTROPY = 
+    public static final Comparator<ScoredAttribute> SORT_BY_ENTROPY = 
     			new Comparator<ScoredAttribute>() 
     		    {
     				
@@ -143,13 +144,14 @@ public class ScoredAttribute
 
     		     };
  	@Autowired
+ 
  	private IDataStore aDataStore;
     private String aAttributeID;
  	private String aAttributeName;
  	private double aAttributeScore;
  	private TypedValue aDefaultValue;
 
- 	private String aCategoryID;
+ 	private Category aCategory;
  	private String aAttributeDesc;
  	private double aEntropy;
  	private double aCorrelation;
@@ -158,9 +160,12 @@ public class ScoredAttribute
  	private TypedValue aMax;
  	private List<TypedValue> aStringValues;
  	private Map<String, Double> aLabelMeanScores;
+ 	private Map<Double, Integer> aNumericValueRank;
+ 	private Map<String, Integer> aStringValueRank;
  	
  	private Type aAttributeMainType;
  	private Direction aDirection;
+ 	private boolean aIsPrice;
  	
    
  	/**
@@ -197,37 +202,17 @@ public class ScoredAttribute
 		aAttributeDesc = pAttribute.getDescription();
 		aEntropy = 0;
 		aCorrelation = 0;
+		aLabelMeanScores = new HashMap<String, Double>();
+		aNumericValueRank = new HashMap<Double, Integer>();
+		aStringValueRank = new HashMap<String, Integer>();
+		aCategory = pCategory;
+		
+		aIsPrice = pAttribute.isPrice();
 		
 		if( pCategory != null )
 		{
 			Collection<Product> products = pCategory.getProducts();
-			setStats(products);
-			NumericCorrelator ac = new NumericCorrelator(pCategory);
-			if(aAttributeMainType == Type.NUMERIC)
-			{
-				aCorrelation = ac.computeCorrelation(aAttributeID, CONSIDERATION_THRESHOLD);
-				
-				if (pAttribute.isPrice())
-				{
-					aDirection = Direction.LESS_IS_BETTER;
-				}
-				else
-				{
-					aDirection = ac.computeAttributeDirection(aAttributeID, CONSIDERATION_THRESHOLD);
-				}
-			}
-			else if (aAttributeMainType == Type.STRING || aAttributeMainType == Type.BOOLEAN)
-			{
-				aLabelMeanScores = new HashMap<String, Double>();
-				
-				NominalCorrelator nominalCorrelator = new NominalCorrelator(pCategory);
-				for (Map.Entry<String, Double> entry : nominalCorrelator.getLabelMeanScores(aAttributeID).entrySet())
-				{
-					aLabelMeanScores.put(entry.getKey(), entry.getValue());
-				}
-				
-				aCorrelation = nominalCorrelator.computeAttributeWeight(aAttributeID);
-			}
+			setStats(products);	
 		}
 		else
 		{
@@ -262,6 +247,7 @@ public class ScoredAttribute
 		if(aAttributeMainType == Type.NUMERIC)
 		{
 			setNumericStats(values);
+			
 		}
 		else if(aAttributeMainType == Type.BOOLEAN)
 		{
@@ -283,6 +269,7 @@ public class ScoredAttribute
 		SummaryStatistics ss = new SummaryStatistics();
 		double min = DEFAULT_MIN;
 		double max = DEFAULT_MAX;
+		ArrayList<Double> values = new ArrayList<Double>(pValues.size());
 		for(TypedValue tv : pValues)
 		{
 			if(tv.isNumeric())
@@ -298,21 +285,24 @@ public class ScoredAttribute
 					max = tv.getNumeric();
 					
 				}
+				values.add(tv.getNumeric());
 			}
+			
 		}
+		//Set bounds
 		if(Double.isNaN(min))
 		{
-			LOG.error("Min value is NaN: " + aAttributeID +", "+ aAttributeName + ", "+ aCategoryID);
+			LOG.error("Min value is NaN: " + aAttributeID +", "+ aAttributeName + ", "+ aCategory.getId());
 		}
 		if(Double.isNaN(max))
 		{
-			LOG.error("Max value is NaN: " + aAttributeID +", "+ aAttributeName + ", "+ aCategoryID);
+			LOG.error("Max value is NaN: " + aAttributeID +", "+ aAttributeName + ", "+ aCategory.getId());
 		}
 		aMin = new TypedValue(min);
 		aMax = new TypedValue(max);
 		double mean = ss.getGeometricMean();
 		double variance = ss.getStandardDeviation()*ss.getStandardDeviation();
-		
+		//Calculate Entropy
 		double entropy = 0;
 		for(TypedValue tv : pValues)
 		{
@@ -332,6 +322,46 @@ public class ScoredAttribute
 			aEntropy = 0;
 		}
 		
+		//Get the correlation
+		NumericCorrelator ac = new NumericCorrelator(aCategory);
+		aCorrelation = ac.computeCorrelation(aAttributeID, CONSIDERATION_THRESHOLD);
+			
+		if(aIsPrice)
+		{
+			aDirection = Direction.LESS_IS_BETTER;
+		}
+		else
+		{
+			aDirection = ac.computeAttributeDirection(aAttributeID, CONSIDERATION_THRESHOLD);
+		}
+		//Calculate Ranking
+		Collections.sort(values);
+		double previousValue = 0;
+		boolean notFirst = false;
+		int rank = 1;
+		for(Double val : values)
+		{			
+			if(notFirst)
+			{
+				if(previousValue != val.doubleValue()){
+					if(aNumericValueRank.containsKey(val))
+					{
+						LOG.error("setNumericStats sort error in Attribute " +aAttributeID+ "in Category " + aCategory.getId());
+					}
+					else{
+						aNumericValueRank.put(val, rank);
+						previousValue = val.doubleValue();
+					}
+				}			
+			}
+			else//It is the first Item
+			{
+				aNumericValueRank.put(val, rank);
+				previousValue = val.doubleValue();
+				notFirst = true;
+			}
+			rank ++;
+		}
 	}
 	
 	private void setStringStats(ArrayList<TypedValue> pValues)
@@ -380,6 +410,24 @@ public class ScoredAttribute
 		{
 			aEntropy = 0;
 		}
+		// Compute Correlation and rankings
+		aLabelMeanScores = new HashMap<String, Double>();
+		
+		NominalCorrelator nominalCorrelator = new NominalCorrelator(aCategory);
+		ArrayList<Map.Entry<String, Double>> entryList = new ArrayList<Map.Entry<String, Double>>();
+		entryList.addAll(nominalCorrelator.getLabelMeanScores(aAttributeID).entrySet());
+		sortEntries(entryList);
+		int rank = 1;
+		for (Map.Entry<String, Double> entry : entryList)
+		{
+			aLabelMeanScores.put(entry.getKey(), entry.getValue());
+			aStringValueRank.put(entry.getKey(), rank);
+			rank++;
+		}
+		
+		aCorrelation = nominalCorrelator.computeAttributeWeight(aAttributeID);
+		
+
 		
 	}
 	
@@ -417,6 +465,21 @@ public class ScoredAttribute
 		{
 			aEntropy = 0;
 		}
+		// Compute Correlation
+	
+		NominalCorrelator nominalCorrelator = new NominalCorrelator(aCategory);
+		ArrayList<Map.Entry<String, Double>> entryList = new ArrayList<Map.Entry<String, Double>>();
+		entryList.addAll(nominalCorrelator.getLabelMeanScores(aAttributeID).entrySet());
+		sortEntries(entryList);
+		int rank = 1;
+		for (Map.Entry<String, Double> entry : entryList)
+		{
+			aLabelMeanScores.put(entry.getKey(), entry.getValue());
+			aStringValueRank.put(entry.getKey(), rank);
+			rank++;
+		}
+		
+		aCorrelation = nominalCorrelator.computeAttributeWeight(aAttributeID);
 		
 	}
  
@@ -473,6 +536,18 @@ public class ScoredAttribute
 		}
 	}
 	
+	private void sortEntries(List<Map.Entry<String, Double>> pEntries)
+	{
+		Collections.sort(pEntries, 
+				new Comparator<Map.Entry<String, Double>>() 
+				{
+					@Override
+					public int compare(Map.Entry<String, Double> pA, Map.Entry<String, Double> pB) 
+					{
+						return Double.compare(pA.getValue(), pB.getValue());
+					}
+				});
+	}
 	
 	/**
 	 * @return attribute or category ID check first
@@ -628,10 +703,119 @@ public class ScoredAttribute
 	{
 		return CONSIDERATION_THRESHOLD;
 	}
-	
+	/**
+	 * @return The directions in which the atrtibute is worth more
+	 * MORE_IS_BETTER or LESS_IS_BETTER. 
+	 */
 	public Direction getDirection()
 	{
 		return aDirection;
+	}
+	/**
+	 * This will return the rank of the Typed value passed. If the value is not found,
+	 * this will throw an IllegalArgeumetnException error.
+	 * 
+	 * For booleans, true always has rank 1 and false always has rank 2;
+	 * 
+	 * @param pValue the value to be checkAgainst
+	 * @return the rank of the value in this ScoredAttribute
+	 * @throws IllegalArgumentException If the value wasn't found or if the type is incompatible
+	 */
+	public Integer getValueRank(TypedValue pValue)
+	{
+		if(pValue.isNumeric())
+		{
+			if(aNumericValueRank.containsKey(pValue.getNumeric()))
+			{
+				return aNumericValueRank.get(pValue.getNumeric());
+			}
+			else
+			{
+				throw new IllegalArgumentException("TypedValue Incompatible with Ranking "
+						+ "in Attribute " +aAttributeID+ "in Category " + aCategory.getId());
+			}
+		}
+		else if(pValue.isString())
+		{
+			if(aStringValueRank.containsKey(pValue.getString()))
+			{
+				return aStringValueRank.get(pValue.getString());
+			}
+			else
+			{
+				throw new IllegalArgumentException("TypedValue Incompatible with Ranking "
+						+ "in Attribute " +aAttributeID+ "in Category " + aCategory.getId());
+			}
+		}
+		else if(pValue.isBoolean()) //Assume it is always better to have 
+		{
+			if(aStringValueRank.containsKey(String.valueOf(pValue.getString())))
+			{
+				return aStringValueRank.get(String.valueOf(pValue.getString()));
+			}
+			else
+			{
+				throw new IllegalArgumentException("TypedValue Incompatible with Ranking "
+						+ "in Attribute " +aAttributeID+ "in Category " + aCategory.getId());
+			}
+		}
+		else
+		{
+			throw new IllegalArgumentException("TypedValue Incompatible with Ranking "
+					+ "in Attribute " +aAttributeID+ "in Category " + aCategory.getId());
+		}
+	}
+	
+	/**
+	 * This will return the score for a  TypedValue passed. If the value is not found,
+	 * this will throw an IllegalArgeumetnException error.
+	 * 
+	 * For numeric TypedValues the score is the value if the attribute is numeric and zero otherwise.
+	 * 
+	 * @param pValue the value to be checkAgainst
+	 * @return the score of the value in this ScoredAttribute
+	 * @throws IllegalArgumentException If the value wasn't found or if the type is incompatible
+	 */
+	public double getValueScore(TypedValue pValue)
+	{
+		if(pValue.isNumeric())
+		{
+			if(aAttributeMainType == Type.NUMERIC)
+			{
+				return pValue.getNumeric();
+			}
+			return 0.0;
+			
+		}
+		else if(pValue.isString() || pValue.isBoolean())
+		{
+			if(aLabelMeanScores.containsKey(pValue.getString()))
+			{
+				return aLabelMeanScores.get(pValue.getString());
+			}
+			else
+			{
+				throw new IllegalArgumentException("TypedValue Incompatible with Ranking "
+						+ "in Attribute " +aAttributeID+ "in Category " + aCategory.getId());
+			}
+		}
+		else if(pValue.isBoolean()) //Assume it is always better to have 
+		{
+			if(aLabelMeanScores.containsKey(String.valueOf(pValue.getBoolean())))
+			{
+				return aLabelMeanScores.get(String.valueOf(pValue.getBoolean()));
+			}
+			else
+			{
+				throw new IllegalArgumentException("TypedValue Incompatible with Ranking "
+						+ "in Attribute " +aAttributeID+ "in Category " + aCategory.getId());
+			}
+		}
+		else
+		{
+			throw new IllegalArgumentException("TypedValue Incompatible with Ranking "
+					+ "in Attribute " +aAttributeID+ "in Category " + aCategory.getId());
+		}
 	}
 	
 }
