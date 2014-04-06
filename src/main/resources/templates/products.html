@@ -47,15 +47,12 @@
 					<input id='search_btn' type="submit" class="btn btn-info" value="Search"></input>	
 				</form>
 			</div>
-
+			<div id="categoryMarker" style="display:none" th:title="${currentCategoryId}"></div>
 			<div id="feature">
 				<div id="feature_title">Which features do you care about?
-					<p id="feature_description">
-						Select attributes that are most important to you to rank products based on these attributes. 
-						Mouse over an attribute to see its description</p>
 				</div>
 				<div id='main_specs'>
-						<div th:each="specFeatures : ${specFeatureList.features}">
+						<div th:each="specFeatures : ${specFeatureList}">
 							<!--.sequence(1,2)}"> -->
 							<div th:if="${specFeatures.visible==true}">
 								<div >
@@ -81,7 +78,7 @@
 					<div id="spinner-content-mask"></div>
 					<div id="spinner"></div>
 				</div>
-				<div  th:id="${product.id}" class="rankedproduct-result-entry" th:each="product : ${productList.products}">
+				<div  th:id="${product.id}" class="rankedproduct-result-entry" th:each="product : ${productList}">
 					<div class="no-product-image">no image</div>
 					<div class="product-description-area">	
 						<div th:switch="${product.url}">

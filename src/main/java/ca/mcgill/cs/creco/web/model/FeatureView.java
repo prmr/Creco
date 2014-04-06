@@ -29,7 +29,7 @@ import ca.mcgill.cs.creco.data.TypedValue;
  * */
 @Component
 @Scope(value="session", proxyMode=ScopedProxyMode.TARGET_CLASS)
-public class FeatureVO
+public class FeatureView
 {
 	private String id;
 	private String name;

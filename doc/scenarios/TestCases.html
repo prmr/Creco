@@ -1,0 +1,113 @@
+<!-- 
+ Copyright 2014 McGill University
+ 
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ 
+      http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Test Case Scenarios</title>
+</head>
+<body>
+<table border = "1">
+<tr>
+	<th>Test Scenarios</th>
+	<th>Description</th>
+	<th>Action</th>
+	<th>Expected Action</th>
+</tr>
+
+<tr>
+	<td rowspan = "5" valign = "top">1</td>
+	<td rowspan = "5" valign = "top">Walk-through of application</td>
+	<td>Type 'Smart Phones' in search box.</td>
+	<td>Search bar should show an auto-complete list with category </td>
+</tr>
+<tr> <td>Click 'Search'</td><td>A list of categories relating to the search query should show up on the same page.</td> </tr>
+<tr>
+	<td>Select 'Smart Phone' category.</td><td>A new page with a list of products and a list of features should be seen.</td>
+</tr>
+<tr>
+	<td>Select some features from the list of features.</td><td>The ranked list of products should refresh dynamically on each click of a checkbox and change the order based on what feature is selected.</td>
+</tr>
+<tr>
+	<td>Select 'Acatel OneTouchEvolve'.</td><td>The page should be redirected to the Consumer Reports page for the product.</td>
+</tr>
+
+<tr>
+	<td rowspan = "6" valign = "top">2</td>
+	<td rowspan = "6" valign = "top">Second search from Products page</td>
+	<td>Search for category 'Toaster'</td>
+	<td>Categories related to 'Toaster' should show on the page.</td>
+</tr>
+<tr>
+	<td>Select 'Toaster' category from the categories available</td><td>The page should be redirected to a new page with the products from 'Toaster' category.</td>
+</tr>
+<tr>
+	<td>In the search bar, type 'babies'.</td><td>Auto-complete should show results of categories similar to the query babies.</td>
+</tr>
+<tr>
+	<td>Hit 'Submit'.</td><td>The page should be redirected to the first results page with categories and 'Baby Monitor' category should be seen.</td>
+</tr>
+<tr>
+	<td>Select 'Baby Monitor'</td><td>Page should be redirected to the products page. The products list should contain links to baby monitors.</td>
+</tr>
+<tr>
+	<td>Browse through products and select one.</td><td>Should lead to the ConsumerReports page for the selected product.</td>
+</tr>
+
+<tr>
+	<td rowspan = "6" valign = "top">3</td>
+	<td rowspan = "6" valign = "top">Concurrent Access from same browser.</td>
+	<td>In one tab search for 'Toaster'</td>
+	<td>Should show categories for 'Toaster' matching result from Auto complete.</td>
+</tr>
+<tr>
+	<td>In another tab search for 'Humidifier'</td><td>Show categories matching 'Humidifier'.</td>
+</tr>
+<tr>
+	<td>Go back to first tab and select 'Toaster' category.</td><td>Should redirect to a new page in this tab showing products of category 'Toaster'.</td>
+</tr>
+<tr>
+	<td>In the second tab select the 'Humidifier' category</td><td>Should redirect to a new page in this tab showing products of category 'Humidifier' in the second tab.</td>
+</tr>
+<tr>
+	<td>In the product links page, change values of check boxes for attributes and refresh product list.</td><td>The 'Humidifier' category products list should be reshuffled according to the features selected.</td>
+</tr>
+<tr>
+	<td>Go back to the 'Toaster' and perform feature selection with different features.</td><td>The products of the category 'Toaster' should reshuffle according to the features selected in this tab.</td>
+</tr>
+
+<tr>
+	<td rowspan = "3" valign = "top">4</td>
+	<td rowspan = "3" valign = "top">Test dead product links.</td>
+	<td>Search for 'cars' in the search box.</td>
+	<td>The page should show the categories related to the query 'cars'.</td>
+</tr>
+<tr>
+	<td>Select the cateogory 'Car Repair Shops'.</td><td>The products page should be seen with the features and the various brands of cars.</td>
+</tr>
+<tr>
+	<td>Click on the product 'Audi'.</td><td>The product links are dead, hence the click is ineffective and are returned back to the same page.</td>
+</tr>
+
+<tr>
+	<td rowspan = "3" valign = "top">5</td>
+	<td rowspan = "3" valign = "top">Test on different browsers.</td>
+	<td>Carry out test case scenario 1 in multiple browsers - Chrome, Firefox.</td>
+	<td>The website features like Autocomplete and formatting of the pages should be visible and same across all the browsers.</td>
+</tr>
+
+</table>
+</body>
+</html> 

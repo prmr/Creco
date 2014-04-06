@@ -1,17 +1,14 @@
 /**
  * Copyright 2014 McGill University
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 package ca.mcgill.cs.creco.logic;
 
@@ -25,116 +22,112 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 
-import com.google.gson.Gson;
-
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
-import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.logic.search.ICategorySearch;
 import ca.mcgill.cs.creco.logic.search.IProductSearch;
-import ca.mcgill.cs.creco.web.model.FeatureVO;
+import ca.mcgill.cs.creco.web.model.FeatureView;
 import ca.mcgill.cs.creco.web.model.ProductView;
 import ca.mcgill.cs.creco.web.model.UserFeatureModel;
+
+import com.google.gson.Gson;
 
 /**
  * Default implementation of the service layer.
  */
 @Component
-public class ConcreteServiceFacade implements ServiceFacade 
+public class ConcreteServiceFacade implements ServiceFacade
 {
 	private static final int MIN_NUMBER_OF_TYPED_LETTERS = 2;
 	private static final int NUMBER_OF_FEATURES_TO_DISPLAY = 10;
 
 	@Autowired
 	private IDataStore aDataStore;
-	
+
 	@Autowired
 	private ICategorySearch aCategorySearch;
-	
+
 	@Autowired
 	private ProductRanker aProductRanker;
 
 	@Autowired
 	private AttributeExtractor aAttributeExtractor;
-	
-	private List<ScoredAttribute> aScoredAttr; 
-	
-	private Category aCategory;
-	
+
 	@Autowired
 	private IProductSearch aProductSort;
 
 	@Override
 	public String getCompletions(String pInput)
 	{
-		if(pInput.length() <= MIN_NUMBER_OF_TYPED_LETTERS)
+		if (pInput.length() <= MIN_NUMBER_OF_TYPED_LETTERS)
 		{
 			return "";
 		}
 
 		String response = "";
 
-		for(Category category : aDataStore.getCategories()) 
+		for (Category category : aDataStore.getCategories())
 		{
-			if(category.getNumberOfProducts() == 0)
+			if (category.getNumberOfProducts() == 0)
 			{
 				continue;
 			}
-			if(category.getName().toLowerCase().contains(pInput.toLowerCase()))
+			if (category.getName().toLowerCase().contains(pInput.toLowerCase()))
 			{
-				response = response.concat(category.getName() + "| " +"Category"+"| ");
+				response = response.concat(category.getName() + "| " + "Category" + "| ");
 			}
 		}
 		Set<String> collectedbrandstillnow = new HashSet<String>();
 		Set<String> collectedtexttillnow = new HashSet<String>();
 		Set<String> Brands = new HashSet<String>();
 		Set<String> Text_search = new HashSet<String>();
-		for (Product productname : aDataStore.getProducts()) 
+		for (Product productname : aDataStore.getProducts())
 		{
-			if(productname.getName().toLowerCase().contains(pInput.toLowerCase()))
+			if (productname.getName().toLowerCase().contains(pInput.toLowerCase()))
 			{
-				for (String productspace: productname.getName().toLowerCase().split(" "))
+				for (String productspace : productname.getName().toLowerCase().split(" "))
 				{
-					if(productspace.contains(pInput.toLowerCase()))
+					if (productspace.contains(pInput.toLowerCase()))
 					{
-						if(productspace.equals(productname.getBrandName().toLowerCase()))
+						if (productspace.equals(productname.getBrandName().toLowerCase()))
 						{
-							if(collectedbrandstillnow.contains(productspace))
+							if (collectedbrandstillnow.contains(productspace))
 							{
-								
+
 							}
 							else
 							{
-							collectedbrandstillnow.add(productspace);
-							Brands.add(productspace);
+								collectedbrandstillnow.add(productspace);
+								Brands.add(productspace);
 							}
 						}
-						else if(collectedtexttillnow.contains(productspace)||collectedbrandstillnow.contains(productspace))
-							{
-							}
+						else if (collectedtexttillnow.contains(productspace)
+								|| collectedbrandstillnow.contains(productspace))
+						{
+						}
 						else
 						{
 							collectedtexttillnow.add(productspace);
-								int count=0;
-								for(int i=0;i<productspace.length();i++)
-								{
-									if(Character.isDigit(productspace.charAt(i)))
-										count++;
-								}
-								if(count<2&&!productspace.contains("(")&&!productspace.contains(")"))
-									Text_search.add(productspace);
+							int count = 0;
+							for (int i = 0; i < productspace.length(); i++)
+							{
+								if (Character.isDigit(productspace.charAt(i)))
+									count++;
+							}
+							if (count < 2 && !productspace.contains("(") && !productspace.contains(")"))
+								Text_search.add(productspace);
 						}
 					}
 				}
 			}
 		}
-		
-for(String brandname : Brands)
-		response = response.concat(brandname+"| " +"Brand" +"| ");
 
-for(String textname : Text_search)
-	response = response.concat(textname+"| " +"Text Search" +"| ");
+		for (String brandname : Brands)
+			response = response.concat(brandname + "| " + "Brand" + "| ");
+
+		for (String textname : Text_search)
+			response = response.concat(textname + "| " + "Text Search" + "| ");
 		return response;
 	}
 
@@ -145,11 +138,11 @@ for(String textname : Text_search)
 	}
 
 	@Override
-	public Category getCategory(String pId) 
+	public Category getCategory(String pId)
 	{
 		return aDataStore.getCategory(pId);
 	}
-	
+
 	@Override
 	public List<Product> rankProducts(List<ScoredAttribute> pScoredAttributes, Collection<Product> pProducts)
 	{
@@ -157,74 +150,75 @@ for(String textname : Text_search)
 	}
 
 	@Override
-	public String sendCurrentFeatureList(String dataSpec)
+	public String sendCurrentFeatureList(String dataSpec, String pCategoryId)
 	{
 		UserFeatureModel userFMSpec = new Gson().fromJson(dataSpec, UserFeatureModel.class);
 
 		List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
-			
-		for(int i = 0 ; i < userFMSpec.getNames().size() ; i++)
+
+		for (int i = 0; i < userFMSpec.getNames().size(); i++)
 		{
 			String tempName = userFMSpec.getNames().get(i);
-			ScoredAttribute sa = locateFeatureScoredAttribute(aScoredAttr, tempName);
-			if ( sa != null)
+			ScoredAttribute sa = locateFeatureScoredAttribute(
+					aAttributeExtractor.getAttributesForCategory(pCategoryId), tempName);
+			if (sa != null)
 			{
-				userScoredFeaturesSpecs.add(sa);				
-			}			
+				userScoredFeaturesSpecs.add(sa);
+			}
 
 		}
-		
+
 		userScoredFeaturesSpecs = sortFeatures(userScoredFeaturesSpecs);
 
-		List<Product> rankedProducts = rankProducts(userScoredFeaturesSpecs, aCategory.getProducts());
-		
+		List<Product> rankedProducts = rankProducts(userScoredFeaturesSpecs, aProductSort.returnProductsAlphabetically(pCategoryId));
+
 		// Converting to View Object
 		ArrayList<ProductView> products = new ArrayList<ProductView>();
-	    for (Product scoredProduct: rankedProducts)
-	    {
+		for (Product scoredProduct : rankedProducts)
+		{
 			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl()));
-		 }
-	    
-	    String response = "";
-	    
-	    if (rankedProducts.size() > 0) 
-	    {   
-		    // This response is to be process by AJAX in JavaScript
-		    for (ProductView productView : products) 
-		    {
-		    	response = response.concat(productView.getId() + ",");
-		    }
-	    }
-		    
-	    return response;
-	}	
-	    
-	
+		}
+
+		String response = "";
+
+		if (rankedProducts.size() > 0)
+		{
+			// This response is to be process by AJAX in JavaScript
+			for (ProductView productView : products)
+			{
+				response = response.concat(productView.getId() + ",");
+				response = response.concat(productView.getName() + ",");
+				response = response.concat(productView.getUrl() + ";");
+			}
+		}
+
+		return response;
+	}
+
 	public List<ScoredAttribute> sortFeatures(List<ScoredAttribute> pUserFeatures)
 	{
 		ScoredAttribute tmp = null;
-		for(int i = 0; i<pUserFeatures.size(); i++)
+		for (int i = 0; i < pUserFeatures.size(); i++)
 		{
-			for(int j = pUserFeatures.size()-1; j >= i+1; j--)
-			{				
-				if(pUserFeatures.get(j).getEntropy() > pUserFeatures.get(j-1).getEntropy())
+			for (int j = pUserFeatures.size() - 1; j >= i + 1; j--)
+			{
+				if (pUserFeatures.get(j).getEntropy() > pUserFeatures.get(j - 1).getEntropy())
 				{
-					tmp = pUserFeatures.get(j);			       
-					pUserFeatures.set(j, pUserFeatures.get(j-1));
-					pUserFeatures.set(j-1, tmp);
+					tmp = pUserFeatures.get(j);
+					pUserFeatures.set(j, pUserFeatures.get(j - 1));
+					pUserFeatures.set(j - 1, tmp);
 				}
 			}
 		}
-		return pUserFeatures;		
+		return pUserFeatures;
 	}
-	
-	
+
 	public ScoredAttribute locateFeatureScoredAttribute(List<ScoredAttribute> pFeatureList, String pName)
 	{
-		for (int i = 0 ; i< pFeatureList.size() ; i++)
+		for (int i = 0; i < pFeatureList.size(); i++)
 		{
 			ScoredAttribute temp = pFeatureList.get(i);
-			if(temp.getAttributeName().equals(pName))
+			if (temp.getAttributeName().equals(pName))
 			{
 				return temp;
 
@@ -233,85 +227,40 @@ for(String textname : Text_search)
 		return null;
 	}
 
-	
-	@Override  
+	@Override
 	public ArrayList<ProductView> searchRankedFeaturesProducts_POST(String pCategoryId, Model pModel)
-	{  
-		aCategory = getCategory(pCategoryId);
+	{
 		List<Product> prodSearch = aProductSort.returnProductsAlphabetically(pCategoryId);
-        aScoredAttr = aAttributeExtractor.getAttributesForCategory(aCategory.getId());   
-	    	   
-	    // Converting
-		ArrayList<ProductView> products = new ArrayList<ProductView>();		
-	    for (Product scoredProduct: prodSearch) 
-	    {
+		ArrayList<ProductView> products = new ArrayList<ProductView>();
+		for (Product scoredProduct : prodSearch)
+		{
 			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl()));
-	    }		
+		}
 		return products;
 	}
-	
-	
+
 	@Override
-	public ArrayList<FeatureVO> updateCurrentFeatureList()
-	{		
-		ArrayList<FeatureVO> specFeatures = new ArrayList<FeatureVO>();	
-		List<String> values;
-
-		//Display top 10 scored attributes
-		for (int i = 0 ; i < aScoredAttr.size() ; i++)
+	public ArrayList<FeatureView> updateCurrentFeatureList(String pCategoryId)
+	{
+		ArrayList<FeatureView> specFeatures = new ArrayList<FeatureView>();
+		List<ScoredAttribute> scoredAttr = aAttributeExtractor.getAttributesForCategory(pCategoryId);
+		// Display top 10 scored attributes
+		for (int i = 0; i < scoredAttr.size(); i++)
 		{
-
-			if(i > NUMBER_OF_FEATURES_TO_DISPLAY)
+			if (i > NUMBER_OF_FEATURES_TO_DISPLAY)
 			{
 				break;
 			}
 
-			values = new ArrayList<String>();
-			FeatureVO f = new FeatureVO();
-			f.setId(aScoredAttr.get(i).getAttributeID());
-			f.setName(aScoredAttr.get(i).getAttributeName());
+			FeatureView f = new FeatureView();
+			f.setId(scoredAttr.get(i).getAttributeID());
+			f.setName(scoredAttr.get(i).getAttributeName());
 			f.setSpec(true);
 			f.setVisible(true);
+			f.setDesc(scoredAttr.get(i).getAttributeDesc());
 
-
-			f.setDesc(aScoredAttr.get(i).getAttributeDesc());
-			TypedValue val = aScoredAttr.get(i).getAttributeDefault();		
-
-
-			if( val.isBoolean() )
-			{	
-				f.setType("Bool");								
-				values.add(val.getBoolean()+"");
-				f.setValue((ArrayList<String>) values);
-			}
-			else if( val.isNumeric() )
-			{				
-				f.setType("Numeric");
-				f.setMinValue(aScoredAttr.get(i).getMin().getNumeric());
-				f.setMaxValue(aScoredAttr.get(i).getMax().getNumeric());										
-				values.add(val.getNumeric()+"");
-				f.setValue((ArrayList<String>)values);	
-			}
-			else if( val.isString() || val.isNA() )
-			{				
-				f.setType("Nominal");
-				if(val.isNA())
-				{
-					values.add("N/A");
-				}
-				else
-				{
-					//comment to change possibly
-					List<TypedValue> tvs = aScoredAttr.get(i).getDict();	
-					for(TypedValue tv :tvs)
-					{
-						values.add(tv.getString());
-					}					
-				}
-				f.setValue((ArrayList<String>)values);										
-			}
-			specFeatures.add(f);	
-		}		
+			specFeatures.add(f);
+		}
 		return specFeatures;
 	}
 }

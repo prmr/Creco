@@ -114,35 +114,40 @@ function sendFeatures() {
         async: true,
         url: '/sendFeatures',
         data: ({
-            dataSpec: sjData
+            dataSpec: sjData,
+            pCategoryId: $("#categoryMarker").attr('title')
         }),
         success: function (response) {
-        	stopSpinner();
-        	var order = response.split(",");
         	
-        	for (var i = 0; i < order.length - 1; i++) 
+        	// Spinner 
+        	stopSpinner();
+        	$("#product-area").empty();
+        	var spinner_div = $("<div>").attr("id", "spinner-wrapper").appendTo($("#product-area"));
+        	var spinner_div_mask = $("<div>").attr("id", "spinner-content-mask").appendTo(spinner_div);
+        	var spinner_div_mask = $("<div>").attr("id", "spinner").appendTo(spinner_div);
+        	
+        	
+        	// Products
+        	var productList = response.split(";");
+        	for (var i = 0; i < productList.length - 1; i++) 
         	{
-            	$.each($("#product-area div"), function () {
-            		var attributeId = $(this).attr("id");
-            		if (attributeId == order[i])
-            		{
-            			 $(this).appendTo(this.parentNode);
-            		}
-            	});
+        		var product_str = productList[i];
+        		var product = product_str.split(",");
+        		var product_div = $("<div>").addClass("rankedproduct-result-entry");
+        		var product_div_image = $("<div>").addClass("no-product-image").text("No image");
+        		var product_div_content = $("<div>").addClass("product-description-area");          	
+        		var product_div_name = null;
+        		if (product[2] == "") {
+        			product_div_name = $("<p>").addClass("rankedproduct-result-name").text(product[1]);
+        		} else {
+        			product_div_name = $("<a>").addClass("rankedproduct-result-name").text(product[1]).attr("href", product[2]);
+        		}
+        		
+        		product_div.append(product_div_image);
+        		product_div.append(product_div_content);
+        		product_div_content.append(product_div_name);
+        		$("#product-area").append(product_div);
         	}
         }
     });
 }
-
-/**
- * Hover effect to display the attributes selection guide
- */
-$("#feature_title").hover(
-    function () {
-        $("#feature_description").toggle();
-    },
-    function () {
-        $("#feature_description").toggle();
-    }
-);
-
