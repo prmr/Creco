@@ -136,7 +136,7 @@ html, body
 .no-product-image 
 {
 	padding: 24px 0 0 0;
-	background: url('../images/no-image.png');
+	background: url('../images/missing-product-image.jpg');
 }
 
 .rankedproduct-result-entry
