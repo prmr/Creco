@@ -197,7 +197,8 @@ public class Product
 	 */
 	public String getImage() 
 	{
-		if(!aImageThumbnail.contains("missing-product-image-thumbnail") && (!aImageThumbnail.contains("static2")))
+		if(!aImageThumbnail.contains("missing-product-image-thumbnail") && (!aImageThumbnail.contains("static2"))&&
+				(!aImageThumbnail.contains("static3")) && (!aImageThumbnail.contains("static1")) )
 		{
 		return aImageThumbnail;
 		}
