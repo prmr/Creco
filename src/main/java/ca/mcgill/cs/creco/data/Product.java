@@ -50,7 +50,6 @@ public class Product
 	 * @param pModelOverviewPageUrl The url of the product on the CR website.
 	 * @param pAttributes The attributes of the product. Copied internally.
 	 * @param pImageThumbnail Thumbnail of the image
-	 * @param pImageLarge large image
 	 */
 	public Product(String pId, String pDisplayName, Boolean pIsTested, String pCategoryId, 
 			String pBrandName, String pModelOverviewPageUrl, Collection<Attribute> pAttributes,
@@ -196,7 +195,7 @@ public class Product
 	 * Return a Thumbnail url for the product.
 	 * @return The Thumbnail url for the product.
 	 */
-	public String getImageThumbnail() 
+	public String getImage() 
 	{
 		if(!aImageThumbnail.contains("missing-product-image-thumbnail") && (!aImageThumbnail.contains("static2")))
 		{

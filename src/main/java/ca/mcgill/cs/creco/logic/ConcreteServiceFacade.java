@@ -176,7 +176,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 		ArrayList<ProductView> products = new ArrayList<ProductView>();
 		for (Product scoredProduct : rankedProducts)
 		{
-			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl()));
+			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl(), scoredProduct.getImage()));
 		}
 
 		String response = "";
@@ -189,6 +189,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 				response = response.concat(productView.getId() + ",");
 				response = response.concat(productView.getName() + ",");
 				response = response.concat(productView.getUrl() + ";");
+				response = response.concat(productView.getImage() + ";");
 			}
 		}
 
@@ -234,7 +235,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 		ArrayList<ProductView> products = new ArrayList<ProductView>();
 		for (Product scoredProduct : prodSearch)
 		{
-			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl()));
+			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl(), scoredProduct.getImage()));
 		}
 		return products;
 	}

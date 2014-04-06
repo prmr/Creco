@@ -79,7 +79,8 @@
 					<div id="spinner"></div>
 				</div>
 				<div  th:id="${product.id}" class="rankedproduct-result-entry" th:each="product : ${productList}">
-					<div class="no-product-image">no image</div>
+					<div class="no-product-image" th:style="'background:url(' + @{${product.image}} +'); background-repeat: no-repeat;' "> </div>
+					
 					<div class="product-description-area">	
 						<div th:switch="${product.url}">
 		                    <p th:case="''" class="rankedproduct-result-name" th:text="${product.name}"></p>
