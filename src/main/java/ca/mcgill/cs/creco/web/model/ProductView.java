@@ -15,6 +15,8 @@
  */
 package ca.mcgill.cs.creco.web.model;
 
+import java.util.List;
+
 /**
  * Represents information about a product to show in the web front-end. Immutable.
  */
@@ -23,6 +25,8 @@ public class ProductView
 	private String aId;
 	private String aName;
 	private String aUrl;
+	private List<ExplanationView> aExplanation;
+
 	
 	/**
 	 * Creates a new product.
@@ -35,6 +39,22 @@ public class ProductView
 		aId = pId;
 		aName = pName;
 		aUrl = pUrl;
+		
+	}
+	
+	/**
+	 * Creates a new product.
+	 * @param pId The product's idea.
+	 * @param pName The display name of the product.
+	 * @param pUrl The url pointing to the product's web page on the CR database.
+	 * @param pExplanation explanation for the product rank.
+	 */
+	public ProductView( String pId, String pName, String pUrl, List<ExplanationView> pExplanation)
+	{
+		aId = pId;
+		aName = pName;
+		aUrl = pUrl;
+		aExplanation = pExplanation;
 	}
 
 	/**
@@ -59,5 +79,13 @@ public class ProductView
 	public String getUrl()
 	{
 		return aUrl;
+	}
+	/**
+	 * 
+	 * @return The product Ranking Explanation.
+	 */
+	public List<ExplanationView> getExplanation()
+	{
+		return aExplanation;
 	}
 }

@@ -25,8 +25,10 @@ import org.springframework.ui.Model;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
+import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.logic.search.ICategorySearch;
 import ca.mcgill.cs.creco.logic.search.IProductSearch;
+import ca.mcgill.cs.creco.web.model.ExplanationView;
 import ca.mcgill.cs.creco.web.model.FeatureView;
 import ca.mcgill.cs.creco.web.model.ProductView;
 import ca.mcgill.cs.creco.web.model.UserFeatureModel;
@@ -144,10 +146,11 @@ public class ConcreteServiceFacade implements ServiceFacade
 	}
 
 	@Override
-	public List<Product> rankProducts(List<ScoredAttribute> pScoredAttributes, Collection<Product> pProducts)
+	public List<RankExplanation> rankProducts(List<ScoredAttribute> pScoredAttributes, Collection<Product> pProducts)
 	{
 		return aProductRanker.rankProducts(pScoredAttributes, pProducts);
 	}
+
 
 	@Override
 	public String sendCurrentFeatureList(String dataSpec, String pCategoryId)
@@ -170,15 +173,23 @@ public class ConcreteServiceFacade implements ServiceFacade
 
 		userScoredFeaturesSpecs = sortFeatures(userScoredFeaturesSpecs);
 
-		List<Product> rankedProducts = rankProducts(userScoredFeaturesSpecs, aProductSort.returnProductsAlphabetically(pCategoryId));
-
+		List<RankExplanation> rankedProducts = rankProducts(userScoredFeaturesSpecs, aProductSort.returnProductsAlphabetically(pCategoryId));
 		// Converting to View Object
 		ArrayList<ProductView> products = new ArrayList<ProductView>();
-		for (Product scoredProduct : rankedProducts)
+		for (RankExplanation scoredProduct : rankedProducts)
 		{
-			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl()));
+//			if(scoredProduct.getaAttribute())
+			ArrayList<ExplanationView> explanation = new ArrayList<ExplanationView>();
+			
+			for(ScoredAttribute scoredAttribute : scoredProduct.getaAttribute())
+			{
+				TypedValue value = scoredProduct.getaProduct().getAttribute(scoredAttribute.getAttributeID()).getTypedValue();
+				explanation.add(new ExplanationView(scoredAttribute.getAttributeName(),value.getNumeric(), scoredAttribute.getValueRank(value),scoredAttribute.getEntropy()));
+		
+			}
+			products.add(new ProductView(scoredProduct.getaProduct().getId(), scoredProduct.getaProduct().getName(), scoredProduct.getaProduct().getUrl(),explanation));
+			
 		}
-
 		String response = "";
 
 		if (rankedProducts.size() > 0)
@@ -186,9 +197,18 @@ public class ConcreteServiceFacade implements ServiceFacade
 			// This response is to be process by AJAX in JavaScript
 			for (ProductView productView : products)
 			{
+				List<ExplanationView> expView = productView.getExplanation();
+				
 				response = response.concat(productView.getId() + ",");
 				response = response.concat(productView.getName() + ",");
 				response = response.concat(productView.getUrl() + ";");
+				for(ExplanationView e : expView)
+				{
+					response = response.concat(e.getName() + "|");
+					response = response.concat(e.getValue() + "|");
+					response = response.concat(e.getAttrRank() + "|");
+					response = response.concat(e.getValueRank()+"||");					
+				}			
 			}
 		}
 

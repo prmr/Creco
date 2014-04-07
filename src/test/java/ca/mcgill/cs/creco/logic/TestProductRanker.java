@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
-
+import ca.mcgill.cs.creco.logic.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/META-INF/test-context.xml"})
 public class TestProductRanker {
@@ -41,7 +41,7 @@ public class TestProductRanker {
 		Category category = aDataStore.getCategory(TOASTER_CATEGORY_ID); 
 		List<ScoredAttribute> scoredAttributes = aAttributeExtractor.getAttributesForCategory(category.getId());
 		    
-		List<Product> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category.getProducts());
+		List<RankExplanation> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category.getProducts());
 		
 		assertEquals(TOASTER_CATEGORY_NUM_PRODUCTS, scoredProducts.size());
 	}
@@ -55,10 +55,10 @@ public class TestProductRanker {
 		List<ScoredAttribute> scoredAttributes = new ArrayList<ScoredAttribute>();
 		scoredAttributes.add(humidifierOutputAttribute);
 		
-		List<Product> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category.getProducts());
+		List<RankExplanation> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category.getProducts());
 		
 		// Highest humidifier output should be 5.0/5.0
-		assertEquals(scoredProducts.get(0).getAttribute(HUMIDIFIER_OUTPUT_ID).getTypedValue().getNumeric(), 5.0, 0.00001);
+		assertEquals(scoredProducts.get(0).getaProduct().getAttribute(HUMIDIFIER_OUTPUT_ID).getTypedValue().getNumeric(), 5.0, 0.00001);
 	}
 	
 	@Test
@@ -71,10 +71,10 @@ public class TestProductRanker {
 		List<ScoredAttribute> scoredAttributes = new ArrayList<ScoredAttribute>();
 		scoredAttributes.add(humidifierWeightAttribute);
 		
-		List<Product> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category.getProducts());
+		List<RankExplanation> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category.getProducts());
 		
 		// Lowest weight is 7.5
-		assertEquals(scoredProducts.get(0).getAttribute(HUMIDIFIER_FULL_TANK_WEIGHT_ID).getTypedValue().getNumeric(), 7.5, 0.0001);	
+		assertEquals(scoredProducts.get(0).getaProduct().getAttribute(HUMIDIFIER_FULL_TANK_WEIGHT_ID).getTypedValue().getNumeric(), 7.5, 0.0001);	
 	}
 	
 	@Test
@@ -89,8 +89,8 @@ public class TestProductRanker {
 		scoredAttributes.add(humidifierOutputAttribute);
 		scoredAttributes.add(humidifierWeightAttribute);
 		
-		List<Product> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category.getProducts());
+		List<RankExplanation> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category.getProducts());
 		
-		assertEquals(scoredProducts.get(0).getName(), "Safety 1st 49292");
+		assertEquals(scoredProducts.get(0).getaProduct().getName(), "Safety 1st 49292");
 	}
 }

@@ -129,6 +129,7 @@ function sendFeatures() {
         	
         	// Products
         	var productList = response.split(";");
+        	
         	for (var i = 0; i < productList.length - 1; i++) 
         	{
         		var product_str = productList[i];
@@ -137,15 +138,32 @@ function sendFeatures() {
         		var product_div_image = $("<div>").addClass("no-product-image").text("No image");
         		var product_div_content = $("<div>").addClass("product-description-area");          	
         		var product_div_name = null;
+        		var product_div_exp = null;
+        		var product_div_exp_value = null;
+        		
         		if (product[2] == "") {
         			product_div_name = $("<p>").addClass("rankedproduct-result-name").text(product[1]);
         		} else {
         			product_div_name = $("<a>").addClass("rankedproduct-result-name").text(product[1]).attr("href", product[2]);
         		}
         		
+        		var explanationList = product_str.split("||");
+        		for(var j=0 ; j < explanationList.length -1; j++)
+        		{
+            			var exp = explanationList[j].split("|");
+            			console.log(" explanation 0 "+JSON.stringify(exp[0]));          
+            			console.log(" explanation 1 "+JSON.stringify(exp[1]));            		
+            			console.log(" explanation 2 "+JSON.stringify(exp[2]));            		
+            			console.log(" explanation 3 "+JSON.stringify(exp[3])); 
+            			product_div_exp = $("<p>").addClass("rankexplanation-attr-name").text(exp[0]);
+            			product_div_exp_value = $("<p>").addClass("rankexplanation-attr-value").text(exp[1]);
+                		
+            	}
+        		
         		product_div.append(product_div_image);
         		product_div.append(product_div_content);
         		product_div_content.append(product_div_name);
+        		//product_div_content.append(product_div_exp);
         		$("#product-area").append(product_div);
         	}
         }
