@@ -197,11 +197,19 @@ public class ConcreteServiceFacade implements ServiceFacade
 			// This response is to be process by AJAX in JavaScript
 			for (ProductView productView : products)
 			{
+				List<ExplanationView> expView = productView.getExplanation();
+				
 				response = response.concat(productView.getId() + ",");
 				response = response.concat(productView.getName() + ",");
 				response = response.concat(productView.getUrl() + ";");
-				response = response.concat(productView.getImage() + ";");
-				response = response.concat(productView.getExplanation() + ";");								
+				response = response.concat(productView.getImage() + "|");
+				for(ExplanationView e : expView)
+				{
+					response = response.concat(e.getName() + ",");
+					response = response.concat(e.getValue() + ",");
+					response = response.concat(e.getAttrRank() + ",");
+					response = response.concat(e.getValueRank()+"|");					
+				}				
 			}
 		}
 

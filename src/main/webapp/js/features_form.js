@@ -129,8 +129,10 @@ function sendFeatures() {
         	
         	// Products
         	var productList = response.split(";");
+        	var explanationList = response.split("|");
         	for (var i = 0; i < productList.length - 1; i++) 
         	{
+        	//	console.log(" productList "+ i+ " "+ productList[i])
         		var product_str = productList[i];
         		var product = product_str.split(",");
         		var product_div = $("<div>").addClass("rankedproduct-result-entry");
@@ -142,7 +144,16 @@ function sendFeatures() {
         		} else {
         			product_div_name = $("<a>").addClass("rankedproduct-result-name").text(product[1]).attr("href", product[2]);
         		}
-        		
+        		//Explanations
+        		//=for(var j=0 ; j < explanationList.length -1; j++)
+        		//={
+        			var exp = explanationList[i+1].split(",");
+        			console.log(" explanation 0 "+JSON.stringify(exp[0]));          
+        			console.log(" explanation 1 "+JSON.stringify(exp[1]));            		
+        			console.log(" explanation 2 "+JSON.stringify(exp[2]));            		
+        			console.log(" explanation 3 "+JSON.stringify(exp[3]));            		
+            		
+        		//=}
         		
         		product_div.append(product_div_image);
         		product_div.append(product_div_content);
