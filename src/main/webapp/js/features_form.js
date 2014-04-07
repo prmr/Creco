@@ -125,7 +125,7 @@ function sendFeatures() {
         	var spinner_div = $("<div>").attr("id", "spinner-wrapper").appendTo($("#product-area"));
         	var spinner_div_mask = $("<div>").attr("id", "spinner-content-mask").appendTo(spinner_div);
         	var spinner_div_mask = $("<div>").attr("id", "spinner").appendTo(spinner_div);
-        	
+        	console.log(" in success");
         	
         	// Products
         	var productList = response.split(";");
@@ -135,13 +135,14 @@ function sendFeatures() {
         		var product = product_str.split(",");
         		var product_div = $("<div>").addClass("rankedproduct-result-entry");
         		var product_div_image = $("<div>").addClass("no-product-image").text("No image");
-        		var product_div_content = $("<div>").addClass("product-description-area");          	
+        		var product_div_content = $("<div>").addClass("product-description-area");  
         		var product_div_name = null;
         		if (product[2] == "") {
         			product_div_name = $("<p>").addClass("rankedproduct-result-name").text(product[1]);
         		} else {
         			product_div_name = $("<a>").addClass("rankedproduct-result-name").text(product[1]).attr("href", product[2]);
         		}
+        		
         		
         		product_div.append(product_div_image);
         		product_div.append(product_div_content);

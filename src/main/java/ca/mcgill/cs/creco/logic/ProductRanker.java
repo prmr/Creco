@@ -43,7 +43,7 @@ public class ProductRanker
 	 * @param pProducts The collection of products to rank.
 	 * @return The ranked list of products, ordered from highest to lowest score.
 	 */
-	public List<Product> rankProducts(List <ScoredAttribute> pScoredAttributes, Collection<Product> pProducts)
+	public List<RankExplanation> rankProducts(List <ScoredAttribute> pScoredAttributes, Collection<Product> pProducts)
 	{
 		Map<Product, Double> scoredProducts = new HashMap<Product, Double>();
 		
@@ -83,7 +83,33 @@ public class ProductRanker
 			}
 		}
 
-		return sortProductsByScore(scoredProducts);
+		List<Product> sortedProducts = sortProductsByScore(scoredProducts);
+		List<RankExplanation> prodExp = null;
+		prodExp = new ArrayList<RankExplanation>();
+		
+		for (Product p :sortedProducts)
+		{
+			RankExplanation explanation = new RankExplanation(p);							
+			for (ScoredAttribute scoredAttribute : pScoredAttributes)
+			{
+				if(p.getAttribute(scoredAttribute.getAttributeID()) !=null)
+				{
+					explanation = explanation.getExplanation(p, scoredAttribute);
+					
+				}
+				
+			}	
+			prodExp.add(explanation);
+		}
+		
+/*		for(RankExplanation re : prodExp)
+		{
+			System.out.println("" + re.getaAttribute().getAttributeName()+ " " + re.getaAttributeRank() + " " + re.getaAttributeValue() +" " + re.getaProduct().getName());
+		}
+*/		
+//		return prodExp;
+		return prodExp; 	
+		
 	}
 	
 	/**
