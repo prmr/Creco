@@ -154,39 +154,27 @@ function sendFeatures() {
             			var exp = explanationList[j].split("|");
             			console.log(" explanation 0 "+JSON.stringify(exp[0]));          
             			console.log(" explanation 1 "+JSON.stringify(exp[1]));            		
-            			console.log(" explanation 2 "+JSON.stringify(exp[2]));            		
+            		//	console.log(" explanation 2 "+JSON.stringify(exp[2]));            		
             			console.log(" explanation 3 "+JSON.stringify(exp[3])); 
             			product_div_exp = $("<p>").addClass("rankexplanation-attr-name").text(JSON.stringify(exp[0]));
             			product_div_exp_value = $("<p>").addClass("rankexplanation-attr-value").text(JSON.stringify(exp[1]));
             			var bloc1 = $("<div>").addClass("bloc1");
                     	
-                		var explanation_attribute = $("<div>").addClass("rankexplanation-attr-name").text(exp[0]+ " : "+exp[1]);
+                		var explanation_attribute = $("<div>").addClass("rankexplanation-attr-name").text(exp[0]+ " : Rank");
                 		explanation_attribute.appendTo(bloc1);
                 		var progress = $('<div>', {class: 'progress'});
                 		var progress1=null;
                 		var progress2 = null;
                 		var progress3=null;
-                		if(parseInt(exp[3])>=8)
-                			{
-                		progress1 = $("<div>").addClass("progress-bar progress-bar-danger").css("width","33%");
-                		progress2 =  $("<div>").addClass("progress-bar progress-bar-warning").css("width","33%");
-                		progress3 =$("<div>").addClass("progress-bar progress-bar-success").text(exp[3]).css("width","33%");
-                			}
-                		else if(parseInt(exp[3])>=5)
-                			{
-                       		progress1 = $("<div>").addClass("progress-bar progress-bar-danger").css("width","33%");
-                    		progress2 =  $("<div>").addClass("progress-bar progress-bar-warning").text(exp[3]).css("width","33%");
-                    		progress3 =$("<div>").addClass("progress-bar progress-bar-success").css("width","33%");
-                			}
-                		else
-                			{
-                			progress1 = $("<div>").addClass("progress-bar progress-bar-danger").text(exp[3]).css("width","33%");
-                    		progress2 =  $("<div>").addClass("progress-bar progress-bar-warning").css("width","33%");
-                    		progress3 =$("<div>").addClass("progress-bar progress-bar-success").css("width","33%");
-                			}
+                		var rankValue = exp[1] - exp[3] + 1;
+                		progress1 = $("<div>").addClass("progress-bar").text(exp[3]).attr("aria-valuenow",rankValue).css("width",exp[3]);                		
+//                		aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" 
+                    	//progress2 =  $("<div>").addClass("progress-bar progress-bar-warning").css("width","33%");
+                    	//progress3 =$("<div>").addClass("progress-bar progress-bar-success").css("width","33%");
+                		
                 		progress1.appendTo(progress);
-                		progress2.appendTo(progress);
-                		progress3.appendTo(progress);
+                	//	progress2.appendTo(progress);
+                	//	progress3.appendTo(progress);
                 		
                 		progress.appendTo(bloc1);
                 		bloc1.appendTo(parentbloc1);
