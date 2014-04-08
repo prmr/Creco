@@ -473,7 +473,6 @@ public class ScoredAttribute
 			aEntropy = 0;
 		}
 		// Compute Correlation
-	
 		NominalCorrelator nominalCorrelator = new NominalCorrelator(aCategory);
 		ArrayList<Map.Entry<String, Double>> entryList = new ArrayList<Map.Entry<String, Double>>();
 		entryList.addAll(nominalCorrelator.getLabelMeanScores(aAttributeID).entrySet());
@@ -483,7 +482,14 @@ public class ScoredAttribute
 		{
 			aLabelMeanScores.put(entry.getKey(), entry.getValue());
 			aStringValueRank.put(entry.getKey(), rank);
-			rank++;
+			if(entry.getKey().equals(String.valueOf(true)))
+			{
+				rank += trueCount;
+			}
+			else
+			{
+				rank += trueCount-totalCount;
+			}
 		}
 		
 		aCorrelation = nominalCorrelator.computeAttributeWeight(aAttributeID);

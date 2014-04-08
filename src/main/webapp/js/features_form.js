@@ -134,8 +134,10 @@ function sendFeatures() {
         	{
         		var product_str = productList[i];
         		var product = product_str.split(",");
+        		
+        		
         		var product_div = $("<div>").addClass("rankedproduct-result-entry");
-        		var product_div_image = $("<div>").addClass("no-product-image").text("No image");
+        		var product_div_image = $("<div>").addClass("product-image").css("background-image", "url('"+product[3]+"')");
         		var product_div_content = $("<div>").addClass("product-description-area");          	
         		var product_div_name = null;
         		var product_div_exp = null;

@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.lucene.search.Explanation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
@@ -185,10 +186,12 @@ public class ConcreteServiceFacade implements ServiceFacade
 			{
 				TypedValue value = rei.getaAttributeValue();				
 				String attributeName = rei.getaAttribute().getAttributeName();
-				explanation.add(new ExplanationView(attributeName, value, rei.getaAttributeRank(),rei.getaAttribute().getAttributeScore()));
+				explanation.add(new ExplanationView(attributeName, value, rei.getaAttributeRank(), rei.getaAttribute().getAttributeScore()));
 			}
-			products.add(new ProductView(productRankingExplanation.getaProduct().getId(), productRankingExplanation.getaProduct().getName(), productRankingExplanation.getaProduct().getUrl(),explanation));
+			products.add(new ProductView(productRankingExplanation.getaProduct().getId(), productRankingExplanation.getaProduct().getName(),
+					productRankingExplanation.getaProduct().getUrl(), explanation, productRankingExplanation.getaProduct().getImage()));
 			
+
 		}
 		String response = "";
 
@@ -227,8 +230,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 				response = response.concat(productView.getId() + ",");
 				response = response.concat(productView.getName() + ",");
 				response = response.concat(productView.getUrl() + ";");
-	
-			
+
 			}
 		}
 
@@ -272,9 +274,10 @@ public class ConcreteServiceFacade implements ServiceFacade
 	{
 		List<Product> prodSearch = aProductSort.returnProductsAlphabetically(pCategoryId);
 		ArrayList<ProductView> products = new ArrayList<ProductView>();
+		ArrayList<ExplanationView> emptyExplanation = new ArrayList<ExplanationView>();
 		for (Product scoredProduct : prodSearch)
 		{
-			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl()));
+			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl(), emptyExplanation , scoredProduct.getImage()));
 		}
 		return products;
 	}

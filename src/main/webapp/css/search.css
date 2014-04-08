@@ -120,19 +120,23 @@ html, body
 	border-bottom: 1px solid #ddd;
 }
 
-.no-product-image
+.no-product-image, .product-image
 {
-	height: 80px;
-	width: 80px;
+	height: 70px;
+	width: 90px;
 	float: left;
 	margin-right: 10px;
 	border: solid 1px #7a7a7a;
-	padding: 28px 0 0 0;
 	text-align: center;
-	background: url("../images/no-image.png");
 	font-size: 12px;
 	color: rgb(160,160,160);
 	font-style: italic;
+}
+
+.no-product-image 
+{
+	padding: 24px 0 0 0;
+	background: url('../images/missing-product-image.jpg');
 }
 
 .rankedproduct-result-entry

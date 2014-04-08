@@ -26,21 +26,9 @@ public class ProductView
 	private String aName;
 	private String aUrl;
 	private List<ExplanationView> aExplanation;
+	private String aImage;
 
 	
-	/**
-	 * Creates a new product.
-	 * @param pId The product's idea.
-	 * @param pName The display name of the product.
-	 * @param pUrl The url pointing to the product's web page on the CR database.
-	 */
-	public ProductView( String pId, String pName, String pUrl)
-	{
-		aId = pId;
-		aName = pName;
-		aUrl = pUrl;
-		
-	}
 	
 	/**
 	 * Creates a new product.
@@ -48,13 +36,16 @@ public class ProductView
 	 * @param pName The display name of the product.
 	 * @param pUrl The url pointing to the product's web page on the CR database.
 	 * @param pExplanation explanation for the product rank.
+	 * * @param pImage The product image
 	 */
-	public ProductView( String pId, String pName, String pUrl, List<ExplanationView> pExplanation)
+	public ProductView( String pId, String pName, String pUrl, List<ExplanationView> pExplanation,String pImage)
 	{
 		aId = pId;
 		aName = pName;
 		aUrl = pUrl;
 		aExplanation = pExplanation;
+		aImage = pImage;
+
 	}
 
 	/**
@@ -81,11 +72,20 @@ public class ProductView
 		return aUrl;
 	}
 	/**
+<<<<<<< HEAD
 	 * 
 	 * @return The product Ranking Explanation.
 	 */
 	public List<ExplanationView> getExplanation()
 	{
 		return aExplanation;
+	}
+
+	/**
+	 * @return The product page's Image
+	 */
+	public String getImage()
+	{
+		return aImage;
 	}
 }
