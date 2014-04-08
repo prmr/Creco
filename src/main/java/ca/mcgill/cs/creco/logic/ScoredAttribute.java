@@ -218,8 +218,6 @@ public class ScoredAttribute
 		{
 			aDefaultValue = new TypedValue();
 		}
-		//set the score to be the absolute value of the Correlation.
-		aAttributeScore = Math.abs(aCorrelation);
 		
 
 	}
@@ -337,14 +335,7 @@ public class ScoredAttribute
 			aDirection = ac.computeAttributeDirection(aAttributeID, CONSIDERATION_THRESHOLD);
 		}
 		//Calculate Ranking
-		if(aDirection == Direction.MORE_IS_BETTER)
-		{
-			Collections.sort(values, Collections.reverseOrder());
-		}
-		else{
-			Collections.sort(values);
-		}
-		
+		Collections.sort(values);
 		double previousValue = 0;
 		boolean notFirst = false;
 		int rank = 1;
@@ -358,20 +349,18 @@ public class ScoredAttribute
 						LOG.error("setNumericStats sort error in Attribute " +aAttributeID+ "in Category " + aCategory.getId());
 					}
 					else{
-						aNumericValueRank.put(val, new Integer(rank));
+						aNumericValueRank.put(val, rank);
 						previousValue = val.doubleValue();
 					}
-					rank ++;
 				}			
 			}
 			else//It is the first Item
 			{
-				aNumericValueRank.put(val, new Integer(rank));
+				aNumericValueRank.put(val, rank);
 				previousValue = val.doubleValue();
 				notFirst = true;
-				rank ++;
 			}
-			
+			rank ++;
 		}
 	}
 	
@@ -432,7 +421,7 @@ public class ScoredAttribute
 		for (Map.Entry<String, Double> entry : entryList)
 		{
 			aLabelMeanScores.put(entry.getKey(), entry.getValue());
-			aStringValueRank.put(entry.getKey(), new Integer(rank));
+			aStringValueRank.put(entry.getKey(), rank);
 			rank++;
 		}
 		
@@ -486,7 +475,7 @@ public class ScoredAttribute
 		for (Map.Entry<String, Double> entry : entryList)
 		{
 			aLabelMeanScores.put(entry.getKey(), entry.getValue());
-			aStringValueRank.put(entry.getKey(), new Integer(rank));
+			aStringValueRank.put(entry.getKey(), rank);
 			rank++;
 		}
 		
@@ -555,8 +544,7 @@ public class ScoredAttribute
 					@Override
 					public int compare(Map.Entry<String, Double> pA, Map.Entry<String, Double> pB) 
 					{
-						//higher scores are better so tkae the inverse
-						return -Double.compare(pA.getValue(), pB.getValue());
+						return Double.compare(pA.getValue(), pB.getValue());
 					}
 				});
 	}
@@ -727,7 +715,7 @@ public class ScoredAttribute
 	 * This will return the rank of the Typed value passed. If the value is not found,
 	 * this will throw an IllegalArgeumetnException error.
 	 * 
-	 * For booleans, if true has rank 1 then it is good to have this feature.
+	 * For booleans, true always has rank 1 and false always has rank 2;
 	 * 
 	 * @param pValue the value to be checkAgainst
 	 * @return the rank of the value in this ScoredAttribute
@@ -759,11 +747,11 @@ public class ScoredAttribute
 						+ "in Attribute " +aAttributeID+ "in Category " + aCategory.getId());
 			}
 		}
-		else if(pValue.isBoolean())
+		else if(pValue.isBoolean()) //Assume it is always better to have 
 		{
-			if(aStringValueRank.containsKey(String.valueOf(pValue.getBoolean())))
+			if(aStringValueRank.containsKey(String.valueOf(pValue.getString())))
 			{
-				return aStringValueRank.get(String.valueOf(pValue.getBoolean()));
+				return aStringValueRank.get(String.valueOf(pValue.getString()));
 			}
 			else
 			{
