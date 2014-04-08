@@ -335,7 +335,14 @@ public class ScoredAttribute
 			aDirection = ac.computeAttributeDirection(aAttributeID, CONSIDERATION_THRESHOLD);
 		}
 		//Calculate Ranking
-		Collections.sort(values);
+		if(aDirection == Direction.LESS_IS_BETTER)
+		{
+			Collections.sort(values);
+		}
+		else
+		{
+			Collections.sort(values,Collections.reverseOrder());
+		}
 		double previousValue = 0;
 		boolean notFirst = false;
 		int rank = 1;
@@ -544,7 +551,7 @@ public class ScoredAttribute
 					@Override
 					public int compare(Map.Entry<String, Double> pA, Map.Entry<String, Double> pB) 
 					{
-						return Double.compare(pA.getValue(), pB.getValue());
+						return -Double.compare(pA.getValue(), pB.getValue());
 					}
 				});
 	}
