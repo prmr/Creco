@@ -166,9 +166,9 @@ function sendFeatures() {
                 		var progress1=null;
                 		var progress2 = null;
                 		var progress3=null;
-                		var rankValue = exp[1] - exp[3] + 1;
+                		var rankValue = exp[1] - exp[3]+1;
                 		progress1 = $("<div>").addClass("progress-bar").text("Rank: "+exp[3]).attr("aria-valuenow",rankValue).css("width",exp[3]);                		
-                		progress1.attr("aria-valuemax",exp[1]));
+                		progress1.attr("aria-valuemax",exp[1]);
                 		//                		aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" 
                     	//progress2 =  $("<div>").addClass("progress-bar progress-bar-warning").css("width","33%");
                     	//progress3 =$("<div>").addClass("progress-bar progress-bar-success").css("width","33%");
