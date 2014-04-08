@@ -205,10 +205,10 @@ public class ConcreteServiceFacade implements ServiceFacade
 				for(ExplanationView e : expView)
 				{
 					response = response.concat(e.getName() + "|");
-					response = response.concat("0|");
+					response = response.concat(products.size() + "|");
 					response = response.concat(e.getAttrRank() + "|");
-					response = response.concat(e.getValueRank()+"||");					
-				}	
+					response = response.concat(e.getValueRank()+"||"); 					
+				}		
 				response=response.concat("{}");
 				response = response.concat(productView.getId() + ",");
 				response = response.concat(productView.getName() + ",");
