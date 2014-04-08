@@ -113,7 +113,8 @@ public class SiteController
 	@ResponseBody
 	public String sendCurrentFeatureList(@RequestParam String dataSpec, @RequestParam String pCategoryId)
 	{
-	    String response = aServiceFacade.sendCurrentFeatureList(dataSpec, pCategoryId);	    
+	    String response = aServiceFacade.sendCurrentFeatureList(dataSpec, pCategoryId);	 
+
 		return response;		
 	}		
 }

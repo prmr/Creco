@@ -198,17 +198,19 @@ public class ConcreteServiceFacade implements ServiceFacade
 			for (ProductView productView : products)
 			{
 				List<ExplanationView> expView = productView.getExplanation();
-				
-				response = response.concat(productView.getId() + ",");
-				response = response.concat(productView.getName() + ",");
-				response = response.concat(productView.getUrl() + ";");
 				for(ExplanationView e : expView)
 				{
 					response = response.concat(e.getName() + "|");
 					response = response.concat(e.getValue() + "|");
 					response = response.concat(e.getAttrRank() + "|");
 					response = response.concat(e.getValueRank()+"||");					
-				}			
+				}		
+				response=response.concat("{}");
+				response = response.concat(productView.getId() + ",");
+				response = response.concat(productView.getName() + ",");
+				response = response.concat(productView.getUrl() + ";");
+	
+			
 			}
 		}
 
