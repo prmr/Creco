@@ -144,7 +144,7 @@ html, body
     background: #FAFAFA;
     color: rgb(122, 122, 122);
 	padding: 20px;
-	height: 120px;
+	min-height: 120px;
 	width: 550px;
     font-size: 16px;
 }
@@ -238,5 +238,20 @@ label
 {
   	font-size: 14px; 
 	padding: 20px;
+}
+    
+    
+.progress
+{
+	width:80%;
+}
+
+#block_container
+{
+width : 50%;
+}
+.bloc1
+{
+    display:inline;
 }
     

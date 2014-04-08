@@ -88,8 +88,29 @@
 						</div>
 						
 						<!-- This might be an easy place to put ranking-explanations  -->
+						<div th:each="exp : ${product.explanation}">
+							<p class="rankexplanation-attr-name" th:text="${exp.name}"></p>
+							<div class="progress">		  						
+								  <div class="progress-bar progress-bar-danger rankexplanation-attr-value" style="width:35%" th:text="${exp.valueRank}">
+								    <span class="sr-only" th:text="${exp.value}"></span>
+								  </div>							  	
+								  <div class="progress-bar progress-bar-warning rankexplanation-attr-value" style="width: 33%" th:text="${exp.valueRank}">
+								    <span class="sr-only" th:text="${exp.value}"></span>
+								  </div>
+								  <div class="progress-bar progress-bar-success rankexplanation-attr-value" style="width: 33%" th:text="${exp.valueRank}">
+								    <span class="sr-only" th:text="${exp.value}"></span>
+								  </div>
+								 <span class="badge pull-right" th:text = "${exp.attrRank}"></span>
+							</div>								
+						</div>	
+												
+					</div>	
 
-					</div>
+
+
+
+
+						
 					<div class="clear"></div>
 				</div>
 			</div>

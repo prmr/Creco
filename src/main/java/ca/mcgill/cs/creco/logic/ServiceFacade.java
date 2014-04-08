@@ -62,7 +62,7 @@ public interface ServiceFacade
 	 * @param pProducts The collection of products to rank.
 	 * @return The ranked list of products, ordered from highest to lowest score.
 	 */
-	List<Product> rankProducts(List <ScoredAttribute> pScoredAttributes, Collection<Product> pProducts);
+	List<RankExplanation> rankProducts(List <ScoredAttribute> pScoredAttributes, Collection<Product> pProducts);
 
 	/**
 	 * Returns a string of for the products view page.

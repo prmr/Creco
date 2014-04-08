@@ -129,6 +129,7 @@ function sendFeatures() {
         	
         	// Products
         	var productList = response.split(";");
+        	
         	for (var i = 0; i < productList.length - 1; i++) 
         	{
         		var product_str = productList[i];
@@ -137,16 +138,68 @@ function sendFeatures() {
         		var product_div_image = $("<div>").addClass("no-product-image").text("No image");
         		var product_div_content = $("<div>").addClass("product-description-area");          	
         		var product_div_name = null;
+        		var product_div_exp = null;
+        		var product_div_exp_value = null;
+        		
         		if (product[2] == "") {
         			product_div_name = $("<p>").addClass("rankedproduct-result-name").text(product[1]);
         		} else {
         			product_div_name = $("<a>").addClass("rankedproduct-result-name").text(product[1]).attr("href", product[2]);
         		}
+        		var parentbloc1 =  $("<div>").css({"width":"50%","margin":"0 auto"})
+        		var temporary = product[0].split("{}");
+        		var explanationList = temporary[0].split("||");
+        		for(var j=0 ; j < explanationList.length -1; j++)
+        		{
+            			var exp = explanationList[j].split("|");
+            			console.log(" explanation 0 "+JSON.stringify(exp[0]));          
+            			console.log(" explanation 1 "+JSON.stringify(exp[1]));            		
+            			console.log(" explanation 2 "+JSON.stringify(exp[2]));            		
+            			console.log(" explanation 3 "+JSON.stringify(exp[3])); 
+            			product_div_exp = $("<p>").addClass("rankexplanation-attr-name").text(JSON.stringify(exp[0]));
+            			product_div_exp_value = $("<p>").addClass("rankexplanation-attr-value").text(JSON.stringify(exp[1]));
+            			var bloc1 = $("<div>").addClass("bloc1");
+                    	
+                		var explanation_attribute = $("<div>").addClass("rankexplanation-attr-name").text(exp[0]+ " : "+exp[1]);
+                		explanation_attribute.appendTo(bloc1);
+                		var progress = $('<div>', {class: 'progress'});
+                		var progress1=null;
+                		var progress2 = null;
+                		var progress3=null;
+                		if(parseInt(exp[3])>=8)
+                			{
+                		progress1 = $("<div>").addClass("progress-bar progress-bar-danger").css("width","33%");
+                		progress2 =  $("<div>").addClass("progress-bar progress-bar-warning").css("width","33%");
+                		progress3 =$("<div>").addClass("progress-bar progress-bar-success").text(exp[3]).css("width","33%");
+                			}
+                		else if(parseInt(exp[3])>=5)
+                			{
+                       		progress1 = $("<div>").addClass("progress-bar progress-bar-danger").css("width","33%");
+                    		progress2 =  $("<div>").addClass("progress-bar progress-bar-warning").text(exp[3]).css("width","33%");
+                    		progress3 =$("<div>").addClass("progress-bar progress-bar-success").css("width","33%");
+                			}
+                		else
+                			{
+                			progress1 = $("<div>").addClass("progress-bar progress-bar-danger").text(exp[3]).css("width","33%");
+                    		progress2 =  $("<div>").addClass("progress-bar progress-bar-warning").css("width","33%");
+                    		progress3 =$("<div>").addClass("progress-bar progress-bar-success").css("width","33%");
+                			}
+                		progress1.appendTo(progress);
+                		progress2.appendTo(progress);
+                		progress3.appendTo(progress);
+                		
+                		progress.appendTo(bloc1);
+                		bloc1.appendTo(parentbloc1);
+            	}
+        		
         		
         		product_div.append(product_div_image);
         		product_div.append(product_div_content);
         		product_div_content.append(product_div_name);
+        		product_div.append(parentbloc1);
+        		//product_div_content.append(product_div_exp);
         		$("#product-area").append(product_div);
+
         	}
         }
     });
