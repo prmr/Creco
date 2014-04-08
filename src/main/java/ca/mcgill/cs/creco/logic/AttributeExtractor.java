@@ -44,7 +44,7 @@ public class AttributeExtractor
 	/** Sorting methods for attributes. */
 	public static enum SORT_METHOD
 	{ ENTROPY, SCORE, CORRELATION }
-	private static final SORT_METHOD DEFAULT_SORT = SORT_METHOD.CORRELATION;
+	private static final SORT_METHOD DEFAULT_SORT = SORT_METHOD.ENTROPY;
 	private static final Logger LOG = LoggerFactory.getLogger(AttributeExtractor.class);
  	private IDataStore aDataStore;
 	private HashMap<String, ArrayList<ScoredAttribute>> aAllAttributes;
@@ -106,7 +106,7 @@ public class AttributeExtractor
 		ArrayList<ScoredAttribute> scoredAttributeList = aAllAttributes.get(pCatID);
 		if(scoredAttributeList != null)
 		{
-			sort(DEFAULT_SORT, scoredAttributeList);
+			sort(SORT_METHOD.CORRELATION, scoredAttributeList);
 			return Collections.unmodifiableList(scoredAttributeList);
 		}		
 		LOG.error("Category("+pCatID+") not found returning empty ScoredAttribute List");
