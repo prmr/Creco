@@ -44,7 +44,7 @@ public class AttributeExtractor
 	/** Sorting methods for attributes. */
 	public static enum SORT_METHOD
 	{ ENTROPY, SCORE, CORRELATION }
-	private static final SORT_METHOD DEFAULT_SORT = SORT_METHOD.ENTROPY;
+	private static final SORT_METHOD DEFAULT_SORT = SORT_METHOD.CORRELATION;
 	private static final Logger LOG = LoggerFactory.getLogger(AttributeExtractor.class);
  	private IDataStore aDataStore;
 	private HashMap<String, ArrayList<ScoredAttribute>> aAllAttributes;
