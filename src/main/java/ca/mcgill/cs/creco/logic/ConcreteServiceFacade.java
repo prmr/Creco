@@ -242,7 +242,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 		{
 			for (int j = pUserFeatures.size() - 1; j >= i + 1; j--)
 			{
-				if (pUserFeatures.get(j).getEntropy() > pUserFeatures.get(j - 1).getEntropy())
+				if (pUserFeatures.get(j).getCorrelation() > pUserFeatures.get(j - 1).getCorrelation())
 				{
 					tmp = pUserFeatures.get(j);
 					pUserFeatures.set(j, pUserFeatures.get(j - 1));
