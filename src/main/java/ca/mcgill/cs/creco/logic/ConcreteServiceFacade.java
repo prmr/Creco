@@ -187,9 +187,6 @@ public class ConcreteServiceFacade implements ServiceFacade
 				String attributeName = rei.getaAttribute().getAttributeName();
 				explanation.add(new ExplanationView(attributeName, value, rei.getaAttributeRank(),rei.getaAttribute().getAttributeScore()));
 			}
-			System.out.println(productRankingExplanation.getaProduct().getId());
-			System.out.println( productRankingExplanation.getaProduct().getName());
-			System.out.println(productRankingExplanation.getaProduct().getUrl());
 			products.add(new ProductView(productRankingExplanation.getaProduct().getId(), productRankingExplanation.getaProduct().getName(), productRankingExplanation.getaProduct().getUrl(),explanation));
 			
 		}
@@ -201,7 +198,6 @@ public class ConcreteServiceFacade implements ServiceFacade
 			for (ProductView productView : products)
 			{
 				List<ExplanationView> expView = productView.getExplanation();
-				if(expView.isEmpty()) System.out.println("LIST IS EMPTY");
 				for(ExplanationView e : expView)
 				{
 					response = response.concat(e.getName() + "|");

@@ -77,7 +77,7 @@ public class AttributeExtractor
 				}
 				catch(Exception e)
 				{
-					System.out.println(e);
+					LOG.error(e.toString());
 				}
 				
 				scoredAttributeList.add(sa);
