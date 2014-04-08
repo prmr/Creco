@@ -27,7 +27,7 @@ public class ExplanationView
 {
 	private String aName;
 	private TypedValue aValue;
-	private double aValueRank;
+	private int aValueRank;
 	private double aAttrRank;
 	
 	//TODO fix and change the name of pAttrRank, what is it supposed to be?
@@ -49,7 +49,7 @@ public class ExplanationView
 		return aValue;
 	}
 	
-	public double getValueRank() 
+	public int getValueRank() 
 	{
 		return aValueRank;
 	}

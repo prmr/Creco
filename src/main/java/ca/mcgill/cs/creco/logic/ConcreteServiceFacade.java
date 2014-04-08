@@ -146,7 +146,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 	}
 
 	@Override
-	public List<RankingExplanation> rankProducts(List<ScoredAttribute> pScoredAttributes, String pCategoryID)
+	public List<RankExplanation> rankProducts(List<ScoredAttribute> pScoredAttributes, String pCategoryID)
 	{
 		return aProductRanker.rankProducts(pScoredAttributes, aDataStore.getCategory(pCategoryID));
 	}
@@ -173,21 +173,24 @@ public class ConcreteServiceFacade implements ServiceFacade
 
 		userScoredFeaturesSpecs = sortFeatures(userScoredFeaturesSpecs);
 
-		List<RankingExplanation> rankedProducts = rankProducts(userScoredFeaturesSpecs, pCategoryId);
+		List<RankExplanation> rankedProducts = rankProducts(userScoredFeaturesSpecs, pCategoryId);
 		// Converting to View Object
 		ArrayList<ProductView> products = new ArrayList<ProductView>();
-		for (RankingExplanation scoredProduct : rankedProducts)
+		for (RankExplanation productRankingExplanation : rankedProducts)
 		{
 //			if(scoredProduct.getaAttribute())
 			ArrayList<ExplanationView> explanation = new ArrayList<ExplanationView>();
 			
-			for(RankExplanationInstance rei : scoredProduct.getaRankingExplanation())
+			for(RankExplanationInstance rei : productRankingExplanation.getaRankList())
 			{
 				TypedValue value = rei.getaAttributeValue();
 				String attributeName = rei.getaAttribute().getAttributeName();
 				explanation.add(new ExplanationView(attributeName, value, rei.getaAttributeRank(),rei.getaAttribute().getAttributeScore()));
 			}
-			products.add(new ProductView(scoredProduct.getaProduct().getId(), scoredProduct.getaProduct().getName(), scoredProduct.getaProduct().getUrl(),explanation));
+			System.out.println(productRankingExplanation.getaProduct().getId());
+			System.out.println( productRankingExplanation.getaProduct().getName());
+			System.out.println(productRankingExplanation.getaProduct().getUrl());
+			products.add(new ProductView(productRankingExplanation.getaProduct().getId(), productRankingExplanation.getaProduct().getName(), productRankingExplanation.getaProduct().getUrl(),explanation));
 			
 		}
 		String response = "";
@@ -198,13 +201,14 @@ public class ConcreteServiceFacade implements ServiceFacade
 			for (ProductView productView : products)
 			{
 				List<ExplanationView> expView = productView.getExplanation();
+				if(expView.isEmpty()) System.out.println("LIST IS EMPTY");
 				for(ExplanationView e : expView)
 				{
 					response = response.concat(e.getName() + "|");
-					response = response.concat(e.getValue() + "|");
+					response = response.concat("0|");
 					response = response.concat(e.getAttrRank() + "|");
 					response = response.concat(e.getValueRank()+"||");					
-				}		
+				}	
 				response=response.concat("{}");
 				response = response.concat(productView.getId() + ",");
 				response = response.concat(productView.getName() + ",");

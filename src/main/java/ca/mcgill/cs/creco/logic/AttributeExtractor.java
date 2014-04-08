@@ -69,10 +69,22 @@ public class AttributeExtractor
 			}
 			for(String key : attributes.keySet())
 			{
-				scoredAttributeList.add(new ScoredAttribute(attributes.get(key), cat));
+				ScoredAttribute sa = null;
+				try
+				{
+					sa = new ScoredAttribute(attributes.get(key), cat);
+					sa.getAttributeID();
+				}
+				catch(Exception e)
+				{
+					System.out.println(e);
+				}
+				
+				scoredAttributeList.add(sa);
 			}
 			sort(DEFAULT_SORT, scoredAttributeList);
 			aAllAttributes.put(cat.getId(), scoredAttributeList);
+
 		}
 		
 		

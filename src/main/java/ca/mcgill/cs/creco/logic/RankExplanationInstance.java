@@ -35,7 +35,7 @@ public class RankExplanationInstance
 {
 	private static final int RANKING_NOT_AVAILABLE = -1;
 	private static final Logger LOG = LoggerFactory.getLogger(RankExplanationInstance.class);
-	private ScoredAttribute aAttribute;
+	private ScoredAttribute aScoredAttribute;
 	private int aAttributeRank;
 	private TypedValue aAttributeValue;	
 	private Product aProduct;
@@ -44,21 +44,28 @@ public class RankExplanationInstance
 	 * 
 	 * @param pProduct product to provide explanation to
 	 */
-	public RankExplanationInstance(Product pProduct, ScoredAttribute pScoredAttribute)
+	public RankExplanationInstance(Product pProduct, ScoredAttribute pScoredAttribute) throws IllegalArgumentException
 	{
 		aProduct  = pProduct;
-		aAttribute = pScoredAttribute;
-		aAttributeValue = pProduct.getAttribute(aAttribute.getAttributeID()).getTypedValue();
-		try
+		aScoredAttribute = pScoredAttribute;
+		aAttributeRank =  RANKING_NOT_AVAILABLE;
+		aAttributeValue =  new TypedValue();
+		Attribute attribute = pProduct.getAttribute(aScoredAttribute.getAttributeID());
+		if(attribute != null)
 		{
+			aAttributeValue = attribute.getTypedValue();
+		}
+		
+//		try
+//		{
 			aAttributeRank = pScoredAttribute.getValueRank(aAttributeValue);
-		}
-		catch(IllegalArgumentException iae)
-		{
-			aAttributeRank = RANKING_NOT_AVAILABLE;		
-			LOG.error("No ranking for Attribute: " + pScoredAttribute.getAttributeID()+
-					" in Product: " + pProduct.getId());
-		}
+//		}
+//		catch(IllegalArgumentException iae)
+//		{
+//			aAttributeRank = RANKING_NOT_AVAILABLE;		
+//			LOG.error("No ranking for Attribute: " + pScoredAttribute.getAttributeID()+
+//					" in Product: " + pProduct.getId());
+//		}
 		
 	}
 	
@@ -80,7 +87,7 @@ public class RankExplanationInstance
 		
 	public ScoredAttribute getaAttribute()
 	{
-		return aAttribute;		
+		return aScoredAttribute;		
 	}
 	
 }

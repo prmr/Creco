@@ -71,7 +71,7 @@ public class TestProductRanker {
 		List<ScoredAttribute> scoredAttributes = new ArrayList<ScoredAttribute>();
 		scoredAttributes.add(humidifierWeightAttribute);
 		
-		List<RankingExplanation> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category.getProducts());
+		List<RankExplanation> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category.getProducts());
 		
 		// Lowest weight is 7.5
 		assertEquals(scoredProducts.get(0).getaProduct().getAttribute(HUMIDIFIER_FULL_TANK_WEIGHT_ID).getTypedValue().getNumeric(), 7.5, 0.0001);	

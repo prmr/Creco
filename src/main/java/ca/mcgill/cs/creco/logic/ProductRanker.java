@@ -50,7 +50,7 @@ public class ProductRanker
 	 * @param pProducts The collection of products to rank.
 	 * @return The ranked list of products, ordered from highest to lowest score.
 	 */
-	public List<RankingExplanation> rankProducts(List <ScoredAttribute> pScoredAttributes, Category pCategory)
+	public List<RankExplanation> rankProducts(List <ScoredAttribute> pScoredAttributes, Category pCategory)
 	{
 		Map<Product, Double> scoredProducts = new HashMap<Product, Double>();
 		Collection<Product> products = pCategory.getProducts();
@@ -91,12 +91,11 @@ public class ProductRanker
 		}
 
 		List<Product> sortedProducts = sortProductsByScore(scoredProducts);
-		List<RankingExplanation> prodExp = null;
-		prodExp = new ArrayList<RankingExplanation>();
+		List<RankExplanation> prodExp = new ArrayList<RankExplanation>();
 		
 		for (Product p :sortedProducts)
 		{
-			prodExp.add(new RankingExplanation(p,pCategory,aAttributeExtractor.getAttributesForCategory(pCategory.getId())));						
+			prodExp.add(new RankExplanation(p,pCategory,pScoredAttributes));						
 		}
 		return prodExp; 	
 	}
