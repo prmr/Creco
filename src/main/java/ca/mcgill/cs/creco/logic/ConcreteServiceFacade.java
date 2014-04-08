@@ -183,7 +183,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 			
 			for(RankExplanationInstance rei : productRankingExplanation.getaRankList())
 			{
-				TypedValue value = rei.getaAttributeValue();
+				TypedValue value = rei.getaAttributeValue();				
 				String attributeName = rei.getaAttribute().getAttributeName();
 				explanation.add(new ExplanationView(attributeName, value, rei.getaAttributeRank(),rei.getaAttribute().getAttributeScore()));
 			}
@@ -200,10 +200,28 @@ public class ConcreteServiceFacade implements ServiceFacade
 				List<ExplanationView> expView = productView.getExplanation();
 				for(ExplanationView e : expView)
 				{
+					TypedValue tValue = e.getValue();
 					response = response.concat(e.getName() + "|");
 					response = response.concat(products.size() + "|");
 					response = response.concat(e.getAttrRank() + "|");
-					response = response.concat(e.getValueRank()+"||"); 					
+					response = response.concat(e.getValueRank()+"|"); 
+					response = response.concat(e.getIsBoolean()+"|");
+					if(e.getIsBoolean())
+					{
+						if(tValue.getBoolean())
+						{
+							response = response.concat("True||");
+						}else
+						{
+							response = response.concat("False||");
+						}
+					}
+					else
+					{
+						response = response.concat("-1||");
+					}
+					
+					
 				}		
 				response=response.concat("{}");
 				response = response.concat(productView.getId() + ",");

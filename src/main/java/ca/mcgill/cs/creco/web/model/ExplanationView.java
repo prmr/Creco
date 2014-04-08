@@ -29,7 +29,7 @@ public class ExplanationView
 	private TypedValue aValue;
 	private int aValueRank;
 	private double aAttrRank;
-	
+	private boolean aIsBoolean;
 	//TODO fix and change the name of pAttrRank, what is it supposed to be?
 	public ExplanationView(String pName, TypedValue value, int pValueRank, double pAttrRank)
 	{
@@ -37,6 +37,7 @@ public class ExplanationView
 		aValue = value;
 		aValueRank = pValueRank;
 		aAttrRank = pAttrRank;
+		aIsBoolean = value.isBoolean();
 	}
 	
 	public String getName() 
@@ -59,5 +60,9 @@ public class ExplanationView
 		return aAttrRank;
 	}
 	
+	public boolean getIsBoolean()
+	{
+		return aIsBoolean;
+	}
 
 }

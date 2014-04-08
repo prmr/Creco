@@ -166,20 +166,32 @@ function sendFeatures() {
                 		var progress1=null;
                 		var progress2 = null;
                 		var progress3=null;
-                		var rankValue = (exp[1] - exp[3] + 1)/exp[1];
-                		rankValue = rankValue * 100;
-                		console.log("rank value " + rankValue);
-                		progress1 = $("<div>").addClass("progress-bar").text("Rank:"+exp[3]).attr("aria-valuenow",rankValue).css("width",rankValue+"%");                		
-                		progress1.attr("aria-valuemax",exp[1]);
-                		//                		aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" 
-                    	//progress2 =  $("<div>").addClass("progress-bar progress-bar-warning").css("width","33%");
-                    	//progress3 =$("<div>").addClass("progress-bar progress-bar-success").css("width","33%");
-                		
-                		progress1.appendTo(progress);
-                	//	progress2.appendTo(progress);
-                	//	progress3.appendTo(progress);
-                		
-                		progress.appendTo(bloc1);
+                		var rankValue = 0;
+                		if(exp[4] =="true")
+                		{
+                			console.log("feature is boolean" + exp[3])
+                			progress1 = $("<div>").addClass("boolean-explanation").text(exp[5]);                		
+                    		//progress1.attr("aria-valuemax",exp[1]);
+                			
+                			progress1.appendTo(bloc1);
+                		}else
+                		{
+                			rankValue = (exp[1] - exp[3] + 1)/exp[1];
+                    		rankValue = rankValue * 100;
+                    		progress1 = $("<div>").addClass("progress-bar").text("Rank:"+exp[3]).attr("aria-valuenow",rankValue).css("width",rankValue+"%");                		
+                    		progress1.attr("aria-valuemax",exp[1]);
+                    		//                		aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" 
+                        	//progress2 =  $("<div>").addClass("progress-bar progress-bar-warning").css("width","33%");
+                        	//progress3 =$("<div>").addClass("progress-bar progress-bar-success").css("width","33%");
+                    		
+                    	//	progress2.appendTo(progress);
+                    	//	progress3.appendTo(progress);
+                    		progress1.appendTo(progress);
+                    		
+                    		progress.appendTo(bloc1);
+                    		
+                		}
+                 		
                 		bloc1.appendTo(parentbloc1);
             	}
         		
