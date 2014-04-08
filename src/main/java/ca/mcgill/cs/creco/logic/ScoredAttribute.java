@@ -749,9 +749,9 @@ public class ScoredAttribute
 		}
 		else if(pValue.isBoolean()) //Assume it is always better to have 
 		{
-			if(aStringValueRank.containsKey(String.valueOf(pValue.getString())))
+			if(aStringValueRank.containsKey(String.valueOf(pValue.getBoolean())))
 			{
-				return aStringValueRank.get(String.valueOf(pValue.getString()));
+				return aStringValueRank.get(String.valueOf(pValue.getBoolean()));
 			}
 			else
 			{

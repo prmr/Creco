@@ -23,9 +23,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import ca.mcgill.cs.creco.data.Attribute;
+import ca.mcgill.cs.creco.data.Category;
+import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.logic.ScoredAttribute.Direction;
 
@@ -36,6 +39,10 @@ import ca.mcgill.cs.creco.logic.ScoredAttribute.Direction;
 public class ProductRanker 
 {
 	private static final double MISSING_ATTRIBUTE_PENALTY = -1.0;
+	@Autowired
+	private IDataStore aDataStore;
+	@Autowired
+	private AttributeExtractor aAttributeExtractor;
 
 	/**
 	 * Ranks a collection of products according to a given set of attributes.
@@ -43,19 +50,19 @@ public class ProductRanker
 	 * @param pProducts The collection of products to rank.
 	 * @return The ranked list of products, ordered from highest to lowest score.
 	 */
-	public List<RankExplanation> rankProducts(List <ScoredAttribute> pScoredAttributes, Collection<Product> pProducts)
+	public List<RankingExplanation> rankProducts(List <ScoredAttribute> pScoredAttributes, Category pCategory)
 	{
 		Map<Product, Double> scoredProducts = new HashMap<Product, Double>();
-		
+		Collection<Product> products = pCategory.getProducts();
 		// Initialize the map with scores of 0 for all products
-		for (Product product : pProducts)
+		for (Product product : products)
 		{
 			scoredProducts.put(product, 0.0);
 		}
 		
 		for (ScoredAttribute scoredAttribute : pScoredAttributes)
 		{	
-			for (Product product : pProducts)
+			for (Product product : products)
 			{
 				double updateValue = 0;
 				
@@ -84,22 +91,12 @@ public class ProductRanker
 		}
 
 		List<Product> sortedProducts = sortProductsByScore(scoredProducts);
-		List<RankExplanation> prodExp = null;
-		prodExp = new ArrayList<RankExplanation>();
+		List<RankingExplanation> prodExp = null;
+		prodExp = new ArrayList<RankingExplanation>();
 		
 		for (Product p :sortedProducts)
 		{
-			RankExplanation explanation = new RankExplanation(p);							
-			for (ScoredAttribute scoredAttribute : pScoredAttributes)
-			{
-				if(p.getAttribute(scoredAttribute.getAttributeID()) !=null)
-				{
-					explanation = explanation.getExplanation(p, scoredAttribute);
-					
-				}
-				
-			}	
-			prodExp.add(explanation);
+			prodExp.add(new RankingExplanation(p,pCategory,aAttributeExtractor.getAttributesForCategory(pCategory.getId())));						
 		}
 		return prodExp; 	
 	}

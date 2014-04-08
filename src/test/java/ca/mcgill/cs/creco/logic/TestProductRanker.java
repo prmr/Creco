@@ -41,7 +41,7 @@ public class TestProductRanker {
 		Category category = aDataStore.getCategory(TOASTER_CATEGORY_ID); 
 		List<ScoredAttribute> scoredAttributes = aAttributeExtractor.getAttributesForCategory(category.getId());
 		    
-		List<RankExplanation> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category.getProducts());
+		List<RankingExplanation> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category.getProducts());
 		
 		assertEquals(TOASTER_CATEGORY_NUM_PRODUCTS, scoredProducts.size());
 	}
@@ -55,7 +55,7 @@ public class TestProductRanker {
 		List<ScoredAttribute> scoredAttributes = new ArrayList<ScoredAttribute>();
 		scoredAttributes.add(humidifierOutputAttribute);
 		
-		List<RankExplanation> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category.getProducts());
+		List<RankingExplanation> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category.getProducts());
 		
 		// Highest humidifier output should be 5.0/5.0
 		assertEquals(scoredProducts.get(0).getaProduct().getAttribute(HUMIDIFIER_OUTPUT_ID).getTypedValue().getNumeric(), 5.0, 0.00001);
@@ -71,7 +71,7 @@ public class TestProductRanker {
 		List<ScoredAttribute> scoredAttributes = new ArrayList<ScoredAttribute>();
 		scoredAttributes.add(humidifierWeightAttribute);
 		
-		List<RankExplanation> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category.getProducts());
+		List<RankingExplanation> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category.getProducts());
 		
 		// Lowest weight is 7.5
 		assertEquals(scoredProducts.get(0).getaProduct().getAttribute(HUMIDIFIER_FULL_TANK_WEIGHT_ID).getTypedValue().getNumeric(), 7.5, 0.0001);	
@@ -89,7 +89,7 @@ public class TestProductRanker {
 		scoredAttributes.add(humidifierOutputAttribute);
 		scoredAttributes.add(humidifierWeightAttribute);
 		
-		List<RankExplanation> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category.getProducts());
+		List<RankingExplanation> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category.getProducts());
 		
 		assertEquals(scoredProducts.get(0).getaProduct().getName(), "Safety 1st 49292");
 	}

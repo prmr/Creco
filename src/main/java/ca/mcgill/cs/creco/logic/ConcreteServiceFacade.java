@@ -146,9 +146,9 @@ public class ConcreteServiceFacade implements ServiceFacade
 	}
 
 	@Override
-	public List<RankExplanation> rankProducts(List<ScoredAttribute> pScoredAttributes, Collection<Product> pProducts)
+	public List<RankingExplanation> rankProducts(List<ScoredAttribute> pScoredAttributes, String pCategoryID)
 	{
-		return aProductRanker.rankProducts(pScoredAttributes, pProducts);
+		return aProductRanker.rankProducts(pScoredAttributes, aDataStore.getCategory(pCategoryID));
 	}
 
 
@@ -173,19 +173,19 @@ public class ConcreteServiceFacade implements ServiceFacade
 
 		userScoredFeaturesSpecs = sortFeatures(userScoredFeaturesSpecs);
 
-		List<RankExplanation> rankedProducts = rankProducts(userScoredFeaturesSpecs, aProductSort.returnProductsAlphabetically(pCategoryId));
+		List<RankingExplanation> rankedProducts = rankProducts(userScoredFeaturesSpecs, pCategoryId);
 		// Converting to View Object
 		ArrayList<ProductView> products = new ArrayList<ProductView>();
-		for (RankExplanation scoredProduct : rankedProducts)
+		for (RankingExplanation scoredProduct : rankedProducts)
 		{
 //			if(scoredProduct.getaAttribute())
 			ArrayList<ExplanationView> explanation = new ArrayList<ExplanationView>();
 			
-			for(ScoredAttribute scoredAttribute : scoredProduct.getaAttribute())
+			for(RankExplanationInstance rei : scoredProduct.getaRankingExplanation())
 			{
-				TypedValue value = scoredProduct.getaProduct().getAttribute(scoredAttribute.getAttributeID()).getTypedValue();
-				explanation.add(new ExplanationView(scoredAttribute.getAttributeName(),value.getNumeric(), scoredAttribute.getValueRank(value),scoredAttribute.getEntropy()));
-		
+				TypedValue value = rei.getaAttributeValue();
+				String attributeName = rei.getaAttribute().getAttributeName();
+				explanation.add(new ExplanationView(attributeName, value, rei.getaAttributeRank(),rei.getaAttribute().getAttributeScore()));
 			}
 			products.add(new ProductView(scoredProduct.getaProduct().getId(), scoredProduct.getaProduct().getName(), scoredProduct.getaProduct().getUrl(),explanation));
 			

@@ -17,6 +17,7 @@ package ca.mcgill.cs.creco.web.model;
 
 import java.util.List;
 
+import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.logic.ScoredAttribute;
 
 /**
@@ -25,15 +26,15 @@ import ca.mcgill.cs.creco.logic.ScoredAttribute;
 public class ExplanationView 
 {
 	private String aName;
-	private double aValue = 10;
+	private TypedValue aValue;
 	private double aValueRank;
 	private double aAttrRank;
 	
-	
-	public ExplanationView(String pName, double pValue, double pValueRank, double pAttrRank)
+	//TODO fix and change the name of pAttrRank, what is it supposed to be?
+	public ExplanationView(String pName, TypedValue value, int pValueRank, double pAttrRank)
 	{
 		aName = pName;
-		aValue = pValue;
+		aValue = value;
 		aValueRank = pValueRank;
 		aAttrRank = pAttrRank;
 	}
@@ -43,7 +44,7 @@ public class ExplanationView
 		return aName;
 	}
 	
-	public double getValue() 
+	public TypedValue getValue() 
 	{
 		return aValue;
 	}
