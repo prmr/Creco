@@ -72,7 +72,6 @@ public class ProductView
 		return aUrl;
 	}
 	/**
-<<<<<<< HEAD
 	 * 
 	 * @return The product Ranking Explanation.
 	 */

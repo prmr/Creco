@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.lucene.search.Explanation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
@@ -226,7 +225,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 					
 					
 				}		
-				response=response.concat("{}");
+				response = response.concat("{}");
 				response = response.concat(productView.getId() + ",");
 				response = response.concat(productView.getName() + ",");
 				response = response.concat(productView.getUrl() + ";");
