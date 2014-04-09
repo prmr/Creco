@@ -33,7 +33,7 @@ public class RankExplanation {
 			}
 			catch(IllegalArgumentException iae)
 			{
-				LOG.error("No ranking for Attribute: " + sa.getAttributeID()+
+				LOG.info("No ranking for Attribute: " + sa.getAttributeID()+
 						" in Product: " + pProduct.getId());
 			}
 			

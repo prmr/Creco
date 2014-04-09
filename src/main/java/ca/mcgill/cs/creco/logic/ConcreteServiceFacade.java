@@ -230,6 +230,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 				response = response.concat(productView.getId() + ",");
 				response = response.concat(productView.getName() + ",");
 				response = response.concat(productView.getUrl() + ";");
+				response = response.concat(productView.getImage() + ";");
 
 			}
 		}
