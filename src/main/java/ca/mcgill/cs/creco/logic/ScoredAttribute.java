@@ -482,14 +482,7 @@ public class ScoredAttribute
 		{
 			aLabelMeanScores.put(entry.getKey(), entry.getValue());
 			aStringValueRank.put(entry.getKey(), rank);
-			if(entry.getKey().equals(String.valueOf(true)))
-			{
-				rank += trueCount;
-			}
-			else
-			{
-				rank += trueCount-totalCount;
-			}
+			rank ++;
 		}
 		
 		aCorrelation = nominalCorrelator.computeAttributeWeight(aAttributeID);
