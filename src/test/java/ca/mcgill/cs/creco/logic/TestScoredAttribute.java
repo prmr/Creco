@@ -2,9 +2,7 @@ package ca.mcgill.cs.creco.logic;
 
 import static org.junit.Assert.*;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
