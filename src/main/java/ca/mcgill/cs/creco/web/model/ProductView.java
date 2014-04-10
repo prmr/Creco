@@ -38,7 +38,7 @@ public class ProductView
 	 * @param pExplanation explanation for the product rank.
 	 * * @param pImage The product image
 	 */
-	public ProductView( String pId, String pName, String pUrl, List<ExplanationView> pExplanation,String pImage)
+	public ProductView( String pId, String pName, String pUrl, List<ExplanationView> pExplanation, String pImage)
 	{
 		aId = pId;
 		aName = pName;

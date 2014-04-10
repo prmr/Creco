@@ -16,130 +16,207 @@
 package ca.mcgill.cs.creco.web.model;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
-import ca.mcgill.cs.creco.data.TypedValue;
-/*
+/**
  * A class representing a single feature (i.e., rating and spec) to be 
  * displayed to the user front end.
- * */
+ *
+ */
 @Component
-@Scope(value="session", proxyMode=ScopedProxyMode.TARGET_CLASS)
+@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class FeatureView
 {
-	private String id;
-	private String name;
-	private double score;
-	private String desc;
-	private String type;
-	private ArrayList<String> value;
-	private String uValue;	
-	private Number minValue=0;
-	private Number maxValue=50;
-	private Boolean visible;
-	private Boolean spec;
+	private String aId;
+	private String aName;
+	private double aScore;
+	private String aDesc;
+	private String aType;
+	private ArrayList<String> aValue;
+	private String aUValue;	
+	private Number aMinValue;
+	private Number aMaxValue;
+	private Boolean aVisible;
+	private Boolean aSpec;
 	
 
+	/**
+	 * 
+	 * @return the ID of the attribute.
+	 */
 	public String getId()
 	{
-		return id;
+		return aId;
 	}
 
-	public void setId(String id)
+	/**
+	 * 
+	 * @param pId the ID of the attribute.
+	 */
+	public void setId(String pId)
 	{
-		this.id = id;
+		this.aId = pId;
 	}
 
+	/**
+	 * 
+	 * @return the name of the attribute.
+	 */
 	public String getName()
 	{
-		return name;
+		return aName;
 	}
-
-	public void setName(String name)
+	/**
+	 * 
+	 * @param pName name of the attribute.
+	 */
+	public void setName(String pName)
 	{
-		this.name = name;
+		this.aName = pName;
 	}
-
-	public ArrayList<String> getValue() {
-		return value;
-	}
-
-	public void setValue(ArrayList<String> value) {
-		this.value = value;
-	}
-
-	public Number getMinValue() {
-		return minValue;
-	}
-
-	public void setMinValue(Number minValue) {
-		this.minValue = minValue;
-	}
-
-	public Number getMaxValue() {
-		return maxValue;
-	}
-
-	public void setMaxValue(Number maxValue) {
-		this.maxValue = maxValue;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public double getScore() {
-		return score;
-	}
-
-	public void setScore(double score) {
-		this.score = score;
-	}
-
-	public Boolean getVisible() {
-		return visible;
-	}
-
-	public void setVisible(Boolean visible) {
-		this.visible = visible;
-	}
-
-	public Boolean getSpec() 
+	/**
+	 * 
+	 * @return the value of the attribute.
+	 */
+	public ArrayList<String> getValue()
 	{
-		return spec;
+		return aValue;
 	}
-
-	public void setSpec(Boolean spec) 
+	/**
+	 * 
+	 * @param pValue the value of the attribute.
+	 */
+	public void setValue(ArrayList<String> pValue)
 	{
-		this.spec = spec;
+		this.aValue = pValue;
+	}
+	/**
+	 * 
+	 * @return min value of the attribute.
+	 */
+	public Number getMinValue()
+	{
+		return aMinValue;
 	}
 	
-	public Boolean isSpec() {
-		return this.spec;		
+	/**
+	 * 
+	 * @param pMinValue minimum value of the attribute.
+	 */
+	public void setMinValue(Number pMinValue)
+	{
+		this.aMinValue = pMinValue;
 	}
 	
-	public String getuValue() {
-		return uValue;
+	/**
+	 * 
+	 * @return the max value of the attribute.
+	 */
+	public Number getMaxValue()
+	{
+		return aMaxValue;
+	}
+	/**
+	 * 
+	 * @param pMaxValue max value of the attribute.
+	 */
+	public void setMaxValue(Number pMaxValue)
+	{
+		this.aMaxValue = pMaxValue;
+	}
+	/**
+	 * 
+	 * @return type of the attribute.
+	 */
+	public String getType()
+	{
+		return aType;
+	}
+	/***
+	 * 
+	 * @param pType type of the attribute (Numeric, Boolean, String)
+	 */
+	public void setType(String pType)
+	{
+		this.aType = pType;
 	}
 
-	public void setuValue(String uValue) {
-		this.uValue = uValue;
+	/**
+	 * 
+	 * @return the score rank given to the attribute.
+	 */
+	public double getScore()
+	{
+		return aScore;
+	}
+	/***
+	 * 
+	 * @param pScore the rank score given to the attribute.
+	 */
+	public void setScore(double pScore)
+	{
+		this.aScore = pScore;
+	}
+	/**
+	 * 
+	 * @return boolean value representing whether or not to expose the feature in the UI.
+	 */
+	public Boolean getVisible() 
+	{
+		return aVisible;
+	}
+	
+	/**
+	 * 
+	 * @param pVisible true if the feature to be exposed to the UI.
+	 */
+	public void setVisible(Boolean pVisible)
+	{
+		this.aVisible = pVisible;
 	}
 
-	public String getDesc() {
-		return desc;
+	
+	/**
+	 * 
+	 * @return true if the the feature is of type specification.
+	 */
+	public Boolean isSpec()
+	{
+		return this.aSpec;		
 	}
-
-	public void setDesc(String desc) {
-		this.desc = desc;
+	/**
+	 * 
+	 * @return user entered value.
+	 */
+	public String getuValue()
+	{
+		return aUValue;
+	}
+	/***
+	 * 
+	 * @param pUValue user entered value.
+	 */
+	public void setuValue(String pUValue)
+	{
+		this.aUValue = pUValue;
+	}
+	/***
+	 * 
+	 * @return description of the feature.
+	 */
+	public String getDesc() 
+	{
+		return aDesc;
+	}
+	/***
+	 * 
+	 * @param pDesc description of the feature
+	 */
+	public void setDesc(String pDesc)
+	{
+		this.aDesc = pDesc;
 	}
 
 }

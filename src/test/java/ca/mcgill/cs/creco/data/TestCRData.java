@@ -95,7 +95,7 @@ public class TestCRData
 		{
 			Category category = null;
 			
-			category= aDataStore.getCategory("32968");
+			category = aDataStore.getCategory("32968");
 			//assertEquals(6,category.getRatings().size());
 //			assertEquals("Output",category.getRating("4556").getAttribute().getName());
 //			assertEquals("Noise",category.getRating("767").getAttribute().getName());

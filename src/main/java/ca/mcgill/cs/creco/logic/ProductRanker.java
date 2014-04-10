@@ -39,6 +39,7 @@ import ca.mcgill.cs.creco.logic.ScoredAttribute.Direction;
 public class ProductRanker 
 {
 	private static final double MISSING_ATTRIBUTE_PENALTY = -1.0;
+	private static final int HUNDRED = 100;
 	@Autowired
 	private IDataStore aDataStore;
 	@Autowired
@@ -47,7 +48,7 @@ public class ProductRanker
 	/**
 	 * Ranks a collection of products according to a given set of attributes.
 	 * @param pScoredAttributes The set of attributes used to rank the products.
-	 * @param pProducts The collection of products to rank.
+	 * @param pCategory The category of products being ranked.
 	 * @return The ranked list of products, ordered from highest to lowest score.
 	 */
 	public List<RankExplanation> rankProducts(List <ScoredAttribute> pScoredAttributes, Category pCategory)
@@ -95,7 +96,7 @@ public class ProductRanker
 		
 		for (Product p :sortedProducts)
 		{
-			prodExp.add(new RankExplanation(p,pCategory,pScoredAttributes));						
+			prodExp.add(new RankExplanation(p, pCategory, pScoredAttributes));						
 		}
 		return prodExp; 	
 	}
@@ -130,7 +131,7 @@ public class ProductRanker
 			labelValue = 0.0;
 		}
 		
-		double normalization = 1.0/100;
+		double normalization = 1.0/HUNDRED;
 		
 		double attributeWeight = Math.abs(pScoredAttribute.getCorrelation());
 		

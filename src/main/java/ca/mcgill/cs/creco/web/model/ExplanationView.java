@@ -15,54 +15,98 @@
  */
 package ca.mcgill.cs.creco.web.model;
 
-import java.util.List;
-
 import ca.mcgill.cs.creco.data.TypedValue;
-import ca.mcgill.cs.creco.logic.ScoredAttribute;
 
 /**
- *
+ * View object for the explanation of products ranks.
  */
 public class ExplanationView 
 {
 	private String aName;
 	private TypedValue aValue;
 	private int aValueRank;
-	private double aAttrRank;
+	private double aAttrScore;
 	private boolean aIsBoolean;
-	//TODO fix and change the name of pAttrRank, what is it supposed to be?
-	public ExplanationView(String pName, TypedValue value, int pValueRank, double pAttrRank)
+	private boolean aIsString;
+	private boolean aIsNumeric;
+
+	/**
+	 * 
+	 * @param pName name of the attribute to explain.
+	 * @param pValue value of the attribute.
+	 * @param pValueRank rank of the value.
+	 * @param pAttrScore score of the attribute.
+	 */
+	public ExplanationView(String pName, TypedValue pValue, int pValueRank, double pAttrScore)
 	{
 		aName = pName;
-		aValue = value;
+		aValue = pValue;
 		aValueRank = pValueRank;
-		aAttrRank = pAttrRank;
-		aIsBoolean = value.isBoolean();
+		aAttrScore = pAttrScore;
+		aIsBoolean = pValue.isBoolean();
+		aIsString = pValue.isString();
+		aIsNumeric = pValue.isNumeric();
 	}
 	
+	/**
+	 * 
+	 * @return the name of the attribute to explain. 
+	 */
 	public String getName() 
 	{
 		return aName;
 	}
-	
+	/**
+	 * 
+	 * @return the value of the attribute to explain.
+	 */
 	public TypedValue getValue() 
 	{
 		return aValue;
 	}
 	
+	/**
+	 * 
+	 * @return the rank of the attribute value among a given category.
+	 */
 	public int getValueRank() 
 	{
 		return aValueRank;
 	}
 	
-	public double getAttrRank() 
-	{
-		return aAttrRank;
-	}
-	
+	/**
+	 * 
+	 * @return true if the attribute is of type boolean.
+	 */
 	public boolean getIsBoolean()
 	{
 		return aIsBoolean;
 	}
+
+	/**
+	 * 
+	 * @return true if the attribute is of type Numeric.
+	 */
+	public boolean getIsNumeric()
+	{
+		return aIsNumeric;
+	}
+	/**
+	 * 
+	 * @return true if the attribute is of type String.
+	 */
+	public boolean getIsString()
+	{
+		return aIsString;
+	}
+
+	/**
+	 * 
+	 * @return the score of the attribute.
+	 */
+	public double getAttrScore()
+	{
+		return aAttrScore;
+	}	
 
 }

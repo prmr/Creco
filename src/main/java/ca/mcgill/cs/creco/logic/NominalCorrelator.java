@@ -167,7 +167,7 @@ public class NominalCorrelator
 	
 	/**
 	 * Given a list of nominal value and score pairs, returns the set of all nominal
-	 * values possible
+	 * values possible.
 	 * @param pLabelScorePairs The list of nominal label and score pairs.
 	 * @return The set of nominal labels.
 	 */

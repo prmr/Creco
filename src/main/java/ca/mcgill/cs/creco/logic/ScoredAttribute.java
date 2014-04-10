@@ -341,7 +341,7 @@ public class ScoredAttribute
 		}
 		else
 		{
-			Collections.sort(values,Collections.reverseOrder());
+			Collections.sort(values, Collections.reverseOrder());
 		}
 		double previousValue = 0;
 		boolean notFirst = false;
@@ -350,12 +350,14 @@ public class ScoredAttribute
 		{			
 			if(notFirst)
 			{
-				if(previousValue != val.doubleValue()){
+				if(previousValue != val.doubleValue())
+				{
 					if(aNumericValueRank.containsKey(val))
 					{
 						LOG.error("setNumericStats sort error in Attribute " +aAttributeID+ "in Category " + aCategory.getId());
 					}
-					else{
+					else
+					{
 						aNumericValueRank.put(val, rank);
 						previousValue = val.doubleValue();
 					}
@@ -582,7 +584,8 @@ public class ScoredAttribute
 	}
 
 	/**
-	 * To be Changed
+	 * To be Changed.
+	 * @return string.
 	 */
 	@Override
 	public String toString()

@@ -21,7 +21,6 @@ import java.io.File;
 import java.lang.reflect.Field;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import ca.mcgill.cs.creco.data.DataPath;

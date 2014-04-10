@@ -15,30 +15,34 @@
  */
 package ca.mcgill.cs.creco.data;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import ca.mcgill.cs.creco.data.json.RatingStub;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
-import ca.mcgill.cs.creco.data.json.*;
-
 /**
- * File which creates the dead_links
+ * File which creates the dead_links.
  * Can be accessed with the dead_links.json
- * Should be run when dead_links in the Database needs to be revisited
- * A check of how many products are present is performed at t 
+ * Should be run when dead_links in the Database needs to be revisited.
+ * A check of how many products are present is performed at t.
  * @param <CategoryStub>
  * @param <PriceStub>
  * @param <BrandStub>
  */
 public class CRDeadlinks<CategoryStub, PriceStub, BrandStub> 
 {
-	public static String write_to_file = new String(""); 
+	public static String writeToFile = new String("");
 	private static final String DEFAULT_CATEGORY_FILENAME = "category.json";
-	
+	private static final int SLEEP = 200;
 	private static final String[] DEFAULT_PRODUCT_FILENAMES = 
 		{
 			"appliances.json", "electronicsComputers.json",
@@ -46,7 +50,11 @@ public class CRDeadlinks<CategoryStub, PriceStub, BrandStub>
 			"food.json", "babiesKids.json", "money.json"
 		};
 	
-	
+	/**
+	 * 
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public CRDeadlinks() throws IOException, InterruptedException
 	{
 		this(DEFAULT_PRODUCT_FILENAMES, DEFAULT_CATEGORY_FILENAME);
@@ -55,30 +63,30 @@ public class CRDeadlinks<CategoryStub, PriceStub, BrandStub>
 	private CRDeadlinks(String[] pProductFileNames, String pCategoryFileName) throws IOException, InterruptedException
 	{
 		
-		write_to_file=write_to_file.concat("[");
+		writeToFile = writeToFile.concat("[");
 		for(String fileName : pProductFileNames)
 		{
 			System.out.println("Reading file "+fileName);
 			readFile(DataPath.get() + fileName);
 
 		}
-		write_to_file = write_to_file.substring(0, write_to_file.length() - 1);
-		write_to_file=write_to_file.concat("]");
-		System.out.println(write_to_file);
-		write_to_file();
+		writeToFile = writeToFile.substring(0, writeToFile.length() - 1);
+		writeToFile = writeToFile.concat("]");
+		System.out.println(writeToFile);
+		writeToFile();
 		tryreadingthejson();
 	}
 	
-	private void write_to_file() throws IOException
+	private void writeToFile() throws IOException
 	{
 		 FileWriter fileWriter = null;
 		File  newTextFile = new File(DataPath.get()+"dead_links.json");
 		 fileWriter = new FileWriter(newTextFile);
-         fileWriter.write(write_to_file);
+         fileWriter.write(writeToFile);
          fileWriter.close();
 	}
 	
-	private void tryreadingthejson() throws FileNotFoundException, IOException
+	private void tryreadingthejson() throws IOException
 	{
 		InputStream in = new FileInputStream(DataPath.get()+"dead_links.json");
 		JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
@@ -94,29 +102,29 @@ public class CRDeadlinks<CategoryStub, PriceStub, BrandStub>
 		in.close();
 	}
 	
-	private static void readFile(String filePath) throws IOException, InterruptedException
+	private static void readFile(String pFilePath) throws IOException, InterruptedException
 	{
-		InputStream in = new FileInputStream(filePath);
+		InputStream in = new FileInputStream(pFilePath);
 		JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
 		reader.beginArray();
 		while(reader.hasNext()) 
 		{
 	
 			ProductStub prodStub = new Gson().fromJson(reader, ProductStub.class);
-		write_to_file=write_to_file.concat("{\"product_id\":"+prodStub.id+",");
+		writeToFile = writeToFile.concat("{\"product_id\":"+prodStub.id+",");
 		String urltext = prodStub.modelOverviewPageUrl;
 		// Write 404 error if no URL exists
 		if(urltext==null)
 			 {
-				 write_to_file=write_to_file.concat("\"state\":"+"404"+"},");
+				 writeToFile = writeToFile.concat("\"state\":"+"404"+"},");
 				 continue;
 			 }
 		
-		Thread.sleep(200);
+		Thread.sleep(SLEEP);
 		URL url = new URL(urltext);
 		// Attempt a connection and see the resulting response code it returns
 		int responseCode = ((HttpURLConnection) url.openConnection()).getResponseCode();
-		write_to_file=write_to_file.concat("\"state\":"+responseCode+"},");
+		writeToFile = writeToFile.concat("\"state\":"+responseCode+"},");
 		}
 		reader.endArray();
 		reader.close();
