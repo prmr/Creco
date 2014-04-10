@@ -22,7 +22,6 @@ import java.util.List;
 import org.springframework.ui.Model;
 
 import ca.mcgill.cs.creco.data.Category;
-import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.web.model.FeatureView;
 import ca.mcgill.cs.creco.web.model.ProductView;
 
@@ -59,17 +58,18 @@ public interface ServiceFacade
 	/**
 	 * Ranks a collection of products according to a given set of attributes.
 	 * @param pScoredAttributes The set of attributes used to rank the products.
-	 * @param pProducts The collection of products to rank.
+	 * @param pCategoryID The Id of category searched.
 	 * @return The ranked list of products, ordered from highest to lowest score.
 	 */
 	List<RankExplanation> rankProducts(List <ScoredAttribute> pScoredAttributes, String pCategoryID);
 
 	/**
 	 * Returns a string of for the products view page.
-	 * @param dataSpec
+	 * @param pUserFeatureList list of features selected by the user.
+	 * @param pCategoryId Id of the searched category. 
 	 * @return Name of file to redirect the browser to the products page.
 	 */
-	String sendCurrentFeatureList(String dataSpec, String pCategoryId);
+	String sendCurrentFeatureList(String pUserFeatureList, String pCategoryId);
 	
 	/**
 	 * A category is selected and this controller obtains the features
@@ -78,10 +78,11 @@ public interface ServiceFacade
 	 * @param pModel The model, containing the list of categories.
 	 * @return List of products
 	 */
-	ArrayList<ProductView> searchRankedFeaturesProducts_POST(String pCategoryId, Model pModel);
+	ArrayList<ProductView> searchRankedFeaturesProductsPOST(String pCategoryId, Model pModel);
 	
 	/**
-	 * Updated current feature list based on the category selected
+	 * Updated current feature list based on the category selected.
+	 * @param pCategoryId Id of the searched category.
 	 * @return List of features
 	 */
 	ArrayList<FeatureView> updateCurrentFeatureList(String pCategoryId);

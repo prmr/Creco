@@ -82,8 +82,8 @@ public class ConcreteServiceFacade implements ServiceFacade
 		}
 		Set<String> collectedbrandstillnow = new HashSet<String>();
 		Set<String> collectedtexttillnow = new HashSet<String>();
-		Set<String> Brands = new HashSet<String>();
-		Set<String> Text_search = new HashSet<String>();
+		Set<String> brands = new HashSet<String>();
+		Set<String> textSearch = new HashSet<String>();
 		for (Product productname : aDataStore.getProducts())
 		{
 			if (productname.getName().toLowerCase().contains(pInput.toLowerCase()))
@@ -101,11 +101,11 @@ public class ConcreteServiceFacade implements ServiceFacade
 							else
 							{
 								collectedbrandstillnow.add(productspace);
-								Brands.add(productspace);
+								brands.add(productspace);
 							}
 						}
-						else if (collectedtexttillnow.contains(productspace)
-								|| collectedbrandstillnow.contains(productspace))
+						else if (collectedtexttillnow.contains(productspace) || 
+								collectedbrandstillnow.contains(productspace))
 						{
 						}
 						else
@@ -115,21 +115,28 @@ public class ConcreteServiceFacade implements ServiceFacade
 							for (int i = 0; i < productspace.length(); i++)
 							{
 								if (Character.isDigit(productspace.charAt(i)))
+								{
 									count++;
+								}
 							}
 							if (count < 2 && !productspace.contains("(") && !productspace.contains(")"))
-								Text_search.add(productspace);
+							{
+								textSearch.add(productspace);
+							}								
 						}
 					}
 				}
 			}
 		}
 
-		for (String brandname : Brands)
+		for (String brandname : brands)
+		{
 			response = response.concat(brandname + "| " + "Brand" + "| ");
-
-		for (String textname : Text_search)
+		}
+		for (String textname : textSearch)
+		{
 			response = response.concat(textname + "| " + "Text Search" + "| ");
+		}
 		return response;
 	}
 
@@ -153,9 +160,9 @@ public class ConcreteServiceFacade implements ServiceFacade
 
 
 	@Override
-	public String sendCurrentFeatureList(String dataSpec, String pCategoryId)
+	public String sendCurrentFeatureList(String pUserFeatureList, String pCategoryId)
 	{
-		UserFeatureModel userFMSpec = new Gson().fromJson(dataSpec, UserFeatureModel.class);
+		UserFeatureModel userFMSpec = new Gson().fromJson(pUserFeatureList, UserFeatureModel.class);
 
 		List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
 
@@ -174,18 +181,17 @@ public class ConcreteServiceFacade implements ServiceFacade
 		userScoredFeaturesSpecs = sortFeatures(userScoredFeaturesSpecs);
 
 		List<RankExplanation> rankedProducts = rankProducts(userScoredFeaturesSpecs, pCategoryId);
-		// Converting to View Object
+
 		ArrayList<ProductView> products = new ArrayList<ProductView>();
 		for (RankExplanation productRankingExplanation : rankedProducts)
 		{
-//			if(scoredProduct.getaAttribute())
 			ArrayList<ExplanationView> explanation = new ArrayList<ExplanationView>();
 			
 			for(RankExplanationInstance rei : productRankingExplanation.getaRankList())
 			{
 				TypedValue value = rei.getaAttributeValue();				
 				String attributeName = rei.getaAttribute().getAttributeName();
-				explanation.add(new ExplanationView(attributeName, value, rei.getaAttributeRank(), rei.getaAttribute().getAttributeScore()));
+				explanation.add(new ExplanationView(attributeName, value, rei.getaAttributeRank(), rei.getaAttribute().getCorrelation()));
 			}
 			products.add(new ProductView(productRankingExplanation.getaProduct().getId(), productRankingExplanation.getaProduct().getName(),
 					productRankingExplanation.getaProduct().getUrl(), explanation, productRankingExplanation.getaProduct().getImage()));
@@ -201,19 +207,21 @@ public class ConcreteServiceFacade implements ServiceFacade
 			{
 				List<ExplanationView> expView = productView.getExplanation();
 				for(ExplanationView e : expView)
-				{
+				{				
 					TypedValue tValue = e.getValue();
 					response = response.concat(e.getName() + "|");
 					response = response.concat(products.size() + "|");
-					response = response.concat(e.getAttrRank() + "|");
+					response = response.concat(e.getAttrScore() + "|");
 					response = response.concat(e.getValueRank()+"|"); 
 					response = response.concat(e.getIsBoolean()+"|");
+										
 					if(e.getIsBoolean())
 					{
 						if(tValue.getBoolean())
 						{
 							response = response.concat("True||");
-						}else
+						}
+						else
 						{
 							response = response.concat("False||");
 						}
@@ -237,6 +245,11 @@ public class ConcreteServiceFacade implements ServiceFacade
 		return response;
 	}
 
+	/***
+	 * 
+	 * @param pUserFeatures list of scored attributes selected by the user.
+	 * @return list of sorted scored attributes according to attribute correlation.
+	 */
 	public List<ScoredAttribute> sortFeatures(List<ScoredAttribute> pUserFeatures)
 	{
 		ScoredAttribute tmp = null;
@@ -255,6 +268,12 @@ public class ConcreteServiceFacade implements ServiceFacade
 		return pUserFeatures;
 	}
 
+	/***
+	 * 
+	 * @param pFeatureList list of all scored attributes.
+	 * @param pName name of the attribute to find.
+	 * @return scored attribute matching the parameter name
+	 */
 	public ScoredAttribute locateFeatureScoredAttribute(List<ScoredAttribute> pFeatureList, String pName)
 	{
 		for (int i = 0; i < pFeatureList.size(); i++)
@@ -270,14 +289,15 @@ public class ConcreteServiceFacade implements ServiceFacade
 	}
 
 	@Override
-	public ArrayList<ProductView> searchRankedFeaturesProducts_POST(String pCategoryId, Model pModel)
+	public ArrayList<ProductView> searchRankedFeaturesProductsPOST(String pCategoryId, Model pModel)
 	{
 		List<Product> prodSearch = aProductSort.returnProductsAlphabetically(pCategoryId);
 		ArrayList<ProductView> products = new ArrayList<ProductView>();
 		ArrayList<ExplanationView> emptyExplanation = new ArrayList<ExplanationView>();
 		for (Product scoredProduct : prodSearch)
 		{
-			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), scoredProduct.getUrl(), emptyExplanation , scoredProduct.getImage()));
+			products.add(new ProductView(scoredProduct.getId(), scoredProduct.getName(), 
+					scoredProduct.getUrl(), emptyExplanation , scoredProduct.getImage()));
 		}
 		return products;
 	}
@@ -298,7 +318,6 @@ public class ConcreteServiceFacade implements ServiceFacade
 			FeatureView f = new FeatureView();
 			f.setId(scoredAttr.get(i).getAttributeID());
 			f.setName(scoredAttr.get(i).getAttributeName());
-			f.setSpec(true);
 			f.setVisible(true);
 			f.setDesc(scoredAttr.get(i).getAttributeDesc());
 

@@ -2,9 +2,9 @@
  * Global object to store the
  * user's selected features
  */
-var specGlobalFeatureObject = {
-    names: [],
-    values: []
+var globalFeatureObject = {
+    aNames: [],
+    aValues: []
 };
 
 function findParentID(node, id) {
@@ -58,12 +58,11 @@ function removeFeature(elem, name, val) {
     var exist = false;
     var isSpec = findParentID(elem, "main_specs");
 
-    for (var i = 0; i < specGlobalFeatureObject.names.length; i++) {
-        console.log("specGlobalFeatureObject.names[i] " + specGlobalFeatureObject.names[i]);
-        if (specGlobalFeatureObject.names[i] == name) {
+    for (var i = 0; i < globalFeatureObject.aNames.length; i++) {
+        if (globalFeatureObject.aNames[i] == name) {
             exist = true;
-            removeElem(specGlobalFeatureObject.names, name);
-            removeElem(specGlobalFeatureObject.values, val);
+            removeElem(globalFeatureObject.aNames, name);
+            removeElem(globalFeatureObject.aValues, val);
             break;
         }
     }
@@ -78,16 +77,16 @@ function addFeature(elem, name, val) {
     var exist = false;
     var isSpec = findParentID(elem, "main_specs")
 
-    for (var i = 0; i < specGlobalFeatureObject.names.length; i++) {
-        if (specGlobalFeatureObject.names[i] == name) {
-            specGlobalFeatureObject.values[i] = val;
+    for (var i = 0; i < globalFeatureObject.aNames.length; i++) {
+        if (globalFeatureObject.aNames[i] == name) {
+            globalFeatureObject.aValues[i] = val;
             exist = true;
             break;
         }
     }
     if (!exist) {
-        specGlobalFeatureObject.names.push(name);
-        specGlobalFeatureObject.values.push(val);
+        globalFeatureObject.aNames.push(name);
+        globalFeatureObject.aValues.push(val);
     }
 
 }
@@ -108,13 +107,13 @@ function stopSpinner() {
  * to the UI controller
  */
 function sendFeatures() {
-    var sjData = JSON.stringify(specGlobalFeatureObject);
+    var featureObj = JSON.stringify(globalFeatureObject);
     startSpinner();
     $.ajax({
         async: true,
         url: '/sendFeatures',
         data: ({
-            dataSpec: sjData,
+        	pUserFeatureList: featureObj,
             pCategoryId: $("#categoryMarker").attr('title')
         }),
         success: function (response) {
@@ -154,46 +153,43 @@ function sendFeatures() {
         		for(var j=0 ; j < explanationList.length -1; j++)
         		{
             			var exp = explanationList[j].split("|");
-            			console.log(" explanation 0 "+JSON.stringify(exp[0]));          
-            			console.log(" explanation 1 "+JSON.stringify(exp[1]));            		
-            		//	console.log(" explanation 2 "+JSON.stringify(exp[2]));            		
-            			console.log(" explanation 3 "+JSON.stringify(exp[3])); 
+            			
             			product_div_exp = $("<p>").addClass("rankexplanation-attr-name").text(JSON.stringify(exp[0]));
             			product_div_exp_value = $("<p>").addClass("rankexplanation-attr-value").text(JSON.stringify(exp[1]));
             			var bloc1 = $("<div>").addClass("bloc1");
                     	
                 		var explanation_attribute = $("<div>").addClass("rankexplanation-attr-name").text(exp[0]+ ":");
                 		explanation_attribute.appendTo(bloc1);
-                		var progress = $('<div>', {class: 'progress'});
-                		var progress1=null;
+                		var progress = $('<div>', {class: 'progress progress-info'});
+                		var progress1 = null;
                 		var progress2 = null;
-                		var progress3=null;
+                		var progress3 = null;
                 		var rankValue = 0;
+                		
+                		
                 		if(exp[4] =="true")
                 		{
-                			console.log("feature is boolean" + exp[3])
-                			progress1 = $("<div>").addClass("boolean-explanation").text(exp[5]);                		
-                    		//progress1.attr("aria-valuemax",exp[1]);
-                			
+                			progress1 = $("<div>").addClass("boolean-explanation").text(exp[5]).css("color","#2a6496");                		                			
                 			progress1.appendTo(bloc1);
-                		}else
-                		{
-                			rankValue = (exp[1] - exp[3] + 1)/exp[1];
-                    		rankValue = rankValue * 100;
-                    		progress1 = $("<div>").addClass("progress-bar").text("Rank:"+exp[3]).attr("aria-valuenow",rankValue).css("width",rankValue+"%");                		
-                    		progress1.attr("aria-valuemax",exp[1]);
-                    		//                		aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" 
-                        	//progress2 =  $("<div>").addClass("progress-bar progress-bar-warning").css("width","33%");
-                        	//progress3 =$("<div>").addClass("progress-bar progress-bar-success").css("width","33%");
-                    		
-                    	//	progress2.appendTo(progress);
-                    	//	progress3.appendTo(progress);
-                    		progress1.appendTo(progress);
-                    		
-                    		progress.appendTo(bloc1);
-                    		
                 		}
-                 		
+                		else
+                		{
+                			if(exp[3] == -1) //feature doesn't exist for this product
+                    		{
+                    			progress1 = $("<div>").addClass("boolean-explanation").text("Not Available").css("font-style","italic");                		                			
+                    			progress1.appendTo(bloc1);
+                    			
+                    		}else
+                    		{
+                    			rankValue = (exp[1] - exp[3] + 1)/exp[1];
+                        		rankValue = rankValue * 100;
+                        		progress1 = $("<div>").addClass("progress-bar").text("Rank:"+exp[3]).attr("aria-valuenow",rankValue).css("width",rankValue+"%");                		
+                        		progress1.attr("aria-valuemax",exp[1]);
+                        		progress1.appendTo(progress);                    		
+                        		progress.appendTo(bloc1);                    		
+
+                    		}
+                		}                 		
                 		bloc1.appendTo(parentbloc1);
             	}
         		

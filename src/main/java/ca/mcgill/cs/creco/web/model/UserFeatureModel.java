@@ -21,41 +21,81 @@ import java.util.ArrayList;
 /**
  *
  */
-public class UserFeatureModel implements Serializable {
+public class UserFeatureModel implements Serializable
+{
+	private static final long serialVersionUID = -2225290822890729985L;
+	private String aQuery;
+	private ArrayList<String> aIds;
+	private ArrayList<String> aNames;
+	private ArrayList<String> aValues;
+	
 	/**
 	 * 
+	 * @return the search query.
 	 */
-	private static final long serialVersionUID = -2225290822890729985L;
-	private String query;
-	private ArrayList<String> ids;
-	private ArrayList<String> names;
-	private ArrayList<String> values;
 	public String getQuery()
 	{
-		return query;
-	}
-	public void setQuery(String query) {
-		this.query = query;
-	}
-	public ArrayList<String> getIds() {
-		return ids;
-	}
-	public void setIds(ArrayList<String> ids) {
-		this.ids = ids;
-	}
-	public ArrayList<String> getNames() {
-		return names;
-	}
-	public void setNames(ArrayList<String> names) {
-		this.names = names;
-	}
-	public ArrayList<String> getValues() {
-		return values;
-	}
-	public void setValues(ArrayList<String> values) {
-		this.values = values;
+		return aQuery;
 	}
 	
+	/**
+	 * 
+	 * @param pQuery search query.
+	 */
+	public void setQuery(String pQuery)
+	{
+		aQuery = pQuery;
+	}
+	
+	/**
+	 * 
+	 * @return a list of ids for the selected features.
+	 */
+	public ArrayList<String> getIds()
+	{
+		return aIds;
+	}
+	/**
+	 * 
+	 * @param pIds a list of ids for the selected features.
+	 */
+	public void setIds(ArrayList<String> pIds)
+	{
+		aIds = pIds;
+	}
+	/**
+	 * 
+	 * @return a list of names of the selected features.
+	 */
+	public ArrayList<String> getNames()
+	{
+		return aNames;
+	}
+	/**
+	 * 
+	 * @param pNames the names of the selected features.
+	 */
+	public void setNames(ArrayList<String> pNames)
+	{
+		aNames = pNames;
+	}
+	/**
+	 * 
+	 * @return list of values for the features.
+	 */
+	public ArrayList<String> getValues()
+	{
+		return aValues;
+	}
+	
+	/**
+	 * 
+	 * @param pValues the values of the features.
+	 */
+	public void setValues(ArrayList<String> pValues)
+	{
+		aValues = pValues;
+	}
 
 }
 

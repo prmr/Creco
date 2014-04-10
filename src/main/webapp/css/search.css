@@ -252,12 +252,12 @@ label
 
 .progress-bar
 {
-	color:#000000;
+	color:rgb(59, 59, 59);
 }
 
 #block_container
 {
-width : 50%;
+	width : 50%;
 }
 .bloc1
 {

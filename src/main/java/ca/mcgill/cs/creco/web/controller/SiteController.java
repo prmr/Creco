@@ -95,9 +95,9 @@ public class SiteController
 	 * @return A redirection to the product page
 	 */
 	@RequestMapping(URL_SEARCH_PRODUCTS)  
-	public String searchRankedFeaturesProducts_POST(@RequestParam(value = "id", required = true) String pCategoryId, Model pModel)
+	public String searchRankedFeaturesProductsPOST(@RequestParam(value = "id", required = true) String pCategoryId, Model pModel)
 	{  	
-		pModel.addAttribute("productList", aServiceFacade.searchRankedFeaturesProducts_POST(pCategoryId, pModel));			
+		pModel.addAttribute("productList", aServiceFacade.searchRankedFeaturesProductsPOST(pCategoryId, pModel));			
 		pModel.addAttribute("specFeatureList", aServiceFacade.updateCurrentFeatureList(pCategoryId));
 		pModel.addAttribute("currentCategoryId", pCategoryId);
 		return URL_SHOW_PRODUCTS;
@@ -105,15 +105,15 @@ public class SiteController
 	
 	/**
 	 * @author MariamN
-	 * @param dataSpec
-	 * @param dataRate
-	 * @return name of file to redirect the browser to the products page.
+	 * @param pUserFeatureList list of features selected by the user.
+	 * @param pCategoryId id of the category the user searched.
+	 * @return response contains list of products and explanation matching the user selected features.
 	 */
 	@RequestMapping(URL_UPDATE_FEATURES)	
 	@ResponseBody
-	public String sendCurrentFeatureList(@RequestParam String dataSpec, @RequestParam String pCategoryId)
+	public String sendCurrentFeatureList(@RequestParam String pUserFeatureList, @RequestParam String pCategoryId)
 	{
-	    String response = aServiceFacade.sendCurrentFeatureList(dataSpec, pCategoryId);	 
+	    String response = aServiceFacade.sendCurrentFeatureList(pUserFeatureList, pCategoryId);	 
 
 		return response;		
 	}		

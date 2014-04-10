@@ -15,16 +15,12 @@
  */
 package ca.mcgill.cs.creco.logic;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.Product;
-import ca.mcgill.cs.creco.logic.ScoredAttribute.Direction;
-import ca.mcgill.cs.creco.data.*;
+import ca.mcgill.cs.creco.data.TypedValue;
 
 
 
@@ -41,8 +37,9 @@ public class RankExplanationInstance
 	private Product aProduct;
 	
 	/**
-	 * 
+	 * @param pScoredAttribute the explained attribute 
 	 * @param pProduct product to provide explanation to
+	 * @throws 
 	 */
 	public RankExplanationInstance(Product pProduct, ScoredAttribute pScoredAttribute) throws IllegalArgumentException
 	{
@@ -54,37 +51,53 @@ public class RankExplanationInstance
 		if(attribute != null)
 		{
 			aAttributeValue = attribute.getTypedValue();
-		}
-		
-//		try
-//		{
 			aAttributeRank = pScoredAttribute.getValueRank(aAttributeValue);
-//		}
-//		catch(IllegalArgumentException iae)
-//		{
-//			aAttributeRank = RANKING_NOT_AVAILABLE;		
-//			LOG.error("No ranking for Attribute: " + pScoredAttribute.getAttributeID()+
-//					" in Product: " + pProduct.getId());
-//		}
-		
+		}	
+		else
+		{
+			aAttributeRank = -1;
+		}		
 	}
 	
-	public Product getaProduct() {
+	/**
+	 * 
+	 * @return product object.
+	 */
+	public Product getaProduct()
+	{
 		return aProduct;
 	}
-	public void setaProduct(Product aProduct) {
-		this.aProduct = aProduct;
+	
+	/**
+	 * 
+	 * @param pProduct product associated with this explanation.
+	 */
+	public void setaProduct(Product pProduct)
+	{
+		this.aProduct = pProduct;
 	}
 
+	/**
+	 * 
+	 * @return the value of the attribute.
+	 */
 	public TypedValue getaAttributeValue()
 	{
 		return this.aAttributeValue;
 	}
+	
+	/**
+	 * 
+	 * @return the rank of the attribute.
+	 */
 	public int getaAttributeRank()
 	{
 		return this.aAttributeRank;
 	}
-		
+	/**
+	 * 
+	 * @return scored attribute associated with the explanation.
+	 */
 	public ScoredAttribute getaAttribute()
 	{
 		return aScoredAttribute;		

@@ -49,7 +49,7 @@ public class AttributeExtractor
  	private IDataStore aDataStore;
 	private HashMap<String, ArrayList<ScoredAttribute>> aAllAttributes;
 	/** Constructor that takes a category.
-	 * @param pCategory the whole space of interesting products
+	 * @param pDataStore the whole space of interesting products
 	 */
 	@Autowired
 	public AttributeExtractor(IDataStore pDataStore)
@@ -114,7 +114,7 @@ public class AttributeExtractor
 	}
 	/**
 	 * Call this method to get the list of scored Attributes ranked from most important
-	 * to least important by the passed sort method
+	 * to least important by the passed sort method.
 	 * @param pCatID Id of the category you want
 	 * @param pSortMethod Sort logic you want the list to be sorted by
 	 * can return null pointers if it doesn't have any attributes to work with.
@@ -155,7 +155,8 @@ public class AttributeExtractor
 			}
 			LOG.error("AttributeID: " + pAttributeID + " Not Found in CategoryID: " +pCatID );	
 		}	
-		else{
+		else
+		{
 			LOG.error("Category("+pCatID+") not found returning default null ScoredAttribute");	
 		}
 		

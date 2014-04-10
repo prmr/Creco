@@ -28,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import ca.mcgill.cs.creco.data.CategoryNode;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.IDataStore;
 

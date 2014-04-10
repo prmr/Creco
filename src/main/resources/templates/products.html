@@ -19,7 +19,7 @@
 	    <title>Creco</title> 
 	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	    	    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" />
-  		<link rel="stylesheet" href="/resources/demos/style.css"></link>
+  		<!-- <link rel="stylesheet" href="/resources/demos/style.css"></link> -->
 	    <style>
   			.ui-autocomplete-category {
     		padding: .2em .4em;
@@ -93,7 +93,7 @@
 						<div th:each="exp : ${product.explanation}">
 							<p class="rankexplanation-attr-name" th:text="${exp.name}"></p>
 						
-						<div class="progress">
+						<div class="progress progress-info progress-striped">
 							  <div class="progress-bar rankexplanation-attr-value" role="progressbar" th:text="${exp.valueRank}">
 							     <span class="sr-only" th:text="${exp.value}"></span>								  
 							  </div>
