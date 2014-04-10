@@ -126,7 +126,6 @@ html, body
 	width: 90px;
 	float: left;
 	margin-right: 10px;
-	border: solid 1px #7a7a7a;
 	text-align: center;
 	font-size: 12px;
 	color: rgb(160,160,160);
@@ -145,7 +144,7 @@ html, body
 	display: block;
 	/*display: -webkit-box;*/
 	margin-bottom: 6px;
-    background: #FAFAFA;
+    background: white;
     color: rgb(122, 122, 122);
 	padding: 20px;
 	min-height: 120px;
