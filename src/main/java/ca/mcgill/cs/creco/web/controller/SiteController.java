@@ -98,7 +98,7 @@ public class SiteController
 	public String searchRankedFeaturesProductsPOST(@RequestParam(value = "id", required = true) String pCategoryId, Model pModel)
 	{  	
 		pModel.addAttribute("productList", aServiceFacade.searchRankedFeaturesProductsPOST(pCategoryId, pModel));			
-		pModel.addAttribute("specFeatureList", aServiceFacade.updateCurrentFeatureList(pCategoryId));
+		pModel.addAttribute("specFeatureList", aServiceFacade.createFeatureList(pCategoryId));
 		pModel.addAttribute("currentCategoryId", pCategoryId);
 		return URL_SHOW_PRODUCTS;
 	}

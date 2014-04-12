@@ -34,6 +34,8 @@ import ca.mcgill.cs.creco.web.model.ProductView;
 import ca.mcgill.cs.creco.web.model.UserFeatureModel;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 /**
  * Default implementation of the service layer.
@@ -194,57 +196,81 @@ public class ConcreteServiceFacade implements ServiceFacade
 				explanation.add(new ExplanationView(attributeName, value, rei.getaAttributeRank(), rei.getaAttribute().getCorrelation()));
 			}
 			products.add(new ProductView(productRankingExplanation.getaProduct().getId(), productRankingExplanation.getaProduct().getName(),
-					productRankingExplanation.getaProduct().getUrl(), explanation, productRankingExplanation.getaProduct().getImage()));
-			
-
-		}
+					productRankingExplanation.getaProduct().getUrl(), explanation, productRankingExplanation.getaProduct().getImage()));			
+		}		
+		
 		String response = "";
-
 		if (rankedProducts.size() > 0)
 		{
-			// This response is to be process by AJAX in JavaScript
-			for (ProductView productView : products)
+			response = createExplainedProductsResponse(products);
+			
+		}		
+		
+		return response;
+	}
+
+	/**
+	 * 
+	 * @param pProducts list of products to display.
+	 * @return Create JSON response object representing the products and their explanations.
+	 */
+	private String createExplainedProductsResponse(ArrayList<ProductView> pProducts)
+	{
+		JsonArray jResponse = new JsonArray();
+		
+		for (ProductView productView : pProducts)
+		{		
+			List<ExplanationView> expView = productView.getExplanation();
+			
+			JsonObject jProductObj = new JsonObject();
+			JsonArray jExplanationArray = new JsonArray();
+			
+			jProductObj.addProperty("productID", productView.getId());
+			jProductObj.addProperty("productName", productView.getName());
+			jProductObj.addProperty("productURL", productView.getUrl());
+			jProductObj.addProperty("productIMAGE", productView.getImage());		
+			
+			for(ExplanationView e : expView)
 			{
-				List<ExplanationView> expView = productView.getExplanation();
-				for(ExplanationView e : expView)
-				{				
-					TypedValue tValue = e.getValue();
-					response = response.concat(e.getName() + "|");
-					response = response.concat(products.size() + "|");
-					response = response.concat(e.getAttrScore() + "|");
-					response = response.concat(e.getValueRank()+"|"); 
-					response = response.concat(e.getIsBoolean()+"|");
-										
+				JsonObject jExplanationElem = new JsonObject();
+						
+				TypedValue tValue = e.getValue();
+				
+				jExplanationElem.addProperty("name", e.getName());
+				jExplanationElem.addProperty("productsNum", pProducts.size());
+				jExplanationElem.addProperty("boolean", e.getIsBoolean());
+				jExplanationElem.addProperty("rank", e.getValueRank());
+							
+				if(e.getValueRank() == -1)
+				{
+					jExplanationElem.addProperty("isExplained", "-1");
+				}
+				else
+				{
+					jExplanationElem.addProperty("isExplained", "1");
+					
 					if(e.getIsBoolean())
 					{
 						if(tValue.getBoolean())
 						{
-							response = response.concat("True||");
+							jExplanationElem.addProperty("boolValue", "True");
+
 						}
 						else
 						{
-							response = response.concat("False||");
+							jExplanationElem.addProperty("boolValue", "False");
 						}
 					}
-					else
-					{
-						response = response.concat("-1||");
-					}
-					
-					
-				}		
-				response = response.concat("{}");
-				response = response.concat(productView.getId() + ",");
-				response = response.concat(productView.getName() + ",");
-				response = response.concat(productView.getUrl() + ",");
-				response = response.concat(productView.getImage() + ";");
+				}
 
-			}
+				jExplanationArray.add(jExplanationElem);										
+			}						
+			jProductObj.add("explanation", jExplanationArray);		
+			jResponse.add(jProductObj);
 		}
-
-		return response;
+		return jResponse.toString();
 	}
-
+	
 	/***
 	 * 
 	 * @param pUserFeatures list of scored attributes selected by the user.
@@ -303,7 +329,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 	}
 
 	@Override
-	public ArrayList<FeatureView> updateCurrentFeatureList(String pCategoryId)
+	public ArrayList<FeatureView> createFeatureList(String pCategoryId)
 	{
 		ArrayList<FeatureView> specFeatures = new ArrayList<FeatureView>();
 		List<ScoredAttribute> scoredAttr = aAttributeExtractor.getAttributesForCategory(pCategoryId);

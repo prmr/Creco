@@ -71,6 +71,7 @@ public interface ServiceFacade
 	 */
 	String sendCurrentFeatureList(String pUserFeatureList, String pCategoryId);
 	
+	
 	/**
 	 * A category is selected and this controller obtains the features
 	 * and products to display.
@@ -85,6 +86,6 @@ public interface ServiceFacade
 	 * @param pCategoryId Id of the searched category.
 	 * @return List of features
 	 */
-	ArrayList<FeatureView> updateCurrentFeatureList(String pCategoryId);
+	ArrayList<FeatureView> createFeatureList(String pCategoryId);
 	
 }
