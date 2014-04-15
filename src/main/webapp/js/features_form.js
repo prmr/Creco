@@ -1,3 +1,40 @@
+$('#ex1').slider({
+	formater: function(value) {
+		return 'Current value: ' + value;
+	}
+});
+
+$(function() {  	  
+    var slider = $('.slider'),  
+        tooltip = $('.tooltip');  
+  
+    tooltip.hide();  
+  
+    slider.slider({  
+        range: "min",  
+        min: 1,      
+        max:100,
+        start: function(event,ui) {  
+          tooltip.fadeIn('fast');  
+        },
+        
+        slide: function(event, ui) {
+//            var value = slider.slider('value');                  
+//           tooltip.css('left', value).text(ui.value);     
+        },  
+        create: function(event, ui){
+        	var val=$(this).parent().attr('class')*100;
+            $(this).slider('value',Math.round(val));
+            console.log("value is " + $(this).parent().attr('class'));
+            
+        },
+        stop: function(event,ui) {  
+//         tooltip.fadeOut('fast');  
+        },  
+    });  
+  
+});  
+
 /**
  * Global object to store the
  * user's selected features
@@ -196,3 +233,6 @@ function sendFeatures() {
         }
     });
 }
+
+
+

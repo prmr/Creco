@@ -346,7 +346,10 @@ public class ConcreteServiceFacade implements ServiceFacade
 			f.setName(scoredAttr.get(i).getAttributeName());
 			f.setVisible(true);
 			f.setDesc(scoredAttr.get(i).getAttributeDesc());
-
+			f.setScore(scoredAttr.get(i).getCorrelation());
+			System.out.println("correlation "+ scoredAttr.get(i).getCorrelation()*100);
+			System.out.println("score "+ scoredAttr.get(i).getAttributeScore());
+			
 			specFeatures.add(f);
 		}
 		return specFeatures;

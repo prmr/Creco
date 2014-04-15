@@ -18,18 +18,20 @@
 	<head> 
 	    <title>Creco</title> 
 	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	    	    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" />
+	    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" />
   		<!-- <link rel="stylesheet" href="/resources/demos/style.css"></link> -->
 	    <style>
   			.ui-autocomplete-category {
     		padding: .2em .4em;
     		margin: .8em 0 .2em;
     		line-height: 1.5;
- 			 }
+ 			 } 			
   		</style>
-	</head>
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+  </head>
 	
-	<link rel="stylesheet" href="lib/jquery-ui.css"></link>
+	<link rel="stylesheet" type='text/css' href="lib/jquery-ui.css"></link>
 	<link rel='stylesheet' type='text/css' href='lib/bootstrap.min.css'></link>
 	<link rel='stylesheet' type='text/css' href='lib/bootstrap-theme.min.css'></link>
 	<link rel='stylesheet' type='text/css' href='css/search.css' />
@@ -65,14 +67,18 @@
 									<label class="attribute-label" 
 										th:for="${specFeatures.name}" 
 										th:text="${specFeatures.name}"  
-										th:title="${specFeatures.desc}" ></label>
-									<div class="clear"></div>
+										th:title="${specFeatures.desc}" ></label>									
+										<div th:id="${specFeatures.name}" th:class="${specFeatures.score}"><!--  class="slider-range-min" th:value="${specFeatures.score}">								 -->												
+										<span class="tooltip"></span>   
+									    <div  class="slider"></div>  
+										</div>
+										
+									   <div class="clear"></div>
 								</div>
 							</div>
 						</div>
 				</div>
 			</div>
-			
 			<div id="product-area">
 				<div id="spinner-wrapper">
 					<div id="spinner-content-mask"></div>
@@ -107,7 +113,8 @@
 			</div>
 		</div>
 	</body>
-	<script type='text/javascript' src="lib/jquery-1.9.1.js"></script>
+
+	
 	<script type='text/javascript' src="lib/jquery-ui.js"></script>	
 	<script type='text/javascript' src='lib/bootstrap.min.js'></script>	
 	<script type='text/javascript' src="js/autocomplete.js"></script> 
