@@ -152,7 +152,26 @@ html, body
 	padding: 24px 0 0 0;
 	background: url('../images/missing-product-image.jpg');
 }
+.rankedproduct-attr-name
+{
+	display : table-cell;
+	width : 25%;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 5px;
+	padding-bottom: 20px;
+}
 
+.rankedproduct-attr-data
+{
+	display : table-cell;
+	width : 25%;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 20px;
+	padding-bottom: 5px;
+	text-align: center;
+}
 .rankedproduct-result-entry
 {	
 	border: 1px solid #ddd;
@@ -284,14 +303,12 @@ label
 	position:relative;
 	float:right;
 	/*border: 1px solid #ddd;*/
-	display: block;
-	display: -webkit-box;
+	display: table-cell;
 	margin-bottom: 6px;
     background: rgb(55,55,fe);
     color: rgb(0, 0, 0);
 	/*padding-left: 100px;*/
 	min-height: 20px;
-	width: 150px;
     font-size: 16px;
 }
     
