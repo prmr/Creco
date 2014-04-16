@@ -80,7 +80,7 @@ public interface ServiceFacade
 	 * @param pModel The model, containing the list of categories.
 	 * @return List of products
 	 */
-	ArrayList<ProductView> searchRankedFeaturesProductsPOST(String pCategoryId, Model pModel);
+	ArrayList<ProductView> searchRankedFeaturesProducts(String pCategoryId, Model pModel);
 	
 	/**
 	 * Updated current feature list based on the category selected.

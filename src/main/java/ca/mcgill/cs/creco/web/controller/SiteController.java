@@ -15,10 +15,6 @@
  */
 package ca.mcgill.cs.creco.web.controller;
 
-import java.util.ArrayList;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ca.mcgill.cs.creco.logic.ServiceFacade;
-import ca.mcgill.cs.creco.web.model.FeatureView;
 import ca.mcgill.cs.creco.web.model.UserFeatureModel;
 
 /**
@@ -102,7 +97,7 @@ public class SiteController
 	@RequestMapping(URL_SEARCH_PRODUCTS)  
 	public String searchRankedFeaturesProductsPOST(@RequestParam(value = "id", required = true) String pCategoryId, Model pModel)
 	{  	
-		pModel.addAttribute("productList", aServiceFacade.searchRankedFeaturesProductsPOST(pCategoryId, pModel));			
+		pModel.addAttribute("productList", aServiceFacade.searchRankedFeaturesProducts(pCategoryId, pModel));			
 		pModel.addAttribute("specFeatureList", aServiceFacade.createFeatureList(pCategoryId));
 		pModel.addAttribute("currentCategoryId", pCategoryId);
 		return URL_SHOW_PRODUCTS;

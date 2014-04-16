@@ -317,7 +317,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 	}
 
 	@Override
-	public ArrayList<ProductView> searchRankedFeaturesProductsPOST(String pCategoryId, Model pModel)
+	public ArrayList<ProductView> searchRankedFeaturesProducts(String pCategoryId, Model pModel)
 	{
 		List<Product> prodSearch = aProductSort.returnProductsAlphabetically(pCategoryId);
 		ArrayList<ProductView> products = new ArrayList<ProductView>();
