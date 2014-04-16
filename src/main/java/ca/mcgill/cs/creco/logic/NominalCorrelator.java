@@ -90,6 +90,14 @@ public class NominalCorrelator
 	{
 		Map<String, Double> labelCentroids = getLabelMeanScores(pFirstAttributeId);
 		int numClusters = labelCentroids.entrySet().size();
+		
+		// If there is only one cluster, there cannot be any relationship between
+		// clusters and the overall score
+		if (numClusters <= 1)
+		{
+			return 0.0;
+		}
+		
 		int correctCount = 0;
 		int totalCount = 0;
 		
@@ -119,7 +127,7 @@ public class NominalCorrelator
 		double accuracy = correctCount / (double) totalCount;
 		double uniformAccuracy = 1.0 / numClusters;
 		double normalizedWeight = (accuracy - uniformAccuracy) / ( 1 - uniformAccuracy);
-		
+
 		return normalizedWeight;
 	}
 	
