@@ -12,3 +12,27 @@
       });
     }
   });
+  
+  
+
+  
+  $(function() {
+      var moveLeft = 20;
+      var moveDown = 10;
+      
+      $(".atrigger").hover(function(e) {
+    	  console.log("triggering1");
+        //$('div#pop-up').show();
+    	  $('div#pop-up').css( "display", "table-row")
+        //.css('top', e.pageY + moveDown)
+        //.css('left', e.pageX + moveLeft)
+        //.appendTo('body');
+      }, function() {
+        $('div#pop-up').hide();
+      });
+      
+      $(".atrigger").mousemove(function(e) {
+        $("div#pop-up").css('top', e.pageY + moveDown).css('left', e.pageX + moveLeft);
+      });
+      
+    });

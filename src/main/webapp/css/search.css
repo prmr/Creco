@@ -4,6 +4,21 @@ html, body
 	background: rgb(236, 236, 236);
 }
 
+.pop-up{
+	/*	overflow: hidden;*/
+      	display : none;
+        position: absolute;
+        width : 350px;
+    /*    min-width:200px;
+        max-width: 300px;*/
+        padding: 10px;
+        background: #eeeeee;
+        color: #000000;
+        border: 1px solid #1a1a1a;
+        font-size: 90%;
+        z-index:9999;
+}
+
 #no-result-message 
 {
 	display: none;
@@ -251,7 +266,7 @@ label
 
 .progress-bar
 {
-	color:rgb(59, 59, 59);
+	color:rgb(55,55,55)
 }
 
 #block_container
@@ -261,5 +276,22 @@ label
 .bloc1
 {
     display:inline;
+}
+    
+    
+    .atrigger
+{	
+	position:relative;
+	float:right;
+	/*border: 1px solid #ddd;*/
+	display: block;
+	display: -webkit-box;
+	margin-bottom: 6px;
+    background: rgb(55,55,fe);
+    color: rgb(0, 0, 0);
+	/*padding-left: 100px;*/
+	min-height: 20px;
+	width: 150px;
+    font-size: 16px;
 }
     

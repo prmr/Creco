@@ -15,6 +15,10 @@
  */
 package ca.mcgill.cs.creco.web.controller;
 
+import java.util.ArrayList;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ca.mcgill.cs.creco.logic.ServiceFacade;
+import ca.mcgill.cs.creco.web.model.FeatureView;
 import ca.mcgill.cs.creco.web.model.UserFeatureModel;
 
 /**
@@ -113,8 +118,13 @@ public class SiteController
 	@ResponseBody
 	public String sendCurrentFeatureList(@RequestParam String pUserFeatureList, @RequestParam String pCategoryId)
 	{
-	    String response = aServiceFacade.sendCurrentFeatureList(pUserFeatureList, pCategoryId);	 
+		
+		String response = aServiceFacade.sendCurrentFeatureList(pUserFeatureList, pCategoryId);	 
+		
 
-		return response;		
+		String response_all = aServiceFacade.sendCurrentFeatureList(aServiceFacade.createJSONforallattributes(pCategoryId).toJSONString(), pCategoryId);
+
+		
+		return response.concat("|||").concat(response_all);		
 	}		
 }

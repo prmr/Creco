@@ -117,7 +117,7 @@ function sendFeatures() {
             pCategoryId: $("#categoryMarker").attr('title')
         }),
         success: function (response) {
-        	
+        	var counter =0 ;
         	// Spinner 
         	stopSpinner();
         	$("#product-area").empty();
@@ -125,14 +125,75 @@ function sendFeatures() {
         	var spinner_div_mask = $("<div>").attr("id", "spinner-content-mask").appendTo(spinner_div);
         	var spinner_div_mask = $("<div>").attr("id", "spinner").appendTo(spinner_div);
         	
+        	var splittingpart = response.split("|||");
         	//Products
-        	var jsonResponse = JSON.parse(response);
-
+        	var jsonResponse = JSON.parse(splittingpart[0]);
+        	var completeResponse = JSON.parse(splittingpart[1]);
+        	
         	for(var r = 0; r<jsonResponse.length; r++)
         	{
+        		var added_explanations=0;
         		var product_div = $("<div>").addClass("rankedproduct-result-entry");
         		var product_div_image = $("<div>").addClass("product-image").css("background-image", "url('"+jsonResponse[r].productIMAGE+"')");
-        		var product_div_content = $("<div>").addClass("product-description-area");          	
+        		var product_div_content = $("<div>").addClass("product-description-area"); 
+
+        		
+// Display of detailed explanations        		
+//Finding the position
+        		var counter_variable=0;
+        		for(counter_variable=0;counter_variable<completeResponse.length;counter_variable++)
+        			{
+        				if(jsonResponse[r].productID==completeResponse[counter_variable].productID)
+        						break;
+        			}
+
+        			text = $("<a>").addClass("atrigger").text(" Detailed Explanation").attr("id",counter);
+        		var display = $("<div>").addClass("pop-up").attr("id","explanation"+counter).text("");
+
+        		for(var j = 0 ; j < completeResponse[counter_variable].explanation.length; j++)
+        		{
+        			var exp = completeResponse[counter_variable].explanation[j];
+            		var rankValue=0;
+        			if(exp.boolean)
+            		{
+            		}
+            		else
+            		{
+            			if(exp.isExplained == -1) //feature doesn't exist for this product
+                		{
+                			
+                		}
+            			else // Added only features which can be measured
+                		{
+            				added_explanations++;
+                			rankValue = (exp.productsNum - exp.rank + 1)/exp.productsNum;
+                    		rankValue = rankValue * 100;
+                    		var row = $("<div>").attr("style","display:table-row");
+                    		var column1 =$("<div>").attr("style","display:table-cell;width:40%").text(exp.name);
+                    		var color = stringToColorCode(exp.name);
+                    		var column2 = $("<div>").addClass("progress-bar").attr("style","display: table-cell;width:"+rankValue+"%;background:#"+color.split("").reverse().join("")+";");
+                    		var temporary2 = $("<div>").text("&nbsp;").html();
+                    		temporary2 = temporary2.replace("&amp;","&");
+                    		var buffer = column2;
+                    		buffer.append(temporary2);
+                    		column2 =$("<div>").attr("style","display:table-cell;");
+                    		column2.append(buffer);
+                    		row.append(column1);
+                    		row.append(column2);
+                    		display.append(row);
+                    
+
+
+                		}
+            		}   
+        			
+        			
+        		}
+        		counter++;
+        		product_div_content.append(display);
+        		
+        		
+        		
         		var product_div_name = null;
         		var product_div_exp = null;
         		var product_div_exp_value = null;
@@ -187,12 +248,77 @@ function sendFeatures() {
                 		bloc1.appendTo(parentbloc1);
             	}
         		product_div.append(product_div_image);
-        		product_div.append(product_div_content);
+        		console.log(globalFeatureObject.aNames.length);
+        	// Checking if any recommendations exists
+        		if(globalFeatureObject.aNames.length>0 && added_explanations>0)
+        			{
+        			product_div.append(text);
+        			}
+        		product_div.append(product_div_content);		
         		product_div_content.append(product_div_name);
         		product_div.append(parentbloc1);
-        		$("#product-area").append(product_div);        		
+        		$("#product-area").append(product_div);       
+        		initialise();
         	}
 
         }
     });
+    
+}
+
+
+// Intilisating the event listeners in javascript
+function initialise() {
+    var moveLeft = 20;
+    var moveDown = 10;
+    
+    $(".atrigger").hover(function(e) {
+  	 var id = $(this).attr("id");
+  	// console.log(id);
+      $("div#explanation"+id).css( "display", "block")
+      //.css('top', e.pageY + moveDown)
+      //.css('left', e.pageX + moveLeft)
+      //.appendTo('body');
+    }, function() {
+     	 var id = $(this).attr("id");
+      $("div#explanation"+id).hide();
+    });
+    
+    $(".atrigger").mousemove(function(e) {
+     	 var id = $(this).attr("id");
+      $("div#explanation"+id).css('top', e.pageY + moveDown).css('left', e.pageX + moveLeft);
+    });
+    
+  }
+
+
+// Converting from string to color
+
+function stringToColorCode(str) {
+	  var code = stringToHex(str);
+	  code = code.substr( 0, 6);
+	  return code;
+	  
+}
+
+
+// Converting from string to hex
+function stringToHex (tmp) {
+	tmp=tmp.split("").reverse().join("");
+    var str = '',
+        i = 0,
+        tmp_len = tmp.length,
+        c;
+ 
+    for (; i < tmp_len; i += 1) {
+        c = tmp.charCodeAt(i);
+        str += d2h(c) + '';
+    }
+    return str;
+}
+
+
+// Helper function
+function d2h(d) {
+    return d.toString(16);
 }

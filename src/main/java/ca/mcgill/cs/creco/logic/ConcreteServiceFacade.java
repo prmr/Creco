@@ -18,6 +18,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
@@ -351,4 +353,22 @@ public class ConcreteServiceFacade implements ServiceFacade
 		}
 		return specFeatures;
 	}
+	
+	@Override
+	public JSONObject createJSONforallattributes(String pCategoryId)
+	{
+		JSONObject obj = new JSONObject();
+		ArrayList<FeatureView> specFeatures =createFeatureList(pCategoryId);
+		JSONArray list_name = new JSONArray();
+		JSONArray list_values = new JSONArray();
+		for(FeatureView temporary : specFeatures)
+		{
+				list_name.add(temporary.getName());
+				list_values.add(null);
+		}
+		obj.put("aNames",list_name);
+		obj.put("aValues",list_values);
+		return (obj);
+	}
+	
 }
