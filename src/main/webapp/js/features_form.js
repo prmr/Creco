@@ -107,6 +107,7 @@ function stopSpinner() {
  * to the UI controller
  */
 function sendFeatures() {
+	var checker=0;
     var featureObj = JSON.stringify(globalFeatureObject);
     startSpinner();
     $.ajax({
@@ -117,7 +118,6 @@ function sendFeatures() {
             pCategoryId: $("#categoryMarker").attr('title')
         }),
         success: function (response) {
-        	var counter =0 ;
         	// Spinner 
         	stopSpinner();
         	$("#product-area").empty();
@@ -129,6 +129,45 @@ function sendFeatures() {
         	//Products
         	var jsonResponse = JSON.parse(splittingpart[0]);
         	var completeResponse = JSON.parse(splittingpart[1]);
+        	
+        	var name1 = completeResponse[0].explanation[0].name;
+        	var name2 = completeResponse[0].explanation[1].name;
+        	var name3 = completeResponse[0].explanation[2].name;
+        	
+        	console.log("Name1 "+name1);
+        	console.log("Name 2"+name2);
+        	console.log("Name 3"+name3);
+        	
+        	var attachment1 = $("<div>").addClass("graph");
+        	var attachment2 = $("<div>").addClass("graph");
+        	var attachment3 = $("<div>").addClass("graph");
+        	
+        	var name1_array = getarray(completeResponse,name1);
+        	var name2_array = getarray(completeResponse,name2);
+        	var name3_array = getarray(completeResponse,name3);
+        	
+        //	console.log("Array 1 is "+name1_array);
+        	
+        	for(var x=0;x<name1_array.length;x++)
+        		{
+        		var temp = $("<div>").addClass("line").attr("style","width: "+230/name1_array.length+"px;height : "+name1_array[x]+"px;top:"+(100-name1_array[x])+"px;");
+        			attachment1.append(temp);
+        		}
+        	for(var x=0;x<name2_array.length;x++)
+    		{
+    		 var temp = $("<div>").addClass("line").attr("style","width: "+230/name2_array.length+"px;height : "+name2_array[x]+"px;top:"+(100-name2_array[x])+"px;");
+    			attachment2.append(temp);
+    		}
+        	
+        	for(var x=0;x<name3_array.length;x++)
+    		{
+    		 var temp = $("<div>").addClass("line").attr("style","width: "+230/name3_array.length+"px;height : "+name3_array[x]+"px;top:"+(100-name3_array[x])+"px;");
+    			attachment3.append(temp);
+    		}
+        	
+        	console.log("HTML class is "+attachment1);
+        	//console.log("Array 2 is "+name2_array);
+        	//console.log("Array 3 is "+name3_array);
         	
         	for(var r = 0; r<jsonResponse.length; r++)
         	{
@@ -147,9 +186,13 @@ function sendFeatures() {
         						break;
         			}
 
-        			text = $("<a>").addClass("atrigger").text(" Detailed Explanation").attr("id",counter);
-        		var display = $("<div>").addClass("pop-up").attr("id","explanation"+counter).text("");
-
+        			text = $("<a>").addClass("atrigger").text(" Detailed Explanation").attr("id",jsonResponse[r].productID);
+        		var display = $("<div>").addClass("pop-up").attr("id","explanation"+jsonResponse[r].productID).text("");
+        		var row = $("<div>").attr("style","display:table-row");
+        		var column1 =$("<div>").attr("style","display:table-cell;width:40%").text( completeResponse[counter_variable].productName);
+        		row.append(column1);
+        		display.append(row);
+        		
         		for(var j = 0 ; j < completeResponse[counter_variable].explanation.length; j++)
         		{
         			var exp = completeResponse[counter_variable].explanation[j];
@@ -189,9 +232,15 @@ function sendFeatures() {
         			
         			
         		}
-        		counter++;
-        		product_div_content.append(display);
+
+        		product_div_content.append(display);		
+ // End of detailied explanations adding       		
         		
+   //Start of bar graph calculations
+        		
+        		
+        		
+   //End of bar graph calculations
         		
         		
         		var product_div_name = null;
@@ -205,6 +254,99 @@ function sendFeatures() {
         		}
         		var parentbloc1 =  $("<div>").css({"width":"50%","margin":"0 auto"})
         		
+        		
+        		
+        		var abcde= $("<div>").addClass("rankexplanation-attr-name").text(name1+ ":");
+        		abcde.appendTo(parentbloc1);
+        		
+        		var attachment1 = $("<div>").addClass("graph");
+            	
+        		checker =  search (name1_array,jsonResponse[r].productID);
+        		
+        		if(checker>0)
+        			{
+        				for(var x=0;x<name1_array.length;x++)
+        				{
+        					var rankValue = (name1_array[x].aSize- name1_array[x].aRank + 1)/name1_array[x].aSize;
+        					rankValue = rankValue * 100;
+        					var temp = $("<div>").addClass("line").attr("style","width: "+230/name1_array.length+"px;height : "+rankValue+"px;top:"+(100-rankValue)+"px;").attr("id",name1_array[x].aID);
+        					temp.attr("url",name1_array[x].aURL);	
+        					if(name1_array[x].aID ==jsonResponse[r].productID )
+        					{
+        						temp = $("<div>").addClass("selected").attr("style","width: "+230/name1_array.length+"px;height : "+rankValue+"px;top:"+(100-rankValue)+"px;background-color:#000000").attr("id",name1_array[x].aID);
+        						temp.attr("url",name1_array[x].aURL);	
+        					}
+        					temp.clone().appendTo(attachment1);
+        				}
+        			}
+        		else
+        			{
+        				abcde= $("<div>").addClass("rankexplanation-attr-name").text("No information");
+        				abcde.clone().appendTo(attachment2);
+        			}
+         	        		
+                attachment1.appendTo(parentbloc1);
+                
+                abcde= $("<div>").addClass("rankexplanation-attr-name").text(name2+ ":");
+                abcde.appendTo(parentbloc1);
+                
+        		var attachment2 = $("<div>").addClass("graph");
+            	
+        		checker =  search (name2_array,jsonResponse[r].productID);
+        		
+        		if(checker>0)
+        		{
+        			for(var x=0;x<name2_array.length;x++)
+        			{
+        				var rankValue = (name2_array[x].aSize- name2_array[x].aRank + 1)/name2_array[x].aSize;
+        				rankValue = rankValue * 100;
+        				var temp = $("<div>").addClass("line").attr("style","width: "+230/name2_array.length+"px;height : "+rankValue+"px;top:"+(100-rankValue)+"px;").attr("id",name2_array[x].aID);
+        				temp.attr("url",name2_array[x].aURL);
+        				if(name2_array[x].aID ==jsonResponse[r].productID )
+        				{
+        					temp = $("<div>").addClass("selected").attr("style","width: "+230/name2_array.length+"px;height : "+rankValue+"px;top:"+(100-rankValue)+"px;background-color:#000000").attr("id",name2_array[x].aID);
+        					temp.attr("url",name2_array[x].aURL);
+        				}
+        				temp.clone().appendTo(attachment2);
+        			}
+        		}
+        		else
+        			{
+        			 abcde= $("<div>").addClass("rankexplanation-attr-name").text("No information");
+            		 abcde.clone().appendTo(attachment2);
+        			}
+                attachment2.appendTo(parentbloc1);
+                
+                abcde= $("<div>").addClass("rankexplanation-attr-name").text(name3+ ":");
+                abcde.appendTo(parentbloc1);
+                
+                
+        		var attachment3 = $("<div>").addClass("graph");
+            	checker = search (name3_array,jsonResponse[r].productID);
+            	if(checker>0)
+            		{
+            			for(var x=0;x<name3_array.length;x++)
+            				{
+            					var rankValue = (name3_array[x].aSize- name3_array[x].aRank + 1)/name3_array[x].aSize;
+            					rankValue = rankValue * 100;
+            					var temp = $("<div>").addClass("line").attr("style","width: "+230/name3_array.length+"px;height : "+rankValue+"px;top:"+(100-rankValue)+"px;").attr("id",name3_array[x].aID);
+            					temp.attr("url",name3_array[x].aURL);
+            					if(name3_array[x].aID ==jsonResponse[r].productID )
+            					{
+            						temp = $("<div>").addClass("selected").attr("style","width: "+230/name3_array.length+"px;height : "+rankValue+"px;top:"+(100-rankValue)+"px;background-color:#000000").attr("id",name3_array[x].aID);
+            						temp.attr("url",name3_array[x].aURL);
+            					}
+            					temp.clone().appendTo(attachment3);
+            				}
+            		}
+            	else
+            		{
+            		 abcde= $("<div>").addClass("rankexplanation-attr-name").text("No information");
+            		 abcde.clone().appendTo(attachment3);
+            		}
+                attachment3.appendTo(parentbloc1);
+        		
+                
         		for(var j = 0 ; j < jsonResponse[r].explanation.length; j++)
         		{
             			var exp = jsonResponse[r].explanation[j];
@@ -244,21 +386,29 @@ function sendFeatures() {
                         		progress.appendTo(bloc1);                    		
 
                     		}
-                		}                 		
+                		}    
+                		
                 		bloc1.appendTo(parentbloc1);
             	}
+        		
+        		
         		product_div.append(product_div_image);
-        		console.log(globalFeatureObject.aNames.length);
         	// Checking if any recommendations exists
         		if(globalFeatureObject.aNames.length>0 && added_explanations>0)
         			{
         			product_div.append(text);
+        			
         			}
         		product_div.append(product_div_content);		
         		product_div_content.append(product_div_name);
+
+
         		product_div.append(parentbloc1);
-        		$("#product-area").append(product_div);       
+        		$("#product-area").append(product_div);   
+        		initialise2();
         		initialise();
+        		initialise3();
+
         	}
 
         }
@@ -322,3 +472,116 @@ function stringToHex (tmp) {
 function d2h(d) {
     return d.toString(16);
 }
+
+function getarray(splittingpart,name)
+{
+		var j=0;
+		var k=0;
+		var array =[{aID:[],aRank:[],aIndex:[],aSize:[],aURL:[]}];
+		var completeResponse =splittingpart;
+    	console.log("Size is is "+completeResponse.length);
+    	for(j=0;j<completeResponse.length;j++)
+    		{
+    		 	for(k=0;k<completeResponse[j].explanation.length;k++)
+    		 		{
+    		 			if(name == completeResponse[j].explanation[k].name)
+    		 				{
+    		 					var exp = completeResponse[j].explanation[k];
+    		 					var rankValue = (exp.productsNum - exp.rank + 1)/exp.productsNum;
+    		 					rankValue = rankValue * 100;
+    		 					if(rankValue>100)
+    		 						rankValue =1;
+    		 					array.push ({aID:completeResponse[j].productID,
+    		 						aRank: parseInt(exp.rank),
+    		 						aIndex:k,
+    		 						aSize:completeResponse.length,
+    		 						aURL :completeResponse[j].productURL });
+    		 		
+    		 				}
+    		 		}
+    		}
+    	function mycomparator(a,b) {   return parseInt(b.aRank) - parseInt(a.aRank);  }
+    	array= array.sort(mycomparator );
+    	
+        for(var i = array.length; i--;) {
+            if(array[i].aRank === -1) {
+                array.splice(i, 1);
+            }
+        }
+        array.splice(0,1);
+		return array;
+	}
+
+function initialise2()
+{
+    var moveLeft = 20;
+    var moveDown = 10;
+    
+    $('.line').click(function(){
+    	if($(this).attr("url").length>2)
+    	window.open( $(this).attr("url"));
+    });
+    
+    $('.selected').click(function(){
+    	if($(this).attr("url").length>2)
+    	window.open( $(this).attr("url"));
+    });
+    
+    $(".line").hover(function(e) {
+  	 var id = $(this).attr("id");
+  	// console.log(id);
+  	 $(this).css("background-color","#FF0000");
+      $("div#explanation"+id).css( "display", "block")
+      //.css('top', e.pageY + moveDown)
+      //.css('left', e.pageX + moveLeft)
+      //.appendTo('body');
+    }, function() {
+    	 $(this).css("background-color","");
+     	 var id = $(this).attr("id");
+      $("div#explanation"+id).hide();
+    });
+    
+    $(".line").mousemove(function(e) {
+     	 var id = $(this).attr("id");
+      $("div#explanation"+id).css('top', e.pageY + moveDown).css('left', e.pageX + moveLeft);
+    });
+	
+	}
+
+
+function initialise3()
+{
+    var moveLeft = 20;
+    var moveDown = 10;
+    
+    $(".selected").hover(function(e) {
+  	 var id = $(this).attr("id");
+  	// console.log(id);
+  	 $(this).css("background-color","#FF0000");
+      $("div#explanation"+id).css( "display", "block")
+      //.css('top', e.pageY + moveDown)
+      //.css('left', e.pageX + moveLeft)
+      //.appendTo('body');
+    }, function() {
+    	 $(this).css("background-color","");
+     	 var id = $(this).attr("id");
+      $("div#explanation"+id).hide();
+    });
+    
+    $(".selected").mousemove(function(e) {
+     	 var id = $(this).attr("id");
+      $("div#explanation"+id).css('top', e.pageY + moveDown).css('left', e.pageX + moveLeft);
+    });
+	
+	}
+
+
+function search(array,key)
+{
+	for(var i=0;i<array.length;i++)
+		{
+			if(array[i].aID==key)
+				return 1;
+		}
+	return 0;
+	}

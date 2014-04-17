@@ -295,3 +295,33 @@ label
     font-size: 16px;
 }
     
+
+.line {
+	width:6px;
+	height:20px;
+	background-color : #cddeda;
+	position: relative;
+	float:left;
+	display:inline-block;
+	padding:0px;
+	margin:0px;
+}
+
+.selected {
+	width:6px;
+	height:20px;
+	background-color : #000000;
+	position: relative;
+	float:left;
+	display:inline-block;
+	padding:0px;
+	margin:0px;
+}
+
+.graph{
+	overflow: hidden;
+	white-space:nowrap;
+	bottom : 0px;
+	position:relative;
+	margin:10px;
+}
