@@ -144,9 +144,8 @@ function sendFeatures() {
         				if(jsonResponse[r].productID==completeResponse[counter_variable].productID)
         						break;
         			}
-        		var counter = r;
-        	    text = $("<div>").addClass("atrigger").attr("id",counter).text("See More");
-        		var display = $("<div>").addClass("pop-up").attr("id","explanation"+counter).text("");
+        	    text = $("<div>").addClass("atrigger").attr("id",jsonResponse[r].productID).text("See More");
+        		var display = $("<div>").addClass("pop-up").attr("id","explanation"+jsonResponse[r].productID).text("");
         		
         		var row = addTableEntryName(completeResponse[counter_variable].productName);
         		display.append(row);
