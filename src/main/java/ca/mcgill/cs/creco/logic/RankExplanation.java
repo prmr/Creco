@@ -6,6 +6,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.core.subst.Token.Type;
+
 import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.Product;
@@ -34,8 +36,6 @@ public class RankExplanation
 		aProduct = pProduct;
 		aCategory = pCategory;
 		aRankList = new ArrayList<RankExplanationInstance>();
-		aOneLineDesc = OneLineDescription(pProduct);
-		//System.out.println(OneLineDescription(pProduct));
 		
 		for(ScoredAttribute sa : pScoredAttributes)
 		{
@@ -53,6 +53,8 @@ public class RankExplanation
 			
 		}
 		
+		aOneLineDesc = OneLineDescription(pProduct);
+		
 	}
 	
 	private String OneLineDescription(Product pProduct)
@@ -60,8 +62,43 @@ public class RankExplanation
 		String description = pProduct.getDescription();
 		if (description.isEmpty())
 		{
-			return "Description empty";
+			description = pProduct.getName() + "Is a ";
+	
+			for (RankExplanationInstance attr : aRankList)
+			{
+				
+				TypedValue value = attr.getaAttributeValue();
+				if(!value.isNA() || !value.isNull())
+				{
+					
+					
+					description = description.concat(", ");
+					if(value.isBoolean())
+					{
+						if(value.getBoolean())
+						{
+							description = description.concat(" is ");
+						}
+						else
+						{
+							description = description.concat(" is not ");
+						}
+					}
+					description = description.concat(attr.getaAttribute().getAttributeName());
+					
+					if(value.isNumeric())
+					{
+						description = description.concat(" is " + Double.toString(value.getNumeric()));
+					}
+					else if(value.isString())
+					{
+						description = description.concat(" " + value.getString());
+					}
+				}
+			}
 		}
+		description = description.concat(".");
+		System.out.println(description);
 		return description;
 	}
 
