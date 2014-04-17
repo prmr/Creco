@@ -134,50 +134,21 @@ function sendFeatures() {
         	var name2 = completeResponse[0].explanation[1].name;
         	var name3 = completeResponse[0].explanation[2].name;
         	
-        	console.log("Name1 "+name1);
-        	console.log("Name 2"+name2);
-        	console.log("Name 3"+name3);
-        	
-        	var attachment1 = $("<div>").addClass("graph");
-        	var attachment2 = $("<div>").addClass("graph");
-        	var attachment3 = $("<div>").addClass("graph");
         	
         	var name1_array = getarray(completeResponse,name1);
         	var name2_array = getarray(completeResponse,name2);
         	var name3_array = getarray(completeResponse,name3);
         	
-        //	console.log("Array 1 is "+name1_array);
-        	
-        	for(var x=0;x<name1_array.length;x++)
-        		{
-        		var temp = $("<div>").addClass("line").attr("style","width: "+230/name1_array.length+"px;height : "+name1_array[x]+"px;top:"+(100-name1_array[x])+"px;");
-        			attachment1.append(temp);
-        		}
-        	for(var x=0;x<name2_array.length;x++)
-    		{
-    		 var temp = $("<div>").addClass("line").attr("style","width: "+230/name2_array.length+"px;height : "+name2_array[x]+"px;top:"+(100-name2_array[x])+"px;");
-    			attachment2.append(temp);
-    		}
-        	
-        	for(var x=0;x<name3_array.length;x++)
-    		{
-    		 var temp = $("<div>").addClass("line").attr("style","width: "+230/name3_array.length+"px;height : "+name3_array[x]+"px;top:"+(100-name3_array[x])+"px;");
-    			attachment3.append(temp);
-    		}
-        	
-        	console.log("HTML class is "+attachment1);
-        	//console.log("Array 2 is "+name2_array);
-        	//console.log("Array 3 is "+name3_array);
-        	
+
         	for(var r = 0; r<jsonResponse.length; r++)
         	{
         		var added_explanations=0;
         		var product_div = $("<div>").addClass("rankedproduct-result-entry");
         		var product_div_image = $("<div>").addClass("product-image").css("background-image", "url('"+jsonResponse[r].productIMAGE+"')");
         		var product_div_content = $("<div>").addClass("product-description-area"); 
-
         		
-// Display of detailed explanations        		
+// Display of detailed explanations   
+        		
 //Finding the position
         		var counter_variable=0;
         		for(counter_variable=0;counter_variable<completeResponse.length;counter_variable++)
@@ -186,17 +157,15 @@ function sendFeatures() {
         						break;
         			}
 
-        			text = $("<a>").addClass("atrigger").text(" Detailed Explanation").attr("id",jsonResponse[r].productID);
+        		text = $("<a>").addClass("atrigger").text(" Detailed Explanation").attr("id",jsonResponse[r].productID);
         		var display = $("<div>").addClass("pop-up").attr("id","explanation"+jsonResponse[r].productID).text("");
-        		var row = $("<div>").attr("style","display:table-row");
-        		var column1 =$("<div>").attr("style","display:table-cell;width:40%").text( completeResponse[counter_variable].productName);
-        		row.append(column1);
+        		
+        		var row = addTableEntryName(completeResponse[counter_variable].productName);
         		display.append(row);
         		
         		for(var j = 0 ; j < completeResponse[counter_variable].explanation.length; j++)
         		{
         			var exp = completeResponse[counter_variable].explanation[j];
-            		var rankValue=0;
         			if(exp.boolean)
             		{
             		}
@@ -204,45 +173,20 @@ function sendFeatures() {
             		{
             			if(exp.isExplained == -1) //feature doesn't exist for this product
                 		{
-                			
                 		}
             			else // Added only features which can be measured
                 		{
             				added_explanations++;
-                			rankValue = (exp.productsNum - exp.rank + 1)/exp.productsNum;
-                    		rankValue = rankValue * 100;
-                    		var row = $("<div>").attr("style","display:table-row");
-                    		var column1 =$("<div>").attr("style","display:table-cell;width:40%").text(exp.name);
-                    		var color = stringToColorCode(exp.name);
-                    		var column2 = $("<div>").addClass("progress-bar").attr("style","display: table-cell;width:"+rankValue+"%;background:#"+color.split("").reverse().join("")+";");
-                    		var temporary2 = $("<div>").text("&nbsp;").html();
-                    		temporary2 = temporary2.replace("&amp;","&");
-                    		var buffer = column2;
-                    		buffer.append(temporary2);
-                    		column2 =$("<div>").attr("style","display:table-cell;");
-                    		column2.append(buffer);
-                    		row.append(column1);
-                    		row.append(column2);
+                    		var row = addTableEntry(exp);
                     		display.append(row);
-                    
-
-
                 		}
             		}   
-        			
-        			
         		}
 
         		product_div_content.append(display);		
- // End of detailied explanations adding       		
+ // End of detailed explanations adding       		
         		
-   //Start of bar graph calculations
-        		
-        		
-        		
-   //End of bar graph calculations
-        		
-        		
+
         		var product_div_name = null;
         		var product_div_exp = null;
         		var product_div_exp_value = null;
@@ -254,98 +198,24 @@ function sendFeatures() {
         		}
         		var parentbloc1 =  $("<div>").css({"width":"50%","margin":"0 auto"})
         		
-        		
-        		
-        		var abcde= $("<div>").addClass("rankexplanation-attr-name").text(name1+ ":");
-        		abcde.appendTo(parentbloc1);
-        		
-        		var attachment1 = $("<div>").addClass("graph");
-            	
-        		checker =  search (name1_array,jsonResponse[r].productID);
-        		
-        		if(checker>0)
+       // Bar graph calculations and additions 		
+        		if(globalFeatureObject.aNames.length>0 && added_explanations>0)
         			{
-        				for(var x=0;x<name1_array.length;x++)
-        				{
-        					var rankValue = (name1_array[x].aSize- name1_array[x].aRank + 1)/name1_array[x].aSize;
-        					rankValue = rankValue * 100;
-        					var temp = $("<div>").addClass("line").attr("style","width: "+230/name1_array.length+"px;height : "+rankValue+"px;top:"+(100-rankValue)+"px;").attr("id",name1_array[x].aID);
-        					temp.attr("url",name1_array[x].aURL);	
-        					if(name1_array[x].aID ==jsonResponse[r].productID )
-        					{
-        						temp = $("<div>").addClass("selected").attr("style","width: "+230/name1_array.length+"px;height : "+rankValue+"px;top:"+(100-rankValue)+"px;background-color:#000000").attr("id",name1_array[x].aID);
-        						temp.attr("url",name1_array[x].aURL);	
-        					}
-        					temp.clone().appendTo(attachment1);
-        				}
+        				var heading_name= $("<div>").addClass("rankexplanation-attr-name").text(name1+ ":");
+        				heading_name.appendTo(parentbloc1);
+        				var attachment1 = addgraph(name1_array,jsonResponse,r);
+        				attachment1.appendTo(parentbloc1);
+                
+        				heading_name= $("<div>").addClass("rankexplanation-attr-name").text(name2+ ":");
+        				heading_name.appendTo(parentbloc1);
+        				var attachment2 =addgraph(name2_array,jsonResponse,r)
+        				attachment2.appendTo(parentbloc1);
+                
+        				heading_name= $("<div>").addClass("rankexplanation-attr-name").text(name3+ ":");
+        				heading_name.appendTo(parentbloc1);
+        				var attachment3 = addgraph(name3_array,jsonResponse,r)
+        				attachment3.appendTo(parentbloc1);
         			}
-        		else
-        			{
-        				abcde= $("<div>").addClass("rankexplanation-attr-name").text("No information");
-        				abcde.clone().appendTo(attachment2);
-        			}
-         	        		
-                attachment1.appendTo(parentbloc1);
-                
-                abcde= $("<div>").addClass("rankexplanation-attr-name").text(name2+ ":");
-                abcde.appendTo(parentbloc1);
-                
-        		var attachment2 = $("<div>").addClass("graph");
-            	
-        		checker =  search (name2_array,jsonResponse[r].productID);
-        		
-        		if(checker>0)
-        		{
-        			for(var x=0;x<name2_array.length;x++)
-        			{
-        				var rankValue = (name2_array[x].aSize- name2_array[x].aRank + 1)/name2_array[x].aSize;
-        				rankValue = rankValue * 100;
-        				var temp = $("<div>").addClass("line").attr("style","width: "+230/name2_array.length+"px;height : "+rankValue+"px;top:"+(100-rankValue)+"px;").attr("id",name2_array[x].aID);
-        				temp.attr("url",name2_array[x].aURL);
-        				if(name2_array[x].aID ==jsonResponse[r].productID )
-        				{
-        					temp = $("<div>").addClass("selected").attr("style","width: "+230/name2_array.length+"px;height : "+rankValue+"px;top:"+(100-rankValue)+"px;background-color:#000000").attr("id",name2_array[x].aID);
-        					temp.attr("url",name2_array[x].aURL);
-        				}
-        				temp.clone().appendTo(attachment2);
-        			}
-        		}
-        		else
-        			{
-        			 abcde= $("<div>").addClass("rankexplanation-attr-name").text("No information");
-            		 abcde.clone().appendTo(attachment2);
-        			}
-                attachment2.appendTo(parentbloc1);
-                
-                abcde= $("<div>").addClass("rankexplanation-attr-name").text(name3+ ":");
-                abcde.appendTo(parentbloc1);
-                
-                
-        		var attachment3 = $("<div>").addClass("graph");
-            	checker = search (name3_array,jsonResponse[r].productID);
-            	if(checker>0)
-            		{
-            			for(var x=0;x<name3_array.length;x++)
-            				{
-            					var rankValue = (name3_array[x].aSize- name3_array[x].aRank + 1)/name3_array[x].aSize;
-            					rankValue = rankValue * 100;
-            					var temp = $("<div>").addClass("line").attr("style","width: "+230/name3_array.length+"px;height : "+rankValue+"px;top:"+(100-rankValue)+"px;").attr("id",name3_array[x].aID);
-            					temp.attr("url",name3_array[x].aURL);
-            					if(name3_array[x].aID ==jsonResponse[r].productID )
-            					{
-            						temp = $("<div>").addClass("selected").attr("style","width: "+230/name3_array.length+"px;height : "+rankValue+"px;top:"+(100-rankValue)+"px;background-color:#000000").attr("id",name3_array[x].aID);
-            						temp.attr("url",name3_array[x].aURL);
-            					}
-            					temp.clone().appendTo(attachment3);
-            				}
-            		}
-            	else
-            		{
-            		 abcde= $("<div>").addClass("rankexplanation-attr-name").text("No information");
-            		 abcde.clone().appendTo(attachment3);
-            		}
-                attachment3.appendTo(parentbloc1);
-        		
                 
         		for(var j = 0 ; j < jsonResponse[r].explanation.length; j++)
         		{
@@ -359,8 +229,6 @@ function sendFeatures() {
                 		explanation_attribute.appendTo(bloc1);
                 		var progress = $('<div>', {class: 'progress progress-info'});
                 		var progress1 = null;
-                		var progress2 = null;
-                		var progress3 = null;
                 		var rankValue = 0;
                 		
                 		
@@ -376,7 +244,8 @@ function sendFeatures() {
                     			progress1 = $("<div>").addClass("boolean-explanation").text("Not Available").css("font-style","italic");                		                			
                     			progress1.appendTo(bloc1);
                     			
-                    		}else
+                    		}
+                			else
                     		{
                     			rankValue = (exp.productsNum - exp.rank + 1)/exp.productsNum;
                         		rankValue = rankValue * 100;
@@ -384,31 +253,24 @@ function sendFeatures() {
                         		progress1.attr("aria-valuemax",exp.productsNum);
                         		progress1.appendTo(progress);                    		
                         		progress.appendTo(bloc1);                    		
-
                     		}
                 		}    
-                		
                 		bloc1.appendTo(parentbloc1);
             	}
-        		
         		
         		product_div.append(product_div_image);
         	// Checking if any recommendations exists
         		if(globalFeatureObject.aNames.length>0 && added_explanations>0)
         			{
         			product_div.append(text);
-        			
         			}
         		product_div.append(product_div_content);		
         		product_div_content.append(product_div_name);
-
-
+        		
         		product_div.append(parentbloc1);
         		$("#product-area").append(product_div);   
         		initialise2();
         		initialise();
-        		initialise3();
-
         	}
 
         }
@@ -422,6 +284,7 @@ function initialise() {
     var moveLeft = 20;
     var moveDown = 10;
     
+    // Trigger for the tab of detailed explanations
     $(".atrigger").hover(function(e) {
   	 var id = $(this).attr("id");
   	// console.log(id);
@@ -434,6 +297,7 @@ function initialise() {
       $("div#explanation"+id).hide();
     });
     
+    // Trigger when mouse moves around inside the div 
     $(".atrigger").mousemove(function(e) {
      	 var id = $(this).attr("id");
       $("div#explanation"+id).css('top', e.pageY + moveDown).css('left', e.pageX + moveLeft);
@@ -447,8 +311,7 @@ function initialise() {
 function stringToColorCode(str) {
 	  var code = stringToHex(str);
 	  code = code.substr( 0, 6);
-	  return code;
-	  
+	  return code;  
 }
 
 
@@ -473,13 +336,19 @@ function d2h(d) {
     return d.toString(16);
 }
 
-function getarray(splittingpart,name)
+/*
+ *Function used to get the array arranged in proper order
+ *Deletes all the values which are ranked -1
+ *Function parameters passed array and name
+ * Returns the modified array
+ * */
+
+function getarray(arrayPassed,name)
 {
 		var j=0;
 		var k=0;
 		var array =[{aID:[],aRank:[],aIndex:[],aSize:[],aURL:[]}];
-		var completeResponse =splittingpart;
-    	console.log("Size is is "+completeResponse.length);
+		var completeResponse =arrayPassed;
     	for(j=0;j<completeResponse.length;j++)
     		{
     		 	for(k=0;k<completeResponse[j].explanation.length;k++)
@@ -512,76 +381,142 @@ function getarray(splittingpart,name)
 		return array;
 	}
 
+
+// Initiliase the event listeners for .line and .selected
 function initialise2()
 {
     var moveLeft = 20;
     var moveDown = 10;
     
-    $('.line').click(function(){
-    	if($(this).attr("url").length>2)
-    	window.open( $(this).attr("url"));
-    });
+		    $('.line').click(function(){
+		    	if($(this).attr("url").length>2)
+		    	window.open( $(this).attr("url"));
+		    });
     
-    $('.selected').click(function(){
-    	if($(this).attr("url").length>2)
-    	window.open( $(this).attr("url"));
-    });
+		    $('.selected').click(function(){
+		    	if($(this).attr("url").length>2)
+		    	window.open( $(this).attr("url"));
+		    });
     
-    $(".line").hover(function(e) {
-  	 var id = $(this).attr("id");
-  	// console.log(id);
-  	 $(this).css("background-color","#FF0000");
-      $("div#explanation"+id).css( "display", "block")
-      //.css('top', e.pageY + moveDown)
-      //.css('left', e.pageX + moveLeft)
-      //.appendTo('body');
-    }, function() {
-    	 $(this).css("background-color","");
-     	 var id = $(this).attr("id");
-      $("div#explanation"+id).hide();
-    });
-    
-    $(".line").mousemove(function(e) {
-     	 var id = $(this).attr("id");
-      $("div#explanation"+id).css('top', e.pageY + moveDown).css('left', e.pageX + moveLeft);
-    });
-	
+		    $(".line").hover(function(e) {
+		    	var id = $(this).attr("id");
+		    	$(this).css("background-color","#FF0000");
+				      $("div#explanation"+id).css( "display", "block")
+				    }, function() {
+					    	 $(this).css("background-color","");
+					     	 var id = $(this).attr("id");
+					      $("div#explanation"+id).hide();
+					    });
+			    
+		    
+		    $(".line").mousemove(function(e) {
+		     	 var id = $(this).attr("id");
+			      $("div#explanation"+id).css('top', e.pageY + moveDown).css('left', e.pageX + moveLeft);
+			    });
+				$(".selected").hover(function(e) {
+						var id = $(this).attr("id");
+						$(this).css("background-color","#FF0000");
+						$("div#explanation"+id).css( "display", "block")
+					}, function() {
+						$(this).css("background-color","");
+						var id = $(this).attr("id");
+						$("div#explanation"+id).hide();
+			});
+
+			$(".selected").mousemove(function(e) {
+			 	 var id = $(this).attr("id");
+			 	 $("div#explanation"+id).css('top', e.pageY + moveDown).css('left', e.pageX + moveLeft);
+			});
 	}
 
 
-function initialise3()
+/*
+ * Add graph adds a line with the correseponding values or array 
+ * The jsonResponse contains the values of the passed reference 
+ * r is the position of the product in the jsonResponse
+ * Returns a concatened list of graph elements
+ */
+function addgraph(array,jsonResponse,r)
 {
-    var moveLeft = 20;
-    var moveDown = 10;
-    
-    $(".selected").hover(function(e) {
-  	 var id = $(this).attr("id");
-  	// console.log(id);
-  	 $(this).css("background-color","#FF0000");
-      $("div#explanation"+id).css( "display", "block")
-      //.css('top', e.pageY + moveDown)
-      //.css('left', e.pageX + moveLeft)
-      //.appendTo('body');
-    }, function() {
-    	 $(this).css("background-color","");
-     	 var id = $(this).attr("id");
-      $("div#explanation"+id).hide();
-    });
-    
-    $(".selected").mousemove(function(e) {
-     	 var id = $(this).attr("id");
-      $("div#explanation"+id).css('top', e.pageY + moveDown).css('left', e.pageX + moveLeft);
-    });
+	var attachment = $("<div>").addClass("graph");
 	
-	}
-
-
-function search(array,key)
-{
-	for(var i=0;i<array.length;i++)
+	var checker =  search (array,jsonResponse[r].productID);
+	
+	if(checker>0)
 		{
-			if(array[i].aID==key)
-				return 1;
+			for(var x=0;x<array.length;x++)
+			{
+				var rankValue = (array[x].aSize- array[x].aRank + 1)/array[x].aSize;
+				rankValue = rankValue * 100;
+				var temp = $("<div>").addClass("line").attr("style","width: "+230/array.length+"px;height : "+rankValue+"px;top:"+(100-rankValue)+"px;").attr("id",array[x].aID);
+				temp.attr("url",array[x].aURL);	
+				if(array[x].aID ==jsonResponse[r].productID )
+				{
+					temp = $("<div>").addClass("selected").attr("style","width: "+230/array.length+"px;height : "+rankValue+"px;top:"+(100-rankValue)+"px;background-color:#000000").attr("id",array[x].aID);
+					temp.attr("url",array[x].aURL);	
+				}
+				temp.clone().appendTo(attachment);
+			}
 		}
-	return 0;
+	else
+		{
+			var heading_name= $("<div>").addClass("rankexplanation-attr-name").text("No information");
+			heading_name.clone().appendTo(attachment);
+		}
+	       return attachment; 		
 	}
+
+
+/*
+ * The function search performs a linear search of the location of ID in the array based on the key
+ * Input paramters : array and the key to be searched
+ * Return value : 1 if found else 0
+ */
+		function search(array,key)
+			{
+				for(var i=0;i<array.length;i++)
+					{
+						if(array[i].aID==key)
+							return 1;
+					}
+					return 0;
+			}
+		
+		/*
+		 * Used in the hover effect where the display is constructed for each row
+		 * Input parameters : exp - the explanation array
+		 * Return Values : the div tag with added row
+		 */
+		
+		function addTableEntry(exp)
+		{
+			var rankValue = (exp.productsNum - exp.rank + 1)/exp.productsNum;
+    		rankValue = rankValue * 100;
+    		var row = $("<div>").attr("style","display:table-row");
+    		var column1 =$("<div>").attr("style","display:table-cell;width:40%").text(exp.name);
+    		var color = stringToColorCode(exp.name);
+    		var column2 = $("<div>").addClass("progress-bar").attr("style","display: table-cell;width:"+rankValue+"%;background:#"+color.split("").reverse().join("")+";");
+    		var temporary2 = $("<div>").text("&nbsp;").html();
+    		temporary2 = temporary2.replace("&amp;","&");
+    		var buffer = column2;
+    		buffer.append(temporary2);
+    		column2 =$("<div>").attr("style","display:table-cell;");
+    		column2.append(buffer);
+    		row.append(column1);
+    		row.append(column2);
+    		
+    		return row;
+		}
+		
+		/*
+		 * Function adds the name of the attribute to thetable
+		 * Input paramters : The name to be added 
+		 * Return values : The div tag which the name added
+		 */
+		function addTableEntryName(name)
+		{
+			var row = $("<div>").attr("style","display:table-row");
+    		var column1 =$("<div>").attr("style","display:table-cell;width:40%").text( name);
+    		row.append(column1);
+    		return row;
+		}
