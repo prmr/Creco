@@ -16,17 +16,13 @@
 package ca.mcgill.cs.creco.web.model;
 
 import java.util.ArrayList;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.stereotype.Component;
 
 /**
  * A class representing a single feature (i.e., rating and spec) to be 
  * displayed to the user front end.
  *
  */
-@Component
-@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
+
 public class FeatureView
 {
 	private String aId;
