@@ -158,7 +158,6 @@ public class NumericCorrelator
 		
 		PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
 		
-		//TODO look at this in more detail.
 		if(firstArray.length < 2 || secondArray.length < 2)
 		{
 			return 0;

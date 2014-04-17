@@ -13,11 +13,14 @@
 package ca.mcgill.cs.creco.logic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
@@ -68,8 +71,12 @@ public class ConcreteServiceFacade implements ServiceFacade
 		{
 			return "";
 		}
-
-		String response = "";
+		String[] result_set = new String[100];
+		int pointer=0;
+		String temp = new String("");
+		int index=0;
+		JSONArray response = new JSONArray();
+		JSONObject obj= new JSONObject();
 
 		for (Category category : aDataStore.getCategories())
 		{
@@ -79,7 +86,8 @@ public class ConcreteServiceFacade implements ServiceFacade
 			}
 			if (category.getName().toLowerCase().contains(pInput.toLowerCase()))
 			{
-				response = response.concat(category.getName() + "| " + "Category" + "| ");
+				result_set[pointer++]=category.getName().toLowerCase();
+				result_set[pointer++]="Category";
 			}
 		}
 		Set<String> collectedbrandstillnow = new HashSet<String>();
@@ -133,13 +141,52 @@ public class ConcreteServiceFacade implements ServiceFacade
 
 		for (String brandname : brands)
 		{
-			response = response.concat(brandname + "| " + "Brand" + "| ");
+			if(Arrays.asList(result_set).contains(brandname))
+			{
+				index= Arrays.asList(result_set).indexOf(brandname);
+				result_set[index+1]= result_set[index+1].concat("|Brand");
+				temp = result_set[0];
+				result_set[0]=result_set[index];
+				result_set[index]=temp;
+				temp = result_set[1];
+				result_set[1]=result_set[index+1];
+				result_set[index+1]=temp;
+			}
+			else
+			{
+				result_set[pointer++]=brandname;
+				result_set[pointer++]="Brand";
+			}
 		}
 		for (String textname : textSearch)
 		{
-			response = response.concat(textname + "| " + "Text Search" + "| ");
+			if(Arrays.asList(result_set).contains(textname))
+			{
+				index= Arrays.asList(result_set).indexOf(textname);
+				result_set[index+1]= result_set[index+1].concat("|Product");
+				temp = result_set[0];
+				result_set[0]=result_set[index];
+				result_set[index]=temp;
+				temp = result_set[1];
+				result_set[1]=result_set[index+1];
+				result_set[index+1]=temp;
+			}
+			else
+			{
+				result_set[pointer++]=textname;
+				result_set[pointer++]="Product";
+			}
 		}
-		return response;
+		
+		
+		for(index=0;index<result_set.length;index=index+2)
+		{
+			obj.put("name", result_set[index]);
+			obj.put("type", result_set[index+1]);
+			response.add(obj);
+			obj= new JSONObject();
+		}
+		return response.toJSONString();
 	}
 
 	@Override
@@ -315,7 +362,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 	}
 
 	@Override
-	public ArrayList<ProductView> searchRankedFeaturesProductsPOST(String pCategoryId, Model pModel)
+	public ArrayList<ProductView> searchRankedFeaturesProducts(String pCategoryId, Model pModel)
 	{
 		List<Product> prodSearch = aProductSort.returnProductsAlphabetically(pCategoryId);
 		ArrayList<ProductView> products = new ArrayList<ProductView>();
@@ -354,4 +401,22 @@ public class ConcreteServiceFacade implements ServiceFacade
 		}
 		return specFeatures;
 	}
+	
+	@Override
+	public JSONObject createJSONforallattributes(String pCategoryId)
+	{
+		JSONObject obj = new JSONObject();
+		ArrayList<FeatureView> specFeatures =createFeatureList(pCategoryId);
+		JSONArray list_name = new JSONArray();
+		JSONArray list_values = new JSONArray();
+		for(FeatureView temporary : specFeatures)
+		{
+				list_name.add(temporary.getName());
+				list_values.add(null);
+		}
+		obj.put("aNames",list_name);
+		obj.put("aValues",list_values);
+		return (obj);
+	}
+	
 }

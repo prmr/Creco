@@ -97,7 +97,7 @@ public class SiteController
 	@RequestMapping(URL_SEARCH_PRODUCTS)  
 	public String searchRankedFeaturesProductsPOST(@RequestParam(value = "id", required = true) String pCategoryId, Model pModel)
 	{  	
-		pModel.addAttribute("productList", aServiceFacade.searchRankedFeaturesProductsPOST(pCategoryId, pModel));			
+		pModel.addAttribute("productList", aServiceFacade.searchRankedFeaturesProducts(pCategoryId, pModel));			
 		pModel.addAttribute("specFeatureList", aServiceFacade.createFeatureList(pCategoryId));
 		pModel.addAttribute("currentCategoryId", pCategoryId);
 		return URL_SHOW_PRODUCTS;
@@ -113,8 +113,13 @@ public class SiteController
 	@ResponseBody
 	public String sendCurrentFeatureList(@RequestParam String pUserFeatureList, @RequestParam String pCategoryId)
 	{
-	    String response = aServiceFacade.sendCurrentFeatureList(pUserFeatureList, pCategoryId);	 
+		
+		String response = aServiceFacade.sendCurrentFeatureList(pUserFeatureList, pCategoryId);	 
+		
 
-		return response;		
+		String response_all = aServiceFacade.sendCurrentFeatureList(aServiceFacade.createJSONforallattributes(pCategoryId).toJSONString(), pCategoryId);
+
+		
+		return response.concat("|||").concat(response_all);		
 	}		
 }

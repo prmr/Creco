@@ -11,14 +11,14 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>net.sf.eclipsecs.core.CheckstyleBuilder</name>
+			<name>org.springframework.ide.eclipse.core.springbuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>org.springframework.ide.eclipse.core.springnature</nature>
 		<nature>org.springsource.ide.eclipse.gradle.core.nature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
-		<nature>net.sf.eclipsecs.core.CheckstyleNature</nature>
 	</natures>
 </projectDescription>

@@ -21,17 +21,17 @@ function getCompletions(val) {
         success: function (response) {
         	var data = [];
             var mySplitResult;
-            mySplitResult = response.split("|");
+            mySplitResult =JSON.parse(response);
             var index = mySplitResult.length;
             var i;
             var temporary="";
             if(index>1)
         	{
-        	for( i =0;i<19;i=i+2)
+        	for( i =0;i<10;i=i+1)
         		{
-        		temporary = temporary.concat(mySplitResult[i]);
+        		temporary = temporary.concat(mySplitResult[i].name);
         		temporary = temporary.concat("| ");
-        		data.push({label : mySplitResult[i],category : mySplitResult[i+1]});
+        		data.push({label : mySplitResult[i].name,category : mySplitResult[i].type});
         		}
         	check_set= temporary;
         	}

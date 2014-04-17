@@ -20,17 +20,9 @@
 	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" />
   		<!-- <link rel="stylesheet" href="/resources/demos/style.css"></link> -->
-	    <style>
-  			.ui-autocomplete-category {
-    		padding: .2em .4em;
-    		margin: .8em 0 .2em;
-    		line-height: 1.5;
- 			 } 			
-  		</style>
   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
   <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-  </head>
-	
+  </head>	
 	<link rel="stylesheet" type='text/css' href="lib/jquery-ui.css"></link>
 	<link rel='stylesheet' type='text/css' href='lib/bootstrap.min.css'></link>
 	<link rel='stylesheet' type='text/css' href='lib/bootstrap-theme.min.css'></link>
@@ -79,6 +71,7 @@
 						</div>
 				</div>
 			</div>
+
 			<div id="product-area">
 				<div id="spinner-wrapper">
 					<div id="spinner-content-mask"></div>
@@ -89,6 +82,7 @@
 					<div th:if="${product.image}==''" class="no-product-image">no image</div>
 					
 					<div class="product-description-area">	
+
 						<div th:switch="${product.url}">
 		                    <p th:case="''" class="rankedproduct-result-name" th:text="${product.name}"></p>
 		                   	<a th:case="*" class="rankedproduct-result-name" th:text="${product.name}"
@@ -114,7 +108,9 @@
 		</div>
 	</body>
 
-	
+		   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+	<script type='text/javascript' src="lib/jquery-1.9.1.js"></script>
+
 	<script type='text/javascript' src="lib/jquery-ui.js"></script>	
 	<script type='text/javascript' src='lib/bootstrap.min.js'></script>	
 	<script type='text/javascript' src="js/autocomplete.js"></script> 

@@ -206,7 +206,14 @@ public class JsonLoadingService implements IDataLoadingService
 		String prodUrl = pProductStub.modelOverviewPageUrl;
 		if(aDoCheckDeadLinks)
 		{
-			if(pProductStub.modelOverviewPageUrl == null || aDeadLinks.get(pProductStub.id) != 200)
+			if(aDeadLinks.containsKey(pProductStub.id))
+			{
+				if(pProductStub.modelOverviewPageUrl == null || aDeadLinks.get(pProductStub.id) != 200)
+				{
+					prodUrl = "";
+				}
+			}
+			else
 			{
 				prodUrl = "";
 			}
