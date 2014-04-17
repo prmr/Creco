@@ -117,7 +117,7 @@ public class SiteController
 		String response = aServiceFacade.sendCurrentFeatureList(pUserFeatureList, pCategoryId);	 
 		
 
-		String response_all = aServiceFacade.sendCurrentFeatureList(aServiceFacade.createJSONforallattributes(pCategoryId).toJSONString(), pCategoryId);
+		String response_all = aServiceFacade.sendCurrentFeatureList((String)aServiceFacade.createJSONforallattributes(pCategoryId).toJSONString(), pCategoryId);
 
 		
 		return response.concat("|||").concat(response_all);		

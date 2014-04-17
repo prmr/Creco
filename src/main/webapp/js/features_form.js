@@ -19,18 +19,25 @@ $(function() {
         },
         
         slide: function(event, ui) {
-//            var value = slider.slider('value');                  
-//           tooltip.css('left', value).text(ui.value);     
+            var value = slider.slider('value');                  
+            tooltip.css('left', value).text(ui.value);      
         },  
+        stop: function(event, ui) {            
+        	 console.log("stop value" + ui.value);
+        	 var value = ui.value;
+        	 var id = $(this).attr('id');
+        	 var name =$(this).attr('name');
+        	 console.log("data " + id+ " "+ value+" "+name);
+        	 addFeature2(id, name, value);
+        	  tooltip.fadeOut('fast'); 
+        },
         create: function(event, ui){
         	var val=$(this).parent().attr('class')*100;
             $(this).slider('value',Math.round(val));
             console.log("value is " + $(this).parent().attr('class'));
             
         },
-        stop: function(event,ui) {  
-//         tooltip.fadeOut('fast');  
-        },  
+
     });  
   
 });  
@@ -40,9 +47,12 @@ $(function() {
  * user's selected features
  */
 var globalFeatureObject = {
+	aIds:[],
     aNames: [],
     aValues: []
 };
+
+var userObjectList = [];
 
 function findParentID(node, id) {
     parent = node.parentNode;
@@ -63,14 +73,14 @@ function findParentID(node, id) {
  * @param val	: value of feature
  */
 
-function isChecked(chBox, name, val) {
+/*function isChecked(chBox, name, val) {
     if ($(chBox).prop('checked')) {
         addFeature(chBox, name, val);
     } else {
         removeFeature(chBox, name, val);
     }
     sendFeatures();
-}
+}*/
 
 //remove element from an array
 function removeElem(arr) {
@@ -105,12 +115,39 @@ function removeFeature(elem, name, val) {
     }
 }
 
+function addFeature2(id, name, val)
+{
+    var exist = false;
+    for (var i = 0; i < userObjectList.length; i++)
+    {
+        if (userObjectList[i].aId == id) 
+        {
+        	userObjectList[i].aValue = val;
+        	userObjectList[i].aName = name;            
+            exist = true;
+            break;
+        }
+    }
+    
+    if (!exist) 
+    {
+        var temp = new Object();
+        temp.aId=id;
+        temp.aName=name;
+        temp.aValue=val;
+        userObjectList.push(temp);
+    }
+ 
+    sendFeatures();
+
+}
+
 /** 
  * Add feature to the global feature object
  * @param name of feature
  * @param val of feature
  */
-function addFeature(elem, name, val) {
+/*function addFeature(elem, name, val) {
     var exist = false;
     var isSpec = findParentID(elem, "main_specs")
 
@@ -126,7 +163,7 @@ function addFeature(elem, name, val) {
         globalFeatureObject.aValues.push(val);
     }
 
-}
+}*/
 
 function startSpinner() {
 	var height = $('#product-area').outerHeight();
@@ -144,7 +181,7 @@ function stopSpinner() {
  * to the UI controller
  */
 function sendFeatures() {
-    var featureObj = JSON.stringify(globalFeatureObject);
+    var featureObj = JSON.stringify({userFeatures:userObjectList});
     startSpinner();
     $.ajax({
         async: true,
@@ -288,9 +325,9 @@ function sendFeatures() {
         		console.log(globalFeatureObject.aNames.length);
         	// Checking if any recommendations exists
         		if(globalFeatureObject.aNames.length>0 && added_explanations>0)
-        			{
+        		{
         			product_div.append(text);
-        			}
+        		}
         		product_div.append(product_div_content);		
         		product_div_content.append(product_div_name);
         		product_div.append(parentbloc1);

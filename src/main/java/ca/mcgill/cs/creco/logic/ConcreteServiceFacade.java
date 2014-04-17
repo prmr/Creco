@@ -13,6 +13,7 @@
 package ca.mcgill.cs.creco.logic;
 
 import java.util.ArrayList;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -34,11 +35,14 @@ import ca.mcgill.cs.creco.logic.search.IProductSearch;
 import ca.mcgill.cs.creco.web.model.ExplanationView;
 import ca.mcgill.cs.creco.web.model.FeatureView;
 import ca.mcgill.cs.creco.web.model.ProductView;
+import ca.mcgill.cs.creco.web.model.UserData;
 import ca.mcgill.cs.creco.web.model.UserFeatureModel;
+import ca.mcgill.cs.creco.web.model.UserFeaturesModel;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * Default implementation of the service layer.
@@ -211,22 +215,26 @@ public class ConcreteServiceFacade implements ServiceFacade
 	@Override
 	public String sendCurrentFeatureList(String pUserFeatureList, String pCategoryId)
 	{
-		UserFeatureModel userFMSpec = new Gson().fromJson(pUserFeatureList, UserFeatureModel.class);
+		UserData userFMSpec = new Gson().fromJson(pUserFeatureList, UserData.class);
 
+	
+//		Type listOfUserObject = new TypeToken<List<UserFeaturesModel>>(){}.getType();
+//		List<UserFeaturesModel> userFMSpec = new Gson().fromJson(pUserFeatureList, listOfUserObject);
+			
 		List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
 
-		for (int i = 0; i < userFMSpec.getNames().size(); i++)
-		{
-			String tempName = userFMSpec.getNames().get(i);
+		for(UserFeaturesModel userFeature: userFMSpec.getUserFeatures())
+		{			
+			String tempId = userFeature.getId();
 			ScoredAttribute sa = locateFeatureScoredAttribute(
-					aAttributeExtractor.getAttributesForCategory(pCategoryId), tempName);
+					aAttributeExtractor.getAttributesForCategory(pCategoryId), tempId);
 			if (sa != null)
 			{
 				userScoredFeaturesSpecs.add(sa);
 			}
-
+			
 		}
-
+	
 		userScoredFeaturesSpecs = sortFeatures(userScoredFeaturesSpecs);
 
 		List<RankExplanation> rankedProducts = rankProducts(userScoredFeaturesSpecs, pCategoryId);
@@ -347,12 +355,12 @@ public class ConcreteServiceFacade implements ServiceFacade
 	 * @param pName name of the attribute to find.
 	 * @return scored attribute matching the parameter name
 	 */
-	public ScoredAttribute locateFeatureScoredAttribute(List<ScoredAttribute> pFeatureList, String pName)
+	public ScoredAttribute locateFeatureScoredAttribute(List<ScoredAttribute> pFeatureList, String pID)
 	{
 		for (int i = 0; i < pFeatureList.size(); i++)
 		{
 			ScoredAttribute temp = pFeatureList.get(i);
-			if (temp.getAttributeName().equals(pName))
+			if (temp.getAttributeID().equals(pID))
 			{
 				return temp;
 
@@ -387,7 +395,6 @@ public class ConcreteServiceFacade implements ServiceFacade
 			{
 				break;
 			}
-
 			FeatureView f = new FeatureView();
 			f.setId(scoredAttr.get(i).getAttributeID());
 			f.setName(scoredAttr.get(i).getAttributeName());
@@ -406,16 +413,25 @@ public class ConcreteServiceFacade implements ServiceFacade
 	public JSONObject createJSONforallattributes(String pCategoryId)
 	{
 		JSONObject obj = new JSONObject();
-		ArrayList<FeatureView> specFeatures =createFeatureList(pCategoryId);
-		JSONArray list_name = new JSONArray();
+		
+		ArrayList<FeatureView> specFeatures = createFeatureList(pCategoryId);
+	
+		JSONArray userFeatures = new JSONArray();
+		JSONArray list_ids = new JSONArray();
 		JSONArray list_values = new JSONArray();
+		
 		for(FeatureView temporary : specFeatures)
 		{
-				list_name.add(temporary.getName());
-				list_values.add(null);
+			UserFeaturesModel userModel= new UserFeaturesModel();
+			userModel.setId(temporary.getId());
+			userModel.setName(temporary.getName());
+			userModel.setValue((int)temporary.getScore());
+			userFeatures.add(userModel.toString());			
 		}
-		obj.put("aNames",list_name);
-		obj.put("aValues",list_values);
+		
+		obj.put("userFeatures",userFeatures.toJSONString());
+//		obj.put("aIds", list_ids);
+	//	obj.put("aValues",list_values);
 		return (obj);
 	}
 	
