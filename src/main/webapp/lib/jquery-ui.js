@@ -2541,7 +2541,7 @@ $.widget( "ui.autocomplete", {
 	},
 
 	_renderItem: function( ul, item ) {
-		return $( "<li><a>"+item.label+"<i><div style=\"float:right\">"+item.category+"</div></i></a>")
+		return $( "<li><a>"+item.label+"<div style=\"float:right\">"+item.category+"</div></a>")
 			//.append( $( "<a>" ).text( item.label ) )
 			.appendTo( ul );
 	},
