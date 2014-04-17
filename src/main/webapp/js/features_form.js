@@ -407,16 +407,20 @@ function addgraph(array,jsonResponse,r)
 	
 	if(checker>0)
 		{
-			for(var x=0;x<array.length;x++)
+			//only show the top 50
+			var start = Math.max(0, array.length -50);
+			//number of prodcuts in top 50
+			var numProducts = Math.min(50, array.length)
+			for(var x=start;x<array.length;x++)
 			{
 				var rankValue = (array[x].aSize- array[x].aRank + 1)/array[x].aSize;
-				rankValue = rankValue * 75;
-				var temp = $("<div>").addClass("line").attr("style","width: "+100/array.length+"px;height : "+rankValue+"px;top:"+(75-rankValue)+"px;").attr("id",array[x].aID);
-				temp.attr("url",array[x].aURL);	
+				rankValue = rankValue * 50;
+				var temp = $("<div>").addClass("line").attr("style","width: "+100/numProducts+"px;height : "+rankValue+"px;top:"+(50-rankValue)+"px;").attr("id",array[x].aID);
+				//temp.attr("url",array[x].aURL);	
 				if(array[x].aID ==jsonResponse[r].productID )
 				{
-					temp = $("<div>").addClass("selected").attr("style","width: "+100/array.length+"px;height : "+rankValue+"px;top:"+(75-rankValue)+"px;background-color:#000000").attr("id",array[x].aID);
-					temp.attr("url",array[x].aURL);	
+					temp = $("<div>").addClass("selected").attr("style","width: "+100/numProducts+"px;height : "+rankValue+"px;top:"+(50-rankValue)+"px;background-color:#000000").attr("id",array[x].aID);
+					//temp.attr("url",array[x].aURL);	
 				}
 				temp.clone().appendTo(attachment);
 			}
