@@ -144,8 +144,7 @@ function sendFeatures() {
         				if(jsonResponse[r].productID==completeResponse[counter_variable].productID)
         						break;
         			}
-        		//product index seem to start at 1
-        		var counter = r +1;
+        		var counter = r;
         	    text = $("<div>").addClass("atrigger").attr("id",counter).text("See More");
         		var display = $("<div>").addClass("pop-up").attr("id","explanation"+counter).text("");
         		
