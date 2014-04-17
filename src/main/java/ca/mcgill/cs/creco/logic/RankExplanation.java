@@ -59,41 +59,33 @@ public class RankExplanation
 	
 	private String OneLineDescription(Product pProduct)
 	{ 
-		String description = pProduct.getDescription();
-		if (description.isEmpty())
+		String description = "";
+		description = "The " + pProduct.getName() + " is a " + pProduct.getCategory().getName() + ". The " + pProduct.getCategory().getName();
+		for (RankExplanationInstance attr : aRankList)
 		{
-			description = pProduct.getName() + "Is a ";
-	
-			for (RankExplanationInstance attr : aRankList)
-			{
-				
-				TypedValue value = attr.getaAttributeValue();
-				if(!value.isNA() || !value.isNull())
+			TypedValue value = attr.getaAttributeValue();
+			if(!value.isNA() && !value.isNull())
+			{		
+				description = description.concat(", ");
+				if(value.isBoolean())
 				{
-					
-					
-					description = description.concat(", ");
-					if(value.isBoolean())
+					if(value.getBoolean())
 					{
-						if(value.getBoolean())
-						{
-							description = description.concat(" is ");
-						}
-						else
-						{
-							description = description.concat(" is not ");
-						}
+						description = description.concat(" has ");
 					}
-					description = description.concat(attr.getaAttribute().getAttributeName());
-					
-					if(value.isNumeric())
+					else
 					{
-						description = description.concat(" is " + Double.toString(value.getNumeric()));
+						description = description.concat(" does not have");
 					}
-					else if(value.isString())
-					{
-						description = description.concat(" " + value.getString());
-					}
+				}
+				description = description.concat(attr.getaAttribute().getAttributeName());
+				if(value.isNumeric())
+				{
+					description = description.concat(" is " + Double.toString(value.getNumeric()));
+				}
+				else if(value.isString())
+				{
+					description = description.concat(" " + value.getString());
 				}
 			}
 		}
