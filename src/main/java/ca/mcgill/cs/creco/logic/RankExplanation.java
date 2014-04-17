@@ -6,8 +6,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ca.mcgill.cs.creco.data.Attribute;
 import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.Product;
+import ca.mcgill.cs.creco.data.TypedValue;
 
 /**
  * Provides explanation for the ranking of each product.
@@ -19,6 +21,7 @@ public class RankExplanation
 	private Product aProduct;
 	private Category aCategory; 
 	private List<RankExplanationInstance> aRankList;
+	private String aOneLineDesc;
 	
 	/**
 	 * 
@@ -31,6 +34,8 @@ public class RankExplanation
 		aProduct = pProduct;
 		aCategory = pCategory;
 		aRankList = new ArrayList<RankExplanationInstance>();
+		aOneLineDesc = OneLineDescription(pProduct);
+		//System.out.println(OneLineDescription(pProduct));
 		
 		for(ScoredAttribute sa : pScoredAttributes)
 		{
@@ -48,6 +53,16 @@ public class RankExplanation
 			
 		}
 		
+	}
+	
+	private String OneLineDescription(Product pProduct)
+	{ 
+		String description = pProduct.getDescription();
+		if (description.isEmpty())
+		{
+			return "Description empty";
+		}
+		return description;
 	}
 
 	/**

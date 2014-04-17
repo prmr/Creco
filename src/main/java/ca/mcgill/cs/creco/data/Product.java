@@ -31,6 +31,7 @@ public class Product
 	private String aBrandName;
 	private String aModelOverviewPageUrl;
 	private String aImageThumbnail;
+	private String aDescription;
 	
 	// Derived fields
 	private boolean aIsRated = false;
@@ -53,7 +54,7 @@ public class Product
 	 */
 	public Product(String pId, String pDisplayName, Boolean pIsTested, String pCategoryId, 
 			String pBrandName, String pModelOverviewPageUrl, Collection<Attribute> pAttributes,
-			String pImageThumbnail)
+			String pImageThumbnail,String pDescription)
 	{
 		aId = pId;
 		aDisplayName = pDisplayName;
@@ -62,6 +63,7 @@ public class Product
 		aBrandName = pBrandName;
 		aModelOverviewPageUrl = pModelOverviewPageUrl;
 		aImageThumbnail = pImageThumbnail;
+		aDescription = pDescription;
 		for(Attribute att : pAttributes) 
 		{
 			// While copying over the attributes, note whether any were ratings, and capture a reference to the price if any
@@ -203,6 +205,18 @@ public class Product
 		return aImageThumbnail;
 		}
 		return "";
+	}
+	
+	public String getDescription() 
+	{
+		if(aDescription != null)
+		{
+			return aDescription;
+		}
+		else 
+		{
+			return "";
+		}
 	}
 	
 }
