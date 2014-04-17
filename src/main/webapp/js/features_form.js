@@ -107,6 +107,7 @@ function stopSpinner() {
  * to the UI controller
  */
 function sendFeatures() {
+	var checker=0;
     var featureObj = JSON.stringify(globalFeatureObject);
     startSpinner();
     $.ajax({
@@ -117,7 +118,6 @@ function sendFeatures() {
             pCategoryId: $("#categoryMarker").attr('title')
         }),
         success: function (response) {
-        	var counter =0 ;
         	// Spinner 
         	stopSpinner();
         	$("#product-area").empty();
@@ -136,9 +136,7 @@ function sendFeatures() {
         		var product_div = $("<div>").addClass("rankedproduct-result-entry");
         		var product_div_image = $("<div>").addClass("product-image").css("background-image", "url('"+jsonResponse[r].productIMAGE+"')");
         		var product_div_content = $("<div>").addClass("product-description-area"); 
-
-        		
-// Display of detailed explanations        		
+        		       		
 //Finding the position
         		var counter_variable=0;
         		for(counter_variable=0;counter_variable<completeResponse.length;counter_variable++)
@@ -146,14 +144,17 @@ function sendFeatures() {
         				if(jsonResponse[r].productID==completeResponse[counter_variable].productID)
         						break;
         			}
-
-        			text = $("<div>").addClass("atrigger").text("See More").attr("id",counter);
+        		//product index seem to start at 1
+        		var counter = r +1;
+        	    text = $("<div>").addClass("atrigger").attr("id",counter).text("See More");
         		var display = $("<div>").addClass("pop-up").attr("id","explanation"+counter).text("");
-
+        		
+        		var row = addTableEntryName(completeResponse[counter_variable].productName);
+        		display.append(row);
+        		
         		for(var j = 0 ; j < completeResponse[counter_variable].explanation.length; j++)
         		{
         			var exp = completeResponse[counter_variable].explanation[j];
-            		var rankValue=0;
         			if(exp.boolean)
             		{
             		}
@@ -161,39 +162,20 @@ function sendFeatures() {
             		{
             			if(exp.isExplained == -1) //feature doesn't exist for this product
                 		{
-                			
                 		}
             			else // Added only features which can be measured
                 		{
             				added_explanations++;
-                			rankValue = (exp.productsNum - exp.rank + 1)/exp.productsNum;
-                    		rankValue = rankValue * 100;
-                    		var row = $("<div>").attr("style","display:table-row");
-                    		var column1 =$("<div>").attr("style","display:table-cell;width:40%").text(exp.name);
-                    		var color = stringToColorCode(exp.name);
-                    		var column2 = $("<div>").addClass("progress-bar").attr("style","display: table-cell;width:"+rankValue+"%;background:#"+color.split("").reverse().join("")+";");
-                    		var temporary2 = $("<div>").text("&nbsp;").html();
-                    		temporary2 = temporary2.replace("&amp;","&");
-                    		var buffer = column2;
-                    		buffer.append(temporary2);
-                    		column2 =$("<div>").attr("style","display:table-cell;");
-                    		column2.append(buffer);
-                    		row.append(column1);
-                    		row.append(column2);
+                    		var row = addTableEntry(exp);
                     		display.append(row);
-                    
-
-
                 		}
             		}   
-        			
-        			
         		}
-        		counter++;
-        		product_div_content.append(display);
+
+        		product_div_content.append(display);		
+ // End of detailed explanations adding       		
         		
-        		
-        		
+
         		var product_div_name = null;
         		var product_div_exp = null;
         		var product_div_exp_value = null;
@@ -207,14 +189,15 @@ function sendFeatures() {
         		var graphBloc =  $("<div>").css({"display" : "table-row", "width": "100%","margin":"0 auto"})
         		var labelBloc =  $("<div>").css({"display" : "table-row", "width": "100%","margin":"0 auto"})
         		
+        		                
         		for(var j = 0 ; j < jsonResponse[r].explanation.length && j< 3; j++)
+
         		{
-            			var exp = jsonResponse[r].explanation[j];
-                     	
-            			product_div_exp_value = $("<p>").addClass("rankexplanation-attr-value").text(exp.productsNum);//total Num of products
-                          	
-                  		var progress = $('<div>', {class: 'rankedproduct-attr-data'});
+            			var exp = jsonResponse[r].explanation[j];		       				
+            			//product_div_exp_value = $("<p>").addClass("rankexplanation-attr-value").text(exp.productsNum);//total Num of products
+            			var progress = $('<div>', {class: 'rankedproduct-attr-data'});
                 		var progressbar = null;
+
                 		var rankValue = 0;
                 		
                 		
@@ -230,33 +213,27 @@ function sendFeatures() {
                     			progress1 = $("<div>").addClass("rankedproduct-attr-data").text("Not Available").css({"font-style": "italic"});                		                			
                     			progress1.appendTo(graphBloc);
                     			
-                    		}else
+                    		}
+                			else
                     		{
-                    			rankValue = (exp.productsNum - exp.rank + 1)/exp.productsNum;
-                        		rankValue = rankValue * 100;
-                        		progressbar = $("<div>").addClass("progress-bar").text("Rank:"+exp.rank).attr("aria-valuenow",rankValue).css("width",rankValue+"%");                		
-                        		progressbar.attr("aria-valuemax",exp.productsNum);
-                        		progressbar.appendTo(progress);                    		
-                        		progress.appendTo(graphBloc);                    		
+                				
+                    			var graph = addgraph(getarray(completeResponse,exp.name),jsonResponse,r);
+                				graph.appendTo(graphBloc);                   		
 
                     		}
                 		}         
-                		var explanation_attribute = $("<div>").addClass("rankedproduct-attr-name").text(exp.name);
-                		explanation_attribute.appendTo(labelBloc);
+                		var heading_name= $("<div>").addClass("rankedproduct-attr-name").text(exp.name);
+        				heading_name.appendTo(labelBloc);
             	}
-        		graphBloc.appendTo(tableDisplay)
-        		labelBloc.appendTo(tableDisplay)
+        		text.appendTo(graphBloc);
+        		graphBloc.appendTo(tableDisplay);
+        		labelBloc.appendTo(tableDisplay);
         		product_div.append(product_div_image);
-        		console.log(globalFeatureObject.aNames.length);
-        	// Checking if any recommendations exists
-        		if(globalFeatureObject.aNames.length>0 && added_explanations>0)
-        			{
-        			graphBloc.append(text);
-        			}
         		product_div.append(product_div_content);		
         		product_div_content.append(product_div_name);
         		product_div.append(tableDisplay);
         		$("#product-area").append(product_div);       
+        		//initialise2();
         		initialise();
         	}
 
@@ -269,8 +246,10 @@ function sendFeatures() {
 // Intilisating the event listeners in javascript
 function initialise() {
     var moveLeft = 20;
+    var moveRight = -175; //the  - is for the right movement
     var moveDown = 10;
     
+    // Trigger for the tab of detailed explanations
     $(".atrigger").hover(function(e) {
   	 var id = $(this).attr("id");
   	// console.log(id);
@@ -283,9 +262,10 @@ function initialise() {
       $("div#explanation"+id).hide();
     });
     
+    // Trigger when mouse moves around inside the div 
     $(".atrigger").mousemove(function(e) {
      	 var id = $(this).attr("id");
-      $("div#explanation"+id).css('top', e.pageY + moveDown).css('left', e.pageX + moveLeft);
+      $("div#explanation"+id).css('top', e.pageY + moveDown).css('left', e.pageX + moveRight);
     });
     
   }
@@ -296,8 +276,7 @@ function initialise() {
 function stringToColorCode(str) {
 	  var code = stringToHex(str);
 	  code = code.substr( 0, 6);
-	  return code;
-	  
+	  return code;  
 }
 
 
@@ -321,3 +300,188 @@ function stringToHex (tmp) {
 function d2h(d) {
     return d.toString(16);
 }
+
+/*
+ *Function used to get the array arranged in proper order
+ *Deletes all the values which are ranked -1
+ *Function parameters passed array and name
+ * Returns the modified array
+ * */
+
+function getarray(arrayPassed,name)
+{
+		var j=0;
+		var k=0;
+		var array =[{aID:[],aRank:[],aIndex:[],aSize:[],aURL:[]}];
+		var completeResponse =arrayPassed;
+    	for(j=0;j<completeResponse.length;j++)
+    		{
+    		 	for(k=0;k<completeResponse[j].explanation.length;k++)
+    		 		{
+    		 			if(name == completeResponse[j].explanation[k].name)
+    		 				{
+    		 					var exp = completeResponse[j].explanation[k];
+    		 					var rankValue = (exp.productsNum - exp.rank + 1)/exp.productsNum;
+    		 					rankValue = rankValue * 100;
+    		 					if(rankValue>100)
+    		 						rankValue =1;
+    		 					array.push ({aID:completeResponse[j].productID,
+    		 						aRank: parseInt(exp.rank),
+    		 						aIndex:k,
+    		 						aSize:completeResponse.length,
+    		 						aURL :completeResponse[j].productURL });
+    		 		
+    		 				}
+    		 		}
+    		}
+    	function mycomparator(a,b) {   return parseInt(b.aRank) - parseInt(a.aRank);  }
+    	array= array.sort(mycomparator );
+    	
+        for(var i = array.length; i--;) {
+            if(array[i].aRank === -1) {
+                array.splice(i, 1);
+            }
+        }
+        array.splice(0,1);
+		return array;
+	}
+
+
+// Initiliase the event listeners for .line and .selected
+function initialise2()
+{
+    var moveLeft = 20;
+    var moveDown = 10;
+    
+		    $('.line').click(function(){
+		    	if($(this).attr("url").length>2)
+		    	window.open( $(this).attr("url"));
+		    });
+    
+		    $('.selected').click(function(){
+		    	if($(this).attr("url").length>2)
+		    	window.open( $(this).attr("url"));
+		    });
+    
+		    $(".line").hover(function(e) {
+		    	var id = $(this).attr("id");
+		    	$(this).css("background-color","#FF0000");
+				      $("div#explanation"+id).css( "display", "block")
+				    }, function() {
+					    	 $(this).css("background-color","");
+					     	 var id = $(this).attr("id");
+					      $("div#explanation"+id).hide();
+					    });
+			    
+		    
+		    $(".line").mousemove(function(e) {
+		     	 var id = $(this).attr("id");
+			      $("div#explanation"+id).css('top', e.pageY + moveDown).css('left', e.pageX + moveLeft);
+			    });
+				$(".selected").hover(function(e) {
+						var id = $(this).attr("id");
+						$(this).css("background-color","#FF0000");
+						$("div#explanation"+id).css( "display", "block")
+					}, function() {
+						$(this).css("background-color","");
+						var id = $(this).attr("id");
+						$("div#explanation"+id).hide();
+			});
+
+			$(".selected").mousemove(function(e) {
+			 	 var id = $(this).attr("id");
+			 	 $("div#explanation"+id).css('top', e.pageY + moveDown).css('left', e.pageX + moveLeft);
+			});
+	}
+
+
+/*
+ * Add graph adds a line with the correseponding values or array 
+ * The jsonResponse contains the values of the passed reference 
+ * r is the position of the product in the jsonResponse
+ * Returns a concatened list of graph elements
+ */
+function addgraph(array,jsonResponse,r)
+{
+	var attachment = $("<div>").addClass("rankedproduct-attr-data");
+	
+	var checker =  search (array,jsonResponse[r].productID);
+	
+	if(checker>0)
+		{
+			for(var x=0;x<array.length;x++)
+			{
+				var rankValue = (array[x].aSize- array[x].aRank + 1)/array[x].aSize;
+				rankValue = rankValue * 75;
+				var temp = $("<div>").addClass("line").attr("style","width: "+100/array.length+"px;height : "+rankValue+"px;top:"+(75-rankValue)+"px;").attr("id",array[x].aID);
+				temp.attr("url",array[x].aURL);	
+				if(array[x].aID ==jsonResponse[r].productID )
+				{
+					temp = $("<div>").addClass("selected").attr("style","width: "+100/array.length+"px;height : "+rankValue+"px;top:"+(75-rankValue)+"px;background-color:#000000").attr("id",array[x].aID);
+					temp.attr("url",array[x].aURL);	
+				}
+				temp.clone().appendTo(attachment);
+			}
+		}
+	else
+		{
+			var heading_name= $("<div>").addClass("rankexplanation-attr-name").text("No information");
+			heading_name.clone().appendTo(attachment);
+		}
+	       return attachment; 		
+	}
+
+
+/*
+ * The function search performs a linear search of the location of ID in the array based on the key
+ * Input paramters : array and the key to be searched
+ * Return value : 1 if found else 0
+ */
+		function search(array,key)
+			{
+				for(var i=0;i<array.length;i++)
+					{
+						if(array[i].aID==key)
+							return 1;
+					}
+					return 0;
+			}
+		
+		/*
+		 * Used in the hover effect where the display is constructed for each row
+		 * Input parameters : exp - the explanation array
+		 * Return Values : the div tag with added row
+		 */
+		
+		function addTableEntry(exp)
+		{
+			var rankValue = (exp.productsNum - exp.rank + 1)/exp.productsNum;
+    		rankValue = rankValue * 100;
+    		var row = $("<div>").attr("style","display:table-row");
+    		var column1 =$("<div>").attr("style","display:table-cell;width:40%").text(exp.name);
+    		var color = stringToColorCode(exp.name);
+    		var column2 = $("<div>").addClass("progress-bar").attr("style","display: table-cell;width:"+rankValue+"%;background:#"+color.split("").reverse().join("")+";");
+    		var temporary2 = $("<div>").text("&nbsp;").html();
+    		temporary2 = temporary2.replace("&amp;","&");
+    		var buffer = column2;
+    		buffer.append(temporary2);
+    		column2 =$("<div>").attr("style","display:table-cell;");
+    		column2.append(buffer);
+    		row.append(column1);
+    		row.append(column2);
+    		
+    		return row;
+		}
+		
+		/*
+		 * Function adds the name of the attribute to thetable
+		 * Input paramters : The name to be added 
+		 * Return values : The div tag which the name added
+		 */
+		function addTableEntryName(name)
+		{
+			var row = $("<div>").attr("style","display:table-row");
+    		var column1 =$("<div>").attr("style","display:table-cell;width:40%").text( name);
+    		row.append(column1);
+    		return row;
+		}
