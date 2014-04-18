@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -206,9 +207,9 @@ public class ConcreteServiceFacade implements ServiceFacade
 	}
 
 	@Override
-	public List<RankExplanation> rankProducts(List<ScoredAttribute> pScoredAttributes, String pCategoryID)
+	public List<RankExplanation> rankProducts(List<UserScoredAttribute> pUserScoredAttributes, String pCategoryID)
 	{
-		return aProductRanker.rankProducts(pScoredAttributes, aDataStore.getCategory(pCategoryID));
+		return aProductRanker.rankProducts(pUserScoredAttributes, aDataStore.getCategory(pCategoryID));
 	}
 
 
@@ -217,11 +218,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 	{
 		UserData userFMSpec = new Gson().fromJson(pUserFeatureList, UserData.class);
 
-	
-//		Type listOfUserObject = new TypeToken<List<UserFeaturesModel>>(){}.getType();
-//		List<UserFeaturesModel> userFMSpec = new Gson().fromJson(pUserFeatureList, listOfUserObject);
-			
-		List<ScoredAttribute> userScoredFeaturesSpecs = new ArrayList<ScoredAttribute>();
+		List<UserScoredAttribute> userScoredFeaturesSpecs = new ArrayList<UserScoredAttribute>();
 
 		for(UserFeaturesModel userFeature: userFMSpec.getUserFeatures())
 		{			
@@ -230,12 +227,13 @@ public class ConcreteServiceFacade implements ServiceFacade
 					aAttributeExtractor.getAttributesForCategory(pCategoryId), tempId);
 			if (sa != null)
 			{
-				userScoredFeaturesSpecs.add(sa);
+				//TODO: CHANGE THIS TEMPS VALUE ONCE WE PASS VALUES
+				UserScoredAttribute usa = new UserScoredAttribute(sa,1.0);
+				userScoredFeaturesSpecs.add(usa);
 			}
 			
 		}
-	
-		userScoredFeaturesSpecs = sortFeatures(userScoredFeaturesSpecs);
+		Collections.sort(userScoredFeaturesSpecs, UserScoredAttribute.SORT_BY_USER_SCORE);
 
 		List<RankExplanation> rankedProducts = rankProducts(userScoredFeaturesSpecs, pCategoryId);
 

@@ -31,7 +31,7 @@ public class RankExplanationInstance
 {
 	private static final int RANKING_NOT_AVAILABLE = -1;
 	private static final Logger LOG = LoggerFactory.getLogger(RankExplanationInstance.class);
-	private ScoredAttribute aScoredAttribute;
+	private UserScoredAttribute aUserScoredAttribute;
 	private int aAttributeRank;
 	private TypedValue aAttributeValue;	
 	private Product aProduct;
@@ -41,17 +41,17 @@ public class RankExplanationInstance
 	 * @param pProduct product to provide explanation to
 	 * @throws 
 	 */
-	public RankExplanationInstance(Product pProduct, ScoredAttribute pScoredAttribute) throws IllegalArgumentException
+	public RankExplanationInstance(Product pProduct, UserScoredAttribute pUserScoredAttribute) throws IllegalArgumentException
 	{
 		aProduct  = pProduct;
-		aScoredAttribute = pScoredAttribute;
+		aUserScoredAttribute = pUserScoredAttribute;
 		aAttributeRank =  RANKING_NOT_AVAILABLE;
 		aAttributeValue =  new TypedValue();
-		Attribute attribute = pProduct.getAttribute(aScoredAttribute.getAttributeID());
+		Attribute attribute = pProduct.getAttribute(aUserScoredAttribute.getAttributeID());
 		if(attribute != null)
 		{
 			aAttributeValue = attribute.getTypedValue();
-			aAttributeRank = pScoredAttribute.getValueRank(aAttributeValue);
+			aAttributeRank = pUserScoredAttribute.getValueRank(aAttributeValue);
 		}	
 		else
 		{
@@ -96,11 +96,11 @@ public class RankExplanationInstance
 	}
 	/**
 	 * 
-	 * @return scored attribute associated with the explanation.
+	 * @return user scored attribute associated with the explanation.
 	 */
-	public ScoredAttribute getaAttribute()
+	public UserScoredAttribute getaAttribute()
 	{
-		return aScoredAttribute;		
+		return aUserScoredAttribute;		
 	}
 	
 }

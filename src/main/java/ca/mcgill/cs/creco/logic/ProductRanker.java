@@ -47,11 +47,11 @@ public class ProductRanker
 
 	/**
 	 * Ranks a collection of products according to a given set of attributes.
-	 * @param pScoredAttributes The set of attributes used to rank the products.
+	 * @param pUserScoredAttributes The set of attributes used to rank the products.
 	 * @param pCategory The category of products being ranked.
 	 * @return The ranked list of products, ordered from highest to lowest score.
 	 */
-	public List<RankExplanation> rankProducts(List <ScoredAttribute> pScoredAttributes, Category pCategory)
+	public List<RankExplanation> rankProducts(List<UserScoredAttribute> pUserScoredAttributes, Category pCategory)
 	{
 		Map<Product, Double> scoredProducts = new HashMap<Product, Double>();
 		Collection<Product> products = pCategory.getProducts();
@@ -61,13 +61,13 @@ public class ProductRanker
 			scoredProducts.put(product, 0.0);
 		}
 		
-		for (ScoredAttribute scoredAttribute : pScoredAttributes)
+		for (UserScoredAttribute userScoredAttribute : pUserScoredAttributes)
 		{	
 			for (Product product : products)
 			{
 				double updateValue = 0;
 				
-				Attribute attribute = product.getAttribute(scoredAttribute.getAttributeID());
+				Attribute attribute = product.getAttribute(userScoredAttribute.getAttributeID());
 				
 				if (attribute == null)
 				{
@@ -75,15 +75,15 @@ public class ProductRanker
 				} 
 				else if (attribute.getTypedValue().isNumeric())
 				{
-					updateValue = numericUpdateEquation(scoredAttribute, attribute.getTypedValue().getNumeric());
+					updateValue = numericUpdateEquation(userScoredAttribute, attribute.getTypedValue().getNumeric());
 				}
 				else if (attribute.getTypedValue().isString())
 				{
-					updateValue = stringUpdateEquation(scoredAttribute, attribute.getTypedValue().getString());
+					updateValue = stringUpdateEquation(userScoredAttribute, attribute.getTypedValue().getString());
 				}
 				else if (attribute.getTypedValue().isBoolean())
 				{
-					updateValue = stringUpdateEquation(scoredAttribute, String.valueOf(attribute.getTypedValue().getBoolean()));
+					updateValue = stringUpdateEquation(userScoredAttribute, String.valueOf(attribute.getTypedValue().getBoolean()));
 				}
 				
 				// Update the product's score according to the attribute's value
@@ -96,36 +96,36 @@ public class ProductRanker
 		
 		for (Product p :sortedProducts)
 		{
-			prodExp.add(new RankExplanation(p, pCategory, pScoredAttributes));						
+			prodExp.add(new RankExplanation(p, pCategory, pUserScoredAttributes));						
 		}
 		return prodExp; 	
 	}
 	
 	/**
 	 * Computes a score update depending on a numeric attribute value.
-	 * @param pScoredAttribute The score attribute according to which the update value will be computed.
+	 * @param pUserScoredAttribute The score attribute according to which the update value will be computed.
 	 * @param pAttributeValue The numeric attribute value.
 	 * @return The score update value.
 	 */
-	private double numericUpdateEquation(ScoredAttribute pScoredAttribute, double pAttributeValue)
+	private double numericUpdateEquation(UserScoredAttribute pUserScoredAttribute, double pAttributeValue)
 	{
 		int direction = 1;
-		if (pScoredAttribute.getDirection() == Direction.LESS_IS_BETTER)
+		if (pUserScoredAttribute.getDirection() == Direction.LESS_IS_BETTER)
 		{
 			direction = -1;
 		}
 		
 		// The attribute's correlation with the products' overall score is used as a weight
-		double attributeWeight = Math.abs(pScoredAttribute.getCorrelation());
+		double attributeWeight = Math.abs(pUserScoredAttribute.getCorrelation());
 		
-		double normalization = 1 / pScoredAttribute.getMax().getNumeric();
+		double normalization = 1 / pUserScoredAttribute.getMax().getNumeric();
 		
 		return direction * attributeWeight * normalization * pAttributeValue;
 	}
 	
-	private double stringUpdateEquation(ScoredAttribute pScoredAttribute, String pAttributeValue)
+	private double stringUpdateEquation(UserScoredAttribute pUserScoredAttribute, String pAttributeValue)
 	{
-		Double labelValue = pScoredAttribute.getLabelMeanScores().get(pAttributeValue);
+		Double labelValue = pUserScoredAttribute.getLabelMeanScores().get(pAttributeValue);
 		if (labelValue == null)
 		{
 			labelValue = 0.0;
@@ -133,7 +133,7 @@ public class ProductRanker
 		
 		double normalization = 1.0/HUNDRED;
 		
-		double attributeWeight = Math.abs(pScoredAttribute.getCorrelation());
+		double attributeWeight = Math.abs(pUserScoredAttribute.getCorrelation());
 		
 		return attributeWeight * normalization * labelValue;
 	}

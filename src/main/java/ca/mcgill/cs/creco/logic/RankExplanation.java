@@ -24,15 +24,15 @@ public class RankExplanation
 	 * 
 	 * @param pProduct product to provide explanation to.
 	 * @param pCategory category that the product belongs to.
-	 * @param pScoredAttributes attribute selected by the user.
+	 * @param pUserScoredAttributes attribute selected by the user.
 	 */
-	public RankExplanation(Product pProduct, Category pCategory, List<ScoredAttribute> pScoredAttributes)
+	public RankExplanation(Product pProduct, Category pCategory, List<UserScoredAttribute> pUserScoredAttributes)
 	{
 		aProduct = pProduct;
 		aCategory = pCategory;
 		aRankList = new ArrayList<RankExplanationInstance>();
 		
-		for(ScoredAttribute sa : pScoredAttributes)
+		for(UserScoredAttribute sa : pUserScoredAttributes)
 		{
 			RankExplanationInstance rei = null;
 			try

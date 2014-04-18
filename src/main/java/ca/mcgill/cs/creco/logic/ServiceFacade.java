@@ -58,11 +58,11 @@ public interface ServiceFacade
 	
 	/**
 	 * Ranks a collection of products according to a given set of attributes.
-	 * @param pScoredAttributes The set of attributes used to rank the products.
+	 * @param pUserScoredAttributes The set of attributes used to rank the products.
 	 * @param pCategoryID The Id of category searched.
 	 * @return The ranked list of products, ordered from highest to lowest score.
 	 */
-	List<RankExplanation> rankProducts(List <ScoredAttribute> pScoredAttributes, String pCategoryID);
+	List<RankExplanation> rankProducts(List<UserScoredAttribute> pUserScoredAttributes, String pCategoryID);
 
 	/**
 	 * Returns a string of for the products view page.
