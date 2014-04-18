@@ -47,13 +47,12 @@ public class TestProductRanker {
 	private static final String HUMIDIFIER_CATEGORY_ID = "32968";
 	private static final String HUMIDIFIER_OUTPUT_ID = "4556";
 	private static final String HUMIDIFIER_FULL_TANK_WEIGHT_ID = "6929";
-	
+
 	@Test
 	public void testRankingContainsAllProducts()
 	{    
 		Category category = aDataStore.getCategory(TOASTER_CATEGORY_ID); 
 		List<ScoredAttribute> scoredAttributes = aAttributeExtractor.getAttributesForCategory(category.getId());
-		    
 		List<RankExplanation> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category);
 		
 		assertEquals(TOASTER_CATEGORY_NUM_PRODUCTS, scoredProducts.size());
@@ -106,4 +105,5 @@ public class TestProductRanker {
 		
 		assertEquals(scoredProducts.get(0).getaProduct().getName(), "Safety 1st 49292");
 	}
+	
 }

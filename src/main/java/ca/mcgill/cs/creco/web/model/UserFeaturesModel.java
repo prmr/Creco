@@ -16,7 +16,6 @@
 package ca.mcgill.cs.creco.web.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  *
@@ -27,7 +26,7 @@ public class UserFeaturesModel implements Serializable
 	private String aQuery;
 	private String aId;
 	private String aName;
-	private int aValue;
+	private double aValue;
 	
 	/**
 	 * 
@@ -83,7 +82,7 @@ public class UserFeaturesModel implements Serializable
 	 * 
 	 * @return list of values for the features.
 	 */
-	public int getValue()
+	public double getValue()
 	{
 		return aValue;
 	}
@@ -92,7 +91,7 @@ public class UserFeaturesModel implements Serializable
 	 * 
 	 * @param pValues the values of the features.
 	 */
-	public void setValue(int pValue)
+	public void setValue(double pValue)
 	{
 		aValue = pValue;
 	}

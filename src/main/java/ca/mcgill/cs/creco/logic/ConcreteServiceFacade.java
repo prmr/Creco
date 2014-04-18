@@ -37,14 +37,11 @@ import ca.mcgill.cs.creco.web.model.ExplanationView;
 import ca.mcgill.cs.creco.web.model.FeatureView;
 import ca.mcgill.cs.creco.web.model.ProductView;
 import ca.mcgill.cs.creco.web.model.UserData;
-import ca.mcgill.cs.creco.web.model.UserFeatureModel;
 import ca.mcgill.cs.creco.web.model.UserFeaturesModel;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
-
 /**
  * Default implementation of the service layer.
  */
@@ -228,7 +225,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 			if (sa != null)
 			{
 				//TODO: CHANGE THIS TEMPS VALUE ONCE WE PASS VALUES
-				UserScoredAttribute usa = new UserScoredAttribute(sa,1.0);
+				UserScoredAttribute usa = new UserScoredAttribute(sa,userFeature.getValue());
 				userScoredFeaturesSpecs.add(usa);
 			}
 			
@@ -398,10 +395,15 @@ public class ConcreteServiceFacade implements ServiceFacade
 			f.setName(scoredAttr.get(i).getAttributeName());
 			f.setVisible(true);
 			f.setDesc(scoredAttr.get(i).getAttributeDesc());
-			f.setScore(scoredAttr.get(i).getCorrelation());
-			System.out.println("correlation "+ scoredAttr.get(i).getCorrelation()*100);
-			System.out.println("score "+ scoredAttr.get(i).getAttributeScore());
 			
+			if(scoredAttr.get(i).getAttributeID().equals("254"))
+			{
+				f.setScore(100);				
+			}
+			else
+			{
+				f.setScore(0);
+			}
 			specFeatures.add(f);
 		}
 		return specFeatures;

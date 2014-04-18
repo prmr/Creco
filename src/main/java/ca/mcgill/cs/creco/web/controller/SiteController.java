@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ca.mcgill.cs.creco.logic.ServiceFacade;
-import ca.mcgill.cs.creco.web.model.UserFeatureModel;
+import ca.mcgill.cs.creco.web.model.UserFeaturesModel;
 
 /**
  * Currently this is the only controller for the entire web application. 
@@ -53,7 +53,7 @@ public class SiteController
 	@RequestMapping(value = URL_HOME, method = RequestMethod.GET)
 	public String init(Model pModel)
 	{
-		 UserFeatureModel form = new UserFeatureModel();
+		 UserFeaturesModel form = new UserFeaturesModel();
 		 pModel.addAttribute("myForm", form);
 		 return URL_SHOW_CATEGORIES;								
 	}

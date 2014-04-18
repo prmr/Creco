@@ -17,18 +17,15 @@ $(function() {
             tooltip.css('left', value).text(ui.value);      
         },  
         stop: function(event, ui) {            
-        	 console.log("stop value" + ui.value);
         	 var value = ui.value;
         	 var id = $(this).attr('id');
         	 var name =$(this).attr('name');
-        	 console.log("data " + id+ " "+ value+" "+name);
         	 addFeature();
         	  tooltip.fadeOut('fast'); 
         },
         create: function(event, ui){
         	var val=$(this).parent().attr('class')*100;
             $(this).slider('value',Math.round(val));
-            console.log("value is " + $(this).parent().attr('class'));
             
         },
 
