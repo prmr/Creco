@@ -115,7 +115,7 @@ public class SiteController
 	{
 		
 		String response = aServiceFacade.sendCurrentFeatureList(pUserFeatureList, pCategoryId);	 
-				
 		return response;	
+
 	}		
 }

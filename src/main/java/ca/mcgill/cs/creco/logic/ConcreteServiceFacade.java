@@ -224,7 +224,6 @@ public class ConcreteServiceFacade implements ServiceFacade
 					aAttributeExtractor.getAttributesForCategory(pCategoryId), tempId);
 			if (sa != null)
 			{
-				//TODO: CHANGE THIS TEMPS VALUE ONCE WE PASS VALUES
 				UserScoredAttribute usa = new UserScoredAttribute(sa,userFeature.getValue());
 				userScoredFeaturesSpecs.add(usa);
 			}
@@ -243,7 +242,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 			{
 				TypedValue value = rei.getaAttributeValue();				
 				String attributeName = rei.getaAttribute().getAttributeName();
-				explanation.add(new ExplanationView(attributeName, value, rei.getaAttributeRank(), rei.getaAttribute().getCorrelation()));
+				explanation.add(new ExplanationView(attributeName, value, rei.getaAttributeRank(), rei.getaAttribute().getUserScore()));
 			}
 			products.add(new ProductView(productRankingExplanation.getaProduct().getId(), productRankingExplanation.getaProduct().getName(),
 					productRankingExplanation.getaProduct().getUrl(), explanation, productRankingExplanation.getaProduct().getImage()));			
@@ -290,6 +289,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 				jExplanationElem.addProperty("productsNum", pProducts.size());
 				jExplanationElem.addProperty("boolean", e.getIsBoolean());
 				jExplanationElem.addProperty("rank", e.getValueRank());
+				jExplanationElem.addProperty("userScore", e.getAttrScore());
 							
 				if(e.getValueRank() == -1)
 				{

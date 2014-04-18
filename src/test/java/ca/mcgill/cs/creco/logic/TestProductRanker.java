@@ -53,7 +53,13 @@ public class TestProductRanker {
 	{    
 		Category category = aDataStore.getCategory(TOASTER_CATEGORY_ID); 
 		List<ScoredAttribute> scoredAttributes = aAttributeExtractor.getAttributesForCategory(category.getId());
-		List<RankExplanation> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category);
+		List<UserScoredAttribute> userScoredAttributes = new ArrayList<UserScoredAttribute>();
+		for(ScoredAttribute sa : scoredAttributes)
+		{
+			userScoredAttributes.add(new UserScoredAttribute(sa , 0));
+		}
+		
+		List<RankExplanation> scoredProducts = aProductRanker.rankProducts(userScoredAttributes, category);
 		
 		assertEquals(TOASTER_CATEGORY_NUM_PRODUCTS, scoredProducts.size());
 	}
@@ -62,12 +68,14 @@ public class TestProductRanker {
 	public void testRankNumericMoreIsBetter()
 	{
 		Category category = aDataStore.getCategory(HUMIDIFIER_CATEGORY_ID); 
-		ScoredAttribute humidifierOutputAttribute = aAttributeExtractor.getScoredAttributeInCategory(HUMIDIFIER_CATEGORY_ID, HUMIDIFIER_OUTPUT_ID);
+		UserScoredAttribute humidifierOutputAttribute = new UserScoredAttribute(
+								aAttributeExtractor.getScoredAttributeInCategory(HUMIDIFIER_CATEGORY_ID, HUMIDIFIER_OUTPUT_ID),
+								1);
 		
-		List<ScoredAttribute> scoredAttributes = new ArrayList<ScoredAttribute>();
-		scoredAttributes.add(humidifierOutputAttribute);
+		List<UserScoredAttribute> userScoredAttributes = new ArrayList<UserScoredAttribute>();
+		userScoredAttributes.add(humidifierOutputAttribute);
 		
-		List<RankExplanation> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category);
+		List<RankExplanation> scoredProducts = aProductRanker.rankProducts(userScoredAttributes, category);
 		
 		// Highest humidifier output should be 5.0/5.0
 		assertEquals(scoredProducts.get(0).getaProduct().getAttribute(HUMIDIFIER_OUTPUT_ID).getTypedValue().getNumeric(), 5.0, 0.00001);
@@ -80,10 +88,10 @@ public class TestProductRanker {
 		
 		ScoredAttribute humidifierWeightAttribute = aAttributeExtractor.getScoredAttributeInCategory(HUMIDIFIER_CATEGORY_ID, HUMIDIFIER_FULL_TANK_WEIGHT_ID);
 		
-		List<ScoredAttribute> scoredAttributes = new ArrayList<ScoredAttribute>();
-		scoredAttributes.add(humidifierWeightAttribute);
+		List<UserScoredAttribute> userScoredAttributes = new ArrayList<UserScoredAttribute>();
+		userScoredAttributes.add(new UserScoredAttribute(humidifierWeightAttribute,1));
 		
-		List<RankExplanation> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category);
+		List<RankExplanation> scoredProducts = aProductRanker.rankProducts(userScoredAttributes, category);
 		
 		// Lowest weight is 7.5
 		assertEquals(scoredProducts.get(0).getaProduct().getAttribute(HUMIDIFIER_FULL_TANK_WEIGHT_ID).getTypedValue().getNumeric(), 7.5, 0.0001);	
@@ -97,11 +105,11 @@ public class TestProductRanker {
 		ScoredAttribute humidifierOutputAttribute = aAttributeExtractor.getScoredAttributeInCategory(HUMIDIFIER_CATEGORY_ID, HUMIDIFIER_OUTPUT_ID);
 		ScoredAttribute humidifierWeightAttribute = aAttributeExtractor.getScoredAttributeInCategory(HUMIDIFIER_CATEGORY_ID, HUMIDIFIER_FULL_TANK_WEIGHT_ID);
 		
-		List<ScoredAttribute> scoredAttributes = new ArrayList<ScoredAttribute>();
-		scoredAttributes.add(humidifierOutputAttribute);
-		scoredAttributes.add(humidifierWeightAttribute);
+		List<UserScoredAttribute> userScoredAttributes = new ArrayList<UserScoredAttribute>();
+		userScoredAttributes.add(new UserScoredAttribute(humidifierWeightAttribute,1));
+		userScoredAttributes.add(new UserScoredAttribute(humidifierOutputAttribute,1));
 		
-		List<RankExplanation> scoredProducts = aProductRanker.rankProducts(scoredAttributes, category);
+		List<RankExplanation> scoredProducts = aProductRanker.rankProducts(userScoredAttributes, category);
 		
 		assertEquals(scoredProducts.get(0).getaProduct().getName(), "Safety 1st 49292");
 	}

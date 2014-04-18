@@ -115,8 +115,8 @@ public class ProductRanker
 			direction = -1;
 		}
 		
-		// The attribute's correlation with the products' overall score is used as a weight
-		double attributeWeight = Math.abs(pUserScoredAttribute.getCorrelation());
+		// The attribute's correlation with the products' user score is used as a weight
+		double attributeWeight = Math.abs(pUserScoredAttribute.getUserScore());
 		
 		double normalization = 1 / pUserScoredAttribute.getMax().getNumeric();
 		
@@ -133,7 +133,7 @@ public class ProductRanker
 		
 		double normalization = 1.0/HUNDRED;
 		
-		double attributeWeight = Math.abs(pUserScoredAttribute.getCorrelation());
+		double attributeWeight = Math.abs(pUserScoredAttribute.getUserScore());
 		
 		return attributeWeight * normalization * labelValue;
 	}
