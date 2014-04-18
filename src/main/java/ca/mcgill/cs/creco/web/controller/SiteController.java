@@ -57,6 +57,7 @@ public class SiteController
 		 pModel.addAttribute("myForm", form);
 		 return URL_SHOW_CATEGORIES;								
 	}
+
 	
 	/**
 	 * Returns a response body with results for the search auto-complete
