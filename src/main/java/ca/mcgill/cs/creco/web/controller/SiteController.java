@@ -51,10 +51,8 @@ public class SiteController
 	 * @return The relative path to the index page.
 	 */
 	@RequestMapping(value = URL_HOME, method = RequestMethod.GET)
-	public String init(Model pModel)
+	public String init()
 	{
-		 UserFeatureModel form = new UserFeatureModel();
-		 pModel.addAttribute("myForm", form);
 		 return URL_SHOW_CATEGORIES;								
 	}
 	
