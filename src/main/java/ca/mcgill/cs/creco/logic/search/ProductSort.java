@@ -16,9 +16,12 @@
 package ca.mcgill.cs.creco.logic.search;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableSet;
 import java.util.TreeMap;
 
 import org.slf4j.Logger;
@@ -34,9 +37,9 @@ import ca.mcgill.cs.creco.data.Product;
  *Lists products alphabetically after taking a category id.
  */
 @Component
-public class ProductSearch implements IProductSearch
+public class ProductSort 
 {
-	private static final Logger LOG = LoggerFactory.getLogger(ProductSearch.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ProductSort.class);
 	private IDataStore aDataStore;	
 
 	/**
@@ -45,13 +48,17 @@ public class ProductSearch implements IProductSearch
 	 * @throws IOException If an exception is thrown during the creation of the product index.
 	 */
 	@Autowired
-	public ProductSearch(IDataStore pDataStore) throws IOException
+	public ProductSort(IDataStore pDataStore) throws IOException
 	{
 		aDataStore = pDataStore;
 	}
 	
-	@Override
-	public List<Product> returnProductsAlphabetically(String pCategoryID)
+	/**
+	 * Lists top 20 products according to their overall score in a category.
+	 * @param pCategoryID The category whose products are to be displayed
+	 * @return scoredproducts - The list of products.
+	 */
+	public List<Product> returnTopProducts(String pCategoryID)
 	{
 		Category category = aDataStore.getCategory(pCategoryID);
 		if (category == null)
@@ -60,22 +67,41 @@ public class ProductSearch implements IProductSearch
 			return null;
 		} 
 		
+		List<Product> allScoredProducts = new ArrayList<Product>();
+		Map<Double, Product> map = new TreeMap<Double , Product>(Collections.reverseOrder());
 		List<Product> scoredProducts = new ArrayList<Product>();
-		Map<String, Product> map = new TreeMap<String, Product>();
 		
 		// The products get sorted as they are added to a tree map.
-		for(Product product :category.getProducts())
-		{
-			map.put(product.getName(), product );
-		}
-		
-		// Repackage the treemap as a list.
-		for( Product product : map.values()) 
-		{
-			scoredProducts.add(product);
-		}
-		
-		return scoredProducts;
-	}
+				for(Product product :category.getProducts())
+				{
+					if(product.getOverallScore() != null)
+					{
+						map.put(product.getOverallScore(), product );
+					}
+				}
+				
+				
+				// Repackage the treemap as a list.
+				for( Product product : map.values()) 
+				{
+					allScoredProducts.add(product);
+				}
 
+		
+				// 20 products with the highest overall score will be displayed initially
+				
+				if(allScoredProducts.size() >=20)
+				{
+					for(int i = 0; i < 20; i++)
+					{
+						scoredProducts.add(allScoredProducts.get(i));
+					}
+				
+					return scoredProducts;
+				} 
+				else
+				{
+					return allScoredProducts;
+				}
+	}
 }

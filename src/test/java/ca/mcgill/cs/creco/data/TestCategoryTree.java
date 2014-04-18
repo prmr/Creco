@@ -90,7 +90,7 @@ public class TestCategoryTree
 	
 				// Make a product for the singleton-child and add it to the collection of test products
 				aTestProducts.add(new Product("productIdSingleton" + i + "-" + j, "productNameSingleton" + i + "-" + j, true, 
-					"leaf"+i+"Id", "brandName", "http://www.example.com", testAttributes,""));
+					"leaf"+i+"Id", "brandName", "http://www.example.com", testAttributes,"",5.0));
 			}
 		}
 		
@@ -109,7 +109,7 @@ public class TestCategoryTree
 	
 				// Make a product for the singleton-child and add it to the collection of test products
 				aTestProducts.add(new Product("productIdEq" + i + "-" + j, "productNameEq" + i + "-" + j, 
-					true, "similarNode" + i + "Id", "brandName", "http://www.example.com", testAttributes,""));
+					true, "similarNode" + i + "Id", "brandName", "http://www.example.com", testAttributes,"",5.0));
 			}
 		}
 
@@ -128,7 +128,7 @@ public class TestCategoryTree
 	
 				// Make a product for the singleton-child and add it to the collection of test products
 				aTestProducts.add(new Product("productIdNonEq" + i + "-" + j, "productNameNonEq" + i + "-" + j, true, 
-					"dissimilarNode" + i + "Id", "brandName", "http://www.example.com", testAttributes,""));
+					"dissimilarNode" + i + "Id", "brandName", "http://www.example.com", testAttributes,"",5.0));
 			}
 		}
 	}

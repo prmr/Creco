@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
@@ -32,29 +33,40 @@ import ca.mcgill.cs.creco.data.Product;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/META-INF/test-context.xml"})
-public class TestProductSearch {
+public class TestProductSort {
 
 	@Autowired
 	IDataStore aDataStore;
 	
 	@Autowired
-	IProductSearch aProductSearch;
+	ProductSort aProductSort;
 	
 	@Test
 	public void testInvalidCategory() throws IOException
 	{
-		List<Product> sortedProducts = aProductSearch.returnProductsAlphabetically("123456789");
+		List<Product> sortedProducts = aProductSort.returnTopProducts("123456789");
 		assertEquals(null, sortedProducts);
 	}
 	
 	@Test 
-	public void testBasicAlphaSort()
+	public void testSizeOfProductsReturned()
 	{
-		List<Product> sortedProducts = aProductSearch.returnProductsAlphabetically("34687");
-		for( int i = 0; i < sortedProducts.size() - 2; i++ )
+		List<Product> sortedProducts = aProductSort.returnTopProducts("32968");
+		assertEquals(20, sortedProducts.size());
+		
+	}
+	
+	@Test
+	public void testTopProductSort()
+	{
+		List<Product> sortedProducts = aProductSort.returnTopProducts("28701");
+		Double previousScore = sortedProducts.get(0).getOverallScore();
+		for(Product product : sortedProducts)
 		{
-			assertTrue(sortedProducts.get(i).getName().compareTo(sortedProducts.get(i+1).getName())<0);
+			assertTrue(product.getOverallScore() <= previousScore );
+			previousScore = product.getOverallScore();
 		}
+		
 	}
 	
 }

@@ -31,6 +31,7 @@ public class Product
 	private String aBrandName;
 	private String aModelOverviewPageUrl;
 	private String aImageThumbnail;
+	private Double aOverallScore;
 	
 	// Derived fields
 	private boolean aIsRated = false;
@@ -50,10 +51,11 @@ public class Product
 	 * @param pModelOverviewPageUrl The url of the product on the CR website.
 	 * @param pAttributes The attributes of the product. Copied internally.
 	 * @param pImageThumbnail Thumbnail of the image
+	 * @param pOverallScore the overall score
 	 */
 	public Product(String pId, String pDisplayName, Boolean pIsTested, String pCategoryId, 
 			String pBrandName, String pModelOverviewPageUrl, Collection<Attribute> pAttributes,
-			String pImageThumbnail)
+			String pImageThumbnail, Double pOverallScore)
 	{
 		aId = pId;
 		aDisplayName = pDisplayName;
@@ -62,6 +64,7 @@ public class Product
 		aBrandName = pBrandName;
 		aModelOverviewPageUrl = pModelOverviewPageUrl;
 		aImageThumbnail = pImageThumbnail;
+		aOverallScore = pOverallScore;
 		for(Attribute att : pAttributes) 
 		{
 			// While copying over the attributes, note whether any were ratings, and capture a reference to the price if any
@@ -203,6 +206,13 @@ public class Product
 		return aImageThumbnail;
 		}
 		return "";
+	}
+	/**
+	 * @return The overall score to the product.
+	 */
+	public Double getOverallScore() 
+	{
+		return aOverallScore;
 	}
 	
 }

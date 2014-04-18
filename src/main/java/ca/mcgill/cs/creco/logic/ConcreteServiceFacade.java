@@ -32,7 +32,7 @@ import ca.mcgill.cs.creco.data.IDataStore;
 import ca.mcgill.cs.creco.data.Product;
 import ca.mcgill.cs.creco.data.TypedValue;
 import ca.mcgill.cs.creco.logic.search.ICategorySearch;
-import ca.mcgill.cs.creco.logic.search.IProductSearch;
+import ca.mcgill.cs.creco.logic.search.ProductSort;
 import ca.mcgill.cs.creco.web.model.ExplanationView;
 import ca.mcgill.cs.creco.web.model.FeatureView;
 import ca.mcgill.cs.creco.web.model.ProductView;
@@ -64,7 +64,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 	private AttributeExtractor aAttributeExtractor;
 
 	@Autowired
-	private IProductSearch aProductSort;
+	private ProductSort aProductSort;
 
 	@Override
 	public String getCompletions(String pInput)
@@ -367,7 +367,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 	@Override
 	public ArrayList<ProductView> searchRankedFeaturesProducts(String pCategoryId, Model pModel)
 	{
-		List<Product> prodSearch = aProductSort.returnProductsAlphabetically(pCategoryId);
+		List<Product> prodSearch = aProductSort.returnTopProducts(pCategoryId);
 		ArrayList<ProductView> products = new ArrayList<ProductView>();
 		ArrayList<ExplanationView> emptyExplanation = new ArrayList<ExplanationView>();
 		for (Product scoredProduct : prodSearch)
