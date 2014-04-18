@@ -51,10 +51,13 @@ public class SiteController
 	 * @return The relative path to the index page.
 	 */
 	@RequestMapping(value = URL_HOME, method = RequestMethod.GET)
-	public String init()
-	{
-		 return URL_SHOW_CATEGORIES;								
-	}
+	public String init(Model pModel)
+	 	{
+			 UserFeatureModel form = new UserFeatureModel();
+			 pModel.addAttribute("myForm", form);
+	 		 return URL_SHOW_CATEGORIES;						
+	 	}
+
 	
 	/**
 	 * Returns a response body with results for the search auto-complete
