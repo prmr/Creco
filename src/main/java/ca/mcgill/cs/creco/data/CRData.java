@@ -48,14 +48,19 @@ public final class CRData implements IDataStore
 	
 	private CRData() throws IOException
 	{
-		this(DEFAULT_PRODUCT_FILENAMES, DEFAULT_CATEGORY_FILENAME);
+		this(DEFAULT_PRODUCT_FILENAMES, DEFAULT_CATEGORY_FILENAME, DEFAULT_DEAD_LINKS_FILENAME);
 	}
 	
 	private CRData(String[] pProductFileNames, String pCategoryFileName) throws IOException
 	{
+		this(pProductFileNames, pCategoryFileName, DEFAULT_DEAD_LINKS_FILENAME);
+	}
+	
+	private CRData(String[] pProductFileNames, String pCategoryFileName, String pDeadlinksFilename) throws IOException
+	{
 		
 		IDataLoadingService loadingService = new JsonLoadingService(DataPath.get(), 
-				DEFAULT_CATEGORY_FILENAME, DEFAULT_PRODUCT_FILENAMES, DEFAULT_DEAD_LINKS_FILENAME);
+				pCategoryFileName, pProductFileNames, pDeadlinksFilename);
 		CategoryTree lCatTree = new CategoryTree();
 		
 		loadingService.loadCategories(lCatTree);

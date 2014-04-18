@@ -18,6 +18,7 @@
    			</array>
     	</constructor-arg>
     	<constructor-arg index="1" type="java.lang.String" value="test-category.json" />
+    	<constructor-arg index="2" type="java.lang.String" value="test-dead_links.json" />
     </bean>
     
     <bean id="TestCategorySearch" class="ca.mcgill.cs.creco.logic.search.CategorySearch">
