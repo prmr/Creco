@@ -410,6 +410,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 	}
 	
 	@Override
+	@Deprecated
 	public JSONObject createJSONforallattributes(String pCategoryId)
 	{
 		JSONObject obj = new JSONObject();

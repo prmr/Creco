@@ -1,9 +1,3 @@
-$('#ex1').slider({
-	formater: function(value) {
-		return 'Current value: ' + value;
-	}
-});
-
 $(function() {  	  
     var slider = $('.slider'),  
         tooltip = $('.tooltip');  
@@ -12,7 +6,7 @@ $(function() {
   
     slider.slider({  
         range: "min",  
-        min: 1,      
+        min: 0,      
         max:100,
         start: function(event,ui) {  
           tooltip.fadeIn('fast');  
@@ -28,7 +22,7 @@ $(function() {
         	 var id = $(this).attr('id');
         	 var name =$(this).attr('name');
         	 console.log("data " + id+ " "+ value+" "+name);
-        	 addFeature2(id, name, value);
+        	 addFeature();
         	  tooltip.fadeOut('fast'); 
         },
         create: function(event, ui){
@@ -64,23 +58,6 @@ function findParentID(node, id) {
     return false;
 }
 
-/**
- * Check if the user checked/unchecked a check box element.
- * And add/remove it from the global feature object accordingly.
- *
- * @param chBox : check box input element
- * @param name  : name of feature
- * @param val	: value of feature
- */
-
-/*function isChecked(chBox, name, val) {
-    if ($(chBox).prop('checked')) {
-        addFeature(chBox, name, val);
-    } else {
-        removeFeature(chBox, name, val);
-    }
-    sendFeatures();
-}*/
 
 //remove element from an array
 function removeElem(arr) {
@@ -114,56 +91,40 @@ function removeFeature(elem, name, val) {
         }
     }
 }
-
-function addFeature2(id, name, val)
-{
-    var exist = false;
-    for (var i = 0; i < userObjectList.length; i++)
-    {
-        if (userObjectList[i].aId == id) 
-        {
-        	userObjectList[i].aValue = val;
-        	userObjectList[i].aName = name;            
-            exist = true;
-            break;
-        }
-    }
-    
-    if (!exist) 
-    {
-        var temp = new Object();
-        temp.aId=id;
-        temp.aName=name;
-        temp.aValue=val;
-        userObjectList.push(temp);
-    }
- 
-    sendFeatures();
-
-}
-
 /** 
  * Add feature to the global feature object
  * @param name of feature
  * @param val of feature
  */
-/*function addFeature(elem, name, val) {
+
+function addFeature()
+{
     var exist = false;
-    var isSpec = findParentID(elem, "main_specs")
+    var classElem = $('.slider').each(function(index)
+    {
+    	 for(var i=0; i< userObjectList.length ; i++) 
+         {
+    		 if(userObjectList[i].aId == $( this ).attr('id'))
+    		 {
+    			 userObjectList[i].aValue = $( this ).slider("option", "value");    		     
+                 exist = true;
+                 break;
+    		 }
+          }
+    	 if(!exist)
+    	 {
+	    	 var temp = new Object();
+	         temp.aId = $( this ).attr('id');
+	         temp.aName = $( this ).attr('name');
+	         temp.aValue = $( this ).slider("option", "value");
+	         userObjectList.push(temp);
+    	 }
+   	});
+    sendFeatures();
 
-    for (var i = 0; i < globalFeatureObject.aNames.length; i++) {
-        if (globalFeatureObject.aNames[i] == name) {
-            globalFeatureObject.aValues[i] = val;
-            exist = true;
-            break;
-        }
-    }
-    if (!exist) {
-        globalFeatureObject.aNames.push(name);
-        globalFeatureObject.aValues.push(val);
-    }
+}
 
-}*/
+
 
 function startSpinner() {
 	var height = $('#product-area').outerHeight();
@@ -199,10 +160,9 @@ function sendFeatures() {
         	var spinner_div_mask = $("<div>").attr("id", "spinner-content-mask").appendTo(spinner_div);
         	var spinner_div_mask = $("<div>").attr("id", "spinner").appendTo(spinner_div);
         	
-        	var splittingpart = response.split("|||");
         	//Products
-        	var jsonResponse = JSON.parse(splittingpart[0]);
-        	var completeResponse = JSON.parse(splittingpart[1]);
+        	var jsonResponse = JSON.parse(response);
+        	var completeResponse = JSON.parse(response);
         	
         	for(var r = 0; r<jsonResponse.length; r++)
         	{
@@ -212,8 +172,8 @@ function sendFeatures() {
         		var product_div_content = $("<div>").addClass("product-description-area"); 
 
         		
-// Display of detailed explanations        		
-//Finding the position
+				// Display of detailed explanations        		
+				//Finding the position
         		var counter_variable=0;
         		for(counter_variable=0;counter_variable<completeResponse.length;counter_variable++)
         			{
@@ -265,9 +225,7 @@ function sendFeatures() {
         		}
         		counter++;
         		product_div_content.append(display);
-        		
-        		
-        		
+        		        		
         		var product_div_name = null;
         		var product_div_exp = null;
         		var product_div_exp_value = null;
@@ -279,52 +237,11 @@ function sendFeatures() {
         		}
         		var parentbloc1 =  $("<div>").css({"width":"50%","margin":"0 auto"})
         		
-        		for(var j = 0 ; j < jsonResponse[r].explanation.length; j++)
-        		{
-            			var exp = jsonResponse[r].explanation[j];
-                     	
-            			product_div_exp = $("<p>").addClass("rankexplanation-attr-name").text(exp.name);
-            			product_div_exp_value = $("<p>").addClass("rankexplanation-attr-value").text(exp.productsNum);//total Num of products
-            			var bloc1 = $("<div>").addClass("bloc1");
-                    	
-                		var explanation_attribute = $("<div>").addClass("rankexplanation-attr-name").text(exp.name+ ":");
-                		explanation_attribute.appendTo(bloc1);
-                		var progress = $('<div>', {class: 'progress progress-info'});
-                		var progress1 = null;
-                		var progress2 = null;
-                		var progress3 = null;
-                		var rankValue = 0;
-                		
-                		
-                		if(exp.boolean)
-                		{
-                			progress1 = $("<div>").addClass("boolean-explanation").text(exp.boolValue).css("color","#2a6496");                		                			
-                			progress1.appendTo(bloc1);
-                		}
-                		else
-                		{
-                			if(exp.isExplained == -1) //feature doesn't exist for this product
-                    		{
-                    			progress1 = $("<div>").addClass("boolean-explanation").text("Not Available").css("font-style","italic");                		                			
-                    			progress1.appendTo(bloc1);
-                    			
-                    		}else
-                    		{
-                    			rankValue = (exp.productsNum - exp.rank + 1)/exp.productsNum;
-                        		rankValue = rankValue * 100;
-                        		progress1 = $("<div>").addClass("progress-bar").text("Rank:"+exp.rank).attr("aria-valuenow",rankValue).css("width",rankValue+"%");                		
-                        		progress1.attr("aria-valuemax",exp.productsNum);
-                        		progress1.appendTo(progress);                    		
-                        		progress.appendTo(bloc1);                    		
-
-                    		}
-                		}                 		
-                		bloc1.appendTo(parentbloc1);
-            	}
+        		
         		product_div.append(product_div_image);
-        		console.log(globalFeatureObject.aNames.length);
+        		
         	// Checking if any recommendations exists
-        		if(globalFeatureObject.aNames.length>0 && added_explanations>0)
+        		if(userObjectList.length > 0 && added_explanations > 0)
         		{
         			product_div.append(text);
         		}
@@ -333,7 +250,7 @@ function sendFeatures() {
         		product_div.append(parentbloc1);
         		$("#product-area").append(product_div);       
         		initialise();
-        	}
+        	}//end for
 
         }
     });
