@@ -141,7 +141,7 @@ function stopSpinner() {
 function sendFeatures() {
 
     var featureObj = JSON.stringify({userFeatures:userObjectList});
-
+    var MAX_PRODUCTS = 20;
     startSpinner();
     $.ajax({
         async: true,
@@ -162,7 +162,7 @@ function sendFeatures() {
         	var jsonResponse = JSON.parse(response);
         	var completeResponse = JSON.parse(response);
         	
-        	for(var r = 0; r<jsonResponse.length; r++)
+        	for(var r = 0; r<jsonResponse.length && r<MAX_PRODUCTS; r++)
         	{
         		var added_explanations=0;
         		var product_div = $("<div>").addClass("rankedproduct-result-entry");
