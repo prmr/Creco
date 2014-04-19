@@ -52,26 +52,16 @@
 				<div id='main_specs'>
 						<div th:each="specFeatures : ${specFeatureList}">
 							<div th:if="${specFeatures.visible==true}">
-								<div>
-							<!-- 	 	<div class="check-wrapper">
-										<input type="checkbox" class="check"
-											th:name="${specFeatures.name}"
-											th:id="${specFeatures.name}"
-											onclick="isChecked(this, this.name)"></input>
-									</div>
-								 -->										
-										<div th:id="${specFeatures.id}" th:class="${specFeatures.score}">												
-											<label class="attribute-label" 
-											th:for="${specFeatures.name}" 
-											th:text="${specFeatures.name}"  
-											th:title="${specFeatures.desc}" >
-											</label>
-											<span class="tooltip"></span>   
-										    <span  class="slider" th:name="${specFeatures.name}" th:id="${specFeatures.id}"></span>  
-										</div>
-										
-									   <div class="clear"></div>
-								</div>
+								<div th:id="${specFeatures.id}" th:class="${specFeatures.score}">												
+									<label class="attribute-label" 
+									th:for="${specFeatures.name}" 
+									th:text="${specFeatures.name}"  
+										th:title="${specFeatures.desc}" >
+									</label>
+									<span class="tooltip"></span>   
+									<span class="slider" th:name="${specFeatures.name}" th:id="${specFeatures.id}"></span>  
+								</div>										
+								<div class="clear"></div>
 							</div>
 						</div>
 				</div>
