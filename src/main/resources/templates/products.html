@@ -52,63 +52,28 @@
 				<div id='main_specs'>
 						<div th:each="specFeatures : ${specFeatureList}">
 							<div th:if="${specFeatures.visible==true}">
-								<div>
-							<!-- 	 	<div class="check-wrapper">
-										<input type="checkbox" class="check"
-											th:name="${specFeatures.name}"
-											th:id="${specFeatures.name}"
-											onclick="isChecked(this, this.name)"></input>
-									</div>
-								 -->										
-										<div th:id="${specFeatures.id}" th:class="${specFeatures.score}">												
-											<label class="attribute-label" 
-											th:for="${specFeatures.name}" 
-											th:text="${specFeatures.name}"  
-											th:title="${specFeatures.desc}" >
-											</label>
-											<span class="tooltip"></span>   
-										    <span  class="slider" th:name="${specFeatures.name}" th:id="${specFeatures.id}"></span>  
-										</div>
-										
-									   <div class="clear"></div>
-								</div>
+								<div  th:id="${specFeatures.id}" th:class="${specFeatures.score}">												
+									
+									<span class="tooltip"></span>   
+									<span class="slider" th:name="${specFeatures.name}" th:id="${specFeatures.id}"></span>  
+									<label class="attribute-label" 
+										th:for="${specFeatures.name}" 
+										th:text="${specFeatures.name}"  
+										th:title="${specFeatures.desc}" >
+									</label>
+								</div>										
+								<div class="clear"></div>
 							</div>
 						</div>
 				</div>
 			</div>
 
+			<!-- Area to display product list -->
 			<div id="product-area">
 				<div id="spinner-wrapper">
 					<div id="spinner-content-mask"></div>
 					<div id="spinner"></div>
-				</div>
-				<div  th:id="${product.id}" class="rankedproduct-result-entry" th:each="product : ${productList}">
-					<img th:unless="${product.image}==''" class="product-image" th:src="${product.image}" />
-					<div th:if="${product.image}==''" class="no-product-image">no image</div>
-					
-					<div class="product-description-area">	
-
-						<div th:switch="${product.url}">
-		                    <p th:case="''" class="rankedproduct-result-name" th:text="${product.name}"></p>
-		                   	<a th:case="*" class="rankedproduct-result-name" th:text="${product.name}"
-		                   	 	th:href="@{${product.url}}"></a>
-						</div>
-						
-						<!-- This might be an easy place to put ranking-explanations  -->
-						<div th:each="exp : ${product.explanation}">
-							<p class="rankexplanation-attr-name" th:text="${exp.name}"></p>
-						
-						<div class="progress progress-info progress-striped">
-							  <div class="progress-bar rankexplanation-attr-value" role="progressbar" th:text="${exp.valueRank}">
-							     <span class="sr-only" th:text="${exp.value}"></span>								  
-							  </div>
-							  <span class="badge pull-right" th:text = "${exp.attrRank}"></span>
-						</div>											
-						</div>	
-												
-					</div>	
-					<div class="clear"></div>
-				</div>
+				</div>				
 			</div>
 		</div>
 	</body>
