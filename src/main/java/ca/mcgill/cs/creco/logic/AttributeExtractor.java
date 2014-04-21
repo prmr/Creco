@@ -34,7 +34,7 @@ import ca.mcgill.cs.creco.data.Product;
  * This class handles the extraction of most relevant attribute from a category.
  * This class is a Bean (singleton) and it is created at startup. You should access this class
  * to get information on attributes within a category such as attribute entropy
- * and correlation with overall score. Iterables are returned and ScoredAttribtues 
+ * and correlation with overall score. Unmodifiable lists are returned and ScoredAttribtues 
  * are immutable. If a category is not found will on request the extractor will
  * return an empty list, and log an error.
  */
@@ -75,9 +75,9 @@ public class AttributeExtractor
 					sa = new ScoredAttribute(attributes.get(key), cat);
 					sa.getAttributeID();
 				}
-				catch(Exception e)
+				catch(IllegalArgumentException iae)
 				{
-					LOG.error(e.toString());
+					LOG.error(iae.toString());
 				}
 				
 				scoredAttributeList.add(sa);

@@ -282,8 +282,7 @@ public class ScoredAttribute
 				}
 				if(tv.getNumeric() > max)
 				{
-					max = tv.getNumeric();
-					
+					max = tv.getNumeric();	
 				}
 				values.add(tv.getNumeric());
 			}
@@ -343,10 +342,15 @@ public class ScoredAttribute
 		{
 			Collections.sort(values, Collections.reverseOrder());
 		}
+		setRank(values);
+	}
+	
+	private void setRank(List<Double> pValues)
+	{
 		double previousValue = 0;
 		boolean notFirst = false;
 		int rank = 1;
-		for(Double val : values)
+		for(Double val : pValues)
 		{			
 			if(notFirst)
 			{
@@ -724,7 +728,8 @@ public class ScoredAttribute
 	 * This will return the rank of the Typed value passed. If the value is not found,
 	 * this will throw an IllegalArgeumetnException error.
 	 * 
-	 * For booleans, true always has rank 1 and false always has rank 2;
+	 * For booleans, the rank is either 1 or 2 depending on which value is considered
+	 * favourable
 	 * 
 	 * @param pValue the value to be checkAgainst
 	 * @return the rank of the value in this ScoredAttribute
