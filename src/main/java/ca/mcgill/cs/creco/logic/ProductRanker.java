@@ -96,7 +96,7 @@ public class ProductRanker
 		
 		for (Product p :sortedProducts)
 		{
-			prodExp.add(new RankExplanation(p, pCategory, pUserScoredAttributes));						
+			prodExp.add(new RankExplanation(p, pUserScoredAttributes));						
 		}
 		return prodExp; 	
 	}

@@ -13,7 +13,6 @@
 package ca.mcgill.cs.creco.logic;
 
 import java.util.ArrayList;
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -214,9 +213,7 @@ public class ConcreteServiceFacade implements ServiceFacade
 	public String sendCurrentFeatureList(String pUserFeatureList, String pCategoryId)
 	{
 		UserData userFMSpec = new Gson().fromJson(pUserFeatureList, UserData.class);
-
 		List<UserScoredAttribute> userScoredFeaturesSpecs = new ArrayList<UserScoredAttribute>();
-
 		for(UserFeaturesModel userFeature: userFMSpec.getUserFeatures())
 		{			
 			String tempId = userFeature.getId();
@@ -407,33 +404,6 @@ public class ConcreteServiceFacade implements ServiceFacade
 			specFeatures.add(f);
 		}
 		return specFeatures;
-	}
-	
-	@Override
-	@Deprecated
-	public JSONObject createJSONforallattributes(String pCategoryId)
-	{
-		JSONObject obj = new JSONObject();
-		
-		ArrayList<FeatureView> specFeatures = createFeatureList(pCategoryId);
-	
-		JSONArray userFeatures = new JSONArray();
-		JSONArray list_ids = new JSONArray();
-		JSONArray list_values = new JSONArray();
-		
-		for(FeatureView temporary : specFeatures)
-		{
-			UserFeaturesModel userModel= new UserFeaturesModel();
-			userModel.setId(temporary.getId());
-			userModel.setName(temporary.getName());
-			userModel.setValue((int)temporary.getScore());
-			userFeatures.add(userModel.toString());			
-		}
-		
-		obj.put("userFeatures",userFeatures.toJSONString());
-//		obj.put("aIds", list_ids);
-	//	obj.put("aValues",list_values);
-		return (obj);
 	}
 	
 }

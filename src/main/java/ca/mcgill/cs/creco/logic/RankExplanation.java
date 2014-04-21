@@ -6,7 +6,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ca.mcgill.cs.creco.data.Category;
 import ca.mcgill.cs.creco.data.Product;
 
 /**
@@ -17,7 +16,7 @@ public class RankExplanation
 {		
 	private static final Logger LOG = LoggerFactory.getLogger(RankExplanation.class);
 	private Product aProduct;
-	private Category aCategory; 
+	//private Category aCategory; 
 	private List<RankExplanationInstance> aRankList;
 	
 	/**
@@ -26,10 +25,9 @@ public class RankExplanation
 	 * @param pCategory category that the product belongs to.
 	 * @param pUserScoredAttributes attribute selected by the user.
 	 */
-	public RankExplanation(Product pProduct, Category pCategory, List<UserScoredAttribute> pUserScoredAttributes)
+	public RankExplanation(Product pProduct, List<UserScoredAttribute> pUserScoredAttributes)
 	{
 		aProduct = pProduct;
-		aCategory = pCategory;
 		aRankList = new ArrayList<RankExplanationInstance>();
 		
 		for(UserScoredAttribute sa : pUserScoredAttributes)
@@ -59,14 +57,6 @@ public class RankExplanation
 		return aProduct;
 	}
 
-	/**
-	 * 
-	 * @return the Category object.
-	 */
-	public Category getaCategory() 
-	{
-		return aCategory;
-	}
 
 	/**
 	 * 

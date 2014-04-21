@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.json.simple.JSONObject;
 import org.springframework.ui.Model;
 
 import ca.mcgill.cs.creco.data.Category;
@@ -89,11 +88,6 @@ public interface ServiceFacade
 	 */
 	ArrayList<FeatureView> createFeatureList(String pCategoryId);
 	
-	/**
-	 *Create a JSON format based on the category ID for all the attributes
-	 * @param pCategoryId Id of the searched category.
-	 * @return List of all attributes in JSON format for the category ID
-	 */
-	JSONObject createJSONforallattributes(String pCategoryId);
+	
 	
 }
