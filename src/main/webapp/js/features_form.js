@@ -1,34 +1,27 @@
 $(function () {
-    var slider = $('.slider'),
-        tooltip = $('.tooltip');
-
-    tooltip.hide();
+    var slider = $('.slider');
 
     slider.slider({
         range: "min",
         min: 0,
         max: 100,
-        start: function (event, ui) {
-            tooltip.fadeIn('fast');
-        },
-
-        slide: function (event, ui) {
-            var value = slider.slider('value');
-            tooltip.css('left', value).text(ui.value);
+        
+       slide: function (event, ui) {
+            var value = $(this).slider('value');
+            var target = ui.handle || $('.ui-slider-handle'); 
+       	 	var id = $(this).attr('id');
+            var tooltip = '<div class="tooltip" id="'+id+'"><div class="tooltip-inner">' + ui.value + '</div><div class="tooltip-arrow"></div></div>';
+            $(target).html(tooltip);
         },
         stop: function (event, ui) {
-            var value = ui.value;
             var id = $(this).attr('id');
-            var name = $(this).attr('name');
             addFeature();
-            tooltip.fadeOut('fast');
+            $('.tooltip').attr('id',id).fadeOut('fast');
         },
         create: function (event, ui) {
-            var val = $(this).parent().attr('class') * 100;
+            var val = $(this).parent().attr('class');         
             $(this).slider('value', Math.round(val));
-
-        },
-
+         },
     });
 
 });

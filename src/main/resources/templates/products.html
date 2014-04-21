@@ -19,10 +19,6 @@
 	    <title>Creco</title> 
 	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" />
-  		<!-- <link rel="stylesheet" href="/resources/demos/style.css"></link> 
-  		   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
-			<script type='text/javascript' src="lib/jquery-1.9.1.js"></script>  
-  		-->
   		<script src="//code.jquery.com/jquery-1.10.2.js"></script>
   		<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
   
@@ -52,9 +48,7 @@
 				<div id='main_specs'>
 						<div th:each="specFeatures : ${specFeatureList}">
 							<div th:if="${specFeatures.visible==true}">
-								<div  th:id="${specFeatures.id}" th:class="${specFeatures.score}">												
-									
-									<span class="tooltip"></span>   
+								<div  th:id="${specFeatures.id}" th:class="${specFeatures.score}">													
 									<span class="slider" th:name="${specFeatures.name}" th:id="${specFeatures.id}"></span>  
 									<label class="attribute-label" 
 										th:for="${specFeatures.name}" 
@@ -82,6 +76,6 @@
 	<script type='text/javascript' src="lib/jquery-ui.js"></script>	
 	<script type='text/javascript' src='lib/bootstrap.min.js'></script>	
 	<script type='text/javascript' src="js/autocomplete.js"></script> 
-		<script type='text/javascript' src="js/category_autocomplete.js"></script> 
+	<script type='text/javascript' src="js/category_autocomplete.js"></script> 
 	<script src="js/features_form.js"></script>
 </html>
